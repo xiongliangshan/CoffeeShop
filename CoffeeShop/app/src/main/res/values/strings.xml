@@ -13,4 +13,16 @@
     <string name="pull_to_refresh_from_bottom_pull_label">@string/pull_to_refresh_pull_label</string>
     <string name="pull_to_refresh_from_bottom_release_label">@string/pull_to_refresh_release_label</string>
     <string name="pull_to_refresh_from_bottom_refreshing_label">@string/pull_to_refresh_refreshing_label</string>
+
+
+    <string name="tab_todo_orders">待处理单</string>
+    <string name="tab_orders_query">订单查询</string>
+    <string name="tab_shop_manager">门店管理</string>
+
+    <string name="tab_order_to_make">待生产</string>
+    <string name="tab_order_have_maked">已生成</string>
+    <string name="tab_order_delivering">配送中</string>
+    <string name="tab_order_have_finished">已完成</string>
+
+    <string name="empty_no_orders">暂无订单</string>
 </resources>

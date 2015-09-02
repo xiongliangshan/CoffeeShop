@@ -18,7 +18,7 @@ public class ConnectionParams {
     private static final String TAG = "ConnectionParams";
 
     private static void setTimeout(HttpURLConnection conn) {
-        int x = 10 * 1000;// TODO:发布版本改为20*1000
+        int x = 10 * 1000;// 超时时间
         conn.setConnectTimeout(x);
         conn.setReadTimeout(x);
     }

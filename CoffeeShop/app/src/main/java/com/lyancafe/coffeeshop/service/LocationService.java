@@ -1,11 +1,14 @@
 package com.lyancafe.coffeeshop.service;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.WindowManager;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
@@ -17,6 +20,7 @@ public class LocationService extends Service implements AMapLocationListener {
     private static final String TAG = "LocationService";
 
     private LocationManagerProxy mLocationManagerProxy;
+
 
     public LocationService() {
         Log.d(TAG,"LocationService construct");

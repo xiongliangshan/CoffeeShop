@@ -1,6 +1,5 @@
 package com.xls.http;
 
-import android.content.Context;
 import android.util.Log;
 
 import org.json.JSONException;

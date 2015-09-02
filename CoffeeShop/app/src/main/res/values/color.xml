@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<resources>
+	<color name="radiobutton_text_normal">#FF595959</color>
+	<color name="radiobutton_text_press">#ff2babfc</color>
+	<color name="theme_gray_bg">#fff5f5f5</color>
+	
+	<color name="yellow">#FFFF00</color>
+	<color name="blue">#0000FF</color>
+	<color name="grey">#a0a0a0</color>
+</resources>  

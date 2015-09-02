@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textSize="18sp"
+            android:text="订单处理页"/>
+
+    </RelativeLayout>
+
+    <RadioGroup
+        android:id="@+id/radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/theme_gray_bg"
+        android:orientation="horizontal">
+
+        <com.lyancafe.coffeeshop.widget.TabRadioButton
+            android:id="@+id/rb_to_make"
+            style="@style/MyWidget.pager.tab.btn"
+            android:checked="true"
+            android:text="@string/tab_order_to_make"
+            android:textColor="@color/radiobutton_text_press" />
+
+        <com.lyancafe.coffeeshop.widget.TabRadioButton
+            android:id="@+id/rb_have_maked"
+            style="@style/MyWidget.pager.tab.btn"
+            android:text="@string/tab_order_have_maked" />
+
+        <com.lyancafe.coffeeshop.widget.TabRadioButton
+            android:id="@+id/rb_delivering"
+            style="@style/MyWidget.pager.tab.btn"
+            android:text="@string/tab_order_delivering" />
+
+        <com.lyancafe.coffeeshop.widget.TabRadioButton
+            android:id="@+id/rb_have_finished"
+            style="@style/MyWidget.pager.tab.btn"
+            android:text="@string/tab_order_have_finished" />
+    </RadioGroup>
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+</LinearLayout>
