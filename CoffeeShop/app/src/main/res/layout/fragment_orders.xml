@@ -10,12 +10,10 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="left"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
         >
 
         <com.lyancafe.coffeeshop.widget.ListTabButton
-            android:id="@+id/rb_to_do"
+            android:id="@+id/tab_to_do"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             ltb:ltb_text = "生成未完成"
@@ -23,7 +21,7 @@
             android:layout_marginRight="10dp"
             />
         <com.lyancafe.coffeeshop.widget.ListTabButton
-            android:id="@+id/rb_have_done"
+            android:id="@+id/tab_have_done"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             ltb:ltb_text = "生产已完成"
@@ -31,7 +29,7 @@
             android:layout_marginRight="10dp"
             />
         <com.lyancafe.coffeeshop.widget.ListTabButton
-            android:id="@+id/rb_delivering"
+            android:id="@+id/tab_delivering"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             ltb:ltb_text = "配送中"
@@ -39,7 +37,7 @@
             android:layout_marginRight="10dp"
             />
         <com.lyancafe.coffeeshop.widget.ListTabButton
-            android:id="@+id/rb_delivery_finished"
+            android:id="@+id/tab_delivery_finished"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             ltb:ltb_text = "配送完成"
@@ -49,45 +47,11 @@
 
 
     </LinearLayout>
-   <!-- <RadioGroup
-        android:id="@+id/group_body"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:orientation="horizontal"
-        >
-
-        <com.lyancafe.coffeeshop.widget.ListRadioButton
-            android:id="@+id/rb_to_do"
-            style="@style/MyWidget.home.fragment_tab.btn"
-            android:text = "生产未完成"
-            android:checked="true"
-            />
-
-        <com.lyancafe.coffeeshop.widget.ListRadioButton
-            android:id="@+id/rb_have_done"
-            style="@style/MyWidget.home.fragment_tab.btn"
-            android:text = "生产已完成"
-            />
-
-
-        <com.lyancafe.coffeeshop.widget.ListRadioButton
-            android:id="@+id/rb_delivering"
-            style="@style/MyWidget.home.fragment_tab.btn"
-            android:text = "配送中"
-            />
-
-        <com.lyancafe.coffeeshop.widget.ListRadioButton
-            android:id="@+id/rb_delivery_finished"
-            style="@style/MyWidget.home.fragment_tab.btn"
-            android:text = "配送成功"
-            />
-    </RadioGroup>-->
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
+        android:layout_marginTop="10dp"
         >
         <Spinner
             android:id="@+id/spinner_sort"
@@ -97,7 +61,7 @@
             />
 
         <Spinner
-            android:id="@+id/spinner_type"
+            android:id="@+id/spinner_category"
             android:layout_toRightOf="@id/spinner_sort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -105,7 +69,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="15dp"
+        >
 
         <GridView
             android:layout_width="0dp"
@@ -114,13 +80,14 @@
             android:background="#ffff00"
             />
 
-        <RelativeLayout
+        <include
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
             android:background="#ff0000"
-            >
-        </RelativeLayout>
+            layout = "@layout/view_order_detail"
+            />
+
     </LinearLayout>
 
 </LinearLayout>

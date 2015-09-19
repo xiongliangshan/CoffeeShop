@@ -25,4 +25,12 @@
     <string name="tab_order_have_finished">已完成</string>
 
     <string name="empty_no_orders">暂无订单</string>
+    
+    <string name="sort_by_order_time">按下单时间排序</string>
+    <string name="sort_by_delivery_effect">按配送时效排序</string>
+    <string name="sort_by_produce_effect">按生产时效排序</string>
+    
+    <string name="category_order">预约单</string>
+    <string name="category_now">尽快送达单</string>
+    <string name="category_all">全部订单</string>
 </resources>

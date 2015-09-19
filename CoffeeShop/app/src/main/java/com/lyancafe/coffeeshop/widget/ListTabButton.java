@@ -34,13 +34,14 @@ public class ListTabButton extends LinearLayout {
         setGravity(Gravity.CENTER);
         contentTxt = new TextView(context,attrs);
         contentTxt.setTextColor(Color.BLACK);
+        contentTxt.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
         contentTxt.setText(content);
 
         textView = new TextView(context,attrs);
         textView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
         textView.setTextColor(Color.WHITE);
         textView.setTypeface(Typeface.DEFAULT_BOLD);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
         textView.setBackgroundResource(R.drawable.number_text_background_normal);
         textView.setPadding(dip2Px(5), dip2Px(1), dip2Px(5), dip2Px(1));
         textView.setText("99");
