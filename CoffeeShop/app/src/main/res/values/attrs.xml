@@ -77,4 +77,8 @@
         <attr name="ptrDrawableBottom" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="LTB">
+        <attr name="ltb_text" format="string"/>
+    </declare-styleable>
+
 </resources>

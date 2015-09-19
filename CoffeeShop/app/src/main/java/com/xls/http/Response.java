@@ -63,4 +63,22 @@ public class Response {
         sb.deleteCharAt(sb.length()-1);
         return sb.toString();
     }
+
+
+    private static String prepareParam(Map<String,Object> paramMap){
+        StringBuffer sb = new StringBuffer();
+        if(paramMap.isEmpty()){
+            return "" ;
+        }else{
+            for(String key: paramMap.keySet()){
+                String value = (String)paramMap.get(key);
+                if(sb.length()<1){
+                    sb.append(key).append("=").append(value);
+                }else{
+                    sb.append("&").append(key).append("=").append(value);
+                }
+            }
+            return sb.toString();
+        }
+    }
 }

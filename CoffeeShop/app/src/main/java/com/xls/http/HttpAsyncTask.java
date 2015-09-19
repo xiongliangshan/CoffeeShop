@@ -26,7 +26,8 @@ public class HttpAsyncTask {
                     HttpUtils.showToastAsync(context.getApplicationContext(),"请检查网络连接");
                     return;
                 }
-                if(HttpEntity.POST.equalsIgnoreCase(httpEntity.getMethod())){
+                ConnectionParams.doRequest(httpEntity);
+                /*if(HttpEntity.POST.equalsIgnoreCase(httpEntity.getMethod())){
                     // post请求
                     String jsonParams = Response.createPostURLParams(httpEntity.getParams());
                     final Jresp resp = ConnectionParams.post(httpEntity.getUrl(), jsonParams);
@@ -57,7 +58,7 @@ public class HttpAsyncTask {
                             }
                         }
                     });
-                }
+                }*/
 
 
             }
@@ -76,6 +77,22 @@ public class HttpAsyncTask {
      */
     public static void requestByGet(String url,Map<String, Object> params,Context context,Qry qry){
         HttpEntity httpEntity = new HttpEntity(HttpEntity.GET,url,params);
+        executorForResource.execute(queryDataFromServer(httpEntity,context,qry));
+    }
+
+    /**
+     * 发送get请求
+     */
+    public static void requestByPut(String url,Map<String, Object> params,Context context,Qry qry){
+        HttpEntity httpEntity = new HttpEntity(HttpEntity.PUT,url,params);
+        executorForResource.execute(queryDataFromServer(httpEntity,context,qry));
+    }
+
+    /**
+     * 发送get请求
+     */
+    public static void requestByDelete(String url,Map<String, Object> params,Context context,Qry qry){
+        HttpEntity httpEntity = new HttpEntity(HttpEntity.DELETE,url,params);
         executorForResource.execute(queryDataFromServer(httpEntity,context,qry));
     }
 }

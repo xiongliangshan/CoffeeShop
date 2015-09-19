@@ -27,9 +27,9 @@
             android:label="@string/title_activity_base" >
         </activity>
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".activity.HomeActivity"
             android:parentActivityName=".activity.BaseActivity"
-            android:screenOrientation="nosensor"
+            android:screenOrientation="landscape"
             >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

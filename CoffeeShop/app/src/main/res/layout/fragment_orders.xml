@@ -1,58 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ltb="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/title"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="left"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         >
 
-        <TextView
+        <com.lyancafe.coffeeshop.widget.ListTabButton
+            android:id="@+id/rb_to_do"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:textSize="18sp"
-            android:text="订单处理页"/>
+            ltb:ltb_text = "生成未完成"
+            android:padding="2dp"
+            android:layout_marginRight="10dp"
+            />
+        <com.lyancafe.coffeeshop.widget.ListTabButton
+            android:id="@+id/rb_have_done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            ltb:ltb_text = "生产已完成"
+            android:padding="2dp"
+            android:layout_marginRight="10dp"
+            />
+        <com.lyancafe.coffeeshop.widget.ListTabButton
+            android:id="@+id/rb_delivering"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            ltb:ltb_text = "配送中"
+            android:padding="2dp"
+            android:layout_marginRight="10dp"
+            />
+        <com.lyancafe.coffeeshop.widget.ListTabButton
+            android:id="@+id/rb_delivery_finished"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            ltb:ltb_text = "配送完成"
+            android:padding="2dp"
+            android:layout_marginRight="10dp"
+            />
 
+
+    </LinearLayout>
+   <!-- <RadioGroup
+        android:id="@+id/group_body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:orientation="horizontal"
+        >
+
+        <com.lyancafe.coffeeshop.widget.ListRadioButton
+            android:id="@+id/rb_to_do"
+            style="@style/MyWidget.home.fragment_tab.btn"
+            android:text = "生产未完成"
+            android:checked="true"
+            />
+
+        <com.lyancafe.coffeeshop.widget.ListRadioButton
+            android:id="@+id/rb_have_done"
+            style="@style/MyWidget.home.fragment_tab.btn"
+            android:text = "生产已完成"
+            />
+
+
+        <com.lyancafe.coffeeshop.widget.ListRadioButton
+            android:id="@+id/rb_delivering"
+            style="@style/MyWidget.home.fragment_tab.btn"
+            android:text = "配送中"
+            />
+
+        <com.lyancafe.coffeeshop.widget.ListRadioButton
+            android:id="@+id/rb_delivery_finished"
+            style="@style/MyWidget.home.fragment_tab.btn"
+            android:text = "配送成功"
+            />
+    </RadioGroup>-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        >
+        <Spinner
+            android:id="@+id/spinner_sort"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            />
+
+        <Spinner
+            android:id="@+id/spinner_type"
+            android:layout_toRightOf="@id/spinner_sort"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </RelativeLayout>
 
-    <RadioGroup
-        android:id="@+id/radio_group"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/theme_gray_bg"
-        android:orientation="horizontal">
+        android:layout_height="match_parent">
 
-        <com.lyancafe.coffeeshop.widget.TabRadioButton
-            android:id="@+id/rb_to_make"
-            style="@style/MyWidget.pager.tab.btn"
-            android:checked="true"
-            android:text="@string/tab_order_to_make"
-            android:textColor="@color/radiobutton_text_press" />
+        <GridView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:background="#ffff00"
+            />
 
-        <com.lyancafe.coffeeshop.widget.TabRadioButton
-            android:id="@+id/rb_have_maked"
-            style="@style/MyWidget.pager.tab.btn"
-            android:text="@string/tab_order_have_maked" />
-
-        <com.lyancafe.coffeeshop.widget.TabRadioButton
-            android:id="@+id/rb_delivering"
-            style="@style/MyWidget.pager.tab.btn"
-            android:text="@string/tab_order_delivering" />
-
-        <com.lyancafe.coffeeshop.widget.TabRadioButton
-            android:id="@+id/rb_have_finished"
-            style="@style/MyWidget.pager.tab.btn"
-            android:text="@string/tab_order_have_finished" />
-    </RadioGroup>
-
-    <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:background="#ff0000"
+            >
+        </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>

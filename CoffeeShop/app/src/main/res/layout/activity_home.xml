@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+
+            <RadioGroup
+                android:id="@+id/group_left"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical">
+
+                <com.lyancafe.coffeeshop.widget.LeftRadioButton
+                    android:id="@+id/rb_orders"
+                    style="@style/MyWidget.home.left_tab.btn"
+                    android:checked="true"
+                    />
+
+                <com.lyancafe.coffeeshop.widget.LeftRadioButton
+                    android:id="@+id/rb_order_query"
+                    style="@style/MyWidget.home.left_tab.btn"
+                    />
+
+                <com.lyancafe.coffeeshop.widget.LeftRadioButton
+                    android:id="@+id/rb_shop_manager"
+                    style="@style/MyWidget.home.left_tab.btn"
+                     />
+
+            </RadioGroup>
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:id="@+id/tab_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+</LinearLayout>
