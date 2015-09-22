@@ -10,10 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.Spinner;
 
 import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.adapter.OrderGridViewAdapter;
+import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.widget.ListTabButton;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Administrator on 2015/9/1.
@@ -34,6 +40,9 @@ public class OrdersFragment extends Fragment {
 
     private Spinner sortSpinner;
     private Spinner categorySpinner;
+
+    private GridView ordersGridView;
+    private OrderGridViewAdapter adapter;
 
 
 
@@ -61,6 +70,15 @@ public class OrdersFragment extends Fragment {
     }
 
     private void initViews(View contentView){
+        ordersGridView = (GridView) contentView.findViewById(R.id.gv_order_list);
+        adapter = new OrderGridViewAdapter(mContext);
+        ordersGridView.setAdapter(adapter);
+        List<OrderBean> order_list = new ArrayList<>();
+        for(int i=0;i<7;i++){
+            OrderBean order = new OrderBean();
+            order_list.add(order);
+        }
+        adapter.setData(order_list);
         initTabButtons(contentView);
         initSpinner(contentView,mContext);
     }

@@ -22,7 +22,7 @@
                 android:id="@+id/order_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
+                android:textSize="24sp"
                 android:text="CB2015-0919-01"
                 />
             <TextView
@@ -30,17 +30,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/order_id"
-                android:layout_alignBaseline="@id/order_id"
+                android:layout_alignTop="@id/order_id"
                 android:textSize="12sp"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="20dp"
                 android:text="下单时间"
                 />
             <TextView
                 android:id="@+id/order_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/contant_order_time"
-                android:layout_alignBaseline="@id/order_id"
+                android:layout_below="@id/contant_order_time"
+                android:layout_alignLeft="@id/contant_order_time"
                 android:textSize="12sp"
                 android:layout_marginLeft="5dp"
                 android:text="2015-09-19 14:20"
@@ -50,37 +50,33 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:text="报告"
-                android:textSize="18sp"
+                android:textSize="22sp"
                 />
         </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="20dp"
-            >
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/stroke_background"
-                android:layout_marginRight="10dp"
-                >
+            android:padding="20dp"
+            android:background="@drawable/stroke_background">
+
                 <TextView
                     android:id="@+id/contant_reach_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
                     android:text="送达时间"
                     />
                 <TextView
                     android:id="@+id/reach_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/contant_reach_time"
-                    android:layout_alignLeft="@id/contant_reach_time"
-                    android:layout_marginTop="10dp"
-                    android:textSize="22sp"
+                    android:layout_toRightOf="@id/contant_reach_time"
+                    android:layout_alignBaseline="@id/contant_reach_time"
+                    android:layout_marginLeft="15dp"
+                    android:textSize="24sp"
                     android:text="尽快送达"
                     />
                 <TextView
@@ -89,7 +85,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/reach_time"
                     android:layout_alignBaseline="@id/contant_reach_time"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="25dp"
                     android:text="生产时效"
                     />
                 <TextView
@@ -97,24 +93,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="08:36"
-                    android:layout_alignLeft="@id/contant_produce_effect"
-                    android:layout_alignBaseline="@id/reach_time"
-                    android:textSize="22sp"
+                    android:layout_toRightOf="@id/contant_produce_effect"
+                    android:layout_alignBaseline="@id/contant_produce_effect"
+                    android:textSize="24sp"
+                    android:layout_marginLeft="15dp"
                     />
 
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/stroke_background"
-                android:layout_marginLeft="10dp"
-                >
                 <TextView
                     android:id="@+id/contant_receiver_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/contant_reach_time"
+                    android:layout_marginTop="20dp"
                     android:text="收货信息"
                     />
                 <TextView
@@ -122,8 +112,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="王晓霞"
-                    android:textSize="18sp"
-                    android:layout_below="@id/contant_receiver_info"
+                    android:layout_marginLeft="15dp"
+                    android:layout_toRightOf="@id/contant_receiver_info"
+                    android:layout_alignBaseline="@id/contant_receiver_info"
                     />
                 <TextView
                     android:id="@+id/receiver_phone"
@@ -139,11 +130,11 @@
                     android:id="@+id/receiver_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/receiver_name"
+                    android:layout_below="@id/contant_receiver_info"
+                    android:layout_alignLeft="@id/receiver_name"
                     android:text="上海市徐汇区古美路1515号凤凰大楼1801"
                     />
-            </RelativeLayout>
-        </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -164,14 +155,80 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_marginRight="10dp"
+                    android:scrollbars="none"
                     android:background="#c0c0c0"
                     >
-
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        >
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="我要一杯咖啡"
+                            android:textSize="24sp"
+                         />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="我要一杯咖啡"
+                            android:textSize="24sp"
+                            />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="我要一杯咖啡"
+                            android:textSize="24sp"
+                            />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="我要一杯咖啡"
+                            android:textSize="24sp"
+                            />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="我要一杯咖啡"
+                            android:textSize="24sp"
+                            />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="我要一杯咖啡"
+                            android:textSize="24sp"
+                            />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="我要一杯咖啡"
+                            android:textSize="24sp"
+                            />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="我要一杯咖啡"
+                            android:textSize="24sp"
+                            />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="我要一杯咖啡"
+                            android:textSize="24sp"
+                            />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="我要一杯咖啡"
+                            android:textSize="24sp"
+                            />
+                    </LinearLayout>
                 </ScrollView>
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
+                    android:layout_gravity="left"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
                     >
@@ -236,17 +293,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="right"
+            android:layout_marginTop="10dp"
             >
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="生产完成"
                 />
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="打印订单"
                 />
         </LinearLayout>
@@ -257,8 +316,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
         >
 
         <TextView

@@ -1,10 +1,14 @@
 package com.lyancafe.coffeeshop.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -17,40 +21,21 @@ import com.lyancafe.coffeeshop.R;
 public class LoginActivity extends BaseActivity {
 
     private static final String TAG = "LoginActivity";
-    private PullToRefreshListView pullListView;
-    private Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-        }
-    };
+    private EditText userNameEdit;
+    private EditText passwordEdit;
+    private ImageButton loginBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        pullListView = (PullToRefreshListView) findViewById(R.id.pull_list);
-        pullListView.setMode(PullToRefreshBase.Mode.BOTH);
-        pullListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+        userNameEdit = (EditText) findViewById(R.id.username);
+        passwordEdit = (EditText) findViewById(R.id.password);
+        loginBtn = (ImageButton) findViewById(R.id.login_btn);
+        loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-                Log.d(TAG,"onPullDownToRefresh");
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        pullListView.onRefreshComplete();
-                    }
-                },1000);
-            }
-
-            @Override
-            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-                Log.d(TAG,"onPullUpToRefresh");
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        pullListView.onRefreshComplete();
-                    }
-                }, 1000);
+            public void onClick(View v) {
+                Intent intent =  new Intent(LoginActivity.this,HomeActivity.class);
+                LoginActivity.this.startActivity(intent);
             }
         });
     }
