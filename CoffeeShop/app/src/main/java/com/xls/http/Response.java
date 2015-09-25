@@ -18,12 +18,11 @@ public class Response {
     /**
      * 生成完整的Url
      * @param params
-     * @param ctx
      * @return
      */
     public static String createPostURLParams(Map<String, Object> params){
         if(params!=null){
-            try{
+            /*try{
                 JSONObject data =  new JSONObject();
                 for(String key:params.keySet()){
                     data.put(key,params.get(key));
@@ -32,11 +31,18 @@ public class Response {
                 return "json = "+jsonUrl;
             }catch (JSONException e){
 
+            }*/
+
+            StringBuilder sb = new StringBuilder();
+            for(String key:params.keySet()){
+                sb.append(key);
+                sb.append("=");
+                sb.append(params.get(key)+"&");
             }
-
-
+            sb.deleteCharAt(sb.length()-1);
+            return sb.toString();
         }
-        return null;
+        return "";
     }
 
     public static String createGetURLParams(String url,Map<String, Object> params){

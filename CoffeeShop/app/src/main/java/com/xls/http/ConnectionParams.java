@@ -5,6 +5,7 @@ import android.util.Log;
 import org.json.JSONObject;
 
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -32,12 +33,6 @@ public class ConnectionParams {
             case HttpEntity.GET:
                 txt = requestByGet(Response.createGetURLParams(httpEntity.getUrl(), httpEntity.getParams()));
                 break;
-            case HttpEntity.PUT:
-                txt = requestByPut(httpEntity.getUrl(),Response.createPostURLParams(httpEntity.getParams()));
-                break;
-            case HttpEntity.DELETE:
-                txt = requestByDelete(Response.createGetURLParams(httpEntity.getUrl(), httpEntity.getParams()));
-                break;
         }
 
         if (txt == null || txt.length() == 0) {
@@ -47,7 +42,7 @@ public class ConnectionParams {
         try {
             JSONObject jsonObject = new JSONObject(txt);
             String data = jsonObject.optJSONObject("data").toString();
-            int response = jsonObject.optInt("response");
+            int response = jsonObject.optInt("status");
             String message = jsonObject.getString("message");
             Jresp jresp = new Jresp(response,message,data);
             return jresp;
@@ -89,14 +84,16 @@ public class ConnectionParams {
             String txt = null;
             if(gzipped){
                 txt = IOUtil.read(new GZIPInputStream(is));
+                Log.d(TAG, "post: gzip = true");
             }else{
                 txt = IOUtil.read(is);
+                Log.d(TAG, "post: gzip = false");
             }
             is.close();
             Log.d(TAG, "post: result = " + txt);
             return txt;
         } catch (Exception e) {
-            Log.e(TAG, "post: gzipExp:"+e.getMessage());
+            Log.e(TAG, "post: Exception:"+e.getMessage());
             e.printStackTrace();
         } finally {
             if (conn != null) {
@@ -150,97 +147,5 @@ public class ConnectionParams {
         return null;
     }
 
-    private static String requestByPut(String targetURL,String urlParameters) {
-        Log.d(TAG,"get: url = "+targetURL);
-        HttpURLConnection conn = null;
-        try {
-            URL url = new URL(targetURL);
-            conn = (HttpURLConnection) url.openConnection();
-            setTimeout(conn);
-            conn.setRequestMethod("PUT");
-            conn.setRequestProperty(
-                    "Accept",
-                    "image/gif, image/jpeg, image/pjpeg, image/pjpeg, application/x-shockwave-flash, application/xaml+xml, application/vnd.ms-xpsdocument, application/x-ms-xbap, application/x-ms-application, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, */*");
-            conn.setRequestProperty("Charset", "UTF-8");
-            conn.setRequestProperty("Accept-Encoding", "gzip");
-            conn.setDoInput(true);
-            conn.setDoOutput(true);
-            OutputStream wr = conn.getOutputStream();
-            wr.write(urlParameters.getBytes("utf-8"));
-            wr.flush();
-            wr.close();
-            int code = conn.getResponseCode();
-            Log.i(TAG, "code=" + code);
-            if (code >= 400) {
-                Log.e(TAG, "http_code=" + code);
-                return null;
-            }
-
-            InputStream is = conn.getInputStream();
-            String encoding = conn.getHeaderField("Content-Encoding");
-            boolean gzipped = encoding!=null && encoding.toLowerCase().contains("gzip");
-            String txt = null;
-            if(gzipped){
-                txt = IOUtil.read(new GZIPInputStream(is));
-            }else{
-                txt = IOUtil.read(is);
-            }
-            is.close();
-            Log.d(TAG, "get: result = " + txt);
-            return txt;
-        } catch (Exception e) {
-            Log.e(TAG, "gzipExp:"+e.getMessage());
-            e.printStackTrace();
-        } finally {
-            if (conn != null) {
-                conn.disconnect();
-            }
-        }
-        return null;
-    }
-
-    private static String requestByDelete(String targetURL) {
-        Log.d(TAG,"get: url = "+targetURL);
-        HttpURLConnection conn = null;
-        try {
-            URL url = new URL(targetURL);
-            conn = (HttpURLConnection) url.openConnection();
-            setTimeout(conn);
-            conn.setRequestMethod("DELETE");
-            conn.setRequestProperty(
-                    "Accept",
-                    "image/gif, image/jpeg, image/pjpeg, image/pjpeg, application/x-shockwave-flash, application/xaml+xml, application/vnd.ms-xpsdocument, application/x-ms-xbap, application/x-ms-application, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, */*");
-            conn.setRequestProperty("Charset", "UTF-8");
-            conn.setRequestProperty("Accept-Encoding", "gzip");
-            conn.setDoOutput(true);
-            int code = conn.getResponseCode();
-            Log.i(TAG, "code=" + code);
-            if (code >= 400) {
-                Log.e(TAG, "http_code=" + code);
-                return null;
-            }
-
-            InputStream is = conn.getInputStream();
-            String encoding = conn.getHeaderField("Content-Encoding");
-            boolean gzipped = encoding!=null && encoding.toLowerCase().contains("gzip");
-            String txt = null;
-            if(gzipped){
-                txt = IOUtil.read(new GZIPInputStream(is));
-            }else{
-                txt = IOUtil.read(is);
-            }
-            is.close();
-            Log.d(TAG, "get: result = " + txt);
-            return txt;
-        } catch (Exception e) {
-            Log.e(TAG, "gzipExp:"+e.getMessage());
-            e.printStackTrace();
-        } finally {
-            if (conn != null) {
-                conn.disconnect();
-            }
-        }
-        return null;
-    }
 
 }

@@ -26,73 +26,22 @@ public class HttpAsyncTask {
                     HttpUtils.showToastAsync(context.getApplicationContext(),"请检查网络连接");
                     return;
                 }
-                ConnectionParams.doRequest(httpEntity);
-                /*if(HttpEntity.POST.equalsIgnoreCase(httpEntity.getMethod())){
-                    // post请求
-                    String jsonParams = Response.createPostURLParams(httpEntity.getParams());
-                    final Jresp resp = ConnectionParams.post(httpEntity.getUrl(), jsonParams);
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (resp == null) {
-                                if (qry != null) {
-                                    qry.showResult(null);
-                                }
-                                return;
-                            }
+                final Jresp resp = ConnectionParams.doRequest(httpEntity);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(qry!=null){
+                            qry.showResult(resp);
                         }
-                    });
-                }else if(HttpEntity.GET.equalsIgnoreCase(httpEntity.getMethod())){
-                    // get 请求
-
-                    String wholeUrl = Response.createGetURLParams(httpEntity.getUrl(), httpEntity.getParams());
-                    final Jresp resp = ConnectionParams.get(wholeUrl);
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (resp == null) {
-                                if (qry != null) {
-                                    qry.showResult(null);
-                                }
-                                return;
-                            }
-                        }
-                    });
-                }*/
-
+                    }
+                });
 
             }
         };
     }
-    /**
-     * 发送post请求
-     */
-    public static void requestByPost(String url,Map<String, Object> params,Context context,Qry qry){
-        HttpEntity httpEntity = new HttpEntity(HttpEntity.POST,url,params);
+
+    public static void request(final HttpEntity httpEntity,final Context context,final Qry qry){
         executorForResource.execute(queryDataFromServer(httpEntity,context,qry));
     }
 
-    /**
-     * 发送get请求
-     */
-    public static void requestByGet(String url,Map<String, Object> params,Context context,Qry qry){
-        HttpEntity httpEntity = new HttpEntity(HttpEntity.GET,url,params);
-        executorForResource.execute(queryDataFromServer(httpEntity,context,qry));
-    }
-
-    /**
-     * 发送get请求
-     */
-    public static void requestByPut(String url,Map<String, Object> params,Context context,Qry qry){
-        HttpEntity httpEntity = new HttpEntity(HttpEntity.PUT,url,params);
-        executorForResource.execute(queryDataFromServer(httpEntity,context,qry));
-    }
-
-    /**
-     * 发送get请求
-     */
-    public static void requestByDelete(String url,Map<String, Object> params,Context context,Qry qry){
-        HttpEntity httpEntity = new HttpEntity(HttpEntity.DELETE,url,params);
-        executorForResource.execute(queryDataFromServer(httpEntity,context,qry));
-    }
 }

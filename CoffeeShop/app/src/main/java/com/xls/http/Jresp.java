@@ -6,13 +6,13 @@ package com.xls.http;
 public class Jresp {
     private static final String TAG = "Jresp";
 
-    public int response;   //返回的状态码
+    public int status;   //返回的状态码
     public String message; //返回的文字消息
     public String data;    //返回的数据
 
 
-    public Jresp(int response, String message, String data) {
-        this.response = response;
+    public Jresp(int status, String message, String data) {
+        this.status = status;
         this.message = message;
         this.data = data;
     }
@@ -20,7 +20,7 @@ public class Jresp {
     @Override
     public String toString() {
         return "Jresp{" +
-                "response=" + response +
+                "status=" + status +
                 ", message='" + message + '\'' +
                 ", data='" + data + '\'' +
                 '}';

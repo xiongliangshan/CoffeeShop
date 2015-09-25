@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="20dp"
-            android:padding="20dp"
+            android:padding="10dp"
             android:background="@drawable/stroke_background">
 
                 <TextView
@@ -134,11 +134,54 @@
                     android:layout_alignLeft="@id/receiver_name"
                     android:text="上海市徐汇区古美路1515号凤凰大楼1801"
                     />
+
+            <RelativeLayout
+                android:id="@+id/deliver_info_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:visibility="visible"
+                android:layout_below="@id/receiver_address"
+                >
+                
+                <View
+                    android:id="@+id/split_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#000000"
+                    />
+                <TextView
+                    android:id="@+id/contant_deliver"
+                    android:layout_below="@id/split_line"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="抢单小哥"
+                    />
+                <TextView
+                    android:id="@+id/deliver_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="14dp"
+                    android:layout_toRightOf="@id/contant_deliver"
+                    android:layout_alignBaseline="@id/contant_deliver"
+                    android:text="李晓波"
+                    />
+                <TextView
+                    android:id="@+id/deliver_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_alignBaseline="@id/contant_deliver"
+                    android:layout_toRightOf="@id/deliver_name"
+                    android:text="18217131583"
+                    />
+            </RelativeLayout>
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="280dp"
             android:layout_marginTop="20dp"
             >
 
@@ -291,9 +334,10 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
+            android:gravity="bottom"
             >
 
             <Button
@@ -316,6 +360,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_gravity="bottom"
         android:paddingBottom="20dp"
         android:paddingTop="20dp"
         >
