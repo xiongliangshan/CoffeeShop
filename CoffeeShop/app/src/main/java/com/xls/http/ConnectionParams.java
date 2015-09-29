@@ -1,12 +1,18 @@
 package com.xls.http;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.lyancafe.coffeeshop.utils.ToastUtil;
+
+import org.apache.http.conn.ConnectTimeoutException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.zip.GZIPInputStream;
@@ -17,36 +23,38 @@ import java.util.zip.GZIPInputStream;
 public class ConnectionParams {
 
     private static final String TAG = "ConnectionParams";
-
+    public static String exceptionInfo = "";
     private static void setTimeout(HttpURLConnection conn) {
         int x = 10 * 1000;// 超时时间
         conn.setConnectTimeout(x);
         conn.setReadTimeout(x);
     }
 
-    public static Jresp doRequest(HttpEntity httpEntity){
-        String txt = "";
-        switch (httpEntity.getMethod()){
-            case HttpEntity.POST:
-                txt = requestByPost(httpEntity.getUrl(), Response.createPostURLParams(httpEntity.getParams()));
-                break;
-            case HttpEntity.GET:
-                txt = requestByGet(Response.createGetURLParams(httpEntity.getUrl(), httpEntity.getParams()));
-                break;
-        }
-
-        if (txt == null || txt.length() == 0) {
-            Log.e(TAG, "post:text 为空");
-            return null;
-        }
+    public static Jresp doRequest(HttpEntity httpEntity,Context context) {
+        exceptionInfo = "";
         try {
+            String txt = "";
+            switch (httpEntity.getMethod()){
+                case HttpEntity.POST:
+                    txt = requestByPost(httpEntity.getUrl(), Response.createPostURLParams(httpEntity.getParams()));
+                    break;
+                case HttpEntity.GET:
+                    txt = requestByGet(Response.createGetURLParams(httpEntity.getUrl(), httpEntity.getParams()));
+                    break;
+            }
+
+            if (txt == null || txt.length() == 0) {
+                Log.e(TAG, "post:text 为空");
+                return null;
+            }
+
             JSONObject jsonObject = new JSONObject(txt);
             JSONObject data = jsonObject.optJSONObject("data");
             int response = jsonObject.optInt("status");
             String message = jsonObject.getString("message");
             Jresp jresp = new Jresp(response,message,data);
             return jresp;
-        } catch (Exception e) {
+        }  catch (Exception e) {
             return null;
         }
     }
@@ -93,7 +101,10 @@ public class ConnectionParams {
             is.close();
             Log.d(TAG, "post: result = " + txt);
             return txt;
-        }  catch (Exception e) {
+        } catch (ConnectException e){
+            exceptionInfo = "连接服务器超时";
+            Log.e(TAG, "post: ConnectException:"+e.getMessage());
+        } catch (Exception e) {
             Log.e(TAG, "post: Exception:"+e.getMessage());
             e.printStackTrace();
         } finally {

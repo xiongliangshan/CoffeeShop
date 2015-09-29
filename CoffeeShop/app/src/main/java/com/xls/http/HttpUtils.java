@@ -11,6 +11,9 @@ import android.widget.Toast;
  */
 public class HttpUtils {
 
+    //public static String BASE_URL = "http://192.168.1.99:8080/shop/v3/";
+    public static String BASE_URL = "http://mtest.lyancafe.com/shop/v3/";
+
 
     /**
      * 判断是否联网
@@ -61,5 +64,9 @@ public class HttpUtils {
                 Looper.loop();
             }
         }).start();
+    }
+
+    public static void showToastAsync(final Context context, int resId) {
+        showToastAsync(context, context.getResources().getString(resId));
     }
 }

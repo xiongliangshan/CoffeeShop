@@ -7,4 +7,6 @@
 	<color name="yellow">#FFFF00</color>
 	<color name="blue">#0000FF</color>
 	<color name="grey">#a0a0a0</color>
+
+	<color name="black_transparent">#f0000000</color>
 </resources>  

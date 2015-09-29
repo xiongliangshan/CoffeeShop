@@ -1,7 +1,15 @@
 package com.xls.http;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Handler;
+import android.text.TextUtils;
+
+import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.dialog.ProgressHUD;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
+
+import java.net.ConnectException;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -16,23 +24,33 @@ public class HttpAsyncTask {
     public static ThreadPoolExecutor executorForResource = new ThreadPoolExecutor(5, 15, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
 
-    private static Runnable queryDataFromServer(final HttpEntity httpEntity,final Context context,final Qry qry){
+    private static Runnable queryDataFromServer(final HttpEntity httpEntity,final Context context,final Qry qry,final Dialog dialog){
         return new Runnable(){
             @Override
             public void run() {
                 //判断是否有网
                 if (!HttpUtils.isOnline(context)) {
-                    qry.showResult(null);
-                    HttpUtils.showToastAsync(context.getApplicationContext(),"请检查网络连接");
+                    dialog.dismiss();
+                    HttpUtils.showToastAsync(context, "请检查网络连接");
                     return;
                 }
-                final Jresp resp = ConnectionParams.doRequest(httpEntity);
+                final Jresp resp = ConnectionParams.doRequest(httpEntity,context);
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        if(qry!=null){
+                        if(qry!=null && resp!=null){
                             qry.showResult(resp);
+                        }else{
+                            if(!TextUtils.isEmpty(ConnectionParams.exceptionInfo)){
+                                HttpUtils.showToastAsync(context, ConnectionParams.exceptionInfo);
+                            }
                         }
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                dialog.dismiss();
+                            }
+                        },100);
                     }
                 });
 
@@ -41,7 +59,9 @@ public class HttpAsyncTask {
     }
 
     public static void request(final HttpEntity httpEntity,final Context context,final Qry qry){
-        executorForResource.execute(queryDataFromServer(httpEntity,context,qry));
+        final ProgressHUD progressHUD = ProgressHUD.show(context, context.getResources().getString(R.string.loading), true,
+                false, null);
+        executorForResource.execute(queryDataFromServer(httpEntity, context, qry, progressHUD));
     }
 
 }

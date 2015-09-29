@@ -20,6 +20,7 @@ import com.lyancafe.coffeeshop.utils.RsaEncryptor;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.xls.http.HttpAsyncTask;
 import com.xls.http.HttpEntity;
+import com.xls.http.HttpUtils;
 import com.xls.http.Jresp;
 import com.xls.http.Qry;
 import com.xls.http.md5.MD5;
@@ -98,7 +99,7 @@ public class LoginActivity extends BaseActivity {
 
         @Override
         public void doRequest() {
-            String url = "http://192.168.1.99:8080/shop/v3/token";
+            String url = HttpUtils.BASE_URL+"token";
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("loginName",userName);
             MD5 md5 = new MD5();

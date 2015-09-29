@@ -10,16 +10,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.Spinner;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONException;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.OrderGridViewAdapter;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.helper.LoginHelper;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ListTabButton;
+import com.xls.http.HttpAsyncTask;
+import com.xls.http.HttpEntity;
+import com.xls.http.HttpUtils;
+import com.xls.http.Jresp;
+import com.xls.http.Qry;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2015/9/1.
@@ -43,6 +55,8 @@ public class OrdersFragment extends Fragment {
 
     private GridView ordersGridView;
     private OrderGridViewAdapter adapter;
+
+    private Button refreshbtn;
 
 
 
@@ -80,7 +94,15 @@ public class OrdersFragment extends Fragment {
         }
         adapter.setData(order_list);
         initTabButtons(contentView);
-        initSpinner(contentView,mContext);
+        initSpinner(contentView, mContext);
+
+        refreshbtn = (Button) contentView.findViewById(R.id.btn_refresh);
+        refreshbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new OrderQry(mContext,"produceTimeLast",3).doRequest();
+            }
+        });
     }
 
     private void initTabButtons(View contentView){
@@ -221,6 +243,51 @@ public class OrdersFragment extends Fragment {
                     deliveringTab.setClickBg(false);
                     deliveryFinishedTab.setClickBg(true);
                     break;
+            }
+        }
+    }
+
+
+    class OrderQry implements Qry{
+
+        private Context context;
+        private String orderBy;
+        private int fillterInstant;
+
+        public OrderQry(Context context, String orderBy, int fillterInstant) {
+            this.context = context;
+            this.orderBy = orderBy;
+            this.fillterInstant = fillterInstant;
+        }
+
+        @Override
+        public void doRequest() {
+            String token = LoginHelper.getToken(context);
+            int shopId = LoginHelper.getShopId(context);
+            String url = HttpUtils.BASE_URL+shopId+"/orders/today/toproduce?token="+token;
+            Map<String,Object> params = new HashMap<String,Object>();
+            params.put("orderBy",orderBy);
+            params.put("fillterInstant",fillterInstant);
+
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this);
+        }
+
+        @Override
+        public void showResult(Jresp resp) {
+            Log.d(TAG,"OrderQry:resp  ="+resp);
+            if(resp==null){
+                ToastUtil.showToast(context,R.string.unknown_error);
+                return;
+            }
+            List<OrderBean> orderBeans = new ArrayList<OrderBean>();
+            try{
+                 orderBeans = JSON.parseArray(resp.data.toString(), OrderBean.class);
+            }catch (JSONException e){
+                ToastUtil.showToast(context,R.string.parse_json_fail);
+            }
+            Log.d(TAG,"orderBeans  ="+orderBeans);
+            if(orderBeans.size()>0){
+                Log.d(TAG, "order-1 :" + orderBeans.get(0));
             }
         }
     }
