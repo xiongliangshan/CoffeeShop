@@ -15,6 +15,9 @@ import android.widget.ListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.helper.LoginHelper;
+import com.lyancafe.coffeeshop.utils.RsaEncryptor;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.xls.http.HttpAsyncTask;
 import com.xls.http.HttpEntity;
 import com.xls.http.Jresp;
@@ -48,9 +51,10 @@ public class LoginActivity extends BaseActivity {
             public void onClick(View v) {
                 String userName = userNameEdit.getText().toString();
                 String password = passwordEdit.getText().toString();
-                new LoginQry(mContext,userName,password).doRequest();
-                /*Intent intent = new Intent(mContext, HomeActivity.class);
-                mContext.startActivity(intent);*/
+                if(LoginHelper.verifyLoginParams(mContext,userName,password)){
+                    new LoginQry(mContext,userName,password).doRequest();
+                }
+
             }
         });
     }
@@ -98,23 +102,36 @@ public class LoginActivity extends BaseActivity {
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("loginName",userName);
             MD5 md5 = new MD5();
+            RsaEncryptor rsa = null;
+            String enc_pwd = "";
             try {
-                md5.Update(password, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                Log.d(TAG,"");
+                rsa = new RsaEncryptor(context, "public.key");
+                enc_pwd = rsa.encrypt(password);
+            } catch (Exception e) {
+                Log.d(TAG,e.getMessage());
             }
-            params.put("password", md5.asHex());
+            params.put("password", enc_pwd);
 
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST,url,params),context,this);
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this);
         }
 
         @Override
-        public void showResult(Jresp resp) {
+           public void showResult(Jresp resp) {
             Log.d(TAG,"loginQry:resp = "+resp);
             if(resp==null){
+                ToastUtil.showToast(mContext,R.string.unknown_error);
                 return;
             }
-            Log.d(TAG,"message  ="+resp.message+",data = "+resp.data+",status  ="+resp.status);
+            if(resp.status==LoginHelper.LOGIN_SUCCESS){
+                int shopId = resp.data.optInt("shopId");
+                int userId = resp.data.optInt("userId");
+                String token = resp.data.optString("token");
+                LoginHelper.saveUserInfo(mContext,userId,shopId,token);
+                Intent intent = new Intent(mContext, HomeActivity.class);
+                mContext.startActivity(intent);
+            }else if(resp.status==LoginHelper.LOGIN_FAIL){
+                ToastUtil.showToast(mContext,resp.message);
+            }
         }
     }
 }

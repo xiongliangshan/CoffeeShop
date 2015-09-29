@@ -22,25 +22,25 @@ public class Response {
      */
     public static String createPostURLParams(Map<String, Object> params){
         if(params!=null){
-            /*try{
+            try{
                 JSONObject data =  new JSONObject();
                 for(String key:params.keySet()){
                     data.put(key,params.get(key));
                 }
                 String jsonUrl = data.toString();
-                return "json = "+jsonUrl;
+                return jsonUrl;
             }catch (JSONException e){
 
-            }*/
+            }
 
-            StringBuilder sb = new StringBuilder();
+           /* StringBuilder sb = new StringBuilder();
             for(String key:params.keySet()){
                 sb.append(key);
                 sb.append("=");
                 sb.append(params.get(key)+"&");
             }
             sb.deleteCharAt(sb.length()-1);
-            return sb.toString();
+            return sb.toString();*/
         }
         return "";
     }

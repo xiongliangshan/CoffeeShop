@@ -41,7 +41,7 @@ public class ConnectionParams {
         }
         try {
             JSONObject jsonObject = new JSONObject(txt);
-            String data = jsonObject.optJSONObject("data").toString();
+            JSONObject data = jsonObject.optJSONObject("data");
             int response = jsonObject.optInt("status");
             String message = jsonObject.getString("message");
             Jresp jresp = new Jresp(response,message,data);
@@ -64,6 +64,7 @@ public class ConnectionParams {
                     "Accept",
                     "image/gif, image/jpeg, image/pjpeg, image/pjpeg, application/x-shockwave-flash, application/xaml+xml, application/vnd.ms-xpsdocument, application/x-ms-xbap, application/x-ms-application, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, */*");
             conn.setRequestProperty("Charset", "UTF-8");
+            conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Accept-Encoding", "gzip");
             conn.setDoInput(true);
             conn.setDoOutput(true);
@@ -92,7 +93,7 @@ public class ConnectionParams {
             is.close();
             Log.d(TAG, "post: result = " + txt);
             return txt;
-        } catch (Exception e) {
+        }  catch (Exception e) {
             Log.e(TAG, "post: Exception:"+e.getMessage());
             e.printStackTrace();
         } finally {
