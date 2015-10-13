@@ -20,6 +20,7 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.OrderGridViewAdapter;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
+import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ListTabButton;
 import com.xls.http.HttpAsyncTask;
@@ -27,6 +28,8 @@ import com.xls.http.HttpEntity;
 import com.xls.http.HttpUtils;
 import com.xls.http.Jresp;
 import com.xls.http.Qry;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,12 +90,6 @@ public class OrdersFragment extends Fragment {
         ordersGridView = (GridView) contentView.findViewById(R.id.gv_order_list);
         adapter = new OrderGridViewAdapter(mContext);
         ordersGridView.setAdapter(adapter);
-        List<OrderBean> order_list = new ArrayList<>();
-        for(int i=0;i<7;i++){
-            OrderBean order = new OrderBean();
-            order_list.add(order);
-        }
-        adapter.setData(order_list);
         initTabButtons(contentView);
         initSpinner(contentView, mContext);
 
@@ -100,7 +97,7 @@ public class OrdersFragment extends Fragment {
         refreshbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new OrderQry(mContext,"produceTimeLast",3).doRequest();
+                new OrderQry(mContext, OrderHelper.PRODUCE_TIME,OrderHelper.ALL).doRequest();
             }
         });
     }
@@ -172,7 +169,7 @@ public class OrdersFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume");
+        Log.d(TAG, "onResume:");
     }
 
     @Override
@@ -251,10 +248,10 @@ public class OrdersFragment extends Fragment {
     class OrderQry implements Qry{
 
         private Context context;
-        private String orderBy;
+        private int orderBy;
         private int fillterInstant;
 
-        public OrderQry(Context context, String orderBy, int fillterInstant) {
+        public OrderQry(Context context, int orderBy, int fillterInstant) {
             this.context = context;
             this.orderBy = orderBy;
             this.fillterInstant = fillterInstant;
@@ -280,14 +277,18 @@ public class OrdersFragment extends Fragment {
                 return;
             }
             List<OrderBean> orderBeans = new ArrayList<OrderBean>();
+            Log.d(TAG,"resp.data = "+resp.data);
+            JSONArray ordersArray= resp.data.optJSONArray("orders");
+
             try{
-                 orderBeans = JSON.parseArray(resp.data.toString(), OrderBean.class);
+                 orderBeans = JSON.parseArray(ordersArray.toString(), OrderBean.class);
             }catch (JSONException e){
+                Log.e(TAG,e.getMessage());
                 ToastUtil.showToast(context,R.string.parse_json_fail);
             }
-            Log.d(TAG,"orderBeans  ="+orderBeans);
+            Log.d(TAG, "orderBeans  =" + orderBeans);
             if(orderBeans.size()>0){
-                Log.d(TAG, "order-1 :" + orderBeans.get(0));
+                adapter.setData(orderBeans);
             }
         }
     }

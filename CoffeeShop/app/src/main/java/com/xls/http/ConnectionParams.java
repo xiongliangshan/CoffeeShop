@@ -14,6 +14,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.zip.GZIPInputStream;
 
@@ -73,7 +74,7 @@ public class ConnectionParams {
                     "image/gif, image/jpeg, image/pjpeg, image/pjpeg, application/x-shockwave-flash, application/xaml+xml, application/vnd.ms-xpsdocument, application/x-ms-xbap, application/x-ms-application, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, */*");
             conn.setRequestProperty("Charset", "UTF-8");
             conn.setRequestProperty("Content-Type", "application/json");
-            conn.setRequestProperty("Accept-Encoding", "gzip");
+            conn.setRequestProperty("Accept-Encoding", "gzip,deflate");
             conn.setDoInput(true);
             conn.setDoOutput(true);
             OutputStream wr = conn.getOutputStream();
@@ -81,17 +82,17 @@ public class ConnectionParams {
             wr.flush();
             wr.close();
             int code = conn.getResponseCode();
-            Log.i(TAG, "code=" + code);
             if (code >= 400) {
                 Log.e(TAG, "http_code=" + code);
+                exceptionInfo = "服务器出错"+code;
                 return null;
             }
-
+            Log.i(TAG, "code=" + code);
             InputStream is = conn.getInputStream();
-            String encoding = conn.getHeaderField("Content-Encoding");
-            boolean gzipped = encoding!=null && encoding.toLowerCase().contains("gzip");
+            String encoding = conn.getContentEncoding();
+            Log.d(TAG,"encoding = "+encoding);
             String txt = null;
-            if(gzipped){
+            if("gzip".equals(encoding)){
                 txt = IOUtil.read(new GZIPInputStream(is));
                 Log.d(TAG, "post: gzip = true");
             }else{
@@ -101,8 +102,11 @@ public class ConnectionParams {
             is.close();
             Log.d(TAG, "post: result = " + txt);
             return txt;
-        } catch (ConnectException e){
+        } catch (SocketTimeoutException e){
             exceptionInfo = "连接服务器超时";
+            Log.e(TAG, "post: SocketTimeoutException:"+e.getMessage());
+        }  catch (ConnectException e){
+            exceptionInfo = "连接服务器失败";
             Log.e(TAG, "post: ConnectException:"+e.getMessage());
         } catch (Exception e) {
             Log.e(TAG, "post: Exception:"+e.getMessage());
@@ -133,6 +137,7 @@ public class ConnectionParams {
             Log.i(TAG, "code=" + code);
             if (code >= 400) {
                 Log.e(TAG, "http_code=" + code);
+                exceptionInfo = "服务器出错"+code;
                 return null;
             }
 
@@ -148,8 +153,14 @@ public class ConnectionParams {
             is.close();
             Log.d(TAG, "get: result = " + txt);
             return txt;
+        } catch (SocketTimeoutException e){
+            exceptionInfo = "连接服务器超时";
+            Log.e(TAG, "get: SocketTimeoutException:"+e.getMessage());
+        } catch (ConnectException e){
+            exceptionInfo = "连接服务器失败";
+            Log.e(TAG, "get: ConnectException:"+e.getMessage());
         } catch (Exception e) {
-            Log.e(TAG, "gzipExp:"+e.getMessage());
+            Log.e(TAG, "get: Exception"+e.getMessage());
             e.printStackTrace();
         } finally {
             if (conn != null) {

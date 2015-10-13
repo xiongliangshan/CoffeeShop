@@ -1,5 +1,9 @@
 package com.lyancafe.coffeeshop.bean;
 
+import android.os.CountDownTimer;
+import android.util.Log;
+import android.widget.TextView;
+
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 
 import java.util.List;
@@ -13,7 +17,7 @@ public class OrderBean {
     private String orderSn;              //订单编号
     private long expectedTime;           //期望送达时间
     private long orderTime;              //下单时间
-    private long effectBaseTime;         //计算时效的基准时间
+    private long produceEffect;         //计算时效的基准时间
     private int providerId;              //咖啡品牌商id
     private String provider;             //咖啡品牌名
     private String recipient;            //收货人名字
@@ -41,6 +45,37 @@ public class OrderBean {
     private String receipt;              //小票编号
     private List<ItemContentBean> items; //购买的咖啡内容列表
 
+    private CountDownTimer cdt;
+
+    public void setCDT(long time,final TextView textView){
+        if(cdt==null){
+            cdt = new CountDownTimer(time,1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    textView.setText(OrderHelper.getDateToMinutes(millisUntilFinished));
+                    Log.d("OrderGridViewAdapter",this.toString()+"--onTick");
+                }
+
+                @Override
+                public void onFinish() {
+                    textView.setText("已经超时");
+                }
+            }.start();
+        }else {
+            cdt.cancel();
+            cdt = new CountDownTimer(time,1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+
+                }
+
+                @Override
+                public void onFinish() {
+
+                }
+            }.start();
+        }
+    }
     public long getId() {
         return id;
     }
@@ -73,12 +108,12 @@ public class OrderBean {
         this.orderTime = orderTime;
     }
 
-    public long getEffectBaseTime() {
-        return effectBaseTime;
+    public long getProduceEffect() {
+        return produceEffect;
     }
 
-    public void setEffectBaseTime(long effectBaseTime) {
-        this.effectBaseTime = effectBaseTime;
+    public void setProduceEffect(long produceEffect) {
+        this.produceEffect = produceEffect;
     }
 
     public int getProviderId() {
@@ -313,7 +348,7 @@ public class OrderBean {
                 ", orderSn='" + orderSn + '\'' +
                 ", expectedTime=" + expectedTime +
                 ", orderTime=" + orderTime +
-                ", effectBaseTime=" + effectBaseTime +
+                ", produceEffect=" + produceEffect +
                 ", providerId=" + providerId +
                 ", provider='" + provider + '\'' +
                 ", recipient='" + recipient + '\'' +
@@ -324,7 +359,7 @@ public class OrderBean {
                 ", courierName='" + courierName + '\'' +
                 ", courierPhone='" + courierPhone + '\'' +
                 ", status=" + status +
-                ", statusName='" + statusName + '\'' +
+                ", statusName='" + getStatusName() + '\'' +
                 ", issueOrder=" + issueOrder +
                 ", issueRemark='" + issueRemark + '\'' +
                 ", questionType='" + questionType + '\'' +

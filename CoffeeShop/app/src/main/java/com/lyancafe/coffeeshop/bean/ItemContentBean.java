@@ -7,9 +7,9 @@ public class ItemContentBean {
 
     private String product;        //咖啡名称
     private String unit;           //杯型
-    private int price;             //单价
+    private int price;             //单价,单位：分
     private int quantity;          //数量
-    private int totalPrice;        //总价
+    private int totalPrice;        //总价,单位：分
 
 
     public String getProduct() {

@@ -12,6 +12,8 @@ import com.lyancafe.coffeeshop.service.LocationService;
 import com.lyancafe.coffeeshop.utils.CrashHandler;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2015/8/21.
