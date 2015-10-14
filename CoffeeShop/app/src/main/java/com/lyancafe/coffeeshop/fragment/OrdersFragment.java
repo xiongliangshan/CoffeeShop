@@ -166,7 +166,7 @@ public class OrdersFragment extends Fragment {
     private void updateDetailView(OrderBean order){
         orderIdTxt.setText(order.getOrderSn());
         orderTimeTxt.setText(OrderHelper.getDateToString(order.getOrderTime()));
-        reachTimeTxt.setText(order.getInstant()==1?"尽快送达":OrderHelper.getDateToString(order.getExpectedTime()));
+        reachTimeTxt.setText(order.getInstant()==1?"尽快送达":OrderHelper.getDateToMonthDay(order.getExpectedTime()));
         produceEffectTxt.setText(OrderHelper.getDateToMinutes(order.getProduceEffect()));
         receiveNameTxt.setText(order.getRecipient());
         receivePhoneTxt.setText(order.getPhone());
@@ -187,6 +187,7 @@ public class OrdersFragment extends Fragment {
         for(ItemContentBean item:items){
             TextView tv1 = new TextView(mContext);
             tv1.setText(item.getProduct() + "(" + item.getUnit() + ")");
+            tv1.setMaxEms(7);
             TextView tv2 = new TextView(mContext);
             tv2.setText("X " + item.getQuantity());
             RelativeLayout rl = new RelativeLayout(mContext);

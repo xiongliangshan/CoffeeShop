@@ -199,7 +199,7 @@ public class OrderBean {
     public String getStatusName() {
         switch (this.status) {
             case OrderHelper.UNASSIGNED_STATUS:
-                this.statusName = "待接单";
+                this.statusName = "待抢单";
                 break;
             case OrderHelper.ASSIGNED_STATUS:
                 this.statusName = "待取货";

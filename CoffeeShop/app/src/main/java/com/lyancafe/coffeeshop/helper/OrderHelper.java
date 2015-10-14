@@ -58,6 +58,13 @@ public class OrderHelper {
         return sf.format(d);
     }
 
+    /*时间戳转换成字符窜*/
+    public static String getDateToMonthDay(long time) {
+        Date d = new Date(time);
+        SimpleDateFormat sf = new SimpleDateFormat("MM-dd HH:mm");
+        return sf.format(d);
+    }
+
     /*将字符串转为时间戳*/
     public static long getStringToDate(String time) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

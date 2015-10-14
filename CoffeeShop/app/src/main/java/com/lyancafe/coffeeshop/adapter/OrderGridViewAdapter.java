@@ -121,6 +121,7 @@ public class OrderGridViewAdapter extends BaseAdapter {
         for(ItemContentBean item:items){
             TextView tv1 = new TextView(context);
             tv1.setText(item.getProduct() + "(" + item.getUnit() + ")");
+            tv1.setMaxEms(9);
             TextView tv2 = new TextView(context);
             tv2.setText("X " + item.getQuantity());
             RelativeLayout rl = new RelativeLayout(context);
