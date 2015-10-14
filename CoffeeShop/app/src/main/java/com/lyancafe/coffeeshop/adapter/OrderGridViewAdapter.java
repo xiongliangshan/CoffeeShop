@@ -2,6 +2,8 @@ package com.lyancafe.coffeeshop.adapter;
 
 import android.content.Context;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +20,13 @@ import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by Administrator on 2015/9/21.
@@ -29,11 +35,26 @@ public class OrderGridViewAdapter extends BaseAdapter {
 
     private static final String TAG  ="OrderGridViewAdapter";
     private Context context;
-    private List<OrderBean> list = new ArrayList<OrderBean>();
-    private int selected = -1;
+    public List<OrderBean> list = new ArrayList<OrderBean>();
+    public int selected = -1;
+    public Timer timer;
+    private TimerTask timerTask;
+    private ArrayList<OrderBean> order_list =  new ArrayList<OrderBean>();
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case 1:
+                    refreshTimerData(order_list);
+                    break;
+            }
+
+        }
+    };
 
     public OrderGridViewAdapter(Context context) {
         this.context = context;
+        timer =  new Timer(true);
     }
 
     @Override
@@ -53,52 +74,44 @@ public class OrderGridViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         Log.d(TAG,"getView 执行-------------------------"+list.get(position).getOrderSn());
         final ViewHolder holder ;
         if(convertView==null){
             convertView = LayoutInflater.from(context).inflate(R.layout.order_list_item,null);
             holder  = new ViewHolder();
+            holder.rootLayout = (LinearLayout) convertView.findViewById(R.id.root_view);
             holder.orderIdTxt = (TextView) convertView.findViewById(R.id.item_order_id);
             holder.contantEffectTimeTxt = (TextView) convertView.findViewById(R.id.item_contant_produce_effect);
             holder.effectTimeTxt = (TextView) convertView.findViewById(R.id.item_produce_effect);
             holder.grabFlagIV = (ImageView) convertView.findViewById(R.id.item_grab_flag);
             holder.remarkFlagIV = (ImageView) convertView.findViewById(R.id.item_remark_flag);
             holder.itemContainerll = (LinearLayout) convertView.findViewById(R.id.item_container);
-            holder.produceBtn = (Button) convertView.findViewById(R.id.item_produce);
-            holder.printBtn = (Button) convertView.findViewById(R.id.item_print);
+            holder.produceBtn = (TextView) convertView.findViewById(R.id.item_produce);
+            holder.printBtn = (TextView) convertView.findViewById(R.id.item_print);
             convertView.setTag(holder);
         }else{
             holder = (ViewHolder) convertView.getTag();
         }
+
+        if(selected==position){
+            holder.rootLayout.setBackgroundResource(R.drawable.stroke_background);
+        }else{
+            holder.rootLayout.setBackground(null);
+        }
         final OrderBean order = list.get(position);
         holder.orderIdTxt.setText(order.getOrderSn());
         final long mms = order.getProduceEffect();
-        holder.effectTimeTxt.setText(OrderHelper.getDateToMinutes(mms));
+        Log.d(TAG,"mms = "+mms);
         if(mms<=0){
-            holder.effectTimeTxt.setText("已经超时");
+            holder.effectTimeTxt.setText("超时"+Math.abs(mms)/(1000*60)+"分钟");
         }else{
-            order.setCDT(mms,holder.effectTimeTxt);
+            holder.effectTimeTxt.setText(OrderHelper.getDateToMinutes(mms));
         }
-
-        /*new CountDownTimer(mms,1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                String time = OrderHelper.getDateToMinutes(millisUntilFinished);
-                holder.effectTimeTxt.setText(time);
-                Log.d(TAG,millisUntilFinished+this.toString()+"--onTick");
-            }
-
-            @Override
-            public void onFinish() {
-
-            }
-        }.start();*/
-
 
         holder.grabFlagIV.setImageResource(R.mipmap.ic_launcher);
         holder.remarkFlagIV.setImageResource(R.mipmap.ic_launcher);
-        fillItemListData(holder.itemContainerll,order.getItems());
+        fillItemListData(holder.itemContainerll, order.getItems());
         return convertView;
     }
 
@@ -137,18 +150,46 @@ public class OrderGridViewAdapter extends BaseAdapter {
     }
     class ViewHolder{
 
+        LinearLayout rootLayout;
         TextView orderIdTxt;
         TextView contantEffectTimeTxt;
         TextView effectTimeTxt;
         ImageView grabFlagIV;
         ImageView remarkFlagIV;
         LinearLayout itemContainerll;
-        Button produceBtn;
-        Button printBtn;
+        TextView produceBtn;
+        TextView printBtn;
     }
 
     public void setData(List<OrderBean> list){
         this.list = list;
+        notifyDataSetChanged();
+        selected = -1;
+        //缓存订单列表
+        order_list.clear();
+        order_list.addAll(list);
+
+        if(timerTask==null){
+            timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    Log.d(TAG,"timerTask run ---"+Thread.currentThread().getId());
+                    for(OrderBean order:order_list){
+                        order.setProduceEffect(order.getProduceEffect()-1000);
+                    }
+                    handler.sendEmptyMessage(1);
+                }
+            };
+            timer.schedule(timerTask,1000,1000);
+        }else{
+
+        }
+
+
+    }
+
+    private void refreshTimerData(List<OrderBean> order_list){
+        this.list = order_list;
         notifyDataSetChanged();
     }
 }

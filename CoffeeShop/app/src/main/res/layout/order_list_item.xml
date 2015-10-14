@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_view"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:descendantFocusability="blocksDescendants"
     android:padding="6dp"
     >
 
@@ -45,41 +47,42 @@
             android:layout_alignParentRight="true"
             />
     </RelativeLayout>
-    <ScrollView
+
+    <LinearLayout
+        android:id="@+id/item_container"
         android:layout_width="match_parent"
         android:layout_height="195dp"
         android:background="@color/grey"
+        android:orientation="vertical"
+        android:padding="5dp"
         >
-        <LinearLayout
-            android:id="@+id/item_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="5dp"
-            >
 
-        </LinearLayout>
-    </ScrollView>
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         >
 
-        <Button
+        <TextView
             android:id="@+id/item_produce"
             android:layout_width="0dp"
+            android:padding="16dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center"
             android:text="生产完成"
             android:background="@drawable/stroke_background"
             android:layout_marginRight="3dp"
             />
-        <Button
+        <TextView
             android:id="@+id/item_print"
             android:layout_width="0dp"
+            android:padding="16dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center"
             android:text="打印订单"
             android:background="@drawable/stroke_background"
             android:layout_marginLeft="3dp"

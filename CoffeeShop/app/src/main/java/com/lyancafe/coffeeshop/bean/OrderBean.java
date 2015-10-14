@@ -33,7 +33,7 @@ public class OrderBean {
     private String issueRemark;          //问题描述
     private String questionType;         //问题类型
     private String handleType;           //建议处理
-    private int instant;                 //预约单 or 尽快送达
+    private int instant;                 //0预约单 or 1尽快送达
     private boolean force;               //是否是客服指派
     private String notes;                //客户下单备注
     private String csrNotes;             //客服备注

@@ -202,6 +202,7 @@
                     android:background="#c0c0c0"
                     >
                     <LinearLayout
+                        android:id="@+id/items_container_layout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
@@ -341,12 +342,14 @@
             >
 
             <Button
+                android:id="@+id/btn_finish_produce"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="生产完成"
                 />
             <Button
+                android:id="@+id/btn_print_order"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -361,21 +364,25 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_gravity="bottom"
-        android:paddingBottom="20dp"
-        android:paddingTop="20dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
         >
 
-        <TextView
+        <Button
+            android:id="@+id/btn_prev"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:background="@null"
             android:layout_weight="1"
             android:text="上一单"
             android:gravity="center"
             />
 
-        <TextView
+        <Button
+            android:id="@+id/btn_next"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:background="@null"
             android:layout_weight="1"
             android:text="下一单"
             android:gravity="center"
