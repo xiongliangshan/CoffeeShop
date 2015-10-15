@@ -1,11 +1,20 @@
 package com.lyancafe.coffeeshop.bean;
 
+import android.content.Context;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONException;
+import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
+import com.xls.http.Jresp;
 
+import org.json.JSONArray;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,6 +22,7 @@ import java.util.List;
  */
 public class OrderBean {
 
+    private static final String TAG = "OrderBean";
     private long id;                     //订单id
     private String orderSn;              //订单编号
     private long expectedTime;           //期望送达时间
@@ -339,6 +349,20 @@ public class OrderBean {
 
     public void setItems(List<ItemContentBean> items) {
         this.items = items;
+    }
+
+    //解析数据
+    public  static List<OrderBean> parseJsonOrders(Context context,Jresp resp){
+        List<OrderBean> orderBeans = new ArrayList<OrderBean>();
+
+        try{
+            JSONArray ordersArray= resp.data.optJSONArray("orders");
+            orderBeans = JSON.parseArray(ordersArray.toString(), OrderBean.class);
+        }catch (JSONException e){
+            Log.e(TAG,e.getMessage());
+            ToastUtil.showToast(context, R.string.parse_json_fail);
+        }
+        return orderBeans;
     }
 
     @Override

@@ -39,6 +39,7 @@ public class OrderGridViewAdapter extends BaseAdapter {
     public int selected = -1;
     public Timer timer;
     private TimerTask timerTask;
+    private final static long DELTA_TIME = 300*1000;//单位ms
     private ArrayList<OrderBean> order_list =  new ArrayList<OrderBean>();
     private Handler handler = new Handler(){
         @Override
@@ -75,7 +76,7 @@ public class OrderGridViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        Log.d(TAG,"getView 执行-------------------------"+list.get(position).getOrderSn());
+        Log.d(TAG,"getView 执行---------"+position+"---------------"+list.get(position).getOrderSn());
         final ViewHolder holder ;
         if(convertView==null){
             convertView = LayoutInflater.from(context).inflate(R.layout.order_list_item,null);
@@ -95,14 +96,14 @@ public class OrderGridViewAdapter extends BaseAdapter {
         }
 
         if(selected==position){
-            holder.rootLayout.setBackgroundResource(R.drawable.stroke_background);
+            holder.rootLayout.setBackgroundResource(R.drawable.order_item_stroke_background);
         }else{
             holder.rootLayout.setBackground(null);
         }
         final OrderBean order = list.get(position);
         holder.orderIdTxt.setText(order.getOrderSn());
         final long mms = order.getProduceEffect();
-        Log.d(TAG,"mms = "+mms);
+        Log.d(TAG, "mms = " + mms);
         if(mms<=0){
             holder.effectTimeTxt.setText("超时"+Math.abs(mms)/(1000*60)+"分钟");
         }else{
@@ -112,6 +113,7 @@ public class OrderGridViewAdapter extends BaseAdapter {
         holder.grabFlagIV.setImageResource(R.mipmap.ic_launcher);
         holder.remarkFlagIV.setImageResource(R.mipmap.ic_launcher);
         fillItemListData(holder.itemContainerll, order.getItems());
+
         return convertView;
     }
 
@@ -149,7 +151,7 @@ public class OrderGridViewAdapter extends BaseAdapter {
         }
         ll.invalidate();
     }
-    class ViewHolder{
+    static class ViewHolder{
 
         LinearLayout rootLayout;
         TextView orderIdTxt;
@@ -176,12 +178,12 @@ public class OrderGridViewAdapter extends BaseAdapter {
                 public void run() {
                     Log.d(TAG,"timerTask run ---"+Thread.currentThread().getId());
                     for(OrderBean order:order_list){
-                        order.setProduceEffect(order.getProduceEffect()-1000);
+                        order.setProduceEffect(order.getProduceEffect()-DELTA_TIME);
                     }
                     handler.sendEmptyMessage(1);
                 }
             };
-            timer.schedule(timerTask,1000,1000);
+            timer.schedule(timerTask,DELTA_TIME,DELTA_TIME);
         }else{
 
         }

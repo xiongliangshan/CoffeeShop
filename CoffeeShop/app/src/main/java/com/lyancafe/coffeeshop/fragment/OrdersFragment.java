@@ -68,6 +68,9 @@ public class OrdersFragment extends Fragment {
     private long starttime;
     private long endtime;
 
+    private int orderBy = 0;
+    private int fillterInstant = 0;
+
     /**
      * 订单详情页UI组件
      */
@@ -138,6 +141,7 @@ public class OrdersFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 new OrderQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL).doRequest();
+                resetSpinners();
             }
         });
     }
@@ -164,21 +168,43 @@ public class OrdersFragment extends Fragment {
         nextBtn = (Button) contentView.findViewById(R.id.btn_next);
     }
     private void updateDetailView(OrderBean order){
-        orderIdTxt.setText(order.getOrderSn());
-        orderTimeTxt.setText(OrderHelper.getDateToString(order.getOrderTime()));
-        reachTimeTxt.setText(order.getInstant()==1?"尽快送达":OrderHelper.getDateToMonthDay(order.getExpectedTime()));
-        produceEffectTxt.setText(OrderHelper.getDateToMinutes(order.getProduceEffect()));
-        receiveNameTxt.setText(order.getRecipient());
-        receivePhoneTxt.setText(order.getPhone());
-        receiveAddressTxt.setText(order.getAddress());
-        deliverNameTxt.setText(order.getCourierName());
-        deliverPhoneTxt.setText(order.getCourierPhone());
-        fillItemListData(itemsContainerLayout, order.getItems());
-        payWayTxt.setText(order.getPayChannelStr());
-        moneyTxt.setText(order.getPaid()+"");
-        userRemarkTxt.setText(order.getNotes());
-        csadRemarkTxt.setText(order.getCsrNotes());
+        if(order==null){
+            orderIdTxt.setText("");
+            orderTimeTxt.setText("");
+            reachTimeTxt.setText("");
+            produceEffectTxt.setText("");
+            receiveNameTxt.setText("");
+            receivePhoneTxt.setText("");
+            receiveAddressTxt.setText("");
+            deliverNameTxt.setText("");
+            deliverPhoneTxt.setText("");
+            fillItemListData(itemsContainerLayout, new ArrayList<ItemContentBean>());
+            payWayTxt.setText("");
+            moneyTxt.setText("");
+            userRemarkTxt.setText("");
+            csadRemarkTxt.setText("");
+        }else{
+            orderIdTxt.setText(order.getOrderSn());
+            orderTimeTxt.setText(OrderHelper.getDateToString(order.getOrderTime()));
+            reachTimeTxt.setText(order.getInstant()==1?"尽快送达":OrderHelper.getDateToMonthDay(order.getExpectedTime()));
+            produceEffectTxt.setText(OrderHelper.getDateToMinutes(order.getProduceEffect()));
+            receiveNameTxt.setText(order.getRecipient());
+            receivePhoneTxt.setText(order.getPhone());
+            receiveAddressTxt.setText(order.getAddress());
+            deliverNameTxt.setText(order.getCourierName());
+            deliverPhoneTxt.setText(order.getCourierPhone());
+            if(order.getStatus()== OrderHelper.UNASSIGNED_STATUS){
+                deliverInfoContainerLayout.setVisibility(View.GONE);
+            }else {
+                deliverInfoContainerLayout.setVisibility(View.VISIBLE);
+            }
 
+            fillItemListData(itemsContainerLayout, order.getItems());
+            payWayTxt.setText(order.getPayChannelStr());
+            moneyTxt.setText(order.getPaid()+"");
+            userRemarkTxt.setText(order.getNotes());
+            csadRemarkTxt.setText(order.getCsrNotes());
+        }
 
     }
     //填充item数据
@@ -232,6 +258,12 @@ public class OrdersFragment extends Fragment {
         deliveryFinishedTab.setOnClickListener(ltbListener);
     }
 
+    private void resetSpinners(){
+        orderBy = OrderHelper.PRODUCE_TIME;
+        fillterInstant = OrderHelper.ALL;
+        sortSpinner.setSelection(0,true);
+        categorySpinner.setSelection(0,true);
+    }
     private void initSpinner(View contentView,Context context){
         sortSpinner = (Spinner) contentView.findViewById(R.id.spinner_sort);
         categorySpinner = (Spinner) contentView.findViewById(R.id.spinner_category);
@@ -239,13 +271,23 @@ public class OrdersFragment extends Fragment {
         final ArrayAdapter< String> adapter_sort = new ArrayAdapter< String>(context,android.R.layout.simple_spinner_item);
         adapter_sort.add(context.getResources().getString(R.string.sort_by_produce_effect));
         adapter_sort.add(context.getResources().getString(R.string.sort_by_order_time));
-        adapter_sort.add(context.getResources().getString(R.string.sort_by_delivery_effect));
+//        adapter_sort.add(context.getResources().getString(R.string.sort_by_delivery_effect));
         adapter_sort.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sortSpinner.setAdapter(adapter_sort);
+        sortSpinner.setSelection(0, true);
         sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("xiong","排序：positon ="+position+"选择了 "+adapter_sort.getItem(position));
+                switch (position){
+                    case 0:
+                        orderBy = OrderHelper.PRODUCE_TIME;
+                        break;
+                    case 1:
+                        orderBy = OrderHelper.ORDER_TIME;
+                        break;
+                }
+                new OrderQry(mContext, orderBy, fillterInstant).doRequest();
             }
 
             @Override
@@ -260,10 +302,23 @@ public class OrdersFragment extends Fragment {
         adapter_category.add(context.getResources().getString(R.string.category_order));
         adapter_category.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner.setAdapter(adapter_category);
+        categorySpinner.setSelection(0, true);
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("xiong","排序：positon ="+position+"选择了 "+adapter_category.getItem(position));
+                switch (position){
+                    case 0:
+                        fillterInstant = OrderHelper.ALL;
+                        break;
+                    case 1:
+                        fillterInstant = OrderHelper.INSTANT;
+                        break;
+                    case 2:
+                        fillterInstant = OrderHelper.APPOINTMENT;
+                        break;
+                }
+                new OrderQry(mContext, orderBy, fillterInstant).doRequest();
             }
 
             @Override
@@ -361,6 +416,8 @@ public class OrdersFragment extends Fragment {
     }
 
 
+
+    //刷新订单列表接口
     class OrderQry implements Qry{
 
         private Context context;
@@ -390,26 +447,19 @@ public class OrdersFragment extends Fragment {
         public void showResult(Jresp resp) {
             endtime = System.currentTimeMillis();
             Log.d(TAG,"请求耗时:"+(endtime - starttime));
-            Log.d(TAG,"OrderQry:resp  ="+resp);
+            Log.d(TAG, "OrderQry:resp  =" + resp);
             if(resp==null){
                 ToastUtil.showToast(context,R.string.unknown_error);
                 return;
             }
-            List<OrderBean> orderBeans = new ArrayList<OrderBean>();
-            Log.d(TAG,"resp.data = "+resp.data);
-            JSONArray ordersArray= resp.data.optJSONArray("orders");
-
-            try{
-                 orderBeans = JSON.parseArray(ordersArray.toString(), OrderBean.class);
-            }catch (JSONException e){
-                Log.e(TAG,e.getMessage());
-                ToastUtil.showToast(context,R.string.parse_json_fail);
-            }
+            List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
             Log.d(TAG, "orderBeans  =" + orderBeans);
             if(orderBeans.size()>0){
                 adapter.setData(orderBeans);
+                updateDetailView(null);
             }
         }
     }
+
 
 }

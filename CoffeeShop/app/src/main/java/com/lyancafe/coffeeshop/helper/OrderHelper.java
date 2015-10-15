@@ -24,7 +24,7 @@ public class OrderHelper {
      */
     public static final int ORDER_TIME = 1;    //按下单时间
     public static final int PRODUCE_TIME = 2;  //按生产时效
-    public static final int DELIVERY_TIME = 3; //按配送时效
+//    public static final int DELIVERY_TIME = 3; //按配送时效
 
     /**
      * 筛选订单类型
