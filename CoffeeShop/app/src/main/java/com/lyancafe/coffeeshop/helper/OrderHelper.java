@@ -2,6 +2,7 @@ package com.lyancafe.coffeeshop.helper;
 
 import android.content.Context;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,15 +35,15 @@ public class OrderHelper {
     public static final int ALL = 99;       //全部
 
 
-
-
-
-
-
-
-
-
-
+    /**
+     * 把总价格式化显示
+     * @param money 单位为分
+     * @return
+     */
+    public static String getMoneyStr(int money) {
+        DecimalFormat df   =new  DecimalFormat("#.##");
+        return "￥" + df.format(money/100.0);
+    }
 
     /*
     * converts dip to px

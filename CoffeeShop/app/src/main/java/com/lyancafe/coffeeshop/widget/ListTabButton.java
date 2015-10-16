@@ -44,7 +44,7 @@ public class ListTabButton extends LinearLayout {
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
         textView.setBackgroundResource(R.drawable.number_text_background_normal);
         textView.setPadding(dip2Px(5), dip2Px(1), dip2Px(5), dip2Px(1));
-        textView.setText("99");
+        textView.setText("0");
         addView(contentTxt);
         addView(textView);
 
@@ -60,6 +60,10 @@ public class ListTabButton extends LinearLayout {
 
     public void setCount(int number){
         textView.setText(number+"");
+    }
+
+    public int getCount(){
+        return Integer.parseInt(textView.getText().toString().trim());
     }
 
     public void setClickBg(boolean click){

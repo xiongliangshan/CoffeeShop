@@ -34,16 +34,22 @@
             android:text="08:36"
             />
         <ImageView
+            android:id="@+id/item_issue_flag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/item_grab_flag"
+            android:src="@mipmap/icon_problem"/>
+        <ImageView
             android:id="@+id/item_grab_flag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@+id/item_remark_flag"
-            android:src="@mipmap/ic_launcher"/>
+            android:src="@mipmap/icon_accpet"/>
         <ImageView
             android:id="@+id/item_remark_flag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_launcher"
+            android:src="@mipmap/icon_message"
             android:layout_alignParentRight="true"
             />
     </RelativeLayout>

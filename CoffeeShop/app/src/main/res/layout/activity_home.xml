@@ -6,29 +6,36 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        >
 
             <RadioGroup
                 android:id="@+id/group_left"
-                android:layout_width="match_parent"
+                android:layout_width="48dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
+                android:layout_gravity="center"
                 android:orientation="vertical">
 
                 <com.lyancafe.coffeeshop.widget.LeftRadioButton
                     android:id="@+id/rb_orders"
                     style="@style/MyWidget.home.left_tab.btn"
                     android:checked="true"
+                    android:drawableRight="@mipmap/icon_order"
                     />
 
                 <com.lyancafe.coffeeshop.widget.LeftRadioButton
                     android:id="@+id/rb_order_query"
                     style="@style/MyWidget.home.left_tab.btn"
+                    android:drawableRight="@mipmap/icon_search"
                     />
 
                 <com.lyancafe.coffeeshop.widget.LeftRadioButton
                     android:id="@+id/rb_shop_manager"
                     style="@style/MyWidget.home.left_tab.btn"
+                    android:drawableRight="@mipmap/icon_shop"
+
                      />
 
             </RadioGroup>

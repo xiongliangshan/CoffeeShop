@@ -2,7 +2,10 @@ package com.lyancafe.coffeeshop.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +29,7 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
+import com.lyancafe.coffeeshop.widget.ConfirmDialog;
 import com.lyancafe.coffeeshop.widget.ListTabButton;
 import com.xls.http.HttpAsyncTask;
 import com.xls.http.HttpEntity;
@@ -43,7 +47,7 @@ import java.util.Map;
 /**
  * Created by Administrator on 2015/9/1.
  */
-public class OrdersFragment extends Fragment {
+public class OrdersFragment extends Fragment implements View.OnClickListener{
 
     private static final String TAG  ="OrdersFragment";
     private View mContentView;
@@ -94,6 +98,29 @@ public class OrdersFragment extends Fragment {
     private Button prevBtn;
     private Button nextBtn;
 
+    //消息处理
+    private static final int MSG_UPDATE_ORDER_NUMBER = 101;
+    private Handler mHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case MSG_UPDATE_ORDER_NUMBER:
+                    int whichTab = msg.arg1;
+                    int num = msg.arg2;
+                    if(whichTab==0){
+                        toDoTab.setCount(num);
+                    }else if(whichTab==1){
+                        haveDoneTab.setCount(num);
+                    }else if(whichTab==2){
+                        deliveringTab.setCount(num);
+                    }else if(whichTab==3){
+                        deliveryFinishedTab.setCount(num);
+                    }
+                    break;
+            }
+        }
+    };
 
     @Override
     public void onAttach(Activity activity) {
@@ -120,7 +147,7 @@ public class OrdersFragment extends Fragment {
 
     private void initViews(View contentView){
         ordersGridView = (GridView) contentView.findViewById(R.id.gv_order_list);
-        adapter = new OrderGridViewAdapter(mContext);
+        adapter = new OrderGridViewAdapter(mContext,OrdersFragment.this);
         ordersGridView.setAdapter(adapter);
         ordersGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -140,12 +167,29 @@ public class OrdersFragment extends Fragment {
         refreshbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new OrderQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL).doRequest();
-                resetSpinners();
+                requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true);
             }
         });
     }
-
+    private void requestData(Context context, int orderBy, int fillterInstant,boolean isRefresh){
+        switch (subTabIndex){
+            case 0:
+                new OrderToProduceQry(context, orderBy, fillterInstant).doRequest();
+                break;
+            case 1:
+                new OrderProducedQry(context, orderBy, fillterInstant).doRequest();
+                break;
+            case 2:
+                new OrderDeliveryingQry(context, orderBy, fillterInstant).doRequest();
+                break;
+            case 3:
+                new OrderFinishedQry(context, orderBy, fillterInstant).doRequest();
+                break;
+        }
+        if(isRefresh){
+            resetSpinners();
+        }
+    }
     private void initDetailView(View contentView){
         orderIdTxt = (TextView) contentView.findViewById(R.id.order_id);
         orderTimeTxt = (TextView) contentView.findViewById(R.id.order_time);
@@ -165,9 +209,11 @@ public class OrdersFragment extends Fragment {
         finishProduceBtn = (Button) contentView.findViewById(R.id.btn_finish_produce);
         printOrderBtn = (Button) contentView.findViewById(R.id.btn_print_order);
         prevBtn = (Button) contentView.findViewById(R.id.btn_prev);
+        prevBtn.setOnClickListener(this);
         nextBtn = (Button) contentView.findViewById(R.id.btn_next);
+        nextBtn.setOnClickListener(this);
     }
-    private void updateDetailView(OrderBean order){
+    private void updateDetailView(final OrderBean order){
         if(order==null){
             orderIdTxt.setText("");
             orderTimeTxt.setText("");
@@ -187,7 +233,13 @@ public class OrdersFragment extends Fragment {
             orderIdTxt.setText(order.getOrderSn());
             orderTimeTxt.setText(OrderHelper.getDateToString(order.getOrderTime()));
             reachTimeTxt.setText(order.getInstant()==1?"尽快送达":OrderHelper.getDateToMonthDay(order.getExpectedTime()));
-            produceEffectTxt.setText(OrderHelper.getDateToMinutes(order.getProduceEffect()));
+            final long mms = order.getProduceEffect();
+            if(subTabIndex==0){
+                produceEffectTxt.setText(mms<=0?"超时":OrderHelper.getDateToMinutes(mms));
+            }else{
+                produceEffectTxt.setText("-----");
+            }
+
             receiveNameTxt.setText(order.getRecipient());
             receivePhoneTxt.setText(order.getPhone());
             receiveAddressTxt.setText(order.getAddress());
@@ -201,9 +253,36 @@ public class OrdersFragment extends Fragment {
 
             fillItemListData(itemsContainerLayout, order.getItems());
             payWayTxt.setText(order.getPayChannelStr());
-            moneyTxt.setText(order.getPaid()+"");
+            moneyTxt.setText(OrderHelper.getMoneyStr(order.getPaid()));
             userRemarkTxt.setText(order.getNotes());
             csadRemarkTxt.setText(order.getCsrNotes());
+            if(OrdersFragment.subTabIndex==0){
+                finishProduceBtn.setEnabled(true);
+            }else{
+                finishProduceBtn.setEnabled(false);
+            }
+            finishProduceBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //生产完成
+                    ConfirmDialog grabConfirmDialog = new ConfirmDialog(mContext, R.style.MyDialog, new ConfirmDialog.OnClickYesListener(){
+                        @Override
+                        public void onClickYes() {
+                            Log.d(TAG, "orderId = " + order.getOrderSn());
+                            adapter.new DoFinishProduceQry(order.getId()).doRequest();
+                        }
+                    });
+                    grabConfirmDialog.setContent("订单 "+order.getOrderSn()+" 生产完成？");
+                    grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
+                    grabConfirmDialog.show();
+                }
+            });
+            printOrderBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
         }
 
     }
@@ -261,8 +340,8 @@ public class OrdersFragment extends Fragment {
     private void resetSpinners(){
         orderBy = OrderHelper.PRODUCE_TIME;
         fillterInstant = OrderHelper.ALL;
-        sortSpinner.setSelection(0,true);
-        categorySpinner.setSelection(0,true);
+        sortSpinner.setSelection(0, true);
+        categorySpinner.setSelection(0, true);
     }
     private void initSpinner(View contentView,Context context){
         sortSpinner = (Spinner) contentView.findViewById(R.id.spinner_sort);
@@ -278,7 +357,7 @@ public class OrdersFragment extends Fragment {
         sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("xiong","排序：positon ="+position+"选择了 "+adapter_sort.getItem(position));
+                Log.d("xiong", "排序：positon =" + position + "选择了 " + adapter_sort.getItem(position));
                 switch (position){
                     case 0:
                         orderBy = OrderHelper.PRODUCE_TIME;
@@ -287,7 +366,7 @@ public class OrdersFragment extends Fragment {
                         orderBy = OrderHelper.ORDER_TIME;
                         break;
                 }
-                new OrderQry(mContext, orderBy, fillterInstant).doRequest();
+                requestData(mContext, orderBy, fillterInstant, false);
             }
 
             @Override
@@ -306,7 +385,7 @@ public class OrdersFragment extends Fragment {
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("xiong","排序：positon ="+position+"选择了 "+adapter_category.getItem(position));
+                Log.d("xiong", "排序：positon =" + position + "选择了 " + adapter_category.getItem(position));
                 switch (position){
                     case 0:
                         fillterInstant = OrderHelper.ALL;
@@ -318,7 +397,7 @@ public class OrdersFragment extends Fragment {
                         fillterInstant = OrderHelper.APPOINTMENT;
                         break;
                 }
-                new OrderQry(mContext, orderBy, fillterInstant).doRequest();
+                requestData(mContext, orderBy, fillterInstant, false);
             }
 
             @Override
@@ -332,6 +411,8 @@ public class OrdersFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated");
+        subTabIndex = 0;
+        requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true);
     }
 
     @Override
@@ -381,6 +462,42 @@ public class OrdersFragment extends Fragment {
         Log.d(TAG, "onDetach");
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btn_prev:  //上一单
+                if(adapter.selected>0){
+                    adapter.selected -= 1;
+                    updateDetailView(adapter.list.get(adapter.selected));
+                    adapter.notifyDataSetChanged();
+                    ordersGridView.smoothScrollToPosition(adapter.selected);
+
+                }
+                break;
+            case R.id.btn_next:  //下一单
+                if(adapter.selected<adapter.list.size()-1 && adapter.selected!=-1 ){
+                    adapter.selected += 1;
+                    updateDetailView(adapter.list.get(adapter.selected));
+                    adapter.notifyDataSetChanged();
+                    ordersGridView.smoothScrollToPosition(adapter.selected);
+                }
+                break;
+        }
+
+    }
+
+    //隐藏spinner和刷新按钮
+    private void showWidget(boolean isShow){
+        if(isShow){
+            sortSpinner.setVisibility(View.VISIBLE);
+            categorySpinner.setVisibility(View.VISIBLE);
+            refreshbtn.setVisibility(View.VISIBLE);
+        }else{
+            sortSpinner.setVisibility(View.INVISIBLE);
+            categorySpinner.setVisibility(View.INVISIBLE);
+            refreshbtn.setVisibility(View.INVISIBLE);
+        }
+    }
 
     class ListTabButtonListener implements View.OnClickListener{
 
@@ -392,39 +509,72 @@ public class OrdersFragment extends Fragment {
                     haveDoneTab.setClickBg(false);
                     deliveringTab.setClickBg(false);
                     deliveryFinishedTab.setClickBg(false);
+                    showWidget(true);
+                    subTabIndex = 0;
+                    new OrderToProduceQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL).doRequest();
+                    resetSpinners();
                     break;
                 case R.id.tab_have_done:
                     toDoTab.setClickBg(false);
                     haveDoneTab.setClickBg(true);
                     deliveringTab.setClickBg(false);
                     deliveryFinishedTab.setClickBg(false);
+                    showWidget(false);
+                    subTabIndex = 1;
+                    new OrderProducedQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL).doRequest();
+                    resetSpinners();
                     break;
                 case R.id.tab_delivering:
                     toDoTab.setClickBg(false);
                     haveDoneTab.setClickBg(false);
                     deliveringTab.setClickBg(true);
                     deliveryFinishedTab.setClickBg(false);
+                    showWidget(false);
+                    subTabIndex = 2;
+                    new OrderDeliveryingQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL).doRequest();
+                    resetSpinners();
                     break;
                 case R.id.tab_delivery_finished:
                     toDoTab.setClickBg(false);
                     haveDoneTab.setClickBg(false);
                     deliveringTab.setClickBg(false);
                     deliveryFinishedTab.setClickBg(true);
+                    showWidget(false);
+                    subTabIndex = 3;
+                    new OrderFinishedQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL).doRequest();
+                    resetSpinners();
                     break;
             }
         }
     }
 
 
+    //更新订单数量显示
+    public void updateOrdersNum(int whichTab,int num,boolean isProduce){
+        if(isProduce){
+            Message msg =  new Message();
+            msg.what = MSG_UPDATE_ORDER_NUMBER;
+            msg.arg1 = whichTab;
+            msg.arg2 = toDoTab.getCount()+1;
+            mHandler.sendMessage(msg);
+        }else{
+            Message msg =  new Message();
+            msg.what = MSG_UPDATE_ORDER_NUMBER;
+            msg.arg1 = whichTab;
+            msg.arg2 = num;
+            mHandler.sendMessage(msg);
+        }
 
-    //刷新订单列表接口
-    class OrderQry implements Qry{
+    }
+
+    //待生产订单列表接口
+    class OrderToProduceQry implements Qry{
 
         private Context context;
         private int orderBy;
         private int fillterInstant;
 
-        public OrderQry(Context context, int orderBy, int fillterInstant) {
+        public OrderToProduceQry(Context context, int orderBy, int fillterInstant) {
             this.context = context;
             this.orderBy = orderBy;
             this.fillterInstant = fillterInstant;
@@ -454,12 +604,147 @@ public class OrdersFragment extends Fragment {
             }
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
             Log.d(TAG, "orderBeans  =" + orderBeans);
+            updateOrdersNum(0, orderBeans.size(),false);
+            adapter.setData(orderBeans);
             if(orderBeans.size()>0){
-                adapter.setData(orderBeans);
-                updateDetailView(null);
+                updateDetailView(orderBeans.get(0));
             }
         }
     }
 
+    //生产已完成订单列表接口
+    class OrderProducedQry implements Qry{
+
+        private Context context;
+        private int orderBy;
+        private int fillterInstant;
+
+        public OrderProducedQry(Context context, int orderBy, int fillterInstant) {
+            this.context = context;
+            this.orderBy = orderBy;
+            this.fillterInstant = fillterInstant;
+        }
+
+        @Override
+        public void doRequest() {
+            String token = LoginHelper.getToken(context);
+            int shopId = LoginHelper.getShopId(context);
+            String url = HttpUtils.BASE_URL+shopId+"/orders/today/produced?token="+token;
+            Map<String,Object> params = new HashMap<String,Object>();
+            params.put("orderBy",orderBy);
+            params.put("fillterInstant", fillterInstant);
+
+            starttime = System.currentTimeMillis();
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this);
+        }
+
+        @Override
+        public void showResult(Jresp resp) {
+            endtime = System.currentTimeMillis();
+            Log.d(TAG,"请求耗时:"+(endtime - starttime));
+            Log.d(TAG, "OrderQry:resp  =" + resp);
+            if(resp==null){
+                ToastUtil.showToast(context,R.string.unknown_error);
+                return;
+            }
+            List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
+            Log.d(TAG, "orderBeans  =" + orderBeans);
+            updateOrdersNum(1,orderBeans.size(),false);
+            adapter.setData(orderBeans);
+            if(orderBeans.size()>0){
+                updateDetailView(orderBeans.get(0));
+            }
+        }
+    }
+
+    //配送中订单列表接口
+    class OrderDeliveryingQry implements Qry{
+
+        private Context context;
+        private int orderBy;
+        private int fillterInstant;
+
+        public OrderDeliveryingQry(Context context, int orderBy, int fillterInstant) {
+            this.context = context;
+            this.orderBy = orderBy;
+            this.fillterInstant = fillterInstant;
+        }
+
+        @Override
+        public void doRequest() {
+            String token = LoginHelper.getToken(context);
+            int shopId = LoginHelper.getShopId(context);
+            String url = HttpUtils.BASE_URL+shopId+"/orders/today/delivering?token="+token;
+            Map<String,Object> params = new HashMap<String,Object>();
+            params.put("orderBy",orderBy);
+            params.put("fillterInstant", fillterInstant);
+
+            starttime = System.currentTimeMillis();
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this);
+        }
+
+        @Override
+        public void showResult(Jresp resp) {
+            endtime = System.currentTimeMillis();
+            Log.d(TAG,"请求耗时:"+(endtime - starttime));
+            Log.d(TAG, "OrderQry:resp  =" + resp);
+            if(resp==null){
+                ToastUtil.showToast(context,R.string.unknown_error);
+                return;
+            }
+            List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
+            Log.d(TAG, "orderBeans  =" + orderBeans);
+            updateOrdersNum(2,orderBeans.size(),false);
+            adapter.setData(orderBeans);
+            if(orderBeans.size()>0){
+                updateDetailView(orderBeans.get(0));
+            }
+        }
+    }
+
+    //已完成订单列表接口
+    class OrderFinishedQry implements Qry{
+
+        private Context context;
+        private int orderBy;
+        private int fillterInstant;
+
+        public OrderFinishedQry(Context context, int orderBy, int fillterInstant) {
+            this.context = context;
+            this.orderBy = orderBy;
+            this.fillterInstant = fillterInstant;
+        }
+
+        @Override
+        public void doRequest() {
+            String token = LoginHelper.getToken(context);
+            int shopId = LoginHelper.getShopId(context);
+            String url = HttpUtils.BASE_URL+shopId+"/orders/today/finished?token="+token;
+            Map<String,Object> params = new HashMap<String,Object>();
+            params.put("orderBy",orderBy);
+            params.put("fillterInstant", fillterInstant);
+
+            starttime = System.currentTimeMillis();
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this);
+        }
+
+        @Override
+        public void showResult(Jresp resp) {
+            endtime = System.currentTimeMillis();
+            Log.d(TAG,"请求耗时:"+(endtime - starttime));
+            Log.d(TAG, "OrderQry:resp  =" + resp);
+            if(resp==null){
+                ToastUtil.showToast(context,R.string.unknown_error);
+                return;
+            }
+            List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
+            Log.d(TAG, "orderBeans  =" + orderBeans);
+            updateOrdersNum(3,orderBeans.size(),false);
+            adapter.setData(orderBeans);
+            if(orderBeans.size()>0){
+                updateDetailView(orderBeans.get(0));
+            }
+        }
+    }
 
 }

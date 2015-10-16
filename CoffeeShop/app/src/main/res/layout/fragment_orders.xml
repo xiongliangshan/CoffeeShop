@@ -17,16 +17,16 @@
             android:id="@+id/tab_to_do"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            ltb:ltb_text = "生成未完成"
-            android:padding="2dp"
+            ltb:ltb_text = "待生产"
+            android:padding="5dp"
             android:layout_marginRight="10dp"
             />
         <com.lyancafe.coffeeshop.widget.ListTabButton
             android:id="@+id/tab_have_done"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            ltb:ltb_text = "生产已完成"
-            android:padding="2dp"
+            ltb:ltb_text = "已生产"
+            android:padding="5dp"
             android:layout_marginRight="10dp"
             />
         <com.lyancafe.coffeeshop.widget.ListTabButton
@@ -34,15 +34,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             ltb:ltb_text = "配送中"
-            android:padding="2dp"
+            android:padding="5dp"
             android:layout_marginRight="10dp"
             />
         <com.lyancafe.coffeeshop.widget.ListTabButton
             android:id="@+id/tab_delivery_finished"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            ltb:ltb_text = "配送完成"
-            android:padding="2dp"
+            ltb:ltb_text = "已完成"
+            android:padding="5dp"
             android:layout_marginRight="10dp"
             />
 
@@ -72,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/spinner_category"
-            android:layout_marginLeft="100dp"
+            android:layout_marginLeft="300dp"
             android:layout_centerVertical="true"
             android:text="刷新列表"/>
     </RelativeLayout>
