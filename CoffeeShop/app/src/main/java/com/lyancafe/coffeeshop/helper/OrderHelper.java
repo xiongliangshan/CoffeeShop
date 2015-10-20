@@ -52,6 +52,11 @@ public class OrderHelper {
         return (int) (dip * context.getResources().getDisplayMetrics().density + 0.5f);
     }
 
+    public static int sp2px(Context context, float spValue) {
+        final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
+        return (int) (spValue * fontScale + 0.5f);
+    }
+
     /*时间戳转换成字符窜*/
     public static String getDateToString(long time) {
         Date d = new Date(time);

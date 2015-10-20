@@ -1,12 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
 
-    <TextView
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="订单查询页"
-        />
+        android:layout_marginTop="30dp"
+        >
+        <Spinner
+            android:id="@+id/spinner_sort"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            />
+
+
+        <EditText
+            android:id="@+id/et_order_id"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:hint="输入订单号"
+            android:layout_toRightOf="@id/spinner_sort"
+            android:layout_alignBottom="@id/spinner_sort"
+            />
+
+        <Button
+            android:id="@+id/btn_query"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="查询"
+            android:layout_toRightOf="@id/et_order_id"
+            android:layout_alignBottom="@id/et_order_id"
+            />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="6dp"
+        >
+
+        <GridView
+            android:id="@+id/gv_order_list"
+            android:layout_width="816dp"
+            android:layout_height="match_parent"
+            android:background="#ffff00"
+            android:numColumns="4"
+            android:stretchMode="columnWidth"
+            android:scrollbars="none"
+            />
+
+        <include
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#ff0000"
+            layout = "@layout/view_order_detail"
+            />
+
+    </LinearLayout>
 </LinearLayout>

@@ -45,4 +45,17 @@
     <string name="cancel">取消</string>
 
     <string name="do_success">操作成功</string>
+
+    <string name="menu_undo_order">订单撤回</string>
+    <string name="menu_scan_code">扫码交付</string>
+
+    <string name="question_type">问题类型</string>
+    <string name="shop_busy">产线繁忙</string>
+    <string name="produce_problem">无法生产</string>
+    <string name="location_error">定位错误，应属其他区域</string>
+    <string name="other">其他</string>
+
+    <string name="question_idea">处理建议</string>
+    <string name="cancel_order">取消订单</string>
+    <string name="modify_order_time">改约时间</string>
 </resources>

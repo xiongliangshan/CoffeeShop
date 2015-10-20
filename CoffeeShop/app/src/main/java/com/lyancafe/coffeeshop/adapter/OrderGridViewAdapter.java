@@ -1,9 +1,11 @@
 package com.lyancafe.coffeeshop.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,7 +50,8 @@ public class OrderGridViewAdapter extends BaseAdapter{
     public Timer timer;
     private TimerTask timerTask;
     private final static long DELTA_TIME = 30*1000;//单位ms
-    private ArrayList<OrderBean> cacheToProduceList =  new ArrayList<OrderBean>();
+    public ArrayList<OrderBean> cacheToProduceList =  new ArrayList<OrderBean>();
+    public ArrayList<OrderBean> cacheProducedList =  new ArrayList<OrderBean>();
     public Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -107,21 +110,33 @@ public class OrderGridViewAdapter extends BaseAdapter{
         }
 
         if(selected==position){
-            holder.rootLayout.setBackgroundResource(R.drawable.order_item_stroke_background);
+            holder.rootLayout.setBackgroundResource(R.mipmap.touch_border);
         }else{
-            holder.rootLayout.setBackground(null);
+            holder.rootLayout.setBackgroundResource(R.drawable.bg_order);
         }
         final OrderBean order = list.get(position);
         holder.orderIdTxt.setText(order.getOrderSn());
         final long mms = order.getProduceEffect();
         Log.d(TAG, "mms = " + mms);
         if(OrdersFragment.subTabIndex==0){
+            holder.produceBtn.setEnabled(true);
+           /* if(order.getInstant()==0){
+                //预约单
+                holder.produceBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
+            }*/
             if(mms<=0){
-                holder.effectTimeTxt.setText("超时"+Math.abs(mms)/(1000*60)+"分钟");
+                holder.effectTimeTxt.setTextColor(Color.parseColor("#e2435a"));
+                holder.produceBtn.setBackgroundResource(R.drawable.bg_produce_btn_red);
+                holder.effectTimeTxt.setText("+"+OrderHelper.getDateToMinutes(Math.abs(mms)));
             }else{
+                holder.produceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
+                holder.effectTimeTxt.setTextColor(Color.parseColor("#000000"));
                 holder.effectTimeTxt.setText(OrderHelper.getDateToMinutes(mms));
             }
         }else{
+            holder.produceBtn.setEnabled(false);
+            holder.produceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
+            holder.effectTimeTxt.setTextColor(Color.parseColor("#000000"));
             holder.effectTimeTxt.setText("-----");
         }
 
@@ -141,11 +156,6 @@ public class OrderGridViewAdapter extends BaseAdapter{
             holder.remarkFlagIV.setVisibility(View.VISIBLE);
         }
         fillItemListData(holder.itemContainerll, order.getItems());
-        if(OrdersFragment.subTabIndex==0){
-            holder.produceBtn.setEnabled(true);
-        }else{
-            holder.produceBtn.setEnabled(false);
-        }
         holder.produceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,9 +188,13 @@ public class OrderGridViewAdapter extends BaseAdapter{
         for(ItemContentBean item:items){
             TextView tv1 = new TextView(context);
             tv1.setText(item.getProduct() + "(" + item.getUnit() + ")");
-            tv1.setMaxEms(9);
+            tv1.setMaxEms(6);
+            tv1.setTextSize(OrderHelper.sp2px(context,16));
             TextView tv2 = new TextView(context);
             tv2.setText("X " + item.getQuantity());
+            tv1.setTextSize(OrderHelper.sp2px(context,16));
+            TextPaint tp = tv2.getPaint();
+            tp.setFakeBoldText(true);
             RelativeLayout rl = new RelativeLayout(context);
             RelativeLayout.LayoutParams lp1=new RelativeLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -246,7 +260,10 @@ public class OrderGridViewAdapter extends BaseAdapter{
                 timer.schedule(timerTask,DELTA_TIME,DELTA_TIME);
             }
 
-        }else{
+        }else if(OrdersFragment.subTabIndex==1){
+            //缓存订单列表
+            cacheProducedList.clear();
+            cacheProducedList.addAll(list);
 
         }
 
@@ -266,6 +283,17 @@ public class OrderGridViewAdapter extends BaseAdapter{
             if(cacheToProduceList.get(i).getId()==orderId){
                 cacheToProduceList.remove(i);
                 this.list = cacheToProduceList;
+                notifyDataSetChanged();
+                break;
+            }
+        }
+    }
+    //交付完成后从当前列表中移除此单
+    public void removeOrderFromProducedList(long orderId){
+        for(int i = 0;i<cacheProducedList.size();i++){
+            if(cacheProducedList.get(i).getId()==orderId){
+                cacheProducedList.remove(i);
+                this.list = cacheProducedList;
                 notifyDataSetChanged();
                 break;
             }
@@ -297,7 +325,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
             if(resp.status == 0){
                 ToastUtil.showToast(context,R.string.do_success);
                 removeOrderFromList(orderId);
-                orderFragment.updateOrdersNum(1, 0, true);
+                orderFragment.updateOrdersNumAfterAction(OrdersFragment.ACTION_PRODUCE);
             }else{
                 ToastUtil.showToast(context,resp.message);
             }

@@ -3,7 +3,8 @@
     xmlns:ltb="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -11,6 +12,7 @@
         android:orientation="horizontal"
         android:gravity="left"
         android:paddingTop="10dp"
+
         >
 
         <com.lyancafe.coffeeshop.widget.ListTabButton
@@ -73,7 +75,14 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/spinner_category"
             android:layout_marginLeft="300dp"
-            android:layout_centerVertical="true"
+            android:background="@color/bg_refresh"
+            android:padding="5dp"
+            android:shadowDx="5"
+            android:shadowDy="5"
+            android:shadowRadius="8"
+            android:shadowColor="#ffffffff"
+            android:layout_alignBottom="@id/spinner_sort"
+            android:textColor="@color/white_font"
             android:text="刷新列表"/>
     </RelativeLayout>
 
@@ -85,10 +94,12 @@
 
         <GridView
             android:id="@+id/gv_order_list"
-            android:layout_width="816dp"
+            android:layout_width="740dp"
             android:layout_height="match_parent"
-            android:background="#ffff00"
             android:numColumns="4"
+            android:horizontalSpacing="16dp"
+            android:verticalSpacing="16dp"
+            android:paddingRight="16dp"
             android:stretchMode="columnWidth"
             android:scrollbars="none"
             />
@@ -97,7 +108,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#ff0000"
             layout = "@layout/view_order_detail"
             />
 

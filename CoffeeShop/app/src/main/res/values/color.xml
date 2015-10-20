@@ -9,4 +9,8 @@
 	<color name="grey">#a0a0a0</color>
 
 	<color name="black_transparent">#f0000000</color>
+
+	<color name="white_font">#ffffff</color>
+
+	<color name="bg_refresh">#28b332</color>
 </resources>  

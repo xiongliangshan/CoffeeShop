@@ -25,6 +25,7 @@ public class OrderBean {
     private static final String TAG = "OrderBean";
     private long id;                     //订单id
     private String orderSn;              //订单编号
+    private boolean wxScan;            //是否是到店扫码的单子
     private long expectedTime;           //期望送达时间
     private long orderTime;              //下单时间
     private long produceEffect;         //计算时效的基准时间
@@ -100,6 +101,14 @@ public class OrderBean {
 
     public void setOrderSn(String orderSn) {
         this.orderSn = orderSn;
+    }
+
+    public boolean isWxScan() {
+        return wxScan;
+    }
+
+    public void setWxScan(boolean wxScan) {
+        this.wxScan = wxScan;
     }
 
     public long getExpectedTime() {
