@@ -7,7 +7,7 @@
 
 
     <corners
-        android:radius="5dp"
+        android:radius="3dp"
         />
     <padding
         android:bottom="4dp"

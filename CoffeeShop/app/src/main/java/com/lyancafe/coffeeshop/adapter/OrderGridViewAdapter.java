@@ -189,10 +189,10 @@ public class OrderGridViewAdapter extends BaseAdapter{
             TextView tv1 = new TextView(context);
             tv1.setText(item.getProduct() + "(" + item.getUnit() + ")");
             tv1.setMaxEms(6);
-            tv1.setTextSize(OrderHelper.sp2px(context,16));
+            tv1.setTextSize(OrderHelper.sp2px(context, 16));
             TextView tv2 = new TextView(context);
             tv2.setText("X " + item.getQuantity());
-            tv1.setTextSize(OrderHelper.sp2px(context,16));
+            tv2.setTextSize(OrderHelper.sp2px(context, 16));
             TextPaint tp = tv2.getPaint();
             tp.setFakeBoldText(true);
             RelativeLayout rl = new RelativeLayout(context);
@@ -200,7 +200,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             lp1.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            lp1.leftMargin = OrderHelper.dip2Px(5,context);;
+            lp1.leftMargin = OrderHelper.dip2Px(5,context);
             tv1.setLayoutParams(lp1);
             rl.addView(tv1);
 
@@ -211,11 +211,11 @@ public class OrderGridViewAdapter extends BaseAdapter{
             lp2.rightMargin = OrderHelper.dip2Px(5,context);
             tv2.setLayoutParams(lp2);
             rl.addView(tv2);
-
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
+            lp.topMargin = OrderHelper.dip2Px(4,context);
             ll.addView(rl,lp);
         }
         ll.invalidate();

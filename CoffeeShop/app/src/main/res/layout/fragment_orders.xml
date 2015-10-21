@@ -54,7 +54,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="4dp"
         >
         <Spinner
             android:id="@+id/spinner_sort"
@@ -74,15 +74,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/spinner_category"
-            android:layout_marginLeft="300dp"
+            android:layout_marginLeft="400dp"
             android:background="@color/bg_refresh"
-            android:padding="5dp"
-            android:shadowDx="5"
-            android:shadowDy="5"
-            android:shadowRadius="8"
-            android:shadowColor="#ffffffff"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="1dp"
+            android:paddingBottom="1dp"
             android:layout_alignBottom="@id/spinner_sort"
             android:textColor="@color/white_font"
+            android:textSize="14sp"
             android:text="刷新列表"/>
     </RelativeLayout>
 

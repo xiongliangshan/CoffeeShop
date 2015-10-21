@@ -8,13 +8,15 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="45dp"
+        android:padding="5dp"
         >
         <Spinner
             android:id="@+id/spinner_sort"
-            android:layout_width="100dp"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             />
 
 
@@ -24,31 +26,37 @@
             android:layout_height="wrap_content"
             android:hint="输入订单号"
             android:layout_toRightOf="@id/spinner_sort"
-            android:layout_alignBottom="@id/spinner_sort"
+            android:layout_centerVertical="true"
+
             />
 
         <Button
             android:id="@+id/btn_query"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="5dp"
             android:text="查询"
             android:layout_toRightOf="@id/et_order_id"
-            android:layout_alignBottom="@id/et_order_id"
+            android:layout_centerVertical="true"
+
             />
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="45dp"
         >
 
         <GridView
             android:id="@+id/gv_order_list"
-            android:layout_width="816dp"
+            android:layout_width="740dp"
             android:layout_height="match_parent"
             android:background="#ffff00"
             android:numColumns="4"
+            android:horizontalSpacing="16dp"
+            android:verticalSpacing="16dp"
+            android:paddingRight="16dp"
             android:stretchMode="columnWidth"
             android:scrollbars="none"
             />

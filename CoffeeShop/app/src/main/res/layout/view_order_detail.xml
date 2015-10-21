@@ -44,7 +44,7 @@
                 android:layout_below="@id/contant_order_time"
                 android:layout_alignLeft="@id/contant_order_time"
                 android:textSize="12sp"
-                android:layout_marginLeft="5dp"
+                android:layout_marginTop="-2dp"
                 android:text="2015-09-19 14:20"
                 />
             <TextView
@@ -52,8 +52,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
+                android:layout_marginTop="3dp"
                 android:text="报告"
-                android:textSize="22sp"
+                android:textSize="16sp"
+                android:drawableLeft="@mipmap/icon_report"
+                android:drawablePadding="5dp"
                 />
         </RelativeLayout>
 
@@ -62,7 +65,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="20dp"
-            android:padding="10dp"
+            android:padding="16dp"
             android:background="@drawable/stroke_background">
 
                 <TextView
@@ -115,6 +118,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="王晓霞"
+                    android:textStyle="bold"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@id/contant_receiver_info"
                     android:layout_alignBaseline="@id/contant_receiver_info"
@@ -151,7 +155,7 @@
                     android:id="@+id/split_line"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#000000"
+                    android:background="#c7c7c7"
                     />
                 <TextView
                     android:id="@+id/contant_deliver"
@@ -208,7 +212,7 @@
                         android:id="@+id/items_container_layout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:padding="5dp"
+                        android:padding="4dp"
                         android:orientation="vertical"
                         >
                         <TextView
@@ -346,6 +350,8 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:layout_weight="2"
+                android:textColor="@color/white_font"
+                android:textSize="16sp"
                 android:text="生产完成"
                 />
             <Button
@@ -354,7 +360,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@null"
-                android:text="打印订单"
+                android:textSize="16sp"
+                android:text="打印"
                 />
             <Button
                 android:id="@+id/btn_more"
@@ -362,7 +369,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@null"
-                android:text="更多"
+                android:textSize="16sp"
+                android:text="更多操作"
                 />
         </LinearLayout>
 

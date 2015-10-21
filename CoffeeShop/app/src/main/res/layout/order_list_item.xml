@@ -38,7 +38,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/item_contant_produce_effect"
             android:textSize="20sp"
-            android:layout_marginTop="4dp"
             android:text="08:36"
             />
         <ImageView
@@ -48,7 +47,7 @@
             android:layout_toLeftOf="@+id/item_grab_flag"
             android:layout_below="@id/item_contant_produce_effect"
             android:layout_marginLeft="2dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="6dp"
             android:src="@mipmap/icon_problem"/>
         <ImageView
             android:id="@+id/item_grab_flag"
@@ -57,7 +56,7 @@
             android:layout_toLeftOf="@+id/item_remark_flag"
             android:layout_below="@id/item_contant_produce_effect"
             android:layout_marginLeft="3dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="6dp"
             android:src="@mipmap/icon_accpet"/>
         <ImageView
             android:id="@+id/item_remark_flag"
@@ -65,7 +64,7 @@
             android:layout_height="wrap_content"
             android:src="@mipmap/icon_message"
             android:layout_marginLeft="3dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="6dp"
             android:layout_alignParentRight="true"
             android:layout_below="@id/item_contant_produce_effect"
             />
@@ -81,6 +80,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="12dp"
+        android:padding="4dp"
         >
 
     </LinearLayout>
@@ -113,7 +113,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="打印订单"
+            android:text="打印"
             android:textSize="14sp"
             android:layout_marginLeft="3dp"
             />

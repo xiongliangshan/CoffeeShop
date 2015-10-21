@@ -6,42 +6,50 @@
     android:background="@drawable/bg_all"
     >
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="65dp"
         android:layout_height="match_parent"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:paddingRight="0dp"
+        android:orientation="vertical"
         >
-
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/logo_system"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                />
             <RadioGroup
                 android:id="@+id/group_left"
-                android:layout_width="48dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_centerInParent="true"
+                android:paddingRight="20dp"
                 android:orientation="vertical">
 
                 <com.lyancafe.coffeeshop.widget.LeftRadioButton
                     android:id="@+id/rb_orders"
                     style="@style/MyWidget.home.left_tab.btn"
                     android:checked="true"
-                    android:drawableRight="@mipmap/icon_order"
+                    android:drawableRight="@drawable/bg_left_tab_order"
                     />
 
                 <com.lyancafe.coffeeshop.widget.LeftRadioButton
                     android:id="@+id/rb_order_query"
                     style="@style/MyWidget.home.left_tab.btn"
-                    android:drawableRight="@mipmap/icon_search"
+                    android:drawableRight="@drawable/bg_left_tab_search"
                     />
 
                 <com.lyancafe.coffeeshop.widget.LeftRadioButton
                     android:id="@+id/rb_shop_manager"
                     style="@style/MyWidget.home.left_tab.btn"
-                    android:drawableRight="@mipmap/icon_shop"
+                    android:drawableRight="@drawable/bg_left_tab_shop"
 
                      />
 
             </RadioGroup>
-    </LinearLayout>
+    </RelativeLayout>
 
 
     <FrameLayout

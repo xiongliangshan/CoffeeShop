@@ -43,7 +43,7 @@ public class ListTabButton extends LinearLayout {
         textView.setTypeface(Typeface.DEFAULT_BOLD);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
         textView.setBackgroundResource(R.drawable.number_text_background_normal);
-        textView.setPadding(dip2Px(5), dip2Px(1), dip2Px(5), dip2Px(1));
+        textView.setPadding(dip2Px(15), dip2Px(1), dip2Px(15), dip2Px(1));
         textView.setText("0");
         addView(contentTxt);
         addView(textView);
