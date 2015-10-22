@@ -49,6 +49,16 @@
                      />
 
             </RadioGroup>
+
+        <ImageButton
+            android:id="@+id/btn_setting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:src="@mipmap/icon_setting"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="40dp"
+            />
     </RelativeLayout>
 
 

@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.RadioGroup;
 
 import com.lyancafe.coffeeshop.R;
@@ -11,6 +13,7 @@ import com.lyancafe.coffeeshop.adapter.FragmentTabAdapter;
 import com.lyancafe.coffeeshop.fragment.OrderQueryFragment;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.fragment.ShopManagerFragment;
+import com.lyancafe.coffeeshop.widget.SettingWindow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +30,7 @@ public class HomeActivity extends BaseActivity {
     private OrderQueryFragment orderQueryFrag;
     private ShopManagerFragment shopManagerFrag;
     private FragmentTabAdapter tabAdapter;
+    private ImageButton settingBtn;
 
     private Handler mHandler = new Handler(){
         @Override
@@ -46,6 +50,16 @@ public class HomeActivity extends BaseActivity {
 
     private void initViews(){
         mRadioGroup = (RadioGroup) findViewById(R.id.group_left);
+        settingBtn = (ImageButton) findViewById(R.id.btn_setting);
+        settingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //左下角的设置
+                SettingWindow sw  = new SettingWindow(HomeActivity.this);
+                sw.showSettingWindow(v);
+
+            }
+        });
     }
     private void initFragments(){
         orderFrag =  new OrdersFragment();

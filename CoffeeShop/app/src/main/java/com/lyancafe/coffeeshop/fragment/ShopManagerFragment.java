@@ -10,22 +10,35 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.RecyclerAdapter;
+import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
+import com.xls.http.HttpAsyncTask;
+import com.xls.http.HttpEntity;
+import com.xls.http.HttpUtils;
+import com.xls.http.Jresp;
+import com.xls.http.Qry;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2015/9/1.
  */
 public class ShopManagerFragment extends Fragment {
 
+    private static final String TAG ="ShopManagerFragment";
     private View mContentView;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -55,10 +68,6 @@ public class ShopManagerFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new SpaceItemDecoration(OrderHelper.dip2Px(32,mContext)));
         ArrayList<UserBean> itemList = new ArrayList<UserBean>();
-        for(int i=0;i<10;i++){
-            UserBean user = new UserBean();
-            itemList.add(user);
-        }
         recyclerAdapter = new RecyclerAdapter(itemList,mContext);
         recyclerView.setAdapter(recyclerAdapter);
         return mContentView;
@@ -74,9 +83,11 @@ public class ShopManagerFragment extends Fragment {
         super.onStart();
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
+        new BaristasListQry(mContext).doRequest();
     }
 
     @Override
@@ -105,6 +116,7 @@ public class ShopManagerFragment extends Fragment {
     }
 
 
+    //设置RecyclerView item之间的间距
     public class SpaceItemDecoration extends RecyclerView.ItemDecoration{
 
         private int space;
@@ -119,4 +131,40 @@ public class ShopManagerFragment extends Fragment {
                 outRect.left = space;
         }
     }
+
+    //咖啡师列表接口
+    class BaristasListQry implements Qry {
+
+        private Context context;
+
+        public BaristasListQry(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public void doRequest() {
+            String token = LoginHelper.getToken(context);
+            int shopId = LoginHelper.getShopId(context);
+            String url = HttpUtils.BASE_URL+shopId+"/baristas?token="+token;
+            Map<String,Object> params = new HashMap<String,Object>();
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this);
+        }
+
+        @Override
+        public void showResult(Jresp resp) {
+            Log.d(TAG, "BaristasListQry:resp  =" + resp);
+            if(resp==null){
+                ToastUtil.showToast(context, R.string.unknown_error);
+                return;
+            }
+            List<UserBean> userBeans = UserBean.parseJsonUsers(context, resp);
+            Log.d(TAG, "userBeans  =" + userBeans);
+            recyclerAdapter.setData(userBeans);
+
+        }
+    }
+
+
+
+
 }
