@@ -140,6 +140,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                         break;
                     }
                 }
+                if(resp.data.optBoolean("isMaster")){
+                    //主咖啡师下班，退出登录
+                    ToastUtil.showToast(context, "主咖啡师下班，退出登录");
+                }
+
             }else{
                 ToastUtil.showToast(context,resp.message);
             }
