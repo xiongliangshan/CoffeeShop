@@ -57,7 +57,7 @@ public class ReportWindow extends PopupWindow implements View.OnClickListener{
         this.setWidth(OrderHelper.dip2Px(444, context));
         this.setFocusable(true);
         this.setOutsideTouchable(false);
-        this.setAnimationStyle(android.R.style.Animation_Dialog);
+        this.setAnimationStyle(R.style.report_popwin_anim_style);
     }
 
     public void setOrder(OrderBean orderBean){

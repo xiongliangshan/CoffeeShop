@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="500dp"
+    android:layout_height="400dp">
+
+    <EditText
+        android:id="@+id/feedback_content"
+        android:layout_width="400dp"
+        android:layout_height="280dp"
+        android:maxHeight="300dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/stroke_background"
+        android:singleLine="false"
+        android:inputType="textMultiLine"
+        android:hint="请输入你对app的意见"
+        android:gravity="left|top"
+        />
+    <LinearLayout
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/feedback_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        >
+        <Button
+            android:id="@+id/btn_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="提交"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="取消"
+            android:layout_weight="1"
+            />
+    </LinearLayout>
+</RelativeLayout>

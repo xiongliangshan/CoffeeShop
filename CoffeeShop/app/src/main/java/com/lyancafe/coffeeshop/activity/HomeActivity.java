@@ -31,6 +31,7 @@ public class HomeActivity extends BaseActivity {
     private ShopManagerFragment shopManagerFrag;
     private FragmentTabAdapter tabAdapter;
     private ImageButton settingBtn;
+    private SettingWindow sw;
 
     private Handler mHandler = new Handler(){
         @Override
@@ -55,8 +56,12 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //左下角的设置
-                SettingWindow sw  = new SettingWindow(HomeActivity.this);
-                sw.showSettingWindow(v);
+                if(sw!=null){
+                    sw.showSettingWindow(v);
+                }else{
+                    SettingWindow sw  = new SettingWindow(HomeActivity.this);
+                    sw.showSettingWindow(v);
+                }
 
             }
         });

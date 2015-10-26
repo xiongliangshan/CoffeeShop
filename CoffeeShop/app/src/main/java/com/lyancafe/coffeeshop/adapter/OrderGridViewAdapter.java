@@ -118,21 +118,25 @@ public class OrderGridViewAdapter extends BaseAdapter{
         holder.orderIdTxt.setText(order.getOrderSn());
         final long mms = order.getProduceEffect();
         Log.d(TAG, "mms = " + mms);
+
         if(OrdersFragment.subTabIndex==0){
             holder.produceBtn.setEnabled(true);
-           /* if(order.getInstant()==0){
-                //预约单
-                holder.produceBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
-            }*/
+
             if(mms<=0){
                 holder.effectTimeTxt.setTextColor(Color.parseColor("#e2435a"));
                 holder.produceBtn.setBackgroundResource(R.drawable.bg_produce_btn_red);
                 holder.effectTimeTxt.setText("+"+OrderHelper.getDateToMinutes(Math.abs(mms)));
             }else{
-                holder.produceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
+                if(order.getInstant()==0){
+                    holder.produceBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
+                }else{
+                    holder.produceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
+                }
                 holder.effectTimeTxt.setTextColor(Color.parseColor("#000000"));
                 holder.effectTimeTxt.setText(OrderHelper.getDateToMinutes(mms));
             }
+
+
         }else{
             holder.produceBtn.setEnabled(false);
             holder.produceBtn.setBackgroundResource(R.drawable.bg_produce_btn);

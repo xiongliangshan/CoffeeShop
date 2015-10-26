@@ -283,10 +283,15 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     finishProduceBtn.setBackgroundResource(R.drawable.bg_produce_btn_red);
                     produceEffectTxt.setText("+"+OrderHelper.getDateToMinutes(Math.abs(mms)));
                 }else{
-                    finishProduceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
+                    if(order.getInstant()==0){
+                        finishProduceBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
+                    }else{
+                        finishProduceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
+                    }
                     produceEffectTxt.setTextColor(Color.parseColor("#000000"));
                     produceEffectTxt.setText(OrderHelper.getDateToMinutes(mms));
                 }
+
             }else{
                 finishProduceBtn.setEnabled(false);
                 finishProduceBtn.setBackgroundResource(R.drawable.bg_produce_btn);

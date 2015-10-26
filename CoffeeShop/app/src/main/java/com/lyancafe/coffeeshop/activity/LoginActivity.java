@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.BaseAdapter;
@@ -43,6 +44,12 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
+        //如果已经登录过了，并且没有点退出，可以直接进入主界面
+        if(!TextUtils.isEmpty(LoginHelper.getToken(mContext))){
+            LoginActivity.this.finish();
+            Intent intent = new Intent(mContext, HomeActivity.class);
+            mContext.startActivity(intent);
+        }
         setContentView(R.layout.activity_login);
         userNameEdit = (EditText) findViewById(R.id.username);
         passwordEdit = (EditText) findViewById(R.id.password);
@@ -128,6 +135,7 @@ public class LoginActivity extends BaseActivity {
                 int userId = resp.data.optInt("userId");
                 String token = resp.data.optString("token");
                 LoginHelper.saveUserInfo(mContext,userId,shopId,token);
+                LoginActivity.this.finish();
                 Intent intent = new Intent(mContext, HomeActivity.class);
                 mContext.startActivity(intent);
             }else if(resp.status==LoginHelper.LOGIN_FAIL){
