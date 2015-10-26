@@ -15,6 +15,7 @@ import android.widget.ListView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.igexin.sdk.PushManager;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.utils.RsaEncryptor;
@@ -44,6 +45,8 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
+        //初始化个推
+        PushManager.getInstance().initialize(this.getApplicationContext());
         //如果已经登录过了，并且没有点退出，可以直接进入主界面
         if(!TextUtils.isEmpty(LoginHelper.getToken(mContext))){
             LoginActivity.this.finish();
