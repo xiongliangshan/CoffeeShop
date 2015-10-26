@@ -8,11 +8,11 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="30dp"
         android:padding="5dp"
         >
         <Spinner
-            android:id="@+id/spinner_sort"
+            android:id="@+id/spinner_date"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -25,7 +25,7 @@
             android:layout_width="400dp"
             android:layout_height="wrap_content"
             android:hint="输入订单号"
-            android:layout_toRightOf="@id/spinner_sort"
+            android:layout_toRightOf="@id/spinner_date"
             android:layout_centerVertical="true"
 
             />
@@ -45,7 +45,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="10dp"
         >
 
         <GridView

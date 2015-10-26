@@ -96,7 +96,7 @@ public class GetuiPushReceiver extends BroadcastReceiver {
     /**
      * 初始化通知栏消息
      */
-    private void sendNotification(Context context,PushMessageBean pmb){
+    private void sendNotification(final Context context,PushMessageBean pmb){
         if(mNotificationManager==null){
             mNotificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
         }
@@ -116,6 +116,9 @@ public class GetuiPushReceiver extends BroadcastReceiver {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                if(mNotificationManager==null){
+                    mNotificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+                }
                 mNotificationManager.cancel(notifyId);
             }
         },2*60*1000);

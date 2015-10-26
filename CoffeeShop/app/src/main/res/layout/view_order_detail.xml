@@ -348,7 +348,7 @@
                 android:id="@+id/btn_finish_produce"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@null"
+                android:background="@drawable/bg_produce_btn"
                 android:layout_weight="2"
                 android:textColor="@color/white_font"
                 android:textSize="16sp"
