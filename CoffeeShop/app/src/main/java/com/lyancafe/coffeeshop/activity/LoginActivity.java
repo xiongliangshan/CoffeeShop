@@ -45,8 +45,6 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
-        //初始化个推
-        PushManager.getInstance().initialize(this.getApplicationContext());
         //如果已经登录过了，并且没有点退出，可以直接进入主界面
         if(!TextUtils.isEmpty(LoginHelper.getToken(mContext))){
             Intent intent = new Intent(mContext, HomeActivity.class);
@@ -123,7 +121,7 @@ public class LoginActivity extends BaseActivity {
             }
             params.put("password", enc_pwd);
 
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this);
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
         }
 
         @Override

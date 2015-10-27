@@ -84,10 +84,24 @@ public class OrderHelper {
         return date.getTime();
     }
 
-    /*时间毫秒转化为分钟*/
+    /*时间段毫秒转化为分钟*/
     public static String getDateToMinutes(long time) {
-        Date d = new Date(time);
-        SimpleDateFormat sf = new SimpleDateFormat("mm:ss");
-        return sf.format(d);
+        String min = "";
+        String sec = "";
+        long minutes = time / (1000 * 60 );
+        long seconds = (time % (1000 * 60)) / 1000;
+        if(minutes==0){
+            min = "00";
+        }else{
+            min = minutes+"";
+        }
+
+        if(seconds<=9){
+            sec = "0"+seconds;
+        }else{
+            sec = seconds+"";
+        }
+
+        return  min+":"+sec;
     }
 }

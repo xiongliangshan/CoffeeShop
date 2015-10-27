@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -17,7 +18,19 @@ import com.igexin.sdk.PushConsts;
 import com.igexin.sdk.PushManager;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.PushMessageBean;
+import com.lyancafe.coffeeshop.helper.LoginHelper;
+import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.utils.MyUtil;
+import com.xls.http.HttpAsyncTask;
+import com.xls.http.HttpEntity;
+import com.xls.http.HttpUtils;
+import com.xls.http.Jresp;
+import com.xls.http.Qry;
 
+import org.w3c.dom.Text;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -63,6 +76,7 @@ public class GetuiPushReceiver extends BroadcastReceiver {
                 if(!TextUtils.isEmpty(cid)){
             //        LoginHelper.sendClientIdToServer(context,cid);
                     GetuiPushReceiver.CID = cid;
+                    new upLoadDeviceInfoQry(context,cid).doRequest();
                 }
                 Log.d(TAG,"cid = "+cid);
                 break;
@@ -122,5 +136,44 @@ public class GetuiPushReceiver extends BroadcastReceiver {
                 mNotificationManager.cancel(notifyId);
             }
         },2*60*1000);
+    }
+
+
+    //上报设备信息接口
+    class upLoadDeviceInfoQry implements Qry{
+
+        private Context context;
+        private String clientId;
+
+        public upLoadDeviceInfoQry(Context context, String clientId) {
+            this.context = context;
+            this.clientId = clientId;
+        }
+
+        @Override
+        public void doRequest() {
+            String token = LoginHelper.getToken(context);
+            int shopId = LoginHelper.getShopId(context);
+            int userId = LoginHelper.getUserId(context);
+            TelephonyManager mTm = (TelephonyManager) context.getSystemService(context.TELEPHONY_SERVICE);
+            String deviceId = mTm.getDeviceId();
+            String mType = android.os.Build.MODEL; // 手机型号
+            int appCode = MyUtil.getVersionCode(context);
+            if(TextUtils.isEmpty(deviceId) || TextUtils.isEmpty(clientId) || userId == 0){
+                return;
+            }
+            String url = HttpUtils.BASE_URL+shopId+"/barista/"+userId+"/device?token="+token;
+            Map<String,Object> params = new HashMap<String,Object>();
+            params.put("deviceId",deviceId);
+            params.put("mType",mType);
+            params.put("appCode",appCode);
+            params.put("clientId",clientId);
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,false);
+        }
+
+        @Override
+        public void showResult(Jresp resp) {
+            Log.d(TAG,"upLoadDeviceInfoQry :resp = "+resp);
+        }
     }
 }

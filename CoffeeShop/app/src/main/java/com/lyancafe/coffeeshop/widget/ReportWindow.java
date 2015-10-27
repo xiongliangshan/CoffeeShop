@@ -207,7 +207,7 @@ public class ReportWindow extends PopupWindow implements View.OnClickListener{
             params.put("questionType",questionType);
             params.put("handleType",questionIdea);
             params.put("remark",questionDesc);
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this);
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
         }
 
         @Override

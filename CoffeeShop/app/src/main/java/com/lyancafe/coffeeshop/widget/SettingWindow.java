@@ -156,7 +156,7 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
             String url = HttpUtils.BASE_URL+shopId+"/status?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             params.put("light", isBusy);
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this);
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
         }
 
         @Override

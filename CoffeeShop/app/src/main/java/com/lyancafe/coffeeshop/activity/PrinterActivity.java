@@ -359,8 +359,7 @@ public class PrinterActivity extends Activity {
 			order4 = "";
 		}
 		String addressCMD, addr1, addr2;
-		Log.e("Mike", "address len: " + address.length());
-		address = "上海徐汇区古美路号上海徐汇区古美路上海徐汇区1515号";
+		Log.d(TAG, "address len: " + address.length());
 		if (address.length() <= 22) {
 			addressCMD = "A70,160,0,200,1,1,N,\""+address+"\""+"\n";
 		} else {

@@ -34,7 +34,9 @@ public class HttpAsyncTask {
             public void run() {
                 //判断是否有网
                 if (!HttpUtils.isOnline(context)) {
-                    dialog.dismiss();
+                    if(dialog!=null){
+                        dialog.dismiss();
+                    }
                     HttpUtils.showToastAsync(context, "请检查网络连接");
                     return;
                 }
@@ -60,7 +62,9 @@ public class HttpAsyncTask {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                dialog.dismiss();
+                                if(dialog!=null){
+                                    dialog.dismiss();
+                                }
                             }
                         },100);
                     }
@@ -70,10 +74,16 @@ public class HttpAsyncTask {
         };
     }
 
-    public static void request(final HttpEntity httpEntity,final Context context,final Qry qry){
-        final ProgressHUD progressHUD = ProgressHUD.show(context, context.getResources().getString(R.string.loading), true,
-                false, null);
-        executorForResource.execute(queryDataFromServer(httpEntity, context, qry, progressHUD));
+    public static void request(final HttpEntity httpEntity,final Context context,final Qry qry,boolean isShowProgress){
+        if(isShowProgress){
+            final ProgressHUD progressHUD = ProgressHUD.show(context, context.getResources().getString(R.string.loading), true,
+                    false, null);
+            executorForResource.execute(queryDataFromServer(httpEntity, context, qry, progressHUD));
+        }else{
+            executorForResource.execute(queryDataFromServer(httpEntity, context, qry, null));
+        }
+
+
     }
 
 }

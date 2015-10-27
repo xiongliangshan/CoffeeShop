@@ -686,7 +686,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             params.put("fillterInstant", fillterInstant);
 
             starttime = System.currentTimeMillis();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this);
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
         }
 
         @Override
@@ -731,7 +731,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             params.put("fillterInstant", fillterInstant);
 
             starttime = System.currentTimeMillis();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this);
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
         }
 
         @Override
@@ -776,7 +776,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             params.put("fillterInstant", fillterInstant);
 
             starttime = System.currentTimeMillis();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this);
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
         }
 
         @Override
@@ -821,7 +821,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             params.put("fillterInstant", fillterInstant);
 
             starttime = System.currentTimeMillis();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this);
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
         }
 
         @Override
@@ -863,7 +863,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             String url = HttpUtils.BASE_URL+shopId+"/order/"+orderId+"/recall?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             starttime = System.currentTimeMillis();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this);
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
         }
 
         @Override
@@ -905,7 +905,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             String url = HttpUtils.BASE_URL+shopId+"/order/"+orderId+"/deliver?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             starttime = System.currentTimeMillis();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this);
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
         }
 
         @Override

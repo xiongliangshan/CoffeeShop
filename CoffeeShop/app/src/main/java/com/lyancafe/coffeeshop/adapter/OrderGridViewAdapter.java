@@ -318,9 +318,10 @@ public class OrderGridViewAdapter extends BaseAdapter{
         @Override
         public void doRequest() {
             int shopId = LoginHelper.getShopId(context);
-            String url = HttpUtils.BASE_URL+shopId+"/order/"+orderId+"/produce?";
+            String token = LoginHelper.getToken(context);
+            String url = HttpUtils.BASE_URL+shopId+"/order/"+orderId+"/produce?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this);
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
         }
 
         @Override

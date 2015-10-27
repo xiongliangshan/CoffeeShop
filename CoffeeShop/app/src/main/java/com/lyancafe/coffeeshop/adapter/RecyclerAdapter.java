@@ -121,7 +121,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             String url = HttpUtils.BASE_URL+shopId+"/barista/"+baristaId+"/onduty?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             params.put("value",value);
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this);
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
         }
 
         @Override

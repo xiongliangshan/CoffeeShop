@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RadioGroup;
 
+import com.igexin.sdk.PushManager;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.FragmentTabAdapter;
 import com.lyancafe.coffeeshop.fragment.OrderQueryFragment;
@@ -44,6 +45,9 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //初始化个推
+        PushManager.getInstance().initialize(this.getApplicationContext());
+
         setContentView(R.layout.activity_home);
         initViews();
         initFragments();
