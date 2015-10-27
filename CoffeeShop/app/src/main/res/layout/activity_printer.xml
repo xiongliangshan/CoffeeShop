@@ -1,103 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="300dp"
+    android:background="@color/white_font"
+    android:padding="20dp"
      >
-	<!--<LinearLayout
-        android:id="@+id/printer_header"
-        android:layout_width="fill_parent"
-        android:layout_height="40dip"
-        android:background="@color/edu_color_2"
-        android:orientation="horizontal" >
-
-        <RelativeLayout
-            android:layout_width="0dip"
-            android:layout_height="match_parent"
-            android:layout_weight="2" >
-
-            <RelativeLayout
-                android:id="@+id/printer_back"
-                android:layout_width="50dip"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:background="@drawable/menu_btn_selector" >
-
-                <ImageView
-                    android:id="@+id/printer_back_img"
-                    android:layout_width="22dip"
-                    android:layout_height="22dip"
-                    android:layout_centerInParent="true"
-                    android:background="@color/transparent"
-                    android:src="@drawable/back_img" />
-            </RelativeLayout>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="0dip"
-            android:layout_height="match_parent"
-            android:layout_weight="3" >
-
-            <TextView
-                android:id="@+id/printer_title"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="鎵撳嵃鏈�"
-                android:textColor="@color/white"
-                android:textSize="18dip" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="0dip"
-            android:layout_height="match_parent"
-            android:layout_weight="2" >
-
-            <RelativeLayout
-                android:id="@+id/other_operate_layout"
-                android:layout_width="80dip"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                
-                android:visibility="gone" >
-
-                <TextView
-                    android:id="@+id/other_operate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text=""
-                    android:textColor="@color/white"
-                    android:textSize="16dip" />
-            </RelativeLayout>
-        </RelativeLayout>
-    </LinearLayout>
     <Button
         android:id="@+id/PrintBtn"
         android:layout_width="match_parent"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_height="40dip"
-        android:layout_marginBottom="6dip"
-        android:layout_marginLeft="15dip"
-        android:layout_marginRight="15dip"
-        android:layout_marginTop="140dip"
-        android:background="@color/edu_color_2"
-        android:textColor="@drawable/btn_white_txt_font"
+        android:layout_marginTop="10dip"
+        android:background="@drawable/bg_printer_btn"
+        android:textColor="@color/white_font"
         android:textSize="16dip"
-        android:text="鎵撳嵃璁㈠崟淇℃伅" />
+        android:text="打印订单信息" />
 
     <Button
         android:id="@+id/PrintBtn2"
         android:layout_width="match_parent"
         android:layout_height="40dip"
-        android:layout_alignParentLeft="true"
         android:layout_below="@+id/PrintBtn"
-        android:layout_marginTop="60dp"
-        android:layout_marginLeft="15dip"
-        android:layout_marginRight="15dip"
-        android:background="@color/edu_color_2"
-        android:text="鎵撳嵃鍟嗗搧璐寸焊"
-        android:textColor="@drawable/btn_white_txt_font"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/bg_printer_btn"
+        android:text="打印商品贴纸"
+        android:textColor="@color/white_font"
         android:textSize="16dip" />
 
     <Button
@@ -105,13 +33,10 @@
         android:layout_width="match_parent"
         android:layout_height="40dip"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="15dip"
-        android:layout_marginRight="15dip"
-        android:layout_marginBottom="58dp"
-        android:background="@color/edu_color_2"
-        android:text="妫�鏌ユ墦鍗版満"
-        android:textColor="@drawable/btn_white_txt_font"
-        android:textSize="16dip" />-->
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/bg_printer_btn"
+        android:text="检查打印机"
+        android:textColor="@color/white_font"
+        android:textSize="16dip" />
 
 </RelativeLayout>

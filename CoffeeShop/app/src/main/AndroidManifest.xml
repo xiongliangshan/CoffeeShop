@@ -73,11 +73,11 @@
             </intent-filter>
         </activity>
 
-        <!--<service
-            android:name=".service.LocationService"
-            android:enabled="true"
-            android:exported="false" >
-        </service>-->
+        <activity
+            android:name=".activity.PrinterActivity"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.Holo.Dialog.NoActionBar"
+            />
 
 
         <!-- 个推SDK配置开始 -->

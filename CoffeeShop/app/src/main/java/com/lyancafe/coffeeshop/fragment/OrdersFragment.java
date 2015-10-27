@@ -3,6 +3,7 @@ package com.lyancafe.coffeeshop.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,6 +28,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.activity.PrinterActivity;
 import com.lyancafe.coffeeshop.adapter.OrderGridViewAdapter;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
@@ -334,7 +336,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             printOrderBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Intent intent = new Intent(mContext, PrinterActivity.class);
+                    intent.putExtra("order",order);
+                    mContext.startActivity(intent);
                 }
             });
             moreBtn.setOnClickListener(new View.OnClickListener() {

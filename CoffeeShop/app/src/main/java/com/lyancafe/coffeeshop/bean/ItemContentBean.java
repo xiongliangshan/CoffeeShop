@@ -1,9 +1,11 @@
 package com.lyancafe.coffeeshop.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by Administrator on 2015/9/21.
  */
-public class ItemContentBean {
+public class ItemContentBean implements Serializable{
 
     private String product;        //咖啡名称
     private String unit;           //杯型

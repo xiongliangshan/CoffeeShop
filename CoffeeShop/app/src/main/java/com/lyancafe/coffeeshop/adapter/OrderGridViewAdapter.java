@@ -1,6 +1,7 @@
 package com.lyancafe.coffeeshop.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
@@ -18,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.activity.PrinterActivity;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
@@ -180,7 +182,9 @@ public class OrderGridViewAdapter extends BaseAdapter{
         holder.printBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(context, PrinterActivity.class);
+                intent.putExtra("order",order);
+                context.startActivity(intent);
             }
         });
         return convertView;

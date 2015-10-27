@@ -9,7 +9,7 @@ import android.content.pm.PackageManager;
  */
 public class MyUtil {
 
-
+    public static final int STATUS_INVALID_TOKEN = 103;  //token无效的状态码
     /**
      * 获取版本名
      * @return 当前应用的版本名

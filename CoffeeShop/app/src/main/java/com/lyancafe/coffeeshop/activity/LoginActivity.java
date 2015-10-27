@@ -49,9 +49,9 @@ public class LoginActivity extends BaseActivity {
         PushManager.getInstance().initialize(this.getApplicationContext());
         //如果已经登录过了，并且没有点退出，可以直接进入主界面
         if(!TextUtils.isEmpty(LoginHelper.getToken(mContext))){
-            LoginActivity.this.finish();
             Intent intent = new Intent(mContext, HomeActivity.class);
             mContext.startActivity(intent);
+            LoginActivity.this.finish();
         }
         setContentView(R.layout.activity_login);
         userNameEdit = (EditText) findViewById(R.id.username);
@@ -138,9 +138,9 @@ public class LoginActivity extends BaseActivity {
                 int userId = resp.data.optInt("userId");
                 String token = resp.data.optString("token");
                 LoginHelper.saveUserInfo(mContext,userId,shopId,token);
-                LoginActivity.this.finish();
                 Intent intent = new Intent(mContext, HomeActivity.class);
                 mContext.startActivity(intent);
+                LoginActivity.this.finish();
             }else if(resp.status==LoginHelper.LOGIN_FAIL){
                 ToastUtil.showToast(mContext,resp.message);
             }
