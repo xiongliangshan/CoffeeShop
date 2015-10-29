@@ -77,9 +77,9 @@ public class OrderQueryFragment extends Fragment {
         Calendar cal = Calendar.getInstance();
         cal.roll(java.util.Calendar.DAY_OF_YEAR,-1);
         array[0] = sdf.format(cal.getTime());
-        cal.roll(java.util.Calendar.DAY_OF_YEAR,-1);
+        cal.roll(java.util.Calendar.DAY_OF_YEAR, -1);
         array[1] = sdf.format(cal.getTime());
-        cal.roll(java.util.Calendar.DAY_OF_YEAR,-1);
+        cal.roll(java.util.Calendar.DAY_OF_YEAR, -1);
         array[2] = sdf.format(cal.getTime());
         for(int i = 0;i<array.length;i++){
             Log.d(TAG,"array["+i+"] = "+array[i]);
@@ -102,6 +102,8 @@ public class OrderQueryFragment extends Fragment {
         super.onResume();
         getDatesArray(mContext);
     }
+
+
 
     @Override
     public void onPause() {

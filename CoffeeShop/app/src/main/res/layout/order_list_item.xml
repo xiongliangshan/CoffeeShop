@@ -113,7 +113,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="打印"
+            android:text="@string/print"
             android:textSize="14sp"
             android:layout_marginLeft="3dp"
             />

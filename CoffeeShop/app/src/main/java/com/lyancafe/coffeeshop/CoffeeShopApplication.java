@@ -9,27 +9,29 @@ import android.util.Log;
 import android.view.WindowManager;
 
 import com.lyancafe.coffeeshop.service.LocationService;
-import com.lyancafe.coffeeshop.utils.CrashHandler;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Created by Administrator on 2015/8/21.
  */
-public class LyancafeApplication extends Application {
+public class CoffeeShopApplication extends Application {
 
-    private static final String TAG  ="LyancafeApplication";
+    private static final String TAG  ="CoffeeShopApplication";
     public static final String BASE_DIR = Environment.getExternalStorageDirectory() + File.separator+"coffeeshop"+File.separator;
     public static final String LOG_DIR = BASE_DIR+"log"+File.separator;
-    private static LyancafeApplication application;
+    private static CoffeeShopApplication application;
 
     public static int screenWidth = 0;
     public static int screenHeight = 0;
 
-    public LyancafeApplication() {
-        Log.d(TAG,"LyancafeApplication");
+    public Set<String> printedSet;
+
+    public CoffeeShopApplication() {
+        Log.d(TAG,"CoffeeShopApplication");
     }
 
     @Override
@@ -37,16 +39,17 @@ public class LyancafeApplication extends Application {
         super.onCreate();
         Log.d(TAG, "onCreate()");
         application = this;
+        printedSet = new HashSet<String>();
         getDeviceScreenSize();
-        Intent intent =  new Intent(LyancafeApplication.this, LocationService.class);
+        Intent intent =  new Intent(CoffeeShopApplication.this, LocationService.class);
         this.startService(intent);
   /*      CrashHandler crashHandler = CrashHandler.getInstance();
         crashHandler.init(this);*/
     }
 
-    public static LyancafeApplication getInstance(){
+    public static CoffeeShopApplication getInstance(){
         if(application==null){
-            application = new LyancafeApplication();
+            application = new CoffeeShopApplication();
         }
         return application;
     }

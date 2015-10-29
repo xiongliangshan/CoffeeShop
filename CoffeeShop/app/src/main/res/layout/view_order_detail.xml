@@ -83,7 +83,7 @@
                     android:layout_alignBaseline="@id/contant_reach_time"
                     android:layout_marginLeft="15dp"
                     android:textSize="24sp"
-                    android:text="尽快送达"
+                    android:text=""
                     />
                 <TextView
                     android:id="@+id/contant_produce_effect"
@@ -98,7 +98,7 @@
                     android:id="@+id/produce_effect"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="08:36"
+                    android:text=""
                     android:layout_toRightOf="@id/contant_produce_effect"
                     android:layout_alignBaseline="@id/contant_produce_effect"
                     android:textSize="24sp"
@@ -117,7 +117,7 @@
                     android:id="@+id/receiver_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="王晓霞"
+                    android:text=""
                     android:textStyle="bold"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@id/contant_receiver_info"
@@ -127,7 +127,7 @@
                     android:id="@+id/receiver_phone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="18217131583"
+                    android:text=""
                     android:layout_toRightOf="@id/receiver_name"
                     android:layout_alignBaseline="@id/receiver_name"
                     android:layout_marginLeft="8dp"
@@ -139,7 +139,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/contant_receiver_info"
                     android:layout_alignLeft="@id/receiver_name"
-                    android:text="上海市徐汇区古美路1515号凤凰大楼1801"
+                    android:text=""
                     />
 
             <RelativeLayout
@@ -172,7 +172,7 @@
                     android:layout_marginLeft="14dp"
                     android:layout_toRightOf="@id/contant_deliver"
                     android:layout_alignBaseline="@id/contant_deliver"
-                    android:text="李晓波"
+                    android:text=""
                     />
                 <TextView
                     android:id="@+id/deliver_phone"
@@ -181,7 +181,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_alignBaseline="@id/contant_deliver"
                     android:layout_toRightOf="@id/deliver_name"
-                    android:text="18217131583"
+                    android:text=""
                     />
             </RelativeLayout>
         </RelativeLayout>
@@ -215,60 +215,7 @@
                         android:padding="4dp"
                         android:orientation="vertical"
                         >
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="我要一杯咖啡"
-                            android:textSize="24sp"
-                         />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="我要一杯咖啡"
-                            android:textSize="24sp"
-                            />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="我要一杯咖啡"
-                            android:textSize="24sp"
-                            />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="我要一杯咖啡"
-                            android:textSize="24sp"
-                            />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="我要一杯咖啡"
-                            android:textSize="24sp"
-                            />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="我要一杯咖啡"
-                            android:textSize="24sp"
-                            />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="我要一杯咖啡"
-                            android:textSize="24sp"
-                            />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="我要一杯咖啡"
-                            android:textSize="24sp"
-                            />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="我要一杯咖啡"
-                            android:textSize="24sp"
-                            />
+
 
                     </LinearLayout>
                 </ScrollView>
@@ -283,14 +230,14 @@
                         android:id="@+id/pay_way"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="支付宝支付"
+                        android:text=""
                         android:layout_marginRight="10dp"
                         />
                     <TextView
                         android:id="@+id/money"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="￥200.00"
+                        android:text=""
                         android:layout_toRightOf="@id/pay_way"
                         />
                 </RelativeLayout>
@@ -315,7 +262,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="要一包糖，多加一根吸管"
+                    android:text=""
                     android:textSize="22sp"
                     />
                 <TextView
@@ -330,7 +277,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="请尽快送到"
+                    android:text=""
                     android:textSize="22sp"
                     />
             </LinearLayout>

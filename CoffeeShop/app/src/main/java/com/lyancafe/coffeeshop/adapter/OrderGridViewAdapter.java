@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.lyancafe.coffeeshop.CoffeeShopApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.activity.PrinterActivity;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
@@ -145,7 +146,11 @@ public class OrderGridViewAdapter extends BaseAdapter{
             holder.effectTimeTxt.setTextColor(Color.parseColor("#000000"));
             holder.effectTimeTxt.setText("-----");
         }
-
+        if(CoffeeShopApplication.getInstance().printedSet.contains(order.getOrderSn())){
+            holder.printBtn.setText(R.string.print_again);
+        }else{
+            holder.printBtn.setText(R.string.print);
+        }
         if(order.issueOrder()){
             holder.issueFlagIV.setVisibility(View.VISIBLE);
         }else{

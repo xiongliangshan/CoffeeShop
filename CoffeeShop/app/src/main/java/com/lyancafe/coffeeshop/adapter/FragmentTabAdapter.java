@@ -18,7 +18,7 @@ public class FragmentTabAdapter implements RadioGroup.OnCheckedChangeListener{
     private RadioGroup rgs; // 用于切换tab
     private FragmentActivity fragmentActivity; // Fragment所属的Activity
     private int fragmentContentId; // Activity中所要被替换的区域的id
-    private int currentTab; // 当前Tab页面索引
+    public static int currentTab; // 当前Tab页面索引
 
     private OnRgsExtraCheckedChangedListener onRgsExtraCheckedChangedListener; // 用于让调用者在切换tab时候增加新的功能
 
@@ -97,7 +97,7 @@ public class FragmentTabAdapter implements RadioGroup.OnCheckedChangeListener{
     }
 
 
-    public int getCurrentTab() {
+    public static int getCurrentTab() {
         return currentTab;
     }
 

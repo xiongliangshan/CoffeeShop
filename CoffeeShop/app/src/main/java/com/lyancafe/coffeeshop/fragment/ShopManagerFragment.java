@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.adapter.FragmentTabAdapter;
 import com.lyancafe.coffeeshop.adapter.RecyclerAdapter;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.UserBean;
@@ -81,13 +82,17 @@ public class ShopManagerFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
-        new BaristasListQry(mContext).doRequest();
+        if(FragmentTabAdapter.getCurrentTab()==2){
+            new BaristasListQry(mContext).doRequest();
+        }
+
     }
 
     @Override

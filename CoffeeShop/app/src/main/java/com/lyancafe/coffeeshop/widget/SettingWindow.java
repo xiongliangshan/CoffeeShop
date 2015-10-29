@@ -1,6 +1,8 @@
 package com.lyancafe.coffeeshop.widget;
 
+import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -22,6 +24,7 @@ import com.lyancafe.coffeeshop.activity.HomeActivity;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.helper.ShopHelper;
+import com.lyancafe.coffeeshop.service.LocationService;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.xls.http.HttpAsyncTask;
@@ -131,7 +134,9 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
             case R.id.login_out:
                 //退出登录
                 ((HomeActivity)context).finish();
-                LoginHelper.saveToken(context,"");
+                LoginHelper.saveToken(context, "");
+                Intent intent =  new Intent(context, LocationService.class);
+                context.stopService(intent);
                 break;
         }
     }

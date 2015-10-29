@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
+import com.lyancafe.coffeeshop.CoffeeShopApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.activity.PrinterActivity;
 import com.lyancafe.coffeeshop.adapter.OrderGridViewAdapter;
@@ -245,6 +246,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         if(order==null){
             orderIdTxt.setText("");
             orderTimeTxt.setText("");
+            orderReportTxt.setEnabled(false);
             reachTimeTxt.setText("");
             produceEffectTxt.setText("");
             receiveNameTxt.setText("");
@@ -257,9 +259,13 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             moneyTxt.setText("");
             userRemarkTxt.setText("");
             csadRemarkTxt.setText("");
+            finishProduceBtn.setEnabled(false);
+            printOrderBtn.setEnabled(false);
+            moreBtn.setEnabled(false);
         }else{
             orderIdTxt.setText(order.getOrderSn());
             orderTimeTxt.setText(OrderHelper.getDateToString(order.getOrderTime()));
+            orderReportTxt.setEnabled(true);
             orderReportTxt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -333,6 +339,12 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     grabConfirmDialog.show();
                 }
             });
+            if(CoffeeShopApplication.getInstance().printedSet.contains(order.getOrderSn())){
+                printOrderBtn.setText(R.string.print_again);
+            }else{
+                printOrderBtn.setText(R.string.print);
+            }
+            printOrderBtn.setEnabled(true);
             printOrderBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -341,6 +353,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     mContext.startActivity(intent);
                 }
             });
+            moreBtn.setEnabled(true);
             moreBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -349,7 +362,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     if(!order.isWxScan() && subTabIndex!=1){
                         popup.getMenu().findItem(R.id.menu_scan_code).setVisible(false);
                     }
-                    if(subTabIndex==2 || subTabIndex ==3){
+                    if(order.getStatus()!=OrderHelper.ASSIGNED_STATUS){
                         popup.getMenu().findItem(R.id.menu_undo_order).setVisible(false);
                     }
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -477,7 +490,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("xiong", "排序：positon =" + position + "选择了 " + adapter_category.getItem(position));
-                switch (position){
+                switch (position) {
                     case 0:
                         fillterInstant = OrderHelper.ALL;
                         break;
@@ -503,13 +516,19 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated");
         subTabIndex = 0;
-        requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true);
+        requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume:");
+        //打印界面退出的时候，刷新一下打印按钮文字
+        adapter.notifyDataSetChanged();
+        if(adapter.list.size()>0 && adapter.selected>=0){
+            updateDetailView(adapter.list.get(adapter.selected));
+        }
+
     }
 
     @Override
@@ -589,6 +608,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             refreshbtn.setVisibility(View.INVISIBLE);
         }
     }
+
+
 
     class ListTabButtonListener implements View.OnClickListener{
 
@@ -704,6 +725,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             adapter.setData(orderBeans);
             if(orderBeans.size()>0){
                 updateDetailView(orderBeans.get(0));
+            }else{
+                updateDetailView(null);
             }
         }
     }
@@ -749,6 +772,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             adapter.setData(orderBeans);
             if(orderBeans.size()>0){
                 updateDetailView(orderBeans.get(0));
+            }else{
+                updateDetailView(null);
             }
         }
     }
@@ -794,6 +819,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             adapter.setData(orderBeans);
             if(orderBeans.size()>0){
                 updateDetailView(orderBeans.get(0));
+            }else{
+                updateDetailView(null);
             }
         }
     }
@@ -839,6 +866,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             adapter.setData(orderBeans);
             if(orderBeans.size()>0){
                 updateDetailView(orderBeans.get(0));
+            }else{
+                updateDetailView(null);
             }
         }
     }
@@ -883,6 +912,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 }
                 adapter.list = adapter.cacheToProduceList;
                 adapter.notifyDataSetChanged();
+            }else{
+                ToastUtil.showToast(context,resp.message);
             }
         }
     }
