@@ -32,6 +32,7 @@ import org.w3c.dom.Text;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * Created by Administrator on 2015/10/26.
@@ -40,6 +41,7 @@ public class GetuiPushReceiver extends BroadcastReceiver {
 
     private static final String TAG = "getui";
     public static String CID = "";
+    private static String action_str_flag = "";
     NotificationManager mNotificationManager;
     private Handler handler = new Handler(){
         @Override
@@ -65,7 +67,8 @@ public class GetuiPushReceiver extends BroadcastReceiver {
                 if (payload != null) {
                     String data = new String(payload);
                     Log.d(TAG, "receiver payload : " + data);
-                    sendNotification(context, null);
+                    PushMessageBean pmb =  PushMessageBean.parseJsonToMB(data);
+                    sendNotification(context, pmb);
                 }
                 break;
 
@@ -78,6 +81,7 @@ public class GetuiPushReceiver extends BroadcastReceiver {
                     GetuiPushReceiver.CID = cid;
                     new upLoadDeviceInfoQry(context,cid).doRequest();
                 }
+                action_str_flag = "GET_CLIENTID";
                 Log.d(TAG,"cid = "+cid);
                 break;
 
@@ -100,11 +104,14 @@ public class GetuiPushReceiver extends BroadcastReceiver {
                  */
                 boolean isOnline = bundle.getBoolean("onlineState");
                 Log.d(TAG,"isOnline = "+isOnline);
-
+                if(!isOnline){
+                    PushManager.getInstance().initialize(context.getApplicationContext());
+                }
                 break;
             default:
                 break;
         }
+
     }
 
     /**
@@ -118,8 +125,12 @@ public class GetuiPushReceiver extends BroadcastReceiver {
                 .setSmallIcon(R.mipmap.app_icon)
                 .setDefaults(Notification.DEFAULT_VIBRATE)
                 .setAutoCancel(true)
-                .setContentTitle("透传")
-                .setContentText("测试消息");
+                .setContentTitle("连咖啡消息通知");
+        if(pmb!=null){
+            mBuilder.setContentText(pmb.getDescription());
+        }else{
+            mBuilder.setContentText("有新订单，数据解析错误无法显示单号");
+        }
 
         mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.coffee_box));
 
@@ -130,12 +141,12 @@ public class GetuiPushReceiver extends BroadcastReceiver {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(mNotificationManager==null){
-                    mNotificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+                if (mNotificationManager == null) {
+                    mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 }
                 mNotificationManager.cancel(notifyId);
             }
-        },2*60*1000);
+        }, 2 * 60 * 1000);
     }
 
 
@@ -155,8 +166,7 @@ public class GetuiPushReceiver extends BroadcastReceiver {
             String token = LoginHelper.getToken(context);
             int shopId = LoginHelper.getShopId(context);
             int userId = LoginHelper.getUserId(context);
-            TelephonyManager mTm = (TelephonyManager) context.getSystemService(context.TELEPHONY_SERVICE);
-            String deviceId = mTm.getDeviceId();
+            String deviceId = clientId;
             String mType = android.os.Build.MODEL; // 手机型号
             int appCode = MyUtil.getVersionCode(context);
             if(TextUtils.isEmpty(deviceId) || TextUtils.isEmpty(clientId) || userId == 0){
@@ -167,8 +177,9 @@ public class GetuiPushReceiver extends BroadcastReceiver {
             params.put("deviceId",deviceId);
             params.put("mType",mType);
             params.put("appCode",appCode);
-            params.put("clientId",clientId);
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,false);
+            params.put("clientId", clientId);
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, false);
+            Log.d(TAG, "upload device info:" + deviceId + "|" + mType + "|" + appCode + "|" + clientId);
         }
 
         @Override

@@ -138,6 +138,7 @@ public class LoginActivity extends BaseActivity {
                 LoginHelper.saveUserInfo(mContext,userId,shopId,token);
                 Intent intent = new Intent(mContext, HomeActivity.class);
                 mContext.startActivity(intent);
+                overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);
                 LoginActivity.this.finish();
             }else if(resp.status==LoginHelper.LOGIN_FAIL){
                 ToastUtil.showToast(mContext,resp.message);

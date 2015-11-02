@@ -17,6 +17,7 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
+import com.xls.http.HttpUtils;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -83,6 +84,13 @@ public class PrinterActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		if(HttpUtils.BASE_URL.contains("test")){
+			printer1add = "192.168.1.231";
+			printer2add = "192.168.1.232";
+		}else{
+			printer1add = "192.19.1.231";
+			printer2add = "192.19.1.232";
+		}
 		mContext =this;
 		setContentView(R.layout.activity_printer);
 		printBtn = (Button)findViewById(R.id.PrintBtn);

@@ -134,6 +134,7 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
             case R.id.login_out:
                 //退出登录
                 ((HomeActivity)context).finish();
+                ((HomeActivity)context).overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);
                 LoginHelper.saveToken(context, "");
                 Intent intent =  new Intent(context, LocationService.class);
                 context.stopService(intent);
