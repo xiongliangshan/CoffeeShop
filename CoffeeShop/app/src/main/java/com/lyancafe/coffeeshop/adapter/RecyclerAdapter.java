@@ -1,6 +1,7 @@
 package com.lyancafe.coffeeshop.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,9 +11,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.lyancafe.coffeeshop.CoffeeShopApplication;
 import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.activity.HomeActivity;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
+import com.lyancafe.coffeeshop.service.LocationService;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.xls.http.HttpAsyncTask;
 import com.xls.http.HttpEntity;
@@ -142,7 +146,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 }
                 if(resp.data.optBoolean("isMaster")){
                     //主咖啡师下班，退出登录
-                    ToastUtil.showToast(context, "主咖啡师下班，退出登录");
+                    new CoffeeShopApplication.LoginOutQry(context).doRequest();
+                    Intent intent =  new Intent(context, LocationService.class);
+                    context.stopService(intent);
+                    LoginHelper.saveToken(context, "");
+                    ((HomeActivity)context).finish();
+                    ((HomeActivity)context).overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);
+
                 }
 
             }else{

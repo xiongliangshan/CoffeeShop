@@ -8,11 +8,19 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 
+import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.service.LocationService;
+import com.xls.http.HttpAsyncTask;
+import com.xls.http.HttpEntity;
+import com.xls.http.HttpUtils;
+import com.xls.http.Jresp;
+import com.xls.http.Qry;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -68,5 +76,30 @@ public class CoffeeShopApplication extends Application {
     public void onTerminate() {
         super.onTerminate();
         Log.d(TAG, "onTerminate()");
+    }
+
+
+    //退出登录接口
+    public static class LoginOutQry implements Qry{
+
+        private Context context;
+
+        public LoginOutQry(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public void doRequest() {
+            String token = LoginHelper.getToken(context);
+            int shopId = LoginHelper.getShopId(context);
+            String url = HttpUtils.BASE_URL+"/token/delete?token="+token;
+            Map<String,Object> params = new HashMap<String,Object>();
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.GET, url, params), context, this, false);
+        }
+
+        @Override
+        public void showResult(Jresp resp) {
+            Log.d(TAG,"LoginOutQry:"+resp);
+        }
     }
 }

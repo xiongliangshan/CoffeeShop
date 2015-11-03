@@ -19,6 +19,7 @@ import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.lyancafe.coffeeshop.CoffeeShopApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.activity.HomeActivity;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
@@ -133,11 +134,12 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
                 break;
             case R.id.login_out:
                 //退出登录
-                ((HomeActivity)context).finish();
-                ((HomeActivity)context).overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);
+                new CoffeeShopApplication.LoginOutQry(CoffeeShopApplication.getInstance()).doRequest();
                 LoginHelper.saveToken(context, "");
                 Intent intent =  new Intent(context, LocationService.class);
                 context.stopService(intent);
+                ((HomeActivity)context).finish();
+                ((HomeActivity)context).overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);
                 break;
         }
     }

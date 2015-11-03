@@ -43,8 +43,8 @@ public class ReportWindow extends PopupWindow implements View.OnClickListener{
     private Button cacelBtn;
     private OrderBean orderBean;
     private Context mContext;
-    private static String QUESTION_TYPE = "";
-    private static String QUESTION_IDEA = "";
+    private static int  QUESTION_TYPE = 17; //14.产线繁忙 15.无法生产 16.定位错误，应属其他区域 17.其他
+    private static int  QUESTION_IDEA = 1; //1.取消订单 2.改约时间
     private static String QUESTION_DESCRIPTION ="";
 
     public ReportWindow(Context context) {
@@ -88,19 +88,19 @@ public class ReportWindow extends PopupWindow implements View.OnClickListener{
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        QUESTION_TYPE = "";
+                        QUESTION_TYPE = 17;
                         break;
                     case 1:
-                        QUESTION_TYPE = context.getResources().getString(R.string.shop_busy);
+                        QUESTION_TYPE = 14;
                         break;
                     case 2:
-                        QUESTION_TYPE = context.getResources().getString(R.string.produce_problem);
+                        QUESTION_TYPE = 15;
                         break;
                     case 3:
-                        QUESTION_TYPE = context.getResources().getString(R.string.location_error);
+                        QUESTION_TYPE = 16;
                         break;
                     case 4:
-                        QUESTION_TYPE = context.getResources().getString(R.string.other);
+                        QUESTION_TYPE = 17;
                         break;
                 }
             }
@@ -123,13 +123,13 @@ public class ReportWindow extends PopupWindow implements View.OnClickListener{
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        QUESTION_IDEA = "";
+                        QUESTION_IDEA = 1;
                         break;
                     case 1:
-                        QUESTION_IDEA = context.getResources().getString(R.string.cancel_order);
+                        QUESTION_IDEA = 1;
                         break;
                     case 2:
-                        QUESTION_IDEA = context.getResources().getString(R.string.modify_order_time);
+                        QUESTION_IDEA = 2;
                         break;
 
                 }
@@ -185,11 +185,11 @@ public class ReportWindow extends PopupWindow implements View.OnClickListener{
 
         private Context context;
         private long orderId;
-        private String questionType;
-        private String questionIdea;
+        private int questionType;
+        private int questionIdea;
         private String questionDesc;
 
-        public ReportOrderQry(Context context, long orderId, String questionType, String questionIdea, String questionDesc) {
+        public ReportOrderQry(Context context, long orderId, int questionType, int questionIdea, String questionDesc) {
             this.context = context;
             this.orderId = orderId;
             this.questionType = questionType;
@@ -206,7 +206,7 @@ public class ReportWindow extends PopupWindow implements View.OnClickListener{
             Map<String,Object> params = new HashMap<String,Object>();
             params.put("questionType",questionType);
             params.put("handleType",questionIdea);
-            params.put("remark",questionDesc);
+            params.put("remark", questionDesc);
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
         }
 
@@ -215,13 +215,19 @@ public class ReportWindow extends PopupWindow implements View.OnClickListener{
             Log.d(TAG, "ReportOrderQry:resp =" + resp);
             if(resp == null){
                 ToastUtil.showToast(context, R.string.unknown_error);
+                ReportWindow.this.dismiss();
                 return;
             }
             if(resp.status==0){
                 ToastUtil.showToast(context, R.string.do_success);
-                ReportWindow.this.dismiss();
+
+            }else{
+                ToastUtil.showToast(context, resp.message);
             }
+            ReportWindow.this.dismiss();
         }
+
+
     }
 
 }

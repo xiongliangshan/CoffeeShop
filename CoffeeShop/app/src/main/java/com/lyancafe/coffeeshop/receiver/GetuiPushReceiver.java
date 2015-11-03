@@ -123,16 +123,22 @@ public class GetuiPushReceiver extends BroadcastReceiver {
         }
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.mipmap.app_icon)
-                .setDefaults(Notification.DEFAULT_VIBRATE)
+                .setDefaults(Notification.DEFAULT_VIBRATE|Notification.DEFAULT_LIGHTS)
                 .setAutoCancel(true)
                 .setContentTitle("连咖啡消息通知");
         if(pmb!=null){
             mBuilder.setContentText(pmb.getDescription());
         }else{
-            mBuilder.setContentText("有新订单，数据解析错误无法显示单号");
+            mBuilder.setContentText("有订单消息，数据解析错误无法显示单号");
+        }
+        if(pmb.getEventType()==1){
+            mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.coffee_box));
+        }else if(pmb.getEventType()==10){
+            mBuilder.setDefaults(Notification.DEFAULT_ALL);
+        }else if(pmb.getEventType()==11){
+            mBuilder.setDefaults(Notification.DEFAULT_ALL);
         }
 
-        mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.coffee_box));
 
         Random ran =new Random(System.currentTimeMillis());
         final int notifyId  = ran.nextInt();
