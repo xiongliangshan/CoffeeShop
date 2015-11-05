@@ -202,10 +202,10 @@ public class OrderGridViewAdapter extends BaseAdapter{
             TextView tv1 = new TextView(context);
             tv1.setText(item.getProduct() + "(" + item.getUnit() + ")");
             tv1.setMaxEms(6);
-            tv1.setTextSize(OrderHelper.sp2px(context, 16));
+            tv1.setTextSize(context.getResources().getDimension(R.dimen.content_item_text_size));
             TextView tv2 = new TextView(context);
             tv2.setText("X " + item.getQuantity());
-            tv2.setTextSize(OrderHelper.sp2px(context, 16));
+            tv2.setTextSize(context.getResources().getDimension(R.dimen.content_item_text_size));
             TextPaint tp = tv2.getPaint();
             tp.setFakeBoldText(true);
             RelativeLayout rl = new RelativeLayout(context);

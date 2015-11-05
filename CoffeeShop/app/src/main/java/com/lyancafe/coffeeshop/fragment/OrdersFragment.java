@@ -394,11 +394,11 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             TextView tv1 = new TextView(mContext);
             tv1.setText(item.getProduct() + "(" + item.getUnit() + ")");
             tv1.setMaxEms(7);
-            tv1.setTextSize(OrderHelper.sp2px(mContext, 16));
+            tv1.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
             TextView tv2 = new TextView(mContext);
             tv2.setText("X " + item.getQuantity());
             tv2.getPaint().setFakeBoldText(true);
-            tv2.setTextSize(OrderHelper.sp2px(mContext, 16));
+            tv2.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
             RelativeLayout rl = new RelativeLayout(mContext);
             RelativeLayout.LayoutParams lp1=new RelativeLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
