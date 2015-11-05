@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.lyancafe.coffeeshop">
+    package="com.lyancafe.coffeeshop"
+    android:versionCode="1"
+    android:versionName="1.0.1"
+    >
 
     <uses-sdk
         android:minSdkVersion="9"
