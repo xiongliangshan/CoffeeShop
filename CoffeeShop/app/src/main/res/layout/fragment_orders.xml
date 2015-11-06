@@ -69,6 +69,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <TextView
+            android:id="@+id/total_quantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="总杯量:"
+            android:textSize="20sp"
+            android:textColor="@color/bg_refresh"
+            android:visibility="invisible"
+            />
         <Button
             android:id="@+id/btn_refresh"
             android:layout_width="wrap_content"

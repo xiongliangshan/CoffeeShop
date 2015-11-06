@@ -76,7 +76,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private OrderGridViewAdapter adapter;
 
     private Button refreshbtn;
-
+    private TextView totalQuantityTxt;
     private long starttime;
     private long endtime;
 
@@ -110,6 +110,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private Button moreBtn;
     private Button prevBtn;
     private Button nextBtn;
+
 
     //消息处理
     private static final int MSG_UPDATE_ORDER_NUMBER = 101;
@@ -196,6 +197,25 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true);
             }
         });
+        totalQuantityTxt = (TextView) contentView.findViewById(R.id.total_quantity);
+    }
+
+    //更新总杯量
+    private void updateTotalQuantity(List<OrderBean> orderList){
+        if(orderList==null){
+            return;
+        }
+        int sum = 0;
+        for(int i=0;i<orderList.size();i++){
+            int item_num = 0;
+            List<ItemContentBean> items = orderList.get(i).getItems();
+            for(int j=0;j<items.size();j++){
+                item_num+=items.get(j).getQuantity();
+            }
+            sum+=item_num;
+        }
+
+        totalQuantityTxt.setText("总杯量:"+sum);
     }
     private void requestData(Context context, int orderBy, int fillterInstant,boolean isRefresh){
         switch (subTabIndex){
@@ -659,6 +679,11 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     resetSpinners();
                     break;
             }
+            if(subTabIndex == 3){
+                totalQuantityTxt.setVisibility(View.VISIBLE);
+            }else{
+                totalQuantityTxt.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
@@ -864,7 +889,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
             Log.d(TAG, "orderBeans  =" + orderBeans);
-            updateOrdersNum(3,orderBeans.size());
+            updateOrdersNum(3, orderBeans.size());
+            updateTotalQuantity(orderBeans);
             adapter.setData(orderBeans);
             if(orderBeans.size()>0){
                 updateDetailView(orderBeans.get(0));

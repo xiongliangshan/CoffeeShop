@@ -3,7 +3,7 @@
     android:id="@+id/root_view"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="319dp"
+    android:layout_height="@dimen/order_item_height"
     android:descendantFocusability="blocksDescendants"
     >
 
@@ -73,7 +73,7 @@
     <LinearLayout
         android:id="@+id/item_container"
         android:layout_width="match_parent"
-        android:layout_height="185dp"
+        android:layout_height="@dimen/order_item_content_height"
         android:background="@mipmap/bg_dot"
         android:orientation="vertical"
         android:gravity="center_horizontal"
