@@ -364,12 +364,12 @@ public class PrinterActivity extends Activity {
 		String addressCMD, addr1, addr2;
 		Log.d(TAG, "address len: " + address.length());
 		if (address.length() <= 22) {
-			addressCMD = "A70,160,0,200,1,1,N,\""+address+"\""+"\n";
+			addressCMD = "A90,160,0,200,1,1,N,\""+address+"\""+"\n";
 		} else {
 			addr1 = address.substring(0, 22);
 			addr2 = address.substring(22);
-			addressCMD = "A70,160,0,200,1,1,N,\""+addr1+"\""+"\n" +
-					"A70,190,0,200,1,1,N,\""+addr2+"\""+"\n";
+			addressCMD = "A90,160,0,200,1,1,N,\""+addr1+"\""+"\n" +
+					"A90,190,0,200,1,1,N,\""+addr2+"\""+"\n";
 		}
 
 		String orderSnDate, orderSnNum;
@@ -401,7 +401,7 @@ public class PrinterActivity extends Activity {
 				"A10,10,0,200,1,1,N,\"生产时间:"+sdf.format(date)+"\""+"\n"+
 				"A10,50,0,200,1,1,N,\"订单号:"+orderSnDate+orderSnNum+"\""+"\n"+ //订单号
 				"A10,90,0,200,1,1,N,\"收货人:\""+"\n"+
-				"A70,100,0,200,2,2,N,\""+recipient+" "+phoneNum+"\""+"\n"+
+				"A90,100,0,200,2,2,N,\""+recipient+" "+phoneNum+"\""+"\n"+
 				addressCMD +                             //配送地址
 				"A10,220,0,200,1,1,N,\"清单：\""+"\n"+
 				"A50,250,0,200,1,1,N,\""+order1+"\""+"\n"+
@@ -418,7 +418,7 @@ public class PrinterActivity extends Activity {
 				"A10,10,0,200,1,1,N,\"生产时间:"+sdf.format(date)+"\""+"\n"+
 				"A10,50,0,200,1,1,N,\"订单号:"+orderSnDate+orderSnNum+"\""+"\n"+ //订单号
 				"A10,90,0,200,1,1,N,\"收货人:\""+"\n"+
-				"A70,100,0,200,2,2,N,\""+recipient+" "+phoneNum+"\""+"\n"+
+				"A90,100,0,200,2,2,N,\""+recipient+" "+phoneNum+"\""+"\n"+
 				addressCMD +                             //配送地址
 				"A10,220,0,200,1,1,N,\"清单：\""+"\n"+
 				"A50,250,0,200,1,1,N,\""+order1+"\""+"\n"+
