@@ -148,8 +148,10 @@ public class OrderGridViewAdapter extends BaseAdapter{
         }
         if(CoffeeShopApplication.getInstance().printedSet.contains(order.getOrderSn())){
             holder.printBtn.setText(R.string.print_again);
+            holder.printBtn.setTextColor(context.getResources().getColor(R.color.text_red));
         }else{
             holder.printBtn.setText(R.string.print);
+            holder.printBtn.setTextColor(context.getResources().getColor(R.color.text_black));
         }
         if(order.issueOrder()){
             holder.issueFlagIV.setVisibility(View.VISIBLE);

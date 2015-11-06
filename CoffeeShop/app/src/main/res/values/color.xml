@@ -16,4 +16,7 @@
 
 	<color name="bg_blue">#3d5de8</color>
 
+	<color name="text_red">#e2435a</color>
+	<color name="text_black">#303030</color>
+
 </resources>  

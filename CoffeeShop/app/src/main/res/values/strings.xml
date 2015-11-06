@@ -60,5 +60,5 @@
     <string name="modify_order_time">改约时间</string>
     
     <string name="print">打印</string>
-    <string name="print_again">再打印</string>
+    <string name="print_again">已打印</string>
 </resources>
