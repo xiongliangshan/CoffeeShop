@@ -202,7 +202,7 @@ public class HomeActivity extends BaseActivity {
                 }
                 mNotificationManager.cancel(notifyId);
             }
-        }, 1000);
+        }, 10*1000);
     }
 
 }

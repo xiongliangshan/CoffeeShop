@@ -1,16 +1,20 @@
 package com.lyancafe.coffeeshop.fragment;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -55,6 +59,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by Administrator on 2015/9/1.
@@ -88,6 +93,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private int fillterInstant = 0;
 
     private ReportWindow reportWindow;
+    NotificationManager mNotificationManager;
 
     /**
      * 订单详情页UI组件
@@ -769,6 +775,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
             Log.d(TAG, "orderBeans  =" + orderBeans);
             updateOrdersNum(0, orderBeans.size());
+            if(orderBeans.size()>adapter.cacheToProduceList.size() && !isShowProgress){
+                sendNotificationForAutoNewOrders(AutoFetchOrdersService.auto_flag);
+            }
             adapter.setData(orderBeans);
             if(orderBeans.size()>0){
                 updateDetailView(orderBeans.get(0));
@@ -1015,5 +1024,36 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true,false);
         }
     }
+
+    //发送自动刷单语音提示
+    private void sendNotificationForAutoNewOrders(boolean isAuto){
+        if(mNotificationManager==null){
+            mNotificationManager = (NotificationManager)mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        }
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
+                .setSmallIcon(R.mipmap.app_icon)
+                .setDefaults(Notification.DEFAULT_LIGHTS)
+                .setAutoCancel(true)
+                .setContentTitle("连咖啡消息通知");
+
+        if(isAuto) {
+            mBuilder.setContentText("自动刷单，有新订单");
+            mBuilder.setSound(Uri.parse("android.resource://" + mContext.getPackageName() + "/" + R.raw.coffee_box));
+        }
+        Random ran =new Random(System.currentTimeMillis());
+        final int notifyId  = ran.nextInt();
+        Log.d(TAG,"notifyId = "+notifyId);
+        mNotificationManager.notify(notifyId, mBuilder.build());
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mNotificationManager == null) {
+                    mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                }
+                mNotificationManager.cancel(notifyId);
+            }
+        }, 2*60*1000);
+    }
+
 
 }

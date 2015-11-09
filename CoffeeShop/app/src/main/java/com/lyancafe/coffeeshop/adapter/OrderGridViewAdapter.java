@@ -1,11 +1,15 @@
 package com.lyancafe.coffeeshop.adapter;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.Log;
@@ -37,6 +41,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -347,4 +352,6 @@ public class OrderGridViewAdapter extends BaseAdapter{
             }
         }
     }
+
+
 }
