@@ -2,14 +2,12 @@ package com.lyancafe.coffeeshop;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 
 import com.lyancafe.coffeeshop.helper.LoginHelper;
-import com.lyancafe.coffeeshop.service.LocationService;
 import com.xls.http.HttpAsyncTask;
 import com.xls.http.HttpEntity;
 import com.xls.http.HttpUtils;
@@ -49,8 +47,7 @@ public class CoffeeShopApplication extends Application {
         application = this;
         printedSet = new HashSet<String>();
         getDeviceScreenSize();
-        Intent intent =  new Intent(CoffeeShopApplication.this, LocationService.class);
-        this.startService(intent);
+
   /*      CrashHandler crashHandler = CrashHandler.getInstance();
         crashHandler.init(this);*/
     }

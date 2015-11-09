@@ -25,7 +25,6 @@ import com.lyancafe.coffeeshop.activity.HomeActivity;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.helper.ShopHelper;
-import com.lyancafe.coffeeshop.service.LocationService;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.xls.http.HttpAsyncTask;
@@ -136,8 +135,6 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
                 //退出登录
                 new CoffeeShopApplication.LoginOutQry(CoffeeShopApplication.getInstance()).doRequest();
                 LoginHelper.saveToken(context, "");
-                Intent intent =  new Intent(context, LocationService.class);
-                context.stopService(intent);
                 ((HomeActivity)context).finish();
                 ((HomeActivity)context).overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);
                 break;

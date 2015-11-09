@@ -82,6 +82,8 @@
             android:theme="@android:style/Theme.Holo.Dialog.NoActionBar"
             />
 
+        <service android:name=".service.AutoFetchOrdersService"/>
+
 
         <!-- 个推SDK配置开始 -->
         <!-- 配置的第三方参数属性 -->

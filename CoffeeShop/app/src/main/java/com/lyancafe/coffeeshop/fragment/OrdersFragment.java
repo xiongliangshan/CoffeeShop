@@ -1,9 +1,11 @@
 package com.lyancafe.coffeeshop.fragment;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,12 +31,14 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.lyancafe.coffeeshop.CoffeeShopApplication;
 import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.activity.HomeActivity;
 import com.lyancafe.coffeeshop.activity.PrinterActivity;
 import com.lyancafe.coffeeshop.adapter.OrderGridViewAdapter;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.service.AutoFetchOrdersService;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
 import com.lyancafe.coffeeshop.widget.ListTabButton;
@@ -111,7 +115,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private Button prevBtn;
     private Button nextBtn;
 
-
+    private OrdersReceiver ordersReceiver;
     //消息处理
     private static final int MSG_UPDATE_ORDER_NUMBER = 101;
     private static final int MSG_ACTION_PRODUCE = 102;
@@ -154,9 +158,22 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         super.onAttach(activity);
         mContext = activity;
         Log.d(TAG, "onAttach");
+        registerReceiver(mContext);
     }
 
+    private void registerReceiver(Context context){
+        ordersReceiver = new OrdersReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(AutoFetchOrdersService.ACTION_REFRESH_ORDERS);
+        context.registerReceiver(ordersReceiver,filter);
+    }
 
+    private void unRegisterReceiver(Context context){
+        if(ordersReceiver!=null){
+            context.unregisterReceiver(ordersReceiver);
+            ordersReceiver = null;
+        }
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -194,7 +211,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         refreshbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true);
+                requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true,true);
             }
         });
         totalQuantityTxt = (TextView) contentView.findViewById(R.id.total_quantity);
@@ -217,19 +234,19 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
         totalQuantityTxt.setText("总杯量:"+sum);
     }
-    private void requestData(Context context, int orderBy, int fillterInstant,boolean isRefresh){
+    private void requestData(Context context, int orderBy, int fillterInstant,boolean isRefresh,boolean isShowProgress){
         switch (subTabIndex){
             case 0:
-                new OrderToProduceQry(context, orderBy, fillterInstant).doRequest();
+                new OrderToProduceQry(context, orderBy, fillterInstant,isShowProgress).doRequest();
                 break;
             case 1:
-                new OrderProducedQry(context, orderBy, fillterInstant).doRequest();
+                new OrderProducedQry(context, orderBy, fillterInstant,isShowProgress).doRequest();
                 break;
             case 2:
-                new OrderDeliveryingQry(context, orderBy, fillterInstant).doRequest();
+                new OrderDeliveryingQry(context, orderBy, fillterInstant,isShowProgress).doRequest();
                 break;
             case 3:
-                new OrderFinishedQry(context, orderBy, fillterInstant).doRequest();
+                new OrderFinishedQry(context, orderBy, fillterInstant,isShowProgress).doRequest();
                 break;
         }
         if(isRefresh){
@@ -492,7 +509,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                         orderBy = OrderHelper.ORDER_TIME;
                         break;
                 }
-                requestData(mContext, orderBy, fillterInstant, false);
+                requestData(mContext, orderBy, fillterInstant, false,true);
             }
 
             @Override
@@ -523,7 +540,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                         fillterInstant = OrderHelper.APPOINTMENT;
                         break;
                 }
-                requestData(mContext, orderBy, fillterInstant, false);
+                requestData(mContext, orderBy, fillterInstant, false,true);
             }
 
             @Override
@@ -538,7 +555,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated");
         subTabIndex = 0;
-        requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true);
+        requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true,true);
     }
 
     @Override
@@ -592,6 +609,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     public void onDetach() {
         super.onDetach();
         Log.d(TAG, "onDetach");
+        unRegisterReceiver(mContext);
     }
 
     @Override
@@ -645,7 +663,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     deliveryFinishedTab.setClickBg(false);
                     showWidget(true);
                     subTabIndex = 0;
-                    new OrderToProduceQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL).doRequest();
+                    new OrderToProduceQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true).doRequest();
                     resetSpinners();
                     break;
                 case R.id.tab_have_done:
@@ -655,7 +673,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     deliveryFinishedTab.setClickBg(false);
                     showWidget(false);
                     subTabIndex = 1;
-                    new OrderProducedQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL).doRequest();
+                    new OrderProducedQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true).doRequest();
                     resetSpinners();
                     break;
                 case R.id.tab_delivering:
@@ -665,7 +683,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     deliveryFinishedTab.setClickBg(false);
                     showWidget(false);
                     subTabIndex = 2;
-                    new OrderDeliveryingQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL).doRequest();
+                    new OrderDeliveryingQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true).doRequest();
                     resetSpinners();
                     break;
                 case R.id.tab_delivery_finished:
@@ -675,7 +693,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     deliveryFinishedTab.setClickBg(true);
                     showWidget(false);
                     subTabIndex = 3;
-                    new OrderFinishedQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL).doRequest();
+                    new OrderFinishedQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true).doRequest();
                     resetSpinners();
                     break;
             }
@@ -717,11 +735,13 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         private Context context;
         private int orderBy;
         private int fillterInstant;
+        private boolean isShowProgress;
 
-        public OrderToProduceQry(Context context, int orderBy, int fillterInstant) {
+        public OrderToProduceQry(Context context, int orderBy, int fillterInstant,boolean isShowProgress) {
             this.context = context;
             this.orderBy = orderBy;
             this.fillterInstant = fillterInstant;
+            this.isShowProgress = isShowProgress;
         }
 
         @Override
@@ -734,7 +754,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             params.put("fillterInstant", fillterInstant);
 
             starttime = System.currentTimeMillis();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowProgress);
         }
 
         @Override
@@ -764,11 +784,13 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         private Context context;
         private int orderBy;
         private int fillterInstant;
+        private boolean isShowProgress;
 
-        public OrderProducedQry(Context context, int orderBy, int fillterInstant) {
+        public OrderProducedQry(Context context, int orderBy, int fillterInstant,boolean isShowProgress) {
             this.context = context;
             this.orderBy = orderBy;
             this.fillterInstant = fillterInstant;
+            this.isShowProgress = isShowProgress;
         }
 
         @Override
@@ -781,7 +803,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             params.put("fillterInstant", fillterInstant);
 
             starttime = System.currentTimeMillis();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowProgress);
         }
 
         @Override
@@ -811,11 +833,12 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         private Context context;
         private int orderBy;
         private int fillterInstant;
-
-        public OrderDeliveryingQry(Context context, int orderBy, int fillterInstant) {
+        private boolean isShowProgress;
+        public OrderDeliveryingQry(Context context, int orderBy, int fillterInstant,boolean isShowProgress) {
             this.context = context;
             this.orderBy = orderBy;
             this.fillterInstant = fillterInstant;
+            this.isShowProgress = isShowProgress;
         }
 
         @Override
@@ -828,7 +851,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             params.put("fillterInstant", fillterInstant);
 
             starttime = System.currentTimeMillis();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowProgress);
         }
 
         @Override
@@ -858,11 +881,12 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         private Context context;
         private int orderBy;
         private int fillterInstant;
-
-        public OrderFinishedQry(Context context, int orderBy, int fillterInstant) {
+        private boolean isShowProgress;
+        public OrderFinishedQry(Context context, int orderBy, int fillterInstant,boolean isShowProgress) {
             this.context = context;
             this.orderBy = orderBy;
             this.fillterInstant = fillterInstant;
+            this.isShowProgress = isShowProgress;
         }
 
         @Override
@@ -875,7 +899,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             params.put("fillterInstant", fillterInstant);
 
             starttime = System.currentTimeMillis();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowProgress);
         }
 
         @Override
@@ -941,7 +965,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 adapter.list = adapter.cacheToProduceList;
                 adapter.notifyDataSetChanged();
             }else{
-                ToastUtil.showToast(context,resp.message);
+                ToastUtil.showToast(context, resp.message);
             }
         }
     }
@@ -979,6 +1003,16 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 adapter.removeOrderFromProducedList(orderId);
                 updateOrdersNumAfterAction(OrdersFragment.ACTION_SCANCODE);
             }
+        }
+    }
+
+    //接收自动刷单的广播
+    class OrdersReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("AutoFetchOrdersService","收到广播消息");
+            requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true,false);
         }
     }
 
