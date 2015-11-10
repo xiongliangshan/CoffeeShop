@@ -6,6 +6,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.igexin.sdk.PushManager;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.util.Timer;
@@ -64,6 +65,7 @@ public class AutoFetchOrdersService extends Service {
         timer.schedule(task, 1000, PERIOD_TIME);
         auto_flag = true;
         ToastUtil.showToast(AutoFetchOrdersService.this,"已开启自动刷单模式");
+        PushManager.getInstance().turnOffPush(AutoFetchOrdersService.this);
     }
 
     public void stopTimer(){
@@ -73,6 +75,7 @@ public class AutoFetchOrdersService extends Service {
         }
         auto_flag = false;
         ToastUtil.showToast(AutoFetchOrdersService.this,"已关闭自动刷单模式");
+        PushManager.getInstance().turnOnPush(AutoFetchOrdersService.this);
     }
 
     @Override
