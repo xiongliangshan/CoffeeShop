@@ -48,17 +48,11 @@
         android:layout_marginTop="10dp"
         >
 
-        <GridView
-            android:id="@+id/gv_order_list"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_order_list"
             android:layout_width="740dp"
             android:layout_height="match_parent"
-            android:background="#ffff00"
-            android:numColumns="4"
-            android:horizontalSpacing="16dp"
-            android:verticalSpacing="16dp"
             android:paddingRight="16dp"
-            android:stretchMode="columnWidth"
-            android:scrollbars="none"
             />
 
         <include

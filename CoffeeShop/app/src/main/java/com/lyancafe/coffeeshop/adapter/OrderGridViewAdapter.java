@@ -58,6 +58,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
     public Timer timer;
     private TimerTask timerTask;
     private final static long DELTA_TIME = 30*1000;//单位ms
+    public static  ArrayList<OrderBean> testList =  new ArrayList<OrderBean>();
     public ArrayList<OrderBean> cacheToProduceList =  new ArrayList<OrderBean>();
     public ArrayList<OrderBean> cacheProducedList =  new ArrayList<OrderBean>();
     public Handler handler = new Handler(){
@@ -174,7 +175,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
             holder.remarkFlagIV.setVisibility(View.VISIBLE);
         }
         fillItemListData(holder.itemContainerll, order.getItems());
-        holder.produceBtn.setOnClickListener(new View.OnClickListener() {
+            holder.produceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //生产完成
@@ -265,7 +266,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
             //缓存订单列表
             cacheToProduceList.clear();
             cacheToProduceList.addAll(list);
-
+            testList = (ArrayList<OrderBean>) cacheToProduceList.clone();
             if(timerTask==null){
                 timerTask = new TimerTask() {
                     @Override

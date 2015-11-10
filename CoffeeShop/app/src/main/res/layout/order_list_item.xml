@@ -3,7 +3,7 @@
     android:id="@+id/root_view"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/order_item_height"
+    android:layout_height="wrap_content"
     android:descendantFocusability="blocksDescendants"
     >
 
