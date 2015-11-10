@@ -5,5 +5,5 @@
     <dimen name="activity_horizontal_margin">64dp</dimen>
 
     <dimen name="content_item_text_size">11sp</dimen>
-    <dimen name="order_item_content_height">135dp</dimen>
+    <dimen name="order_item_content_height">154dp</dimen>
 </resources>
