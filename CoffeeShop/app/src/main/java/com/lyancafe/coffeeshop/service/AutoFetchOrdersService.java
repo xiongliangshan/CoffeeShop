@@ -47,8 +47,10 @@ public class AutoFetchOrdersService extends Service {
 
     @Override
     public boolean onUnbind(Intent intent) {
-        Log.d(TAG,"onUnbind");
-        stopTimer();
+        Log.d(TAG, "onUnbind");
+        if(auto_flag){
+            stopTimer();
+        }
         n = 0;
         return super.onUnbind(intent);
     }

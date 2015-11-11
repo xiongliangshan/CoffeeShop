@@ -30,7 +30,7 @@ public class OrderBean implements Serializable{
     private boolean wxScan;            //是否是到店扫码的单子
     private long expectedTime;           //期望送达时间
     private long orderTime;              //下单时间
-    private long produceEffect;         //计算时效的基准时间
+    private long produceEffect;         //计算生产时效的基准时间
     private int providerId;              //咖啡品牌商id
     private String provider;             //咖啡品牌名
     private String recipient;            //收货人名字

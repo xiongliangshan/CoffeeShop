@@ -68,6 +68,7 @@
         <activity
             android:name=".activity.LoginActivity"
             android:screenOrientation="landscape"
+            android:launchMode="singleTask"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
