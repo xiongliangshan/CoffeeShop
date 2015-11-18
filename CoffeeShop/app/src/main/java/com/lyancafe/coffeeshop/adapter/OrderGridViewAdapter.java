@@ -104,6 +104,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
             convertView = LayoutInflater.from(context).inflate(R.layout.order_list_item,null);
             holder  = new ViewHolder();
             holder.rootLayout = (LinearLayout) convertView.findViewById(R.id.root_view);
+            holder.logoScanIV = (ImageView) convertView.findViewById(R.id.logo_scan);
             holder.orderIdTxt = (TextView) convertView.findViewById(R.id.item_order_id);
             holder.contantEffectTimeTxt = (TextView) convertView.findViewById(R.id.item_contant_produce_effect);
             holder.effectTimeTxt = (TextView) convertView.findViewById(R.id.item_produce_effect);
@@ -125,33 +126,33 @@ public class OrderGridViewAdapter extends BaseAdapter{
         }
         final OrderBean order = list.get(position);
         holder.orderIdTxt.setText(order.getOrderSn());
+        if(order.isWxScan()){
+            holder.logoScanIV.setVisibility(View.INVISIBLE);
+        }else{
+            holder.logoScanIV.setVisibility(View.GONE);
+        }
         final long mms = order.getProduceEffect();
         Log.d(TAG, "mms = " + mms);
 
-        if(OrdersFragment.subTabIndex==0){
-            holder.produceBtn.setEnabled(true);
-
-            if(mms<=0){
-                holder.effectTimeTxt.setTextColor(Color.parseColor("#e2435a"));
-                holder.produceBtn.setBackgroundResource(R.drawable.bg_produce_btn_red);
-                holder.effectTimeTxt.setText("+"+OrderHelper.getDateToMinutes(Math.abs(mms)));
-            }else{
-                if(order.getInstant()==0){
-                    holder.produceBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
-                }else{
-                    holder.produceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
-                }
-                holder.effectTimeTxt.setTextColor(Color.parseColor("#000000"));
-                holder.effectTimeTxt.setText(OrderHelper.getDateToMinutes(mms));
-            }
-
-
+        if(mms<=0){
+            holder.effectTimeTxt.setTextColor(Color.parseColor("#e2435a"));
+            holder.produceBtn.setBackgroundResource(R.drawable.bg_produce_btn_red);
+            holder.effectTimeTxt.setText("+"+OrderHelper.getDateToMinutes(Math.abs(mms)));
         }else{
-            holder.produceBtn.setEnabled(false);
-            holder.produceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
+            if(order.getInstant()==0){
+                if(Math.abs(mms)-OrderHelper.getTotalQutity(order)*2*60*1000>0){
+                    holder.produceBtn.setEnabled(false);
+                }else{
+                    holder.produceBtn.setEnabled(true);
+                }
+                holder.produceBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
+            }else{
+                holder.produceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
+            }
             holder.effectTimeTxt.setTextColor(Color.parseColor("#000000"));
-            holder.effectTimeTxt.setText("-----");
+            holder.effectTimeTxt.setText(OrderHelper.getDateToMinutes(mms));
         }
+
         if(CoffeeShopApplication.getInstance().printedSet.contains(order.getOrderSn())){
             holder.printBtn.setText(R.string.print_again);
             holder.printBtn.setTextColor(context.getResources().getColor(R.color.text_red));
@@ -247,6 +248,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
     static class ViewHolder{
 
         LinearLayout rootLayout;
+        ImageView logoScanIV;
         TextView orderIdTxt;
         TextView contantEffectTimeTxt;
         TextView effectTimeTxt;

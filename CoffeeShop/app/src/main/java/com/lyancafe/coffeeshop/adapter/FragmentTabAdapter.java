@@ -3,6 +3,7 @@ package com.lyancafe.coffeeshop.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.widget.RadioGroup;
 
 import com.lyancafe.coffeeshop.R;
@@ -18,7 +19,7 @@ public class FragmentTabAdapter implements RadioGroup.OnCheckedChangeListener{
     private RadioGroup rgs; // 用于切换tab
     private FragmentActivity fragmentActivity; // Fragment所属的Activity
     private int fragmentContentId; // Activity中所要被替换的区域的id
-    public static int currentTab; // 当前Tab页面索引
+    public static int currentTab = 0; // 当前Tab页面索引
 
     private OnRgsExtraCheckedChangedListener onRgsExtraCheckedChangedListener; // 用于让调用者在切换tab时候增加新的功能
 
@@ -54,7 +55,8 @@ public class FragmentTabAdapter implements RadioGroup.OnCheckedChangeListener{
             }
             ft.commitAllowingStateLoss();
         }
-        currentTab = idx; // 更新目标tab为当前tab
+        Log.d("ShopManagerFragment","showTab ,idx = "+idx);
+
     }
 
     /**
@@ -79,6 +81,7 @@ public class FragmentTabAdapter implements RadioGroup.OnCheckedChangeListener{
                 Fragment fragment = fragments.get(i);
                 FragmentTransaction ft = obtainFragmentTransaction(i);
                 getCurrentFragment().onPause(); // 暂停当前tab
+                currentTab = i; // 更新目标tab为当前tab
                 if(fragment.isAdded()){
                     fragment.onResume(); // 启动目标tab的onResume()
                 }else{
@@ -98,7 +101,7 @@ public class FragmentTabAdapter implements RadioGroup.OnCheckedChangeListener{
 
 
     public static int getCurrentTab() {
-        return currentTab;
+        return FragmentTabAdapter.currentTab;
     }
 
     public Fragment getCurrentFragment(){

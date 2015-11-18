@@ -76,6 +76,11 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
             holder.rootLayout.setBackgroundResource(R.drawable.bg_order);
         }
         final OrderBean order = itemList.get(position);
+        if(order.isWxScan()){
+            holder.logoScanIV.setVisibility(View.INVISIBLE);
+        }else{
+            holder.logoScanIV.setVisibility(View.GONE);
+        }
         holder.orderIdTxt.setText(order.getOrderSn());
         final long mms = order.getProduceEffect();
         Log.d(TAG, "mms = " + mms);
@@ -207,6 +212,7 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout rootLayout;
+        public ImageView logoScanIV;
         public TextView orderIdTxt;
         public TextView contantEffectTimeTxt;
         public TextView effectTimeTxt;
@@ -220,6 +226,7 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
         public ViewHolder(View itemView) {
             super(itemView);
             rootLayout = (LinearLayout) itemView.findViewById(R.id.root_view);
+            logoScanIV = (ImageView) itemView.findViewById(R.id.logo_scan);
             orderIdTxt = (TextView) itemView.findViewById(R.id.item_order_id);
             contantEffectTimeTxt = (TextView) itemView.findViewById(R.id.item_contant_produce_effect);
             effectTimeTxt = (TextView) itemView.findViewById(R.id.item_produce_effect);

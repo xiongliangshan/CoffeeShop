@@ -2,6 +2,9 @@ package com.lyancafe.coffeeshop.helper;
 
 import android.content.Context;
 
+import com.lyancafe.coffeeshop.bean.ItemContentBean;
+import com.lyancafe.coffeeshop.bean.OrderBean;
+
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -103,5 +106,29 @@ public class OrderHelper {
         }
 
         return  min+":"+sec;
+    }
+
+    //计算某个订单的总杯数
+    public static int getTotalQutity(OrderBean orderBean){
+        if(orderBean.getItems().size()<=0){
+            return 0;
+        }
+        int sum = 0;
+        for(int i=0;i<orderBean.getItems().size();i++){
+            sum += orderBean.getItems().get(i).getQuantity();
+        }
+        return sum;
+    }
+    //计算某个订单的总金额,单位为分
+    public static int getTotalPrice(OrderBean orderBean){
+        if(orderBean.getItems().size()<=0){
+            return 0;
+        }
+        int sum = 0;
+        for(int i=0;i<orderBean.getItems().size();i++){
+            ItemContentBean item = orderBean.getItems().get(i);
+            sum += item.getTotalPrice();
+        }
+        return sum;
     }
 }

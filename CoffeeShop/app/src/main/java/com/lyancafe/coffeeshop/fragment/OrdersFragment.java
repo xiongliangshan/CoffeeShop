@@ -111,6 +111,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private TextView deliverNameTxt;
     private TextView deliverPhoneTxt;
     private LinearLayout itemsContainerLayout;
+    private TextView orderPriceTxt;
     private TextView payWayTxt;
     private TextView moneyTxt;
     private TextView userRemarkTxt;
@@ -273,6 +274,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         deliverNameTxt = (TextView) contentView.findViewById(R.id.deliver_name);
         deliverPhoneTxt = (TextView) contentView.findViewById(R.id.deliver_phone);
         itemsContainerLayout = (LinearLayout) contentView.findViewById(R.id.items_container_layout);
+        orderPriceTxt = (TextView) contentView.findViewById(R.id.order_price);
         payWayTxt = (TextView) contentView.findViewById(R.id.pay_way);
         moneyTxt = (TextView) contentView.findViewById(R.id.money);
         userRemarkTxt = (TextView) contentView.findViewById(R.id.user_remark);
@@ -298,6 +300,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             deliverNameTxt.setText("");
             deliverPhoneTxt.setText("");
             fillItemListData(itemsContainerLayout, new ArrayList<ItemContentBean>());
+            orderPriceTxt.setText("");
             payWayTxt.setText("");
             moneyTxt.setText("");
             userRemarkTxt.setText("");
@@ -327,28 +330,26 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             });
             reachTimeTxt.setText(order.getInstant()==1?"尽快送达":OrderHelper.getDateToMonthDay(order.getExpectedTime()));
             final long mms = order.getProduceEffect();
-            if(OrdersFragment.subTabIndex==0){
-                finishProduceBtn.setEnabled(true);
-                if(mms<=0){
-                    produceEffectTxt.setTextColor(Color.parseColor("#e2435a"));
-                    finishProduceBtn.setBackgroundResource(R.drawable.bg_produce_btn_red);
-                    produceEffectTxt.setText("+"+OrderHelper.getDateToMinutes(Math.abs(mms)));
-                }else{
-                    if(order.getInstant()==0){
-                        finishProduceBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
-                    }else{
-                        finishProduceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
-                    }
-                    produceEffectTxt.setTextColor(Color.parseColor("#000000"));
-                    produceEffectTxt.setText(OrderHelper.getDateToMinutes(mms));
-                }
 
+            if(mms<=0){
+                produceEffectTxt.setTextColor(Color.parseColor("#e2435a"));
+                finishProduceBtn.setBackgroundResource(R.drawable.bg_produce_btn_red);
+                produceEffectTxt.setText("+"+OrderHelper.getDateToMinutes(Math.abs(mms)));
             }else{
-                finishProduceBtn.setEnabled(false);
-                finishProduceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
+                if(order.getInstant()==0){
+                    if(Math.abs(mms)-OrderHelper.getTotalQutity(order)*2*60*1000>0){
+                        finishProduceBtn.setEnabled(false);
+                    }else{
+                        finishProduceBtn.setEnabled(true);
+                    }
+                    finishProduceBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
+                }else{
+                    finishProduceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
+                }
                 produceEffectTxt.setTextColor(Color.parseColor("#000000"));
-                produceEffectTxt.setText("-----");
+                produceEffectTxt.setText(OrderHelper.getDateToMinutes(mms));
             }
+
 
             receiveNameTxt.setText(order.getRecipient());
             receivePhoneTxt.setText(order.getPhone());
@@ -362,6 +363,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
 
             fillItemListData(itemsContainerLayout, order.getItems());
+            orderPriceTxt.setText("应付: "+OrderHelper.getMoneyStr(OrderHelper.getTotalPrice(order)));
             payWayTxt.setText(order.getPayChannelStr());
             moneyTxt.setText(OrderHelper.getMoneyStr(order.getPaid()));
             userRemarkTxt.setText(order.getNotes());
@@ -404,7 +406,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 public void onClick(View v) {
                     final PopupMenu popup = new PopupMenu(mContext, v);
                     popup.inflate(R.menu.menu_order_detail_more);
-                    if(!order.isWxScan() && subTabIndex!=1){
+                    if(!order.isWxScan()){
                         popup.getMenu().findItem(R.id.menu_scan_code).setVisible(false);
                     }
                     if(order.getStatus()!=OrderHelper.ASSIGNED_STATUS){

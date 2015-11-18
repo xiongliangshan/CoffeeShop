@@ -89,6 +89,7 @@ public class ShopManagerFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(TAG,"onResume--调用:"+FragmentTabAdapter.currentTab);
         if(FragmentTabAdapter.getCurrentTab()==2){
             new BaristasListQry(mContext).doRequest();
         }
