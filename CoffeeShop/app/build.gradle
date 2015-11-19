@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.lyancafe.coffeeshop"
-        minSdkVersion 8
+        minSdkVersion 9
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -17,10 +17,27 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:support-v4:22.2.1'
     compile 'com.android.support:appcompat-v7:22.2.1'
-    compile files('libs/MapApiLocation_1.3.3.jar')
+    compile 'com.android.support:recyclerview-v7:22.2.1'
+    compile files('libs/commons-io-2.2.jar')
+    compile files('libs/fastjson-1.1.43.android.jar')
+    compile files('libs/GetuiExt-2.0.3.jar')
+    compile files('libs/GetuiSDK2.6.4.0.jar')
 }

@@ -15,3 +15,14 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-dontwarn android.support.**
+-dontwarn org.apache.**
+-dontwarn com.igexin.**
+-dontwarn com.alibaba.fastjson.**
+
+-keep class com.igexin.**{*;}
+-keep class com.alibaba.fastjson.**{*;}
+-keep class org.apache.**{*;}
+-keep class android.support.v4.** { *; }
+-keep interface android.support.v4.app.** { *; }
