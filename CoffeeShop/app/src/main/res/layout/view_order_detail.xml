@@ -64,16 +64,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="20dp"
-            android:padding="16dp"
+            android:layout_marginTop="10dp"
+            android:padding="10dp"
             android:background="@drawable/stroke_background">
 
                 <TextView
                     android:id="@+id/contant_reach_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:text="送达时间"
+                    android:layout_marginTop="4dp"
+                    android:text="期望送达时间"
                     />
                 <TextView
                     android:id="@+id/reach_time"
@@ -81,7 +81,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/contant_reach_time"
                     android:layout_alignBaseline="@id/contant_reach_time"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="10dp"
                     android:textSize="24sp"
                     android:text=""
                     />
@@ -91,7 +91,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/reach_time"
                     android:layout_alignBaseline="@id/contant_reach_time"
-                    android:layout_marginLeft="25dp"
+                    android:layout_marginLeft="20dp"
                     android:text="生产时效"
                     />
                 <TextView
@@ -102,14 +102,32 @@
                     android:layout_toRightOf="@id/contant_produce_effect"
                     android:layout_alignBaseline="@id/contant_produce_effect"
                     android:textSize="24sp"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="10dp"
+                    />
+                <TextView
+                    android:id="@+id/contant_real_reach_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/contant_reach_time"
+                    android:layout_marginTop="15dp"
+                    android:text="实际送达时间"
+                    />
+                <TextView
+                    android:id="@+id/real_reach_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/contant_real_reach_time"
+                    android:layout_alignBaseline="@id/contant_real_reach_time"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="24sp"
+                    android:text=""
                     />
 
                 <TextView
                     android:id="@+id/contant_receiver_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/contant_reach_time"
+                    android:layout_below="@id/contant_real_reach_time"
                     android:layout_marginTop="20dp"
                     android:text="收货信息"
                     />
@@ -189,7 +207,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_weight="1"
             >
 

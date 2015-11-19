@@ -1,7 +1,11 @@
 package com.lyancafe.coffeeshop.helper;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.util.Log;
+import android.widget.TextView;
 
+import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 
@@ -14,6 +18,8 @@ import java.util.Date;
  * Created by Administrator on 2015/9/29.
  */
 public class OrderHelper {
+
+    private static final String TAG ="OrderHelper";
 
     /**
      * 订单状态
@@ -130,5 +136,28 @@ public class OrderHelper {
             sum += item.getTotalPrice();
         }
         return sum;
+    }
+    //显示时效
+    public static void showEffect(OrderBean order,TextView produceBtn,TextView effectTimeTxt){
+        final long mms = order.getProduceEffect();
+        Log.d(TAG, "mms = " + mms);
+        if(mms<=0){
+            effectTimeTxt.setTextColor(Color.parseColor("#e2435a"));
+            produceBtn.setBackgroundResource(R.drawable.bg_produce_btn_red);
+            effectTimeTxt.setText("+"+OrderHelper.getDateToMinutes(Math.abs(mms)));
+        }else{
+            if(order.getInstant()==0){
+                if(Math.abs(mms)-OrderHelper.getTotalQutity(order)*2*60*1000>0){
+                    produceBtn.setEnabled(false);
+                }else{
+                    produceBtn.setEnabled(true);
+                }
+                produceBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
+            }else{
+                produceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
+            }
+            effectTimeTxt.setTextColor(Color.parseColor("#000000"));
+            effectTimeTxt.setText(OrderHelper.getDateToMinutes(mms));
+        }
     }
 }

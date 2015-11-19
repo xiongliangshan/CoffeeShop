@@ -315,41 +315,21 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             orderReportTxt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(reportWindow==null){
+                    if (reportWindow == null) {
                         reportWindow = new ReportWindow(mContext);
                         reportWindow.setOrder(order);
                         reportWindow.showReportWindow(detailRootView);
-                    }else{
+                    } else {
                         reportWindow.setOrder(order);
                         reportWindow.showReportWindow(detailRootView);
                     }
-
 
 
                 }
             });
             reachTimeTxt.setText(order.getInstant()==1?"尽快送达":OrderHelper.getDateToMonthDay(order.getExpectedTime()));
-            final long mms = order.getProduceEffect();
 
-            if(mms<=0){
-                produceEffectTxt.setTextColor(Color.parseColor("#e2435a"));
-                finishProduceBtn.setBackgroundResource(R.drawable.bg_produce_btn_red);
-                produceEffectTxt.setText("+"+OrderHelper.getDateToMinutes(Math.abs(mms)));
-            }else{
-                if(order.getInstant()==0){
-                    if(Math.abs(mms)-OrderHelper.getTotalQutity(order)*2*60*1000>0){
-                        finishProduceBtn.setEnabled(false);
-                    }else{
-                        finishProduceBtn.setEnabled(true);
-                    }
-                    finishProduceBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
-                }else{
-                    finishProduceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
-                }
-                produceEffectTxt.setTextColor(Color.parseColor("#000000"));
-                produceEffectTxt.setText(OrderHelper.getDateToMinutes(mms));
-            }
-
+            OrderHelper.showEffect(order, finishProduceBtn, produceEffectTxt);
 
             receiveNameTxt.setText(order.getRecipient());
             receivePhoneTxt.setText(order.getPhone());

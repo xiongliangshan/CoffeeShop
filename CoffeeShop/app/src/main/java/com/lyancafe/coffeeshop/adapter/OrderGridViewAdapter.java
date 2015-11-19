@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -131,27 +132,8 @@ public class OrderGridViewAdapter extends BaseAdapter{
         }else{
             holder.logoScanIV.setVisibility(View.GONE);
         }
-        final long mms = order.getProduceEffect();
-        Log.d(TAG, "mms = " + mms);
 
-        if(mms<=0){
-            holder.effectTimeTxt.setTextColor(Color.parseColor("#e2435a"));
-            holder.produceBtn.setBackgroundResource(R.drawable.bg_produce_btn_red);
-            holder.effectTimeTxt.setText("+"+OrderHelper.getDateToMinutes(Math.abs(mms)));
-        }else{
-            if(order.getInstant()==0){
-                if(Math.abs(mms)-OrderHelper.getTotalQutity(order)*2*60*1000>0){
-                    holder.produceBtn.setEnabled(false);
-                }else{
-                    holder.produceBtn.setEnabled(true);
-                }
-                holder.produceBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
-            }else{
-                holder.produceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
-            }
-            holder.effectTimeTxt.setTextColor(Color.parseColor("#000000"));
-            holder.effectTimeTxt.setText(OrderHelper.getDateToMinutes(mms));
-        }
+        OrderHelper.showEffect(order,holder.produceBtn,holder.effectTimeTxt);
 
         if(CoffeeShopApplication.getInstance().printedSet.contains(order.getOrderSn())){
             holder.printBtn.setText(R.string.print_again);
