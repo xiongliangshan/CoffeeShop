@@ -128,7 +128,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
         final OrderBean order = list.get(position);
         holder.orderIdTxt.setText(order.getOrderSn());
         if(order.isWxScan()){
-            holder.logoScanIV.setVisibility(View.INVISIBLE);
+            holder.logoScanIV.setVisibility(View.VISIBLE);
         }else{
             holder.logoScanIV.setVisibility(View.GONE);
         }

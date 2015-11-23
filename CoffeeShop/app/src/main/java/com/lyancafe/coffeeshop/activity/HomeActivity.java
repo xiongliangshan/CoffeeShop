@@ -95,7 +95,7 @@ public class HomeActivity extends BaseActivity {
 
     private void initViews(){
         baristaLogoIV = (ImageView) findViewById(R.id.iv_barista_logo);
-        baristaLogoIV.setOnLongClickListener(new View.OnLongClickListener() {
+        /*baristaLogoIV.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 Log.d("AutoFetchOrdersService", "onLongClick");
@@ -110,7 +110,7 @@ public class HomeActivity extends BaseActivity {
                 }
                 return false;
             }
-        });
+        });*/
         mRadioGroup = (RadioGroup) findViewById(R.id.group_left);
         settingBtn = (ImageButton) findViewById(R.id.btn_setting);
         settingBtn.setOnClickListener(new View.OnClickListener() {

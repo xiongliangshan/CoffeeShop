@@ -390,9 +390,12 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 public void onClick(View v) {
                     final PopupMenu popup = new PopupMenu(mContext, v);
                     popup.inflate(R.menu.menu_order_detail_more);
-                    if(!order.isWxScan()){
+                    if(order.isWxScan() && subTabIndex ==1){
+                        popup.getMenu().findItem(R.id.menu_scan_code).setVisible(true);
+                    }else{
                         popup.getMenu().findItem(R.id.menu_scan_code).setVisible(false);
                     }
+
                     if(order.getStatus()!=OrderHelper.ASSIGNED_STATUS){
                         popup.getMenu().findItem(R.id.menu_undo_order).setVisible(false);
                     }

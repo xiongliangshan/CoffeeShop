@@ -35,13 +35,14 @@ public class AutoFetchOrdersService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG,"onStartCommand");
-        return super.onStartCommand(intent, flags, startId);
+        return Service.START_STICKY;
     }
 
 
     @Override
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "onBind");
+        startTimer();
         return binder;
     }
 
@@ -66,7 +67,7 @@ public class AutoFetchOrdersService extends Service {
         };
         timer.schedule(task, 1000, PERIOD_TIME);
         auto_flag = true;
-        ToastUtil.showToast(AutoFetchOrdersService.this,"已开启自动刷单模式");
+    //    ToastUtil.showToast(AutoFetchOrdersService.this,"已开启自动刷单模式");
         PushManager.getInstance().turnOffPush(AutoFetchOrdersService.this);
     }
 
@@ -76,7 +77,7 @@ public class AutoFetchOrdersService extends Service {
             timer=null;
         }
         auto_flag = false;
-        ToastUtil.showToast(AutoFetchOrdersService.this,"已关闭自动刷单模式");
+    //    ToastUtil.showToast(AutoFetchOrdersService.this,"已关闭自动刷单模式");
         PushManager.getInstance().turnOnPush(AutoFetchOrdersService.this);
     }
 
