@@ -309,6 +309,10 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             printOrderBtn.setEnabled(false);
             moreBtn.setEnabled(false);
         }else{
+            finishProduceBtn.setEnabled(true);
+            printOrderBtn.setEnabled(true);
+            moreBtn.setEnabled(true);
+
             orderIdTxt.setText(order.getOrderSn());
             orderTimeTxt.setText(OrderHelper.getDateToString(order.getOrderTime()));
             orderReportTxt.setEnabled(true);
