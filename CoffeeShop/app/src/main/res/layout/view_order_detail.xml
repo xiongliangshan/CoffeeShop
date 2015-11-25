@@ -111,6 +111,7 @@
                     android:layout_below="@id/contant_reach_time"
                     android:layout_marginTop="15dp"
                     android:text="实际送达时间"
+                    android:visibility="gone"
                     />
                 <TextView
                     android:id="@+id/real_reach_time"
@@ -121,6 +122,7 @@
                     android:layout_marginLeft="10dp"
                     android:textSize="24sp"
                     android:text=""
+                    android:visibility="gone"
                     />
 
                 <TextView
@@ -251,6 +253,7 @@
                         android:layout_height="wrap_content"
                         android:text ="应付:"
                         android:layout_marginRight="10dp"
+                        android:visibility="gone"
                         />
                     <TextView
                         android:id="@+id/pay_way"
