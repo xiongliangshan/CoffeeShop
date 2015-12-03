@@ -26,3 +26,14 @@
 -keep class org.apache.**{*;}
 -keep class android.support.v4.** { *; }
 -keep interface android.support.v4.app.** { *; }
+
+#baidu SDK
+-dontwarn com.baidu.**
+-dontwarn vi.com.gdi.bgl.android.**
+-dontwarn com.sinovoice.**
+-keep class com.sinovoice.**{*;}
+-keep class com.baidu.** { *; }
+-keep class vi.com.gdi.bgl.android.**{*;}
+-keep class com.jsytwy.**{*;}
+-keep interface com.baidu.**{*;}
+-keep interface com.sinovoice.**{*;}
