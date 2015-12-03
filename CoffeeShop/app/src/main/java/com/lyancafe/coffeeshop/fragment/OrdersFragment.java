@@ -36,6 +36,7 @@ import com.alibaba.fastjson.JSONException;
 import com.lyancafe.coffeeshop.CoffeeShopApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.activity.HomeActivity;
+import com.lyancafe.coffeeshop.activity.LocationActivity;
 import com.lyancafe.coffeeshop.activity.PrinterActivity;
 import com.lyancafe.coffeeshop.adapter.OrderGridViewAdapter;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
@@ -110,6 +111,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private RelativeLayout deliverInfoContainerLayout;
     private TextView deliverNameTxt;
     private TextView deliverPhoneTxt;
+    private TextView deliverLocationInfoTxt;
     private LinearLayout itemsContainerLayout;
     private TextView orderPriceTxt;
     private TextView payWayTxt;
@@ -273,6 +275,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         deliverInfoContainerLayout = (RelativeLayout) contentView.findViewById(R.id.deliver_info_container);
         deliverNameTxt = (TextView) contentView.findViewById(R.id.deliver_name);
         deliverPhoneTxt = (TextView) contentView.findViewById(R.id.deliver_phone);
+        deliverLocationInfoTxt = (TextView) contentView.findViewById(R.id.deliver_location_info);
         itemsContainerLayout = (LinearLayout) contentView.findViewById(R.id.items_container_layout);
         orderPriceTxt = (TextView) contentView.findViewById(R.id.order_price);
         payWayTxt = (TextView) contentView.findViewById(R.id.pay_way);
@@ -299,6 +302,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             receiveAddressTxt.setText("");
             deliverNameTxt.setText("");
             deliverPhoneTxt.setText("");
+            deliverLocationInfoTxt.setVisibility(View.GONE);
             fillItemListData(itemsContainerLayout, new ArrayList<ItemContentBean>());
             orderPriceTxt.setText("");
             payWayTxt.setText("");
@@ -331,7 +335,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
                 }
             });
-            reachTimeTxt.setText(order.getInstant()==1?"尽快送达":OrderHelper.getDateToMonthDay(order.getExpectedTime()));
+            reachTimeTxt.setText(order.getInstant() == 1 ? "尽快送达" : OrderHelper.getDateToMonthDay(order.getExpectedTime()));
 
             OrderHelper.showEffect(order, finishProduceBtn, produceEffectTxt);
 
@@ -340,6 +344,15 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             receiveAddressTxt.setText(order.getAddress());
             deliverNameTxt.setText(order.getCourierName());
             deliverPhoneTxt.setText(order.getCourierPhone());
+            deliverLocationInfoTxt.setVisibility(View.VISIBLE);
+            deliverLocationInfoTxt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //启动地图Activity
+                    Intent intent = new Intent(mContext, LocationActivity.class);
+                    mContext.startActivity(intent);
+                }
+            });
             if(order.getStatus()== OrderHelper.UNASSIGNED_STATUS){
                 deliverInfoContainerLayout.setVisibility(View.GONE);
             }else {

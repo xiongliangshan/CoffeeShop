@@ -15,7 +15,9 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
-
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <!-- 个推SDK权限配置开始 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -47,9 +49,22 @@
         android:theme="@style/AppTheme"
         android:persistent="true"
         >
-        <!--<meta-data
-            android:name="com.amap.api.v2.apikey"
-            android:value="8b874fbff739247f614e344f15daff2e" />-->
+        <!--百度地图,定位等相关配置开始-->
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote" >
+            <intent-filter>
+                <action android:name="com.baidu.location.service_v2.2" >
+                </action>
+            </intent-filter>
+        </service>
+        <!-- meta-data需要写在application中 -->
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="c1Nq1Sf17O2gsz0kgEhcxcx6" />
+        <!--百度地图,定位等相关配置结束-->
+
 
         <activity
             android:name=".activity.BaseActivity"
@@ -75,6 +90,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".activity.LocationActivity"
+            android:screenOrientation="landscape"
+            android:launchMode="singleTask" />
+
 
         <activity
             android:name=".activity.PrinterActivity"

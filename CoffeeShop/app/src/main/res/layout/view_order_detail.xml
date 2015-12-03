@@ -203,6 +203,18 @@
                     android:layout_toRightOf="@id/deliver_name"
                     android:text=""
                     />
+                <TextView
+                    android:id="@+id/deliver_location_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:padding="5dp"
+                    android:layout_alignBaseline="@id/contant_deliver"
+                    android:layout_toRightOf="@id/deliver_phone"
+                    android:background="@null"
+                    android:text="查看位置"
+                    android:textColor="@color/blue"
+                    />
             </RelativeLayout>
         </RelativeLayout>
 

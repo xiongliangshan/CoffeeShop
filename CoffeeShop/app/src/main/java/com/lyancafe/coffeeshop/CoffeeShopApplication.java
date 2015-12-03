@@ -7,7 +7,10 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 
+import com.baidu.mapapi.SDKInitializer;
+import com.baidu.mapapi.model.LatLng;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
+import com.lyancafe.coffeeshop.helper.ShopHelper;
 import com.xls.http.HttpAsyncTask;
 import com.xls.http.HttpEntity;
 import com.xls.http.HttpUtils;
@@ -17,7 +20,6 @@ import com.xls.http.Qry;
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,6 +32,8 @@ public class CoffeeShopApplication extends Application {
     public static final String BASE_DIR = Environment.getExternalStorageDirectory() + File.separator+"coffeeshop"+File.separator;
     public static final String LOG_DIR = BASE_DIR+"log"+File.separator;
     private static CoffeeShopApplication application;
+
+    public static LatLng latLng = null;
 
     public static int screenWidth = 0;
     public static int screenHeight = 0;
@@ -45,9 +49,12 @@ public class CoffeeShopApplication extends Application {
         super.onCreate();
         Log.d(TAG, "onCreate()");
         application = this;
+        SDKInitializer.initialize(this);
         printedSet = new HashSet<String>();
         getDeviceScreenSize();
-
+        //进行定位
+        ShopLocation shopLocation = new ShopLocation(this);
+        shopLocation.startLocation();
   /*      CrashHandler crashHandler = CrashHandler.getInstance();
         crashHandler.init(this);*/
     }
