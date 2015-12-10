@@ -398,7 +398,7 @@ public class PrinterActivity extends Activity {
 				"Q400,16"+"\n"+
 				"S3"+"\n"+
 				"D8"+"\n"+
-				"A10,10,0,200,1,1,N,\"生产时间:"+sdf.format(date)+"\""+"\n"+
+		//		"A10,10,0,200,1,1,N,\"生产时间:"+sdf.format(date)+"\""+"\n"+
 				"A10,50,0,200,1,1,N,\"订单号:"+orderSnDate+orderSnNum+"\""+"\n"+ //订单号
 				"A10,90,0,200,1,1,N,\"收货人:\""+"\n"+
 				"A90,100,0,200,2,2,N,\""+recipient+" "+phoneNum+"\""+"\n"+
@@ -415,7 +415,7 @@ public class PrinterActivity extends Activity {
 				"Q400,16"+"\n"+
 				"S3"+"\n"+
 				"D8"+"\n"+
-				"A10,10,0,200,1,1,N,\"生产时间:"+sdf.format(date)+"\""+"\n"+
+		//		"A10,10,0,200,1,1,N,\"生产时间:"+sdf.format(date)+"\""+"\n"+
 				"A10,50,0,200,1,1,N,\"订单号:"+orderSnDate+orderSnNum+"\""+"\n"+ //订单号
 				"A10,90,0,200,1,1,N,\"收货人:\""+"\n"+
 				"A90,100,0,200,2,2,N,\""+recipient+" "+phoneNum+"\""+"\n"+
