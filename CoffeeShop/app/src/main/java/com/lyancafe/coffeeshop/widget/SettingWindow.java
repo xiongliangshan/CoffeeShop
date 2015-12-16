@@ -1,8 +1,12 @@
 package com.lyancafe.coffeeshop.widget;
 
+import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -16,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -25,7 +30,9 @@ import com.lyancafe.coffeeshop.activity.HomeActivity;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.helper.ShopHelper;
+import com.lyancafe.coffeeshop.service.UpdateService;
 import com.lyancafe.coffeeshop.utils.MyUtil;
+import com.lyancafe.coffeeshop.utils.PropertiesUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.xls.http.HttpAsyncTask;
 import com.xls.http.HttpEntity;
@@ -49,6 +56,7 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
     private RadioButton busyRb;
     private RadioButton stopRb;
     private TextView feedbackTxt;
+    private RelativeLayout versionUpdateLayout;
     private TextView currentVerTxt;
     private Button loginOutBtn;
     private static String current_status = "G";
@@ -77,12 +85,52 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
 
 
     private void initView(View contentView, final Context context){
+        versionUpdateLayout = (RelativeLayout) contentView.findViewById(R.id.rl_version_update);
+        versionUpdateLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!HttpUtils.isOnline(context)) {
+                    ToastUtil.show(context, context.getResources().getString(R.string.check_internet));
+                } else {
+                    SettingWindow.this.dismiss();
+                    if(!PropertiesUtil.isNeedtoUpdate(context)){
+                        Log.d(TAG, "not need to update,return");
+                        ToastUtil.show(context, context.getResources().getString(R.string.is_already_new_version));
+                    }else{
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder.setMessage(context.getResources().getString(R.string.confirm_download, UpdateService.mNewestVersionName));
+                        builder.setTitle(context.getResources().getString(R.string.version_update));
+                        builder.setIcon(R.mipmap.app_icon);
+                        builder.setPositiveButton(context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                //启动Service下载apk文件
+                                Intent intent = new Intent(context, UpdateService.class);
+                                intent.putExtra(UpdateService.KEY_TYPE, UpdateService.DOWNLOADAPK);
+                                context.startService(intent);
+                            }
+                        });
+                        builder.setNegativeButton(context.getResources().getString(R.string.cacel), new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        builder.create().show();
+                    }
+
+                }
+            }
+        });
         currentVerTxt = (TextView) contentView.findViewById(R.id.current_version);
         feedbackTxt = (TextView) contentView.findViewById(R.id.feedback);
         feedbackTxt.setOnClickListener(this);
         loginOutBtn = (Button) contentView.findViewById(R.id.login_out);
         loginOutBtn.setOnClickListener(this);
-        currentVerTxt.setText("当前版本:"+MyUtil.getVersion(context));
+        currentVerTxt.setText("当前版本:" + MyUtil.getVersion(context));
         statusSwitch = (RadioGroup)contentView.findViewById(R.id.status_switch);
         freeRb = (RadioButton) contentView.findViewById(R.id.radio_free);
         freeRb.setChecked(true);

@@ -28,6 +28,7 @@ import com.lyancafe.coffeeshop.fragment.OrderQueryFragment;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.fragment.ShopManagerFragment;
 import com.lyancafe.coffeeshop.service.AutoFetchOrdersService;
+import com.lyancafe.coffeeshop.service.UpdateService;
 import com.lyancafe.coffeeshop.widget.SettingWindow;
 
 import java.util.ArrayList;
@@ -91,6 +92,11 @@ public class HomeActivity extends BaseActivity {
         Intent intent=new Intent(HomeActivity.this,AutoFetchOrdersService.class);
         bindService(intent, serviceConnection, BIND_AUTO_CREATE);
         Log.d("AutoFetchOrdersService", "bindService");
+
+        //启动Service下载版本配置文件
+        Intent intent_update = new Intent(HomeActivity.this, UpdateService.class);
+        intent.putExtra(UpdateService.KEY_TYPE, UpdateService.DOWNLOADPROPERTIES);
+        startService(intent_update);
     }
 
     private void initViews(){
