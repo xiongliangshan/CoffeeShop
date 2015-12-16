@@ -211,7 +211,7 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
                 @Override
                 public void onClick(View v) {
                     if(reportWindow==null){
-                        reportWindow = new ReportWindow(mContext);
+                        reportWindow = new ReportWindow(mContext,null);
                         reportWindow.setOrder(order);
                         reportWindow.showReportWindow(detailRootView);
                     }else{

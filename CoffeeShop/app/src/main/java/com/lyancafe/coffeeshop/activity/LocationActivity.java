@@ -33,16 +33,16 @@ public class LocationActivity extends Activity {
         MapStatusUpdate msu = MapStatusUpdateFactory.newLatLngZoom(CoffeeShopApplication.latLng, 16.0f);
         mBaiduMap.setMapStatus(msu);
         if(CoffeeShopApplication.latLng!=null){
-            OverlayOptions textOption = new TextOptions()
+            /*OverlayOptions textOption = new TextOptions()
                     .bgColor(0xAAFFFF00)
                     .fontSize(20)
                     .fontColor(0xFFFF00FF)
                     .text("我的门店")
                     .rotate(0)
                     .position(CoffeeShopApplication.latLng);
-            mBaiduMap.addOverlay(textOption);
+            mBaiduMap.addOverlay(textOption);*/
             BitmapDescriptor bitmap = BitmapDescriptorFactory
-                    .fromResource(R.mipmap.ic_launcher);
+                    .fromResource(R.mipmap.mark_shop);
             //构建MarkerOption，用于在地图上添加Marker
             OverlayOptions option = new MarkerOptions()
                     .position(CoffeeShopApplication.latLng)
@@ -63,10 +63,11 @@ public class LocationActivity extends Activity {
         LatLng point = new LatLng(lat, lng);
         //构建Marker图标
         BitmapDescriptor bitmap = BitmapDescriptorFactory
-                .fromResource(R.drawable.icon_location_mark_default);
+                .fromResource(R.mipmap.mark_me);
         //构建MarkerOption，用于在地图上添加Marker
         OverlayOptions option = new MarkerOptions()
                 .position(point)
+                .animateType(MarkerOptions.MarkerAnimateType.grow)
                 .zIndex(9)
                 .icon(bitmap);
         //在地图上添加Marker，并显示

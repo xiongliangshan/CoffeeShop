@@ -129,6 +129,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private static final int MSG_UPDATE_ORDER_NUMBER = 101;
     private static final int MSG_ACTION_PRODUCE = 102;
     private static final int MSG_ACTION_SCANCODE = 103;
+    public static final int MSG_UPDATE_QUESTION_ORDER_FLAG = 104;
     //定义操作
     public static final int ACTION_PRODUCE = 301; //点击生产完成
     public static final int ACTION_SCANCODE = 302;//点击扫码交付
@@ -157,6 +158,16 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 case MSG_ACTION_SCANCODE:
                     haveDoneTab.setCount(haveDoneTab.getCount()-1);
                     deliveryFinishedTab.setCount(deliveryFinishedTab.getCount()+1);
+                    break;
+                case MSG_UPDATE_QUESTION_ORDER_FLAG:
+                    long orderId = msg.getData().getLong("orderId");
+                    for(int i=0;i<adapter.list.size();i++){
+                        if(adapter.list.get(i).getId()==orderId){
+                            adapter.list.get(i).setIssueOrder(true);
+                            break;
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
                     break;
             }
         }
@@ -324,7 +335,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 @Override
                 public void onClick(View v) {
                     if (reportWindow == null) {
-                        reportWindow = new ReportWindow(mContext);
+                        reportWindow = new ReportWindow(mContext,mHandler);
                         reportWindow.setOrder(order);
                         reportWindow.showReportWindow(detailRootView);
                     } else {

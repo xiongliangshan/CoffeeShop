@@ -61,7 +61,7 @@ public class ShopManagerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mContentView = inflater.inflate(R.layout.fragment_shop_manager,container,false);
+        /*mContentView = inflater.inflate(R.layout.fragment_shop_manager,container,false);
         recyclerView= (RecyclerView) mContentView.findViewById(R.id.my_recycler_view);
         layoutManager = new LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false);
         recyclerView.setLayoutManager(layoutManager);
@@ -71,7 +71,8 @@ public class ShopManagerFragment extends Fragment {
         ArrayList<UserBean> itemList = new ArrayList<UserBean>();
         recyclerAdapter = new RecyclerAdapter(itemList,mContext);
         recyclerView.setAdapter(recyclerAdapter);
-        return mContentView;
+        return mContentView;*/
+        return null;
     }
 
     @Override
@@ -90,9 +91,9 @@ public class ShopManagerFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(TAG,"onResume--调用:"+FragmentTabAdapter.currentTab);
-        if(FragmentTabAdapter.getCurrentTab()==2){
+       /* if(FragmentTabAdapter.getCurrentTab()==2){
             new BaristasListQry(mContext).doRequest();
-        }
+        }*/
 
     }
 
