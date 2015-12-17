@@ -60,7 +60,7 @@
                 />
         </RelativeLayout>
 
-        <RelativeLayout
+                                                                              <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -81,8 +81,8 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/contant_reach_time"
                     android:layout_alignBaseline="@id/contant_reach_time"
-                    android:layout_marginLeft="10dp"
-                    android:textSize="24sp"
+                    android:layout_marginLeft="8dp"
+                    android:textSize="23sp"
                     android:text=""
                     />
                 <TextView
@@ -91,7 +91,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/reach_time"
                     android:layout_alignBaseline="@id/contant_reach_time"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="18dp"
                     android:text="生产时效"
                     />
                 <TextView
@@ -101,8 +101,8 @@
                     android:text=""
                     android:layout_toRightOf="@id/contant_produce_effect"
                     android:layout_alignBaseline="@id/contant_produce_effect"
-                    android:textSize="24sp"
-                    android:layout_marginLeft="10dp"
+                    android:textSize="23sp"
+                    android:layout_marginLeft="8dp"
                     />
                 <TextView
                     android:id="@+id/contant_real_reach_time"

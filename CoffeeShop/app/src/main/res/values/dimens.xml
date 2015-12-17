@@ -9,6 +9,7 @@
     <dimen name="header_footer_left_right_padding">24dp</dimen>
     <dimen name="header_footer_top_bottom_padding">12dp</dimen>
 
-    <dimen name="content_item_text_size">16sp</dimen>
+    <!--<dimen name="content_item_text_size">16sp</dimen>
     <dimen name="order_item_content_height">180dp</dimen>
+    <dimen name="btn_refresh_margin_left">400dp</dimen>-->
 </resources>
