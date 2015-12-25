@@ -74,4 +74,5 @@
     <string name="confirm_download">检测到新版本: <xliff:g id="name">%s</xliff:g>\n是否下载更新?</string>
     <string name="download_fail">下载 小哥Lyan 失败,请重新尝试</string>
     <string name="start_download">已经开始下载</string>
+    <string name="can_not_operate">时间未到,不能操作</string>
 </resources>

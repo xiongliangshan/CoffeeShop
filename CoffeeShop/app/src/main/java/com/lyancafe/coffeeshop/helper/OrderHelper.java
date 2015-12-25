@@ -147,11 +147,11 @@ public class OrderHelper {
             effectTimeTxt.setText("+"+OrderHelper.getDateToMinutes(Math.abs(mms)));
         }else{
             if(order.getInstant()==0){
-                if(Math.abs(mms)-OrderHelper.getTotalQutity(order)*2*60*1000>0){
+                /*if(Math.abs(mms)-OrderHelper.getTotalQutity(order)*2*60*1000>0){
                     produceBtn.setEnabled(false);
                 }else{
                     produceBtn.setEnabled(true);
-                }
+                }*/
                 produceBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
             }else{
                 produceBtn.setBackgroundResource(R.drawable.bg_produce_btn);

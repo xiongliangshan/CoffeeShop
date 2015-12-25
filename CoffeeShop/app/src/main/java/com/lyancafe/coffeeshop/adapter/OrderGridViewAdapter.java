@@ -33,6 +33,7 @@ import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
+import com.lyancafe.coffeeshop.widget.SimpleConfirmDialog;
 import com.xls.http.HttpAsyncTask;
 import com.xls.http.HttpEntity;
 import com.xls.http.HttpUtils;
@@ -162,25 +163,42 @@ public class OrderGridViewAdapter extends BaseAdapter{
             @Override
             public void onClick(View v) {
                 //生产完成
-                ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener(){
-                    @Override
-                    public void onClickYes() {
-                        Log.d(TAG,"postion = "+position+",orderId = "+order.getOrderSn());
-                        new DoFinishProduceQry(order.getId()).doRequest();
-                    }
-                });
-                grabConfirmDialog.setContent("订单 "+order.getOrderSn()+" 生产完成？");
-                grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
-                grabConfirmDialog.show();
+                final long mms = order.getProduceEffect();
+                if(Math.abs(mms)-OrderHelper.getTotalQutity(order)*2*60*1000>0){
+                    //预约单，生产时间还没到
+                    SimpleConfirmDialog scd = new SimpleConfirmDialog(context,R.style.MyDialog);
+                    scd.setContent(R.string.can_not_operate);
+                    scd.show();
+                }else{
+                    ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener(){
+                        @Override
+                        public void onClickYes() {
+                            Log.d(TAG,"postion = "+position+",orderId = "+order.getOrderSn());
+                            new DoFinishProduceQry(order.getId()).doRequest();
+                        }
+                    });
+                    grabConfirmDialog.setContent("订单 "+order.getOrderSn()+" 生产完成？");
+                    grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
+                    grabConfirmDialog.show();
+                }
 
             }
         });
         holder.printBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, PrinterActivity.class);
-                intent.putExtra("order",order);
-                context.startActivity(intent);
+                final long mms = order.getProduceEffect();
+                if(Math.abs(mms)-OrderHelper.getTotalQutity(order)*2*60*1000>0){
+                    //预约单，生产时间还没到
+                    SimpleConfirmDialog scd = new SimpleConfirmDialog(context,R.style.MyDialog);
+                    scd.setContent(R.string.can_not_operate);
+                    scd.show();
+                }else{
+                    Intent intent = new Intent(context, PrinterActivity.class);
+                    intent.putExtra("order",order);
+                    context.startActivity(intent);
+                }
+
             }
         });
         return convertView;
