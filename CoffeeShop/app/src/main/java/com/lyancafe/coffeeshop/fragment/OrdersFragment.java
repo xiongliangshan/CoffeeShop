@@ -789,7 +789,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             Log.d(TAG, "orderBeans  =" + orderBeans);
             updateOrdersNum(0, orderBeans.size());
             if(orderBeans.size()>adapter.cacheToProduceList.size() && !isShowProgress){
-                sendNotificationForAutoNewOrders(AutoFetchOrdersService.auto_flag);
+                sendNotificationForAutoNewOrders(true);
             }
             adapter.setData(orderBeans);
             if(orderBeans.size()>0){

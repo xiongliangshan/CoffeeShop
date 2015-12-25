@@ -34,14 +34,23 @@ import com.lyancafe.coffeeshop.adapter.RecyclerAdapter;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
 import com.lyancafe.coffeeshop.widget.ReportWindow;
+import com.xls.http.HttpAsyncTask;
+import com.xls.http.HttpEntity;
+import com.xls.http.HttpUtils;
+import com.xls.http.Jresp;
+import com.xls.http.Qry;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2015/9/1.
@@ -146,6 +155,7 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
                 if (position > 0) {
                     //请求服务器
                     Log.d(TAG, "请求服务器，上传日期：" + date_str);
+                    new OrderByDateQry(mContext,date_str,true).doRequest();
                 }
             }
 
@@ -503,6 +513,46 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
                 }
             }
 
+        }
+    }
+
+    //按日期查询订单接口
+    class OrderByDateQry implements Qry {
+
+        private Context context;
+        private String date;
+        private boolean isShowProgress;
+
+        public OrderByDateQry(Context context,String date,boolean isShowProgress) {
+            this.context = context;
+            this.date = date;
+            this.isShowProgress = isShowProgress;
+        }
+
+        @Override
+        public void doRequest() {
+            String token = LoginHelper.getToken(context);
+            int shopId = LoginHelper.getShopId(context);
+            String url = HttpUtils.BASE_URL+shopId+"/orders/search/day/"+date+"?token="+token;
+            Map<String,Object> params = new HashMap<String,Object>();
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, isShowProgress);
+        }
+
+        @Override
+        public void showResult(Jresp resp) {
+            Log.d(TAG, "OrderQry:resp  =" + resp);
+            if(resp==null){
+                ToastUtil.showToast(context, R.string.unknown_error);
+                return;
+            }
+            List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
+            Log.d(TAG, "orderBeans  =" + orderBeans);
+            recyclerAdapter.setData(orderBeans);
+            if(orderBeans.size()>0){
+                updateDetailView(orderBeans.get(0));
+            }else{
+                updateDetailView(null);
+            }
         }
     }
 }

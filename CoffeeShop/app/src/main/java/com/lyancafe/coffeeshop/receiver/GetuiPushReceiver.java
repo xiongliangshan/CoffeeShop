@@ -131,11 +131,12 @@ public class GetuiPushReceiver extends BroadcastReceiver {
         }else{
             mBuilder.setContentText("有订单消息，数据解析错误无法显示单号");
         }
-        if(pmb.getEventType()==1){
+        if(pmb.getEventType()==1){  //新订单依靠自动刷单模式，不依靠推送消息
             mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.coffee_box));
-        }else if(pmb.getEventType()==10){
+            return;
+        }else if(pmb.getEventType()==10){   //小哥上报问题
             mBuilder.setDefaults(Notification.DEFAULT_ALL);
-        }else if(pmb.getEventType()==11){
+        }else if(pmb.getEventType()==11){   //问题已经解决
             mBuilder.setDefaults(Notification.DEFAULT_ALL);
         }
 
