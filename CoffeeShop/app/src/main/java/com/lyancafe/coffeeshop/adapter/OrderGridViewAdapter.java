@@ -263,7 +263,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
     public void setData(List<OrderBean> list){
         this.list = list;
         notifyDataSetChanged();
-    //    selected = 0;
+        selected = 0;
         if(OrdersFragment.subTabIndex==0){
             //缓存订单列表
             cacheToProduceList.clear();
