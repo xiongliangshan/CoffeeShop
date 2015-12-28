@@ -372,7 +372,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
 
             fillItemListData(itemsContainerLayout, order.getItems());
-            orderPriceTxt.setText("应付: "+OrderHelper.getMoneyStr(OrderHelper.getTotalPrice(order)));
+            orderPriceTxt.setText("应付: " + OrderHelper.getMoneyStr(OrderHelper.getTotalPrice(order)));
             payWayTxt.setText(order.getPayChannelStr());
             moneyTxt.setText(OrderHelper.getMoneyStr(order.getPaid()));
             userRemarkTxt.setText(order.getNotes());
@@ -381,8 +381,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 @Override
                 public void onClick(View v) {
                     //生产完成
-                    final long mms = order.getProduceEffect();
-                    if (Math.abs(mms) - OrderHelper.getTotalQutity(order) * 2 * 60 * 1000 > 0) {
+                    final long mms = System.currentTimeMillis() - (order.getExpectedTime() - 30 * 60 * 1000);
+                    if (mms < 0) {
                         //预约单，生产时间还没到
                         SimpleConfirmDialog scd = new SimpleConfirmDialog(mContext, R.style.MyDialog);
                         scd.setContent(R.string.can_not_operate);
@@ -413,13 +413,13 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             printOrderBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final long mms = order.getProduceEffect();
-                    if (Math.abs(mms) - OrderHelper.getTotalQutity(order) * 2 * 60 * 1000 > 0) {
+                    final long mms = System.currentTimeMillis() - (order.getExpectedTime() - 30 * 60 * 1000);
+                    if(mms<0){
                         //预约单，生产时间还没到
                         SimpleConfirmDialog scd = new SimpleConfirmDialog(mContext, R.style.MyDialog);
                         scd.setContent(R.string.can_not_operate);
                         scd.show();
-                    } else {
+                    }else{
                         Intent intent = new Intent(mContext, PrinterActivity.class);
                         intent.putExtra("order", order);
                         mContext.startActivity(intent);

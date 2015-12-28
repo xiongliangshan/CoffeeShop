@@ -163,8 +163,8 @@ public class OrderGridViewAdapter extends BaseAdapter{
             @Override
             public void onClick(View v) {
                 //生产完成
-                final long mms = order.getProduceEffect();
-                if(Math.abs(mms)-OrderHelper.getTotalQutity(order)*2*60*1000>0){
+                final long mms = System.currentTimeMillis() - (order.getExpectedTime() - 30 * 60 * 1000);
+                if(mms<0){
                     //预约单，生产时间还没到
                     SimpleConfirmDialog scd = new SimpleConfirmDialog(context,R.style.MyDialog);
                     scd.setContent(R.string.can_not_operate);
@@ -187,8 +187,8 @@ public class OrderGridViewAdapter extends BaseAdapter{
         holder.printBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final long mms = order.getProduceEffect();
-                if(Math.abs(mms)-OrderHelper.getTotalQutity(order)*2*60*1000>0){
+                final long mms = System.currentTimeMillis() - (order.getExpectedTime() - 30 * 60 * 1000);
+                if(mms<0){
                     //预约单，生产时间还没到
                     SimpleConfirmDialog scd = new SimpleConfirmDialog(context,R.style.MyDialog);
                     scd.setContent(R.string.can_not_operate);
@@ -263,7 +263,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
     public void setData(List<OrderBean> list){
         this.list = list;
         notifyDataSetChanged();
-        selected = 0;
+    //    selected = 0;
         if(OrdersFragment.subTabIndex==0){
             //缓存订单列表
             cacheToProduceList.clear();
