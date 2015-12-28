@@ -160,7 +160,7 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+              public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
@@ -217,7 +217,7 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
             orderIdTxt.setText(order.getOrderSn());
             orderTimeTxt.setText(OrderHelper.getDateToString(order.getOrderTime()));
             orderReportTxt.setEnabled(true);
-            orderReportTxt.setOnClickListener(new View.OnClickListener() {
+            /*orderReportTxt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(reportWindow==null){
@@ -232,30 +232,23 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
 
 
                 }
-            });
+            });*/
             reachTimeTxt.setText(order.getInstant()==1?"尽快送达":OrderHelper.getDateToMonthDay(order.getExpectedTime()));
             final long mms = order.getProduceEffect();
-            if(OrdersFragment.subTabIndex==0){
-                finishProduceBtn.setEnabled(true);
-                if(mms<=0){
-                    produceEffectTxt.setTextColor(Color.parseColor("#e2435a"));
-                    finishProduceBtn.setBackgroundResource(R.drawable.bg_produce_btn_red);
-                    produceEffectTxt.setText("+"+OrderHelper.getDateToMinutes(Math.abs(mms)));
-                }else{
-                    if(order.getInstant()==0){
-                        finishProduceBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
-                    }else{
-                        finishProduceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
-                    }
-                    produceEffectTxt.setTextColor(Color.parseColor("#000000"));
-                    produceEffectTxt.setText(OrderHelper.getDateToMinutes(mms));
-                }
 
+            finishProduceBtn.setEnabled(true);
+            if(mms<=0){
+                produceEffectTxt.setTextColor(Color.parseColor("#e2435a"));
+                finishProduceBtn.setBackgroundResource(R.drawable.bg_produce_btn_red);
+                produceEffectTxt.setText("+"+OrderHelper.getDateToMinutes(Math.abs(mms)));
             }else{
-                finishProduceBtn.setEnabled(false);
-                finishProduceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
+                if(order.getInstant()==0){
+                    finishProduceBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
+                }else{
+                    finishProduceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
+                }
                 produceEffectTxt.setTextColor(Color.parseColor("#000000"));
-                produceEffectTxt.setText("-----");
+                produceEffectTxt.setText(OrderHelper.getDateToMinutes(mms));
             }
 
             receiveNameTxt.setText(order.getRecipient());
@@ -274,7 +267,7 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
             moneyTxt.setText(OrderHelper.getMoneyStr(order.getPaid()));
             userRemarkTxt.setText(order.getNotes());
             csadRemarkTxt.setText(order.getCsrNotes());
-            finishProduceBtn.setEnabled(false);
+            finishProduceBtn.setEnabled(true);
             /*finishProduceBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -299,16 +292,16 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
                 printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_black));
             }
             printOrderBtn.setEnabled(true);
-            printOrderBtn.setOnClickListener(new View.OnClickListener() {
+           /* printOrderBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mContext, PrinterActivity.class);
                     intent.putExtra("order",order);
                     mContext.startActivity(intent);
                 }
-            });
+            });*/
             moreBtn.setEnabled(true);
-            moreBtn.setOnClickListener(new View.OnClickListener() {
+            /*moreBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     final PopupMenu popup = new PopupMenu(mContext, v);
@@ -337,7 +330,7 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
 
                     popup.show();
                 }
-            });
+            });*/
         }
 
     }

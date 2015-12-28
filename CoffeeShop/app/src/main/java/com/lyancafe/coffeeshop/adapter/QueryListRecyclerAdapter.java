@@ -150,14 +150,14 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
 
             }
         });*/
-        holder.printBtn.setOnClickListener(new View.OnClickListener() {
+        /*holder.printBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, PrinterActivity.class);
                 intent.putExtra("order",order);
                 context.startActivity(intent);
             }
-        });
+        });*/
     }
 
     @Override
