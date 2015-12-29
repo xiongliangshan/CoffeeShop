@@ -138,6 +138,8 @@ public class GetuiPushReceiver extends BroadcastReceiver {
             mBuilder.setDefaults(Notification.DEFAULT_ALL);
         }else if(pmb.getEventType()==11){   //问题已经解决
             mBuilder.setDefaults(Notification.DEFAULT_ALL);
+        }else{
+            mBuilder.setDefaults(Notification.DEFAULT_ALL);
         }
 
 
