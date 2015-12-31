@@ -68,6 +68,7 @@ public class GetuiPushReceiver extends BroadcastReceiver {
                     String data = new String(payload);
                     Log.d(TAG, "receiver payload : " + data);
                     PushMessageBean pmb =  PushMessageBean.parseJsonToMB(data);
+                    Log.d(TAG,"pmb = "+pmb);
                     sendNotification(context, pmb);
                 }
                 break;
@@ -138,8 +139,8 @@ public class GetuiPushReceiver extends BroadcastReceiver {
             mBuilder.setDefaults(Notification.DEFAULT_ALL);
         }else if(pmb.getEventType()==11){   //问题已经解决
             mBuilder.setDefaults(Notification.DEFAULT_ALL);
-        }else{
-            mBuilder.setDefaults(Notification.DEFAULT_ALL);
+        }else if(pmb.getEventType()==16){   //订单撤销
+            mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.order_undo));
         }
 
 
