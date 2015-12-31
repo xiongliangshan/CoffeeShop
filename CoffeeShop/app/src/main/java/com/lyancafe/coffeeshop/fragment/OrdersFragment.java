@@ -381,13 +381,28 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 @Override
                 public void onClick(View v) {
                     //生产完成
-                    final long mms = System.currentTimeMillis() - (order.getExpectedTime() - 30 * 60 * 1000);
-                    if (mms < 0) {
-                        //预约单，生产时间还没到
-                        SimpleConfirmDialog scd = new SimpleConfirmDialog(mContext, R.style.MyDialog);
-                        scd.setContent(R.string.can_not_operate);
-                        scd.show();
+                    if (order.getInstant() == 0) {
+                        //预约单
+                        final long mms = System.currentTimeMillis() - (order.getExpectedTime() - 30 * 60 * 1000);
+                        if (mms < 0) {
+                            //预约单，生产时间还没到
+                            SimpleConfirmDialog scd = new SimpleConfirmDialog(mContext, R.style.MyDialog);
+                            scd.setContent(R.string.can_not_operate);
+                            scd.show();
+                        } else {
+                            ConfirmDialog grabConfirmDialog = new ConfirmDialog(mContext, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
+                                @Override
+                                public void onClickYes() {
+                                    Log.d(TAG, "orderId = " + order.getOrderSn());
+                                    adapter.new DoFinishProduceQry(order.getId()).doRequest();
+                                }
+                            });
+                            grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 生产完成？");
+                            grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
+                            grabConfirmDialog.show();
+                        }
                     } else {
+                        //及时单
                         ConfirmDialog grabConfirmDialog = new ConfirmDialog(mContext, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
                             @Override
                             public void onClickYes() {
@@ -399,6 +414,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                         grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
                         grabConfirmDialog.show();
                     }
+
 
                 }
             });
@@ -413,17 +429,27 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             printOrderBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final long mms = System.currentTimeMillis() - (order.getExpectedTime() - 30 * 60 * 1000);
-                    if(mms<0){
-                        //预约单，生产时间还没到
-                        SimpleConfirmDialog scd = new SimpleConfirmDialog(mContext, R.style.MyDialog);
-                        scd.setContent(R.string.can_not_operate);
-                        scd.show();
+                    //打印按钮
+                    if(order.getInstant()==0){
+                        //预约单
+                        final long mms = System.currentTimeMillis() - (order.getExpectedTime() - 30 * 60 * 1000);
+                        if (mms < 0) {
+                            //预约单，生产时间还没到
+                            SimpleConfirmDialog scd = new SimpleConfirmDialog(mContext, R.style.MyDialog);
+                            scd.setContent(R.string.can_not_operate);
+                            scd.show();
+                        } else {
+                            Intent intent = new Intent(mContext, PrinterActivity.class);
+                            intent.putExtra("order", order);
+                            mContext.startActivity(intent);
+                        }
                     }else{
+                        //及时单
                         Intent intent = new Intent(mContext, PrinterActivity.class);
                         intent.putExtra("order", order);
                         mContext.startActivity(intent);
                     }
+
                 }
             });
             moreBtn.setEnabled(true);
