@@ -78,6 +78,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private ListTabButton deliveringTab;
     private ListTabButton deliveryFinishedTab;
 
+    private TextView shopNameText;
     private ListTabButtonListener ltbListener;
 
     private Spinner sortSpinner;
@@ -228,6 +229,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         initDetailView(contentView);
         initSpinner(contentView, mContext);
 
+        shopNameText = (TextView) contentView.findViewById(R.id.tv_shop_name);
+        shopNameText.setText(LoginHelper.getShopName(mContext));
         refreshbtn = (Button) contentView.findViewById(R.id.btn_refresh);
         refreshbtn.setOnClickListener(new View.OnClickListener() {
             @Override

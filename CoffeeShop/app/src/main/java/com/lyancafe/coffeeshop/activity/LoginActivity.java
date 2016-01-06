@@ -134,8 +134,9 @@ public class LoginActivity extends BaseActivity {
             if(resp.status==LoginHelper.LOGIN_SUCCESS){
                 int shopId = resp.data.optInt("shopId");
                 int userId = resp.data.optInt("userId");
+                String shopName = resp.data.optString("shopName");
                 String token = resp.data.optString("token");
-                LoginHelper.saveUserInfo(mContext,userId,shopId,token);
+                LoginHelper.saveUserInfo(mContext,userId,shopId,shopName,token);
                 Intent intent = new Intent(mContext, HomeActivity.class);
                 mContext.startActivity(intent);
                 overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);

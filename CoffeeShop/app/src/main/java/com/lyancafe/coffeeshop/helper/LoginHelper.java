@@ -58,9 +58,20 @@ public class LoginHelper {
         return sp.getInt("shop_id",0);
     }
 
-    public static void  saveUserInfo(Context context,int userId,int shopId,String token){
+    public static void saveShopName(Context context,String shopName){
+        SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
+        sp.edit().putString("shop_name",shopName).commit();
+    }
+
+    public static String getShopName(Context context){
+        SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
+        return sp.getString("shop_name","");
+    }
+
+    public static void  saveUserInfo(Context context,int userId,int shopId,String shopName,String token){
         saveUserId(context,userId);
         saveShopId(context,shopId);
+        saveShopName(context,shopName);
         saveToken(context,token);
     }
 }
