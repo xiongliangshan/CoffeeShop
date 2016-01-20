@@ -1,6 +1,7 @@
 package com.lyancafe.coffeeshop.helper;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.util.Log;
 import android.widget.TextView;
@@ -13,6 +14,8 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Administrator on 2015/9/29.
@@ -20,6 +23,7 @@ import java.util.Date;
 public class OrderHelper {
 
     private static final String TAG ="OrderHelper";
+    public static String PRINT_STATUS = "print_status";
 
     /**
      * 订单状态
@@ -160,4 +164,41 @@ public class OrderHelper {
             effectTimeTxt.setText(OrderHelper.getDateToMinutes(mms));
         }
     }
+
+    //缓存订单打印状态到本地xml文件
+    public static void addPrintedSet(Context context,String orderSn){
+        Set<String> list = getPrintedSet(context);
+        list.add(orderSn);
+        SharedPreferences sp = context.getSharedPreferences(PRINT_STATUS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor  =sp.edit();
+        editor.clear();
+        editor.putStringSet("printedOrderList",list);
+        editor.commit();
+        Log.d(TAG,"order "+orderSn+" is added printSet");
+    }
+
+    //获取已打印订单的集合
+    public static Set<String> getPrintedSet(Context context){
+        SharedPreferences sp = context.getSharedPreferences(PRINT_STATUS, Context.MODE_PRIVATE);
+        return sp.getStringSet("printedOrderList",new HashSet<String>());
+    }
+    //判断订单是否已经被打印过
+    public static boolean isPrinted(Context context,String orderSn){
+        Set<String> list = getPrintedSet(context);
+        for(String order:list){
+            Log.d(TAG,"set contain :"+order);
+        }
+        if(list.contains(orderSn)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    //清空打印状态缓存记录
+    public static void clearPrintedSet(Context context){
+        SharedPreferences sp = context.getSharedPreferences(PRINT_STATUS, Context.MODE_PRIVATE);
+        sp.edit().clear().commit();
+        Log.d(TAG,"clear print set");
+    }
+
 }

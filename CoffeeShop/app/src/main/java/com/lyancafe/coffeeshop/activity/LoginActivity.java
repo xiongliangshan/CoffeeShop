@@ -18,6 +18,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.igexin.sdk.PushManager;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
+import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.RsaEncryptor;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.xls.http.HttpAsyncTask;
@@ -137,6 +138,10 @@ public class LoginActivity extends BaseActivity {
                 String shopName = resp.data.optString("shopName");
                 String token = resp.data.optString("token");
                 LoginHelper.saveUserInfo(mContext,userId,shopId,shopName,token);
+                //如果是当天第一次登陆，就清空本地缓存的订单打印记录
+                if(LoginHelper.isCurrentDayFirstLogin(mContext)){
+                    OrderHelper.clearPrintedSet(mContext);
+                }
                 Intent intent = new Intent(mContext, HomeActivity.class);
                 mContext.startActivity(intent);
                 overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);

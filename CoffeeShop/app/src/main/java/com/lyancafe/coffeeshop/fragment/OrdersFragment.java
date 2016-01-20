@@ -421,7 +421,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
                 }
             });
-            if(CoffeeShopApplication.getInstance().printedSet.contains(order.getOrderSn())){
+            if(OrderHelper.isPrinted(mContext, order.getOrderSn())){
                 printOrderBtn.setText(R.string.print_again);
                 printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_red));
             }else{

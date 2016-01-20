@@ -2,6 +2,7 @@ package com.lyancafe.coffeeshop;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -11,6 +12,7 @@ import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.model.LatLng;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.ShopHelper;
+import com.lyancafe.coffeeshop.service.UpdateService;
 import com.xls.http.HttpAsyncTask;
 import com.xls.http.HttpEntity;
 import com.xls.http.HttpUtils;
@@ -38,7 +40,7 @@ public class CoffeeShopApplication extends Application {
     public static int screenWidth = 0;
     public static int screenHeight = 0;
 
-    public Set<String> printedSet;
+//    public Set<String> printedSet;
 
     public CoffeeShopApplication() {
         Log.d(TAG,"CoffeeShopApplication");
@@ -50,7 +52,6 @@ public class CoffeeShopApplication extends Application {
         Log.d(TAG, "onCreate()");
         application = this;
         SDKInitializer.initialize(this);
-        printedSet = new HashSet<String>();
         getDeviceScreenSize();
         //进行定位
         ShopLocation shopLocation = new ShopLocation(this);
@@ -103,7 +104,9 @@ public class CoffeeShopApplication extends Application {
 
         @Override
         public void showResult(Jresp resp) {
-            Log.d(TAG,"LoginOutQry:"+resp);
+            Log.d(TAG, "LoginOutQry:" + resp);
+            Intent intent_update = new Intent(context, UpdateService.class);
+            context.stopService(intent_update);
         }
     }
 }

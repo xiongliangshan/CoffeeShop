@@ -134,9 +134,9 @@ public class OrderGridViewAdapter extends BaseAdapter{
             holder.logoScanIV.setVisibility(View.GONE);
         }
 
-        OrderHelper.showEffect(order,holder.produceBtn,holder.effectTimeTxt);
+        OrderHelper.showEffect(order, holder.produceBtn, holder.effectTimeTxt);
 
-        if(CoffeeShopApplication.getInstance().printedSet.contains(order.getOrderSn())){
+        if(OrderHelper.isPrinted(context, order.getOrderSn())){
             holder.printBtn.setText(R.string.print_again);
             holder.printBtn.setTextColor(context.getResources().getColor(R.color.text_red));
         }else{

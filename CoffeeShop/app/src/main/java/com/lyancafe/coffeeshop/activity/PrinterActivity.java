@@ -16,6 +16,7 @@ import com.lyancafe.coffeeshop.CoffeeShopApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.xls.http.HttpUtils;
 
@@ -115,7 +116,8 @@ public class PrinterActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				PrintOrderInfo();
-				CoffeeShopApplication.getInstance().printedSet.add(orderSn);
+				OrderHelper.addPrintedSet(mContext,orderSn);
+			//	CoffeeShopApplication.getInstance().printedSet.add(orderSn);
 				//		LyanApplication.setOrderPrinted(orderSn);
 			}
 		});

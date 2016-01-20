@@ -109,7 +109,7 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
             holder.effectTimeTxt.setTextColor(Color.parseColor("#000000"));
             holder.effectTimeTxt.setText("-----");
         }
-        if(CoffeeShopApplication.getInstance().printedSet.contains(order.getOrderSn())){
+        if(OrderHelper.isPrinted(context,order.getOrderSn())){
             holder.printBtn.setText(R.string.print_again);
             holder.printBtn.setTextColor(context.getResources().getColor(R.color.text_red));
         }else{

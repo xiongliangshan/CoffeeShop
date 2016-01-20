@@ -3,9 +3,14 @@ package com.lyancafe.coffeeshop.helper;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 
 /**
@@ -13,6 +18,7 @@ import com.lyancafe.coffeeshop.utils.ToastUtil;
  */
 public class LoginHelper {
 
+    public static final String TAG = "LoginHelper";
     public static int LOGIN_SUCCESS = 0;   //登录成功
     public static int LOGIN_FAIL = 104;    //登录失败
     public static String PREFERENCES_USER = "user";
@@ -66,6 +72,35 @@ public class LoginHelper {
     public static String getShopName(Context context){
         SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
         return sp.getString("shop_name","");
+    }
+
+    //记录当天第一次登陆的时间
+    public static void saveCurrentDayFirstLoginTime(Context context,long loginTime){
+        SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
+        sp.edit().putLong("login_time",loginTime).commit();
+    }
+
+    //获取保存的登陆时间
+    public static long getLoginTime(Context context){
+        SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
+        return sp.getLong("login_time",0L);
+    }
+
+    //判断是否是当天第一次登陆
+    public static boolean isCurrentDayFirstLogin(Context context){
+        long currentTime = System.currentTimeMillis();
+        long firstTime = getLoginTime(context);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String time1 = sdf.format(new Date(firstTime));
+        String time2 = sdf.format(new Date(currentTime));
+        if(time1.equals(time2)){
+            Log.d(TAG,"not current day first login");
+            return false;
+        }else{
+            saveCurrentDayFirstLoginTime(context,currentTime);
+            Log.d(TAG, "is first login");
+            return true;
+        }
     }
 
     public static void  saveUserInfo(Context context,int userId,int shopId,String shopName,String token){
