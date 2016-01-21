@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
@@ -66,6 +67,8 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
     private RecyclerView.LayoutManager layoutManager;
     private QueryListRecyclerAdapter recyclerAdapter;
     private ReportWindow reportWindow;
+    private EditText orderSnEdit;
+    private Button queryBtn;
 
 
     /**
@@ -97,7 +100,7 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mContext = activity;
-        Log.d(TAG,"onAttach");
+        Log.d(TAG, "onAttach");
     }
 
     @Override
@@ -127,6 +130,20 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
         ArrayList<OrderBean> orderList = new ArrayList<OrderBean>();
         recyclerAdapter = new QueryListRecyclerAdapter(orderList,mContext,OrderQueryFragment.this);
         recyclerView.setAdapter(recyclerAdapter);
+        orderSnEdit = (EditText) contentView.findViewById(R.id.et_order_id);
+        queryBtn = (Button) contentView.findViewById(R.id.btn_query);
+        queryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //点击查询按钮
+                String orderSn = orderSnEdit.getText().toString();
+                if("".equals(orderSn)){
+                    ToastUtil.showToast(mContext,"订单号不能为空");
+                    return;
+                }
+                new OrderBySnQry(mContext,orderSn,true).doRequest();
+            }
+        });
         initDetailView(contentView);
 
     }
@@ -533,7 +550,47 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
 
         @Override
         public void showResult(Jresp resp) {
-            Log.d(TAG, "OrderQry:resp  =" + resp);
+            Log.d(TAG, "OrderQrybyDate:resp  =" + resp);
+            if(resp==null){
+                ToastUtil.showToast(context, R.string.unknown_error);
+                return;
+            }
+            List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
+            Log.d(TAG, "orderBeans  =" + orderBeans);
+            recyclerAdapter.setData(orderBeans);
+            if(orderBeans.size()>0){
+                updateDetailView(orderBeans.get(0));
+            }else{
+                updateDetailView(null);
+            }
+        }
+    }
+
+    //按订单号查询订单接口
+    class OrderBySnQry implements Qry {
+        //{shopId}/orders/search/id/{orderSn}
+        private Context context;
+        private String orderSn;
+        private boolean isShowProgress;
+
+        public OrderBySnQry(Context context, String orderSn, boolean isShowProgress) {
+            this.context = context;
+            this.orderSn = orderSn;
+            this.isShowProgress = isShowProgress;
+        }
+
+        @Override
+        public void doRequest() {
+            String token = LoginHelper.getToken(context);
+            int shopId = LoginHelper.getShopId(context);
+            String url = HttpUtils.BASE_URL+shopId+"/orders/search/id/"+orderSn+"?token="+token;
+            Map<String,Object> params = new HashMap<String,Object>();
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, isShowProgress);
+        }
+
+        @Override
+        public void showResult(Jresp resp) {
+            Log.d(TAG, "OrderQrybyId:resp  =" + resp);
             if(resp==null){
                 ToastUtil.showToast(context, R.string.unknown_error);
                 return;
