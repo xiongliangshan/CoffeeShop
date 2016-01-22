@@ -12,10 +12,13 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -131,6 +134,25 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
         recyclerAdapter = new QueryListRecyclerAdapter(orderList,mContext,OrderQueryFragment.this);
         recyclerView.setAdapter(recyclerAdapter);
         orderSnEdit = (EditText) contentView.findViewById(R.id.et_order_id);
+        orderSnEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+                    String orderSn = orderSnEdit.getText().toString();
+                    if("".equals(orderSn)){
+                        ToastUtil.showToast(mContext,"订单号不能为空");
+                        return false;
+                    }
+                    new OrderBySnQry(mContext,orderSn,true).doRequest();
+
+                    return true;
+                }
+                return false;
+            }
+        });
         queryBtn = (Button) contentView.findViewById(R.id.btn_query);
         queryBtn.setOnClickListener(new View.OnClickListener() {
             @Override

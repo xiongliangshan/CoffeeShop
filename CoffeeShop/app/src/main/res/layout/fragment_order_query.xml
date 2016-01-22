@@ -27,6 +27,8 @@
             android:hint="输入订单号"
             android:layout_toRightOf="@id/spinner_date"
             android:layout_centerVertical="true"
+            android:singleLine="true"
+            android:imeOptions="actionSearch"
 
             />
 
