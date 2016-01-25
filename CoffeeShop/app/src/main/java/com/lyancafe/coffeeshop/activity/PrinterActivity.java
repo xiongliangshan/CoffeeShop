@@ -50,6 +50,9 @@ public class PrinterActivity extends Activity {
 	private String phoneNum = "";
 	private String orderSn = "";
 	private String address = "";
+	private String cupCount = ""; //盒中的杯数
+	private String boxCount = ""; //一个订单打包的盒子数
+	private String currBox =""; //当前盒子是此单对应的第几个盒子
 	private String productName = "";
 	private String recipient = "";
 	private String courierName = "";
@@ -161,30 +164,33 @@ public class PrinterActivity extends Activity {
 			genToBePrintedList(orderItemList);
 		}
 		if (toBePrintedList.size() == totalQuantity) {
+			int boxIndex = 1;
 			if (totalQuantity > 4) {
+				int boxCount = totalQuantity/4 + 1;
 				for (int a=0, b=0; a < totalQuantity/4; a++) {
 					Log.d(TAG, toBePrintedList.get(b) + " " +
 							toBePrintedList.get(b + 1) + " " +
 							toBePrintedList.get(b + 2) + " " +
 							toBePrintedList.get(b + 3));
-					setPrintContent(phoneNum, orderSn, address, recipient,
+					setPrintContent(phoneNum, orderSn, address, recipient,"4",boxCount+"",boxIndex+"",
 							toBePrintedList.get(b),
 							toBePrintedList.get(b+1),
 							toBePrintedList.get(b+2),
 							toBePrintedList.get(b+3));
 					DoPrint();
 					b = b + 4;
+					boxIndex++;
 				}
 				int left = totalQuantity%4;
 				if (left == 1) {
 					Log.d(TAG, toBePrintedList.get(totalQuantity - 1));
-					setPrintContent(phoneNum, orderSn, address, recipient,
+					setPrintContent(phoneNum, orderSn, address, recipient,left+"",boxCount+"",boxIndex+"",
 							toBePrintedList.get(totalQuantity - 1), "", "", "");
 					DoPrint();
 				} else if (left == 2) {
 					Log.e(TAG, toBePrintedList.get(totalQuantity - 1) + " " +
 							toBePrintedList.get(totalQuantity - 2));
-					setPrintContent(phoneNum, orderSn, address, recipient,
+					setPrintContent(phoneNum, orderSn, address, recipient,left+"",boxCount+"",boxIndex+"",
 							toBePrintedList.get(totalQuantity - 1),
 							toBePrintedList.get(totalQuantity - 2), "", "");
 					DoPrint();
@@ -192,7 +198,7 @@ public class PrinterActivity extends Activity {
 					Log.d(TAG, toBePrintedList.get(totalQuantity - 1) + " " +
 							toBePrintedList.get(totalQuantity - 2) + " " +
 							toBePrintedList.get(totalQuantity - 3));
-					setPrintContent(phoneNum, orderSn, address, recipient,
+					setPrintContent(phoneNum, orderSn, address, recipient,left+"",boxCount+"",boxIndex+"",
 							toBePrintedList.get(totalQuantity - 1),
 							toBePrintedList.get(totalQuantity - 2),
 							toBePrintedList.get(totalQuantity - 3), "");
@@ -202,13 +208,13 @@ public class PrinterActivity extends Activity {
 			else {
 				if (totalQuantity == 1) {
 					Log.d(TAG, toBePrintedList.get(totalQuantity - 1));
-					setPrintContent(phoneNum, orderSn, address, recipient,
+					setPrintContent(phoneNum, orderSn, address, recipient,totalQuantity+"",1+"",boxIndex+"",
 							toBePrintedList.get(totalQuantity - 1), "", "", "");
 					DoPrint();
 				} else if (totalQuantity == 2) {
 					Log.d(TAG, toBePrintedList.get(totalQuantity - 1) + " " +
 							toBePrintedList.get(totalQuantity - 2));
-					setPrintContent(phoneNum, orderSn, address, recipient,
+					setPrintContent(phoneNum, orderSn, address, recipient,totalQuantity+"",1+"",boxIndex+"",
 							toBePrintedList.get(totalQuantity - 1),
 							toBePrintedList.get(totalQuantity - 2), "", "");
 					DoPrint();
@@ -216,7 +222,7 @@ public class PrinterActivity extends Activity {
 					Log.d(TAG, toBePrintedList.get(totalQuantity - 1) + " " +
 							toBePrintedList.get(totalQuantity - 2) + " " +
 							toBePrintedList.get(totalQuantity - 3));
-					setPrintContent(phoneNum, orderSn, address, recipient,
+					setPrintContent(phoneNum, orderSn, address, recipient,totalQuantity+"",1+"",boxIndex+"",
 							toBePrintedList.get(totalQuantity - 1),
 							toBePrintedList.get(totalQuantity - 2),
 							toBePrintedList.get(totalQuantity - 3), "");
@@ -226,7 +232,7 @@ public class PrinterActivity extends Activity {
 							toBePrintedList.get(totalQuantity - 2) + " " +
 							toBePrintedList.get(totalQuantity - 3) + " " +
 							toBePrintedList.get(totalQuantity - 4));
-					setPrintContent(phoneNum, orderSn, address, recipient,
+					setPrintContent(phoneNum, orderSn, address, recipient,totalQuantity+"",1+"",boxIndex+"",
 							toBePrintedList.get(totalQuantity - 1),
 							toBePrintedList.get(totalQuantity - 2),
 							toBePrintedList.get(totalQuantity - 3),
@@ -236,7 +242,7 @@ public class PrinterActivity extends Activity {
 			}
 		} else {
 			Log.e(TAG, "toBePrintedList.size: " + toBePrintedList.size() + " totalQuantity: " + totalQuantity);
-			setPrintContent(phoneNum, orderSn, address, recipient,
+			setPrintContent(phoneNum, orderSn, address, recipient,"","","",
 					"", toBePrintedList.size()+"",
 					totalQuantity+"", "总杯量数据不一致");
 			DoPrint();
@@ -318,12 +324,16 @@ public class PrinterActivity extends Activity {
 	}
 	public void setPrintContent(String phoneNum, String orderSn,
 								String address, String recipient,
+								String cupCount,String boxCount,String currBox,
 								String order1, String order2,
 								String order3, String order4){
 		this.phoneNum = phoneNum;
 		this.recipient = recipient;
 		this.orderSn  = orderSn;
 		this.address = address;
+		this.cupCount = cupCount;
+		this.boxCount = boxCount;
+		this.currBox = currBox;
 		this.order1   = order1;
 		this.order2   = order2;
 		this.order3   = order3;
@@ -401,7 +411,8 @@ public class PrinterActivity extends Activity {
 				"S3"+"\n"+
 				"D8"+"\n"+
 		//		"A10,10,0,200,1,1,N,\"生产时间:"+sdf.format(date)+"\""+"\n"+
-				"A10,50,0,200,1,1,N,\"订单号:"+orderSnDate+orderSnNum+"\""+"\n"+ //订单号
+				"A10,50,0,200,1,1,N,\"订单号:\""+"\n"+ //订单号
+				"A90,40,0,200,2,2,N,\""+orderSnNum+"  "+currBox+"-"+boxCount+"|"+cupCount+"\""+"\n"+ //杯数盒子信息
 				"A10,90,0,200,1,1,N,\"收货人:\""+"\n"+
 				"A90,100,0,200,2,2,N,\""+recipient+" "+phoneNum+"\""+"\n"+
 				addressCMD +                             //配送地址
@@ -418,7 +429,8 @@ public class PrinterActivity extends Activity {
 				"S3"+"\n"+
 				"D8"+"\n"+
 		//		"A10,10,0,200,1,1,N,\"生产时间:"+sdf.format(date)+"\""+"\n"+
-				"A10,50,0,200,1,1,N,\"订单号:"+orderSnDate+orderSnNum+"\""+"\n"+ //订单号
+				"A10,50,0,200,1,1,N,\"订单号:\""+"\n"+ //订单号
+				"A90,40,0,200,2,2,N,\""+orderSnNum+"  "+currBox+"-"+boxCount+"|"+cupCount+"\""+"\n"+ //杯数盒子信息
 				"A10,90,0,200,1,1,N,\"收货人:\""+"\n"+
 				"A90,100,0,200,2,2,N,\""+recipient+" "+phoneNum+"\""+"\n"+
 				addressCMD +                             //配送地址

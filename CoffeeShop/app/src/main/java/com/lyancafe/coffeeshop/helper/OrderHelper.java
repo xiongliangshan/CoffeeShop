@@ -13,8 +13,12 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -24,6 +28,9 @@ public class OrderHelper {
 
     private static final String TAG ="OrderHelper";
     public static String PRINT_STATUS = "print_status";
+    public static final int MERGECUPLIMIT = 10; //最大合并杯数限制为10杯
+    public static int totalCupCount = 0;
+    public static Map<String,Integer> contentMap = new HashMap<>();
 
     /**
      * 订单状态
@@ -201,4 +208,43 @@ public class OrderHelper {
         Log.d(TAG,"clear print set");
     }
 
+    //计算应该合并的订单集
+    public static ArrayList<OrderBean> calculateToMergeOrders(List<OrderBean> list){
+        ArrayList<OrderBean> mergeList = new ArrayList<>();
+        contentMap.clear();
+        int sum = 0;
+        for(OrderBean bean:list){
+            //只针对及时单
+            if(bean.getInstant()==0){
+                continue;
+            }
+            sum+=getTotalCupCount(bean);
+            if(sum<=MERGECUPLIMIT){
+                mergeList.add(bean);
+            }else{
+                break;
+            }
+        }
+        totalCupCount = sum;
+        return mergeList;
+    }
+    //计算某个订单的总杯数
+    public static int getTotalCupCount(OrderBean orderBean){
+        if(orderBean.getItems().size()<=0){
+            return 0;
+        }
+        int sum = 0;
+        for(int i=0;i<orderBean.getItems().size();i++){
+            ItemContentBean item = orderBean.getItems().get(i);
+            sum += item.getQuantity();
+            if(contentMap.containsKey(item.getProduct())){
+                int newCount = contentMap.get(item.getProduct())+item.getQuantity();
+                contentMap.put(item.getProduct(),newCount);
+            }else {
+                contentMap.put(item.getProduct(),item.getQuantity());
+            }
+
+        }
+        return sum;
+    }
 }
