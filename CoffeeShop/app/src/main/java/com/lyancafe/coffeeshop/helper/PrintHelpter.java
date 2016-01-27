@@ -164,7 +164,7 @@ public class PrintHelpter {
                 "S3"+"\n"+
                 "D8"+"\n"+
                 "A10,50,0,200,1,1,N,\"订单号:\""+"\n"+ //订单号
-                "A90,40,0,200,2,2,N,\""+orderId+"  "+bean.getBoxNumber()+"-"+bean.getBoxAmount()+"|"+bean.getCupAmount()+"\""+"\n"+ //杯数盒子信息
+                "A90,40,0,200,2,2,N,\""+orderId+"  "+bean.getBoxAmount()+"-" +bean.getBoxNumber()+"|"+bean.getCupAmount()+"\""+"\n"+ //杯数盒子信息
                 "A10,90,0,200,1,1,N,\"收货人:\""+"\n"+
                 "A90,100,0,200,2,2,N,\""+bean.getReceiverName()+" "+bean.getReceiverPhone()+"\""+"\n"+
                 addressCMD +                             //配送地址
@@ -181,7 +181,7 @@ public class PrintHelpter {
                 "S3"+"\n"+
                 "D8"+"\n"+
                 "A10,50,0,200,1,1,N,\"订单号:\""+"\n"+ //订单号
-                "A90,40,0,200,2,2,N,\""+orderId+"  "+bean.getBoxNumber()+"-"+bean.getBoxAmount()+"|"+bean.getCupAmount()+"\""+"\n"+ //杯数盒子信息
+                "A90,40,0,200,2,2,N,\""+orderId+"  "+bean.getBoxAmount()+"-" +bean.getBoxNumber()+"|"+bean.getCupAmount()+"\""+"\n"+ //杯数盒子信息
                 "A10,90,0,200,1,1,N,\"收货人:\""+"\n"+
                 "A90,100,0,200,2,2,N,\""+bean.getReceiverName()+" "+bean.getReceiverPhone()+"\""+"\n"+
                 addressCMD +                             //配送地址
@@ -268,9 +268,9 @@ public class PrintHelpter {
                 "Q160,16"+"\n"+
                 "S3"+"\n"+
                 "D8"+"\n"+
-                "A10,30,0,200,1,1,N,\""+orderId+"\""+"\n"+
-                "A10,60,0,200,1,1,N,\""+bean.getBoxNumber()+"-"+bean.getBoxAmount()+"|"+bean.getCupNumber()+"-"+bean.getCupAmount()+"\""+"\n"+ //杯数盒子信息
-                "A10,90,0,200,1,1,N,\""+bean.getCoffee()+"\""+"\n"+
+                "A50,40,0,200,1,1,N,\""+orderId+"\""+"\n"+
+                "A50,70,0,200,1,1,N,\""+bean.getBoxAmount()+"-"+bean.getBoxNumber()+"|"+bean.getCupAmount()+"-" +bean.getCupNumber()+"\""+"\n"+ //杯数盒子信息
+                "A50,100,0,200,1,1,N,\""+bean.getCoffee()+"\""+"\n"+
                 "P1"+"\n";
         return text;
     }
