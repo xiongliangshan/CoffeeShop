@@ -95,11 +95,14 @@
             android:launchMode="singleTask" />
 
 
-        <activity
+        <!--<activity
             android:name=".activity.PrinterActivity"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Holo.Dialog.NoActionBar"
-            />
+            />-->
+        <activity android:name=".activity.PrintOrderActivity"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.Holo.Dialog.NoActionBar"/>
 
         <service android:name=".service.AutoFetchOrdersService"/>
         <service android:name=".service.UpdateService"/>

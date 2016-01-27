@@ -5,10 +5,8 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,7 +14,6 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,13 +28,9 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONException;
-import com.lyancafe.coffeeshop.CoffeeShopApplication;
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.activity.HomeActivity;
 import com.lyancafe.coffeeshop.activity.LocationActivity;
-import com.lyancafe.coffeeshop.activity.PrinterActivity;
+import com.lyancafe.coffeeshop.activity.PrintOrderActivity;
 import com.lyancafe.coffeeshop.adapter.OrderGridViewAdapter;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
@@ -54,8 +47,6 @@ import com.xls.http.HttpEntity;
 import com.xls.http.HttpUtils;
 import com.xls.http.Jresp;
 import com.xls.http.Qry;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -442,13 +433,13 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                             scd.setContent(R.string.can_not_operate);
                             scd.show();
                         } else {
-                            Intent intent = new Intent(mContext, PrinterActivity.class);
+                            Intent intent = new Intent(mContext, PrintOrderActivity.class);
                             intent.putExtra("order", order);
                             mContext.startActivity(intent);
                         }
                     }else{
                         //及时单
-                        Intent intent = new Intent(mContext, PrinterActivity.class);
+                        Intent intent = new Intent(mContext, PrintOrderActivity.class);
                         intent.putExtra("order", order);
                         mContext.startActivity(intent);
                     }

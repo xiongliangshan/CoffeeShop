@@ -33,7 +33,7 @@ public class PrintHelpter {
     public static final int MSG_PING = 66;
     public static final int MSG_EXCEPTION = 67;
     private static PrintHelpter mInstance;
-    private PromptListener mlistener;
+    private OnPromptListener mlistener;
     private boolean printerIsAvailable = true;
     private  ThreadPoolExecutor mPoolExecutor;
 
@@ -233,18 +233,34 @@ public class PrintHelpter {
         int totalBoxAmount = getTotalBoxAmount(totalQuantity);
         int boxNumber = 1; //当前盒号
         int cupNumber = 1; //当前杯号
+        int cupAmount = 0; //当前盒中总杯数
 
         for(int i=0;i<totalQuantity;i++){
             boxNumber = i/4+1;
             cupNumber = i%4+1;
-            PrintCupBean printCupBean =  new PrintCupBean(orderBean.getId(),boxNumber,totalBoxAmount,cupNumber,totalQuantity,coffeeList.get(i));
+            cupAmount = getCupAmountPerBox(boxNumber,totalQuantity,totalBoxAmount);
+            PrintCupBean printCupBean =  new PrintCupBean(orderBean.getId(),boxNumber,totalBoxAmount,cupNumber,cupAmount,coffeeList.get(i));
             cupList.add(printCupBean);
         }
         return cupList;
     }
 
+    //根据盒号计算当前盒中总的杯数
+    public int getCupAmountPerBox(int boxNumber,int totalQuantity,int totalBoxAmount){
+        if(totalQuantity%4==0){
+            return 4;
+        }else{
+            if(boxNumber<totalBoxAmount){
+                return 4;
+            }else{
+                return totalQuantity%4;
+            }
+        }
+
+    }
     //把要打印的杯子小票信息组装成字符串
     public String getPrintCupContent(PrintCupBean bean){
+        String orderId = getSelfDefineOrderId(bean.getOrderId());
         String text =
                 "N"+"\n"+
                 "OD"+"\n"+
@@ -252,7 +268,9 @@ public class PrintHelpter {
                 "Q160,16"+"\n"+
                 "S3"+"\n"+
                 "D8"+"\n"+
-                "A10,80,0,200,1,1,N,\""+bean.getCoffee()+"\""+"\n"+
+                "A10,30,0,200,1,1,N,\""+orderId+"\""+"\n"+
+                "A10,60,0,200,1,1,N,\""+bean.getBoxNumber()+"-"+bean.getBoxAmount()+"|"+bean.getCupNumber()+"-"+bean.getCupAmount()+"\""+"\n"+ //杯数盒子信息
+                "A10,90,0,200,1,1,N,\""+bean.getCoffee()+"\""+"\n"+
                 "P1"+"\n";
         return text;
     }
@@ -313,10 +331,10 @@ public class PrintHelpter {
     }
 
 
-    public void setPromptlistener(PromptListener promptlistener){
+    public void setPromptlistener(OnPromptListener promptlistener){
         this.mlistener = promptlistener;
     }
-    public interface PromptListener{
+    public interface OnPromptListener{
 
         void onPrompt(int type,String message);
     }
@@ -341,7 +359,7 @@ public class PrintHelpter {
         mPoolExecutor.execute(dpt);
     }
 
-    public  class DoPingRunnable implements Runnable {
+    public class DoPingRunnable implements Runnable {
         public void run() {
             boolean pingResult = ping(ip_print_order);
             if (pingResult == true) {

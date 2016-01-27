@@ -70,7 +70,6 @@ public class PrinterActivity extends Activity {
 	private boolean PrinterIsAvailable = true;
 	private boolean toBePrintedReady = false;
 	private Context mContext;
-	private OrderBean mOrderBean;
 
 	private static final int MSG_PING = 66;
 	private static final int MSG_EXCEPTION = 67;
@@ -104,7 +103,6 @@ public class PrinterActivity extends Activity {
 		pingBtn = (Button)findViewById(R.id.PingBtn);
 
 		OrderBean orderBean = (OrderBean) getIntent().getSerializableExtra("order");
-		mOrderBean = orderBean;
 		Log.d(TAG, "OrderInfo: " + orderBean);
 		if(orderBean.getItems().size()>0){
 			orderItemList = orderBean.getItems();
@@ -121,10 +119,8 @@ public class PrinterActivity extends Activity {
 		printBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-			//	PrintOrderInfo();
-			//	OrderHelper.addPrintedSet(mContext,orderSn);
-				PrintHelpter.getInstance().printOrderInfo(mOrderBean);
-
+				PrintOrderInfo();
+				OrderHelper.addPrintedSet(mContext,orderSn);
 			}
 		});
 
@@ -132,8 +128,7 @@ public class PrinterActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-			//	PrintItemsInfo();
-				PrintHelpter.getInstance().printOrderItems(mOrderBean);
+				PrintItemsInfo();
 			}
 		});
 

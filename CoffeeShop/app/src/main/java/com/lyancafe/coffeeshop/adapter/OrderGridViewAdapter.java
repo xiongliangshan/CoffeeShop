@@ -1,15 +1,10 @@
 package com.lyancafe.coffeeshop.adapter;
 
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,15 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.lyancafe.coffeeshop.CoffeeShopApplication;
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.activity.PrinterActivity;
+import com.lyancafe.coffeeshop.activity.PrintOrderActivity;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
@@ -39,11 +32,11 @@ import com.xls.http.HttpEntity;
 import com.xls.http.HttpUtils;
 import com.xls.http.Jresp;
 import com.xls.http.Qry;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -212,13 +205,13 @@ public class OrderGridViewAdapter extends BaseAdapter{
                         scd.setContent(R.string.can_not_operate);
                         scd.show();
                     }else{
-                        Intent intent = new Intent(context, PrinterActivity.class);
+                        Intent intent = new Intent(context, PrintOrderActivity.class);
                         intent.putExtra("order",order);
                         context.startActivity(intent);
                     }
                 }else{
                     //及时单
-                    Intent intent = new Intent(context, PrinterActivity.class);
+                    Intent intent = new Intent(context, PrintOrderActivity.class);
                     intent.putExtra("order",order);
                     context.startActivity(intent);
                 }

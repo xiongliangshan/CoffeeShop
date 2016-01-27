@@ -14,6 +14,7 @@
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/xls/http/md5/MD5InputStream.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/xls/http/md5/MD5OutputStream.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/xls/http/md5/MD5State.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_print_order.xml" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_printer.xml" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/back_img.png" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/values/color.xml" charset="UTF-8" />
