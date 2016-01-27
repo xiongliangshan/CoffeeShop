@@ -17,6 +17,7 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.helper.PrintHelpter;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.xls.http.HttpUtils;
 
@@ -69,6 +70,7 @@ public class PrinterActivity extends Activity {
 	private boolean PrinterIsAvailable = true;
 	private boolean toBePrintedReady = false;
 	private Context mContext;
+	private OrderBean mOrderBean;
 
 	private static final int MSG_PING = 66;
 	private static final int MSG_EXCEPTION = 67;
@@ -102,6 +104,7 @@ public class PrinterActivity extends Activity {
 		pingBtn = (Button)findViewById(R.id.PingBtn);
 
 		OrderBean orderBean = (OrderBean) getIntent().getSerializableExtra("order");
+		mOrderBean = orderBean;
 		Log.d(TAG, "OrderInfo: " + orderBean);
 		if(orderBean.getItems().size()>0){
 			orderItemList = orderBean.getItems();
@@ -118,10 +121,10 @@ public class PrinterActivity extends Activity {
 		printBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				PrintOrderInfo();
-				OrderHelper.addPrintedSet(mContext,orderSn);
-			//	CoffeeShopApplication.getInstance().printedSet.add(orderSn);
-				//		LyanApplication.setOrderPrinted(orderSn);
+			//	PrintOrderInfo();
+			//	OrderHelper.addPrintedSet(mContext,orderSn);
+				PrintHelpter.getInstance().printOrderInfo(mOrderBean);
+
 			}
 		});
 
@@ -129,7 +132,8 @@ public class PrinterActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				PrintItemsInfo();
+			//	PrintItemsInfo();
+				PrintHelpter.getInstance().printOrderItems(mOrderBean);
 			}
 		});
 

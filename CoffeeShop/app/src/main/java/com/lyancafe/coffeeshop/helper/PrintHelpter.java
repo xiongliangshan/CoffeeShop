@@ -1,9 +1,9 @@
 package com.lyancafe.coffeeshop.helper;
 
-import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.lyancafe.coffeeshop.CoffeeShopApplication;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.PrintCupBean;
@@ -18,6 +18,9 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Administrator on 2016/1/25.
@@ -32,11 +35,14 @@ public class PrintHelpter {
     private static PrintHelpter mInstance;
     private PromptListener mlistener;
     private boolean printerIsAvailable = true;
+    private  ThreadPoolExecutor mPoolExecutor;
 
     private PrintHelpter() {
+        Log.d(TAG,"PrintHelpter()");
+        mPoolExecutor = new ThreadPoolExecutor(1, 5, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
         if(HttpUtils.BASE_URL.contains("test")){
             ip_print_order = "192.168.1.231";
-            ip_print_cup = "192.168.1.232";
+            ip_print_cup = "192.168.1.231";
         }else{
             ip_print_order = "192.19.1.231";
             ip_print_cup = "192.19.1.232";
@@ -73,24 +79,29 @@ public class PrintHelpter {
 
     //计算盒子小票信息，生成打印数据模型
     public List<PrintOrderBean> calculatePinterOrderBeanList(OrderBean orderBean){
+        Log.d(TAG,"calculatePinterOrderBeanList,order:"+orderBean.toString());
         ArrayList<PrintOrderBean> boxList = new ArrayList<>();
         List<String> coffeeList = getCoffeeList(orderBean);
         int totalQuantity = coffeeList.size();
+        Log.d(TAG,"totalQuantity :"+totalQuantity);
         int totalBoxAmount = getTotalBoxAmount(totalQuantity);
         List<ItemContentBean> itemContentBeans = orderBean.getItems();
 
         int i = 0;
         for(i=0;i<totalQuantity/4;i++){
             List<String> coffee = coffeeList.subList(i*4, i*4+4);
-            PrintOrderBean bean = new PrintOrderBean(orderBean.getId(),(i+1),totalBoxAmount,4,
-                    orderBean.getCourierName(),orderBean.getCourierPhone(),orderBean.getAddress(),orderBean.getCourierName(),orderBean.getCourierPhone(),coffee);
+            PrintOrderBean bean = new PrintOrderBean(orderBean.getId(),orderBean.getOrderSn(),(i+1),totalBoxAmount,4,
+                    orderBean.getRecipient(),orderBean.getPhone(),orderBean.getAddress(),orderBean.getCourierName(),orderBean.getCourierPhone(),coffee);
             boxList.add(bean);
         }
         int left_cup = totalQuantity%4;
+        Log.d(TAG,"left_cup = "+left_cup);
         if(left_cup>0){
             List<String> coffeeLeft = coffeeList.subList(i*4, coffeeList.size());
-            PrintOrderBean bean = new PrintOrderBean(orderBean.getId(),(i+1),totalBoxAmount,left_cup,
-                    orderBean.getCourierName(),orderBean.getCourierPhone(),orderBean.getAddress(),orderBean.getCourierName(),orderBean.getCourierPhone(),coffeeLeft);
+            Log.d(TAG,"coffeeLeft.size = "+coffeeLeft.size());
+            PrintOrderBean bean = new PrintOrderBean(orderBean.getId(),orderBean.getOrderSn(),(i+1),totalBoxAmount,left_cup,
+                    orderBean.getRecipient(),orderBean.getPhone(),orderBean.getAddress(),orderBean.getCourierName(),orderBean.getCourierPhone(),coffeeLeft);
+            boxList.add(bean);
         }
 
         return boxList;
@@ -99,12 +110,15 @@ public class PrintHelpter {
 
     //打印入口方法
     public void printOrderInfo(OrderBean orderBean){
+        Log.d(TAG,"printOrderInfo");
         List<PrintOrderBean> printList = calculatePinterOrderBeanList(orderBean);
+        Log.d(TAG,"printList.size  ="+printList.size());
         for(PrintOrderBean bean:printList){
             String printContent = getPrintOrderContent(bean);
             DoPrintOrder(printContent);
             Log.d(TAG, "打印盒子清单:" + bean.toString());
         }
+        OrderHelper.addPrintedSet(CoffeeShopApplication.getInstance(),orderBean.getOrderSn());
     }
     //把要打印的盒子小票信息组装成字符串
     public String getPrintOrderContent(PrintOrderBean bean){
@@ -192,10 +206,10 @@ public class PrintHelpter {
                 e.printStackTrace();
             }
         }
-        DoPrintThread dpt = new DoPrintThread();
+        DoPrintRunnable dpt = new DoPrintRunnable();
         dpt.setPrinterIP(ip_print_order);
         dpt.setPrinterContent(printContent);
-        dpt.start();
+        mPoolExecutor.execute(dpt);
     }
 
     //计算杯子小票信息，生成打印数据模型
@@ -203,10 +217,11 @@ public class PrintHelpter {
     //打印杯子贴纸信息入口方法
     public  void printOrderItems(OrderBean orderBean){
         List<PrintCupBean> printList = calculatePinterCupBeanList(orderBean);
+        Log.d(TAG,"printList.size = "+printList);
         for(PrintCupBean bean:printList){
             String printContent = getPrintCupContent(bean);
             DoPrintCup(printContent);
-            Log.d(TAG, "打印盒子清单:" + bean.toString());
+            Log.d(TAG, "打印杯贴纸:" + bean.toString());
         }
     }
 
@@ -251,13 +266,13 @@ public class PrintHelpter {
                 e.printStackTrace();
             }
         }
-        DoPrintThread dpt = new DoPrintThread();
+        DoPrintRunnable dpt = new DoPrintRunnable();
         dpt.setPrinterIP(ip_print_cup);
         dpt.setPrinterContent(printContent);
-        dpt.start();
+        mPoolExecutor.execute(dpt);
     }
 
-    public class DoPrintThread extends Thread {
+    public class DoPrintRunnable implements Runnable {
         private String printerIP = "";
         private String printConent = "";
 
@@ -322,11 +337,11 @@ public class PrintHelpter {
 
     //检查打印机是否ping得通
     public void checkPrinterStatus() {
-        DoPingThread dpt = new DoPingThread();
-        dpt.start();
+        DoPingRunnable dpt = new DoPingRunnable();
+        mPoolExecutor.execute(dpt);
     }
 
-    public  class DoPingThread extends Thread {
+    public  class DoPingRunnable implements Runnable {
         public void run() {
             boolean pingResult = ping(ip_print_order);
             if (pingResult == true) {
