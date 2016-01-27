@@ -195,7 +195,7 @@ public class PrintHelpter {
         if(TextUtils.isEmpty(bean.getDeliverName())){
             return text1;
         }
-        return "";
+        return text2;
     }
     public  void DoPrintOrder(String printContent){
         Log.d(TAG,"DoPrintOrder");
