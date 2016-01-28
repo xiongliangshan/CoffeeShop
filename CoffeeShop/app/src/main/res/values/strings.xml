@@ -46,7 +46,7 @@
 
     <string name="do_success">操作成功</string>
 
-    <string name="menu_undo_order">订单撤回</string>
+    <string name="menu_undo_order">收回订单</string>
     <string name="menu_scan_code">扫码交付</string>
 
     <string name="question_type">问题类型</string>
