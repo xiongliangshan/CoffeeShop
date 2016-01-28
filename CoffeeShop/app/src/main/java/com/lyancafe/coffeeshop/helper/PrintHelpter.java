@@ -268,9 +268,9 @@ public class PrintHelpter {
                 "Q160,16"+"\n"+
                 "S3"+"\n"+
                 "D8"+"\n"+
-                "A50,40,0,200,1,1,N,\""+orderId+"\""+"\n"+
-                "A50,70,0,200,1,1,N,\""+bean.getBoxAmount()+"-"+bean.getBoxNumber()+"|"+bean.getCupAmount()+"-" +bean.getCupNumber()+"\""+"\n"+ //杯数盒子信息
-                "A50,100,0,200,1,1,N,\""+bean.getCoffee()+"\""+"\n"+
+                "A30,40,0,200,1,1,N,\""+orderId+"\""+"\n"+
+                "A30,70,0,200,1,1,N,\""+bean.getBoxAmount()+"-"+bean.getBoxNumber()+"|"+bean.getCupAmount()+"-" +bean.getCupNumber()+"\""+"\n"+ //杯数盒子信息
+                "A30,100,0,200,1,1,N,\""+bean.getCoffee()+"\""+"\n"+
                 "P1"+"\n";
         return text;
     }
