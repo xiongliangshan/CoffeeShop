@@ -17,7 +17,11 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -110,15 +114,15 @@ public class PrintHelpter {
 
     //打印入口方法
     public void printOrderInfo(OrderBean orderBean){
-        Log.d(TAG,"printOrderInfo");
+        Log.d(TAG, "printOrderInfo");
         List<PrintOrderBean> printList = calculatePinterOrderBeanList(orderBean);
-        Log.d(TAG,"printList.size  ="+printList.size());
+        Log.d(TAG, "printList.size  =" + printList.size());
         for(PrintOrderBean bean:printList){
             String printContent = getPrintOrderContent(bean);
             DoPrintOrder(printContent);
             Log.d(TAG, "打印盒子清单:" + bean.toString());
         }
-        OrderHelper.addPrintedSet(CoffeeShopApplication.getInstance(),orderBean.getOrderSn());
+        OrderHelper.addPrintedSet(CoffeeShopApplication.getInstance(), orderBean.getOrderSn());
     }
     //把要打印的盒子小票信息组装成字符串
     public String getPrintOrderContent(PrintOrderBean bean){
@@ -394,4 +398,76 @@ public class PrintHelpter {
         }
     }
 
+    //批量打印订单入口
+    public void printBatchBoxes(List<OrderBean> orderList){
+        for(OrderBean bean:orderList){
+            printOrderInfo(bean);
+        }
+    }
+
+
+    //批量打印杯贴纸入口
+    public void printBatchCups(List<OrderBean> orderList){
+        List<PrintCupBean> cupBeanList = calculateBatchCupList(orderList);
+        List<PrintCupBean> sortedCupList = sortCupList(cupBeanList);
+        for(PrintCupBean bean:sortedCupList){
+            String printContent = getPrintCupContent(bean);
+            DoPrintCup(printContent);
+            Log.d(TAG, "打印杯贴纸:" + bean.toString());
+        }
+    }
+
+    //生成批量打印的杯贴纸集合（按同种咖啡数量多到少排序）
+    public List<PrintCupBean> calculateBatchCupList(List<OrderBean> orderList){
+        List<PrintCupBean> batchCupList = new ArrayList<>();
+        for(OrderBean orderBean:orderList){
+            batchCupList.addAll(calculatePinterCupBeanList(orderBean));
+        }
+        sortCupList(batchCupList);
+        return batchCupList;
+    }
+
+    //对集合按照同元素数量由多到少的顺序排序
+    public List<PrintCupBean> sortCupList(List<PrintCupBean> batchCupList){
+        List<PrintCupBean> sortedCupList = new ArrayList<>();
+        Map<String,Integer> map = creteCoffeeNumberMap(batchCupList);
+        List<Map.Entry<String, Integer>> list_data = new ArrayList<Map.Entry<String,Integer>>(map.entrySet());
+        Collections.sort(list_data, new Comparator<Map.Entry<String, Integer>>() {
+            @Override
+            public int compare(Map.Entry<String, Integer> lhs, Map.Entry<String, Integer> rhs) {
+                return rhs.getValue() - lhs.getValue();
+            }
+        });
+        for(Map.Entry<String,Integer> entry:list_data){
+            String key = entry.getKey();
+            sortedCupList.addAll(getCupListByName(key, batchCupList));
+            Log.d(TAG, key + " * " + entry.getValue());
+        }
+
+        return sortedCupList;
+    }
+    //通过咖啡名获取包含该咖啡的bean列表
+    public List<PrintCupBean> getCupListByName(String coffee,List<PrintCupBean> batchCupList){
+        List<PrintCupBean> cupBeanList = new ArrayList<>();
+        for(PrintCupBean cupBean:batchCupList){
+            if(coffee.equals(cupBean.getCoffee())){
+                cupBeanList.add(cupBean);
+            }
+        }
+        return cupBeanList;
+    }
+
+    //生成合并订单的咖啡和对应数量的映射关系
+    public Map<String,Integer> creteCoffeeNumberMap(List<PrintCupBean> batchCupList){
+        Map<String,Integer> map = new HashMap<String,Integer>();
+        for(PrintCupBean cupBean:batchCupList){
+            if(map.get(cupBean.getCoffee())==null){
+                map.put(cupBean.getCoffee(), 1);
+            }else{
+                map.put(cupBean.getCoffee(), map.get(cupBean.getCoffee()) + 1);
+            }
+
+        }
+        return map;
+    }
 }

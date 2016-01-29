@@ -36,6 +36,7 @@ import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.helper.PrintHelpter;
 import com.lyancafe.coffeeshop.service.AutoFetchOrdersService;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
@@ -227,6 +228,12 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onClick(View v) {
                 requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true,true);
+                /*mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        PrintHelpter.getInstance().calculateBatchCupList(adapter.list);
+                    }
+                },3000);*/
             }
         });
         totalQuantityTxt = (TextView) contentView.findViewById(R.id.total_quantity);

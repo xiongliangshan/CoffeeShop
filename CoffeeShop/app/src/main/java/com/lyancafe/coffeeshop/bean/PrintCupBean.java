@@ -21,6 +21,7 @@ public class PrintCupBean {
         this.coffee = coffee;
     }
 
+
     public long getOrderId() {
         return orderId;
     }
