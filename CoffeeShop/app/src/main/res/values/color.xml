@@ -14,6 +14,10 @@
 
 	<color name="bg_refresh">#28b332</color>
 
+	<color name="bg_batch_handle">#CD8C02</color>
+
+	<color name="bg_batch_prompt">#FFFFF2</color>
+
 	<color name="bg_blue">#3d5de8</color>
 
 	<color name="text_red">#e2435a</color>

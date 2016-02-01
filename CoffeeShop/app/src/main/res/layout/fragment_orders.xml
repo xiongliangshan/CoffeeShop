@@ -59,76 +59,115 @@
             android:textColor="@color/blue"
             />
     </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        >
-        <Spinner
-            android:id="@+id/spinner_sort"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            />
-
-        <Spinner
-            android:id="@+id/spinner_category"
-            android:layout_toRightOf="@id/spinner_sort"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/total_quantity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="总杯量:"
-            android:textSize="20sp"
-            android:textColor="@color/bg_refresh"
-            android:visibility="invisible"
-            />
-        <Button
-            android:id="@+id/btn_refresh"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/spinner_category"
-            android:layout_marginLeft="@dimen/btn_refresh_margin_left"
-            android:background="@color/bg_refresh"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="1dp"
-            android:paddingBottom="1dp"
-            android:layout_alignBottom="@id/spinner_sort"
-            android:textColor="@color/white_font"
-            android:textSize="14sp"
-            android:text="刷新列表"/>
-    </RelativeLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="6dp"
-        >
+        android:orientation="horizontal">
 
-        <GridView
-            android:id="@+id/gv_order_list"
+        <LinearLayout
             android:layout_width="740dp"
             android:layout_height="match_parent"
-            android:numColumns="4"
-            android:horizontalSpacing="16dp"
-            android:verticalSpacing="16dp"
-            android:paddingRight="16dp"
-            android:stretchMode="columnWidth"
-            android:scrollbars="none"
-            />
+            android:orientation="vertical"
+            >
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                >
+                <Spinner
+                    android:id="@+id/spinner_sort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    />
+
+                <Spinner
+                    android:id="@+id/spinner_category"
+                    android:layout_toRightOf="@id/spinner_sort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/total_quantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="总杯量:"
+                    android:textSize="20sp"
+                    android:textColor="@color/bg_refresh"
+                    android:visibility="invisible"
+                    />
+                <Button
+                    android:id="@+id/btn_refresh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/btn_batch_handle"
+                    android:layout_marginRight="16dp"
+                    android:background="@color/bg_refresh"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="1dp"
+                    android:paddingBottom="1dp"
+                    android:layout_alignBottom="@id/spinner_sort"
+                    android:textColor="@color/white_font"
+                    android:textSize="14sp"
+                    android:text="刷新列表"/>
+                <Button
+                    android:id="@+id/btn_batch_handle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="16dp"
+                    android:background="@color/bg_batch_handle"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="1dp"
+                    android:paddingBottom="1dp"
+                    android:layout_alignBottom="@id/spinner_sort"
+                    android:textColor="@color/white_font"
+                    android:textSize="14sp"
+                    android:text="批量处理"/>
+            </RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/bg_batch_prompt"
+                    android:padding="10dp"
+                    android:textSize="@dimen/content_item_text_size"
+                    android:visibility="visible"
+                    android:text="系统已将5单合并一起，共有10杯咖啡待生产，生产时效为20分钟  建议生产顺序为：美式*3 冰美式*2 拿铁*2 热巧克力*1"/>
+                <GridView
+                    android:id="@+id/gv_order_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginTop="8dp"
+                    android:numColumns="4"
+                    android:horizontalSpacing="16dp"
+                    android:verticalSpacing="16dp"
+                    android:paddingRight="16dp"
+                    android:stretchMode="columnWidth"
+                    android:scrollbars="none"
+                    />
+            </LinearLayout>
+
+        </LinearLayout>
 
         <include
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginTop="49dp"
             android:layout_weight="1"
             layout = "@layout/view_order_detail"
             />
 
     </LinearLayout>
+
 
 </LinearLayout>
