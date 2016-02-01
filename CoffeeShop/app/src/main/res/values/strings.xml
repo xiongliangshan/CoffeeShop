@@ -79,4 +79,7 @@
     <string name="batch_handle">批量处理</string>
     <string name="batch_print">批量打印</string>
     <string name="batch_finish">批量完成</string>
+
+    <string name="batch_coffee_prompt">系统已将<xliff:g id="order_num">%d</xliff:g>单合并在一起，共有<xliff:g id="cup_num">%d</xliff:g>杯咖啡待生产，生成时效为<xliff:g id="time_effect">%d</xliff:g>分钟\n
+                 建议生产顺序为 : <xliff:g id = "sort">%s</xliff:g></string>
 </resources>

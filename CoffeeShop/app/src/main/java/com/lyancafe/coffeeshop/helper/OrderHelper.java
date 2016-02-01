@@ -235,7 +235,7 @@ public class OrderHelper {
         batchOrderCount = batchList.size();
         getBatchMap(batchList);
     }
-   
+
     //计算订单列表的的咖啡名和对应的杯数
     public static void getBatchMap(List<OrderBean> orderList){
         for(int i=0;i<orderList.size();i++){
@@ -253,7 +253,7 @@ public class OrderHelper {
     }
 
     //生成合并订单的咖啡内容信息
-    public static String createPromptStr(List<OrderBean> batchList,int cupCount){
+    public static String createPromptStr(Context context,List<OrderBean> batchList,int cupCount){
         int orderCount = batchList.size();
         List<Map.Entry<String, Integer>> list_map = new ArrayList<>(contentMap.entrySet());
         Collections.sort(list_map, new Comparator<Map.Entry<String, Integer>>() {
@@ -264,11 +264,9 @@ public class OrderHelper {
         });
         StringBuilder sb = new StringBuilder();
         for(Map.Entry<String,Integer> entry:list_map){
-            String key = entry.getKey();
-            Log.d(TAG, key + " * " + entry.getValue());
-            sb.append(key + " * " + entry.getValue()+"\t");
+            sb.append(entry.getKey() + " * " + entry.getValue()+"\t");
         }
-
-        return "系统已将"+orderCount+"单合并在一起，共有"+cupCount+"杯咖啡待生产，生产时效为"+cupCount*2+"分钟\n建议生产顺序为 : "+sb.toString();
+        return context.getResources().getString(R.string.batch_coffee_prompt,orderCount,cupCount,cupCount*2,sb.toString());
+    //    return "系统已将"+orderCount+"单合并在一起，共有"+cupCount+"杯咖啡待生产，生产时效为"+cupCount*2+"分钟\n建议生产顺序为 : "+sb.toString();
     }
 }

@@ -243,7 +243,11 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 if(mContext.getString(R.string.batch_handle).equals(batchBtnText)){
                     //批量处理
                     OrderHelper.calculateToMergeOrders(adapter.list);
-                    final String content = OrderHelper.createPromptStr(OrderHelper.batchList,OrderHelper.batchHandleCupCount);
+                    if(OrderHelper.batchList.size()<2){
+                        ToastUtil.showToast(mContext,"没有可合并的订单");
+                        return;
+                    }
+                    final String content = OrderHelper.createPromptStr(mContext,OrderHelper.batchList,OrderHelper.batchHandleCupCount);
                     PromptDialog pd = new PromptDialog(mContext,R.style.PromptDialog,new PromptDialog.OnClickOKListener(){
                         @Override
                         public void onClickOK() {
