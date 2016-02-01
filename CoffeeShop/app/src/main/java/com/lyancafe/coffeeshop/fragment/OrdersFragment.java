@@ -41,6 +41,7 @@ import com.lyancafe.coffeeshop.service.AutoFetchOrdersService;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
 import com.lyancafe.coffeeshop.widget.ListTabButton;
+import com.lyancafe.coffeeshop.widget.PromptDialog;
 import com.lyancafe.coffeeshop.widget.ReportWindow;
 import com.lyancafe.coffeeshop.widget.SimpleConfirmDialog;
 import com.xls.http.HttpAsyncTask;
@@ -80,6 +81,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private OrderGridViewAdapter adapter;
 
     private Button refreshbtn;
+    private Button batchHandleBtn;
+    private TextView batchPromptText;
     private TextView totalQuantityTxt;
     private long starttime;
     private long endtime;
@@ -223,17 +226,57 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
         shopNameText = (TextView) contentView.findViewById(R.id.tv_shop_name);
         shopNameText.setText(LoginHelper.getShopName(mContext));
+
+        batchPromptText = (TextView) contentView.findViewById(R.id.tv_batch_prompt);
         refreshbtn = (Button) contentView.findViewById(R.id.btn_refresh);
         refreshbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true,true);
-                /*mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        PrintHelpter.getInstance().calculateBatchCupList(adapter.list);
-                    }
-                },3000);*/
+                requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true, true);
+            }
+        });
+        batchHandleBtn = (Button) contentView.findViewById(R.id.btn_batch_handle);
+        batchHandleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String batchBtnText  = batchHandleBtn.getText().toString();
+                if(mContext.getString(R.string.batch_handle).equals(batchBtnText)){
+                    //批量处理
+                    OrderHelper.calculateToMergeOrders(adapter.list);
+                    final String content = OrderHelper.createPromptStr(OrderHelper.batchList,OrderHelper.batchHandleCupCount);
+                    PromptDialog pd = new PromptDialog(mContext,R.style.PromptDialog,new PromptDialog.OnClickOKListener(){
+                        @Override
+                        public void onClickOK() {
+                            batchPromptText.setText(content);
+                            batchPromptText.setVisibility(View.VISIBLE);
+                            batchHandleBtn.setText(R.string.batch_print);
+                        }
+                    });
+                    pd.setMode(PromptDialog.Mode.SINGLE);
+                    pd.setContent(content);
+                    pd.show();
+
+                }else if(mContext.getString(R.string.batch_print).equals(batchBtnText)){
+                    //批量打印
+                    String content = "是否确定将 "+OrderHelper.batchOrderCount+" 单数据同时打印？";
+                    PromptDialog pd = new PromptDialog(mContext,R.style.PromptDialog,new PromptDialog.OnClickOKListener(){
+                        @Override
+                        public void onClickOK() {
+                            batchHandleBtn.setText(R.string.batch_finish);
+                            PrintHelpter.getInstance().printBatchCups(OrderHelper.batchList);
+                        //    PrintHelpter.getInstance().printBatchBoxes(OrderHelper.batchList);
+                        }
+                    });
+                    pd.setMode(PromptDialog.Mode.BOTH);
+                    pd.setContent(content);
+                    pd.show();
+                }else if(mContext.getString(R.string.batch_finish).equals(batchBtnText)){
+                    //批量完成
+
+                }else{
+
+                }
+
             }
         });
         totalQuantityTxt = (TextView) contentView.findViewById(R.id.total_quantity);

@@ -75,4 +75,8 @@
     <string name="download_fail">下载 小哥Lyan 失败,请重新尝试</string>
     <string name="start_download">已经开始下载</string>
     <string name="can_not_operate">时间未到,不能操作</string>
+
+    <string name="batch_handle">批量处理</string>
+    <string name="batch_print">批量打印</string>
+    <string name="batch_finish">批量完成</string>
 </resources>

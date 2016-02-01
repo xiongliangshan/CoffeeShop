@@ -14,6 +14,8 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,7 +31,9 @@ public class OrderHelper {
     private static final String TAG ="OrderHelper";
     public static String PRINT_STATUS = "print_status";
     public static final int MERGECUPLIMIT = 10; //最大合并杯数限制为10杯
-    public static int totalCupCount = 0;
+    public static int batchOrderCount = 0;
+    public static int batchHandleCupCount = 0;
+    public static List<OrderBean> batchList = new ArrayList<>();
     public static Map<String,Integer> contentMap = new HashMap<>();
 
     /**
@@ -209,8 +213,9 @@ public class OrderHelper {
     }
 
     //计算应该合并的订单集
-    public static ArrayList<OrderBean> calculateToMergeOrders(List<OrderBean> list){
-        ArrayList<OrderBean> mergeList = new ArrayList<>();
+    public static void calculateToMergeOrders(List<OrderBean> list){
+        batchHandleCupCount = 0;
+        batchList.clear();
         contentMap.clear();
         int sum = 0;
         for(OrderBean bean:list){
@@ -218,33 +223,52 @@ public class OrderHelper {
             if(bean.getInstant()==0){
                 continue;
             }
-            sum+=getTotalCupCount(bean);
+            sum+=getTotalQutity(bean);
             if(sum<=MERGECUPLIMIT){
-                mergeList.add(bean);
+                batchList.add(bean);
             }else{
+                sum-=getTotalQutity(bean);
                 break;
             }
         }
-        totalCupCount = sum;
-        return mergeList;
+        batchHandleCupCount = sum;
+        batchOrderCount = batchList.size();
+        getBatchMap(batchList);
     }
-    //计算某个订单的总杯数
-    public static int getTotalCupCount(OrderBean orderBean){
-        if(orderBean.getItems().size()<=0){
-            return 0;
-        }
-        int sum = 0;
-        for(int i=0;i<orderBean.getItems().size();i++){
-            ItemContentBean item = orderBean.getItems().get(i);
-            sum += item.getQuantity();
-            if(contentMap.containsKey(item.getProduct())){
-                int newCount = contentMap.get(item.getProduct())+item.getQuantity();
-                contentMap.put(item.getProduct(),newCount);
-            }else {
-                contentMap.put(item.getProduct(),item.getQuantity());
+   
+    //计算订单列表的的咖啡名和对应的杯数
+    public static void getBatchMap(List<OrderBean> orderList){
+        for(int i=0;i<orderList.size();i++){
+            List<ItemContentBean> itemList = orderList.get(i).getItems();
+            for(int j=0;j<itemList.size();j++){
+                ItemContentBean item = itemList.get(j);
+                if(contentMap.containsKey(item.getProduct())){
+                    int newCount = contentMap.get(item.getProduct())+item.getQuantity();
+                    contentMap.put(item.getProduct(),newCount);
+                }else {
+                    contentMap.put(item.getProduct(),item.getQuantity());
+                }
             }
-
         }
-        return sum;
+    }
+
+    //生成合并订单的咖啡内容信息
+    public static String createPromptStr(List<OrderBean> batchList,int cupCount){
+        int orderCount = batchList.size();
+        List<Map.Entry<String, Integer>> list_map = new ArrayList<>(contentMap.entrySet());
+        Collections.sort(list_map, new Comparator<Map.Entry<String, Integer>>() {
+            @Override
+            public int compare(Map.Entry<String, Integer> lhs, Map.Entry<String, Integer> rhs) {
+                return rhs.getValue() - lhs.getValue();
+            }
+        });
+        StringBuilder sb = new StringBuilder();
+        for(Map.Entry<String,Integer> entry:list_map){
+            String key = entry.getKey();
+            Log.d(TAG, key + " * " + entry.getValue());
+            sb.append(key + " * " + entry.getValue()+"\t");
+        }
+
+        return "系统已将"+orderCount+"单合并在一起，共有"+cupCount+"杯咖啡待生产，生产时效为"+cupCount*2+"分钟\n建议生产顺序为 : "+sb.toString();
     }
 }
