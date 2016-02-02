@@ -99,6 +99,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
             convertView = LayoutInflater.from(context).inflate(R.layout.order_list_item,null);
             holder  = new ViewHolder();
             holder.rootLayout = (LinearLayout) convertView.findViewById(R.id.root_view);
+            holder.secondRootLayout = (LinearLayout) convertView.findViewById(R.id.second_root_view);
             holder.logoScanIV = (ImageView) convertView.findViewById(R.id.logo_scan);
             holder.orderIdTxt = (TextView) convertView.findViewById(R.id.item_order_id);
             holder.contantEffectTimeTxt = (TextView) convertView.findViewById(R.id.item_contant_produce_effect);
@@ -114,12 +115,21 @@ public class OrderGridViewAdapter extends BaseAdapter{
             holder = (ViewHolder) convertView.getTag();
         }
 
+
         if(selected==position){
             holder.rootLayout.setBackgroundResource(R.mipmap.touch_border);
         }else{
-            holder.rootLayout.setBackgroundResource(R.drawable.bg_order);
+            holder.rootLayout.setBackground(null);
         }
+
         final OrderBean order = list.get(position);
+        if(OrderHelper.isBatchOrder(order.getId())){
+            holder.secondRootLayout.setBackgroundResource(R.drawable.bg_batch_order);
+            holder.itemContainerll.setBackgroundResource(R.mipmap.bg_batch_dot);
+        }else{
+            holder.secondRootLayout.setBackgroundResource(R.drawable.bg_order);
+            holder.itemContainerll.setBackgroundResource(R.mipmap.bg_normal_dot);
+        }
         holder.orderIdTxt.setText(order.getOrderSn());
         if(order.isWxScan()){
             holder.logoScanIV.setVisibility(View.VISIBLE);
@@ -265,6 +275,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
     static class ViewHolder{
 
         LinearLayout rootLayout;
+        LinearLayout secondRootLayout;
         ImageView logoScanIV;
         TextView orderIdTxt;
         TextView contantEffectTimeTxt;

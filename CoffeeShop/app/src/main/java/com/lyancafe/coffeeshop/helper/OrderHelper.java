@@ -264,9 +264,19 @@ public class OrderHelper {
         });
         StringBuilder sb = new StringBuilder();
         for(Map.Entry<String,Integer> entry:list_map){
-            sb.append(entry.getKey() + " * " + entry.getValue()+"\t");
+            sb.append(entry.getKey() + " * " + entry.getValue()+"  ");
         }
         return context.getResources().getString(R.string.batch_coffee_prompt,orderCount,cupCount,cupCount*2,sb.toString());
     //    return "系统已将"+orderCount+"单合并在一起，共有"+cupCount+"杯咖啡待生产，生产时效为"+cupCount*2+"分钟\n建议生产顺序为 : "+sb.toString();
+    }
+
+    //判断一个订单是否已经处于批量处理中
+    public static boolean isBatchOrder(long orderId){
+        for(OrderBean orderBean:batchList){
+            if(orderBean.getId()==orderId){
+                return true;
+            }
+        }
+        return false;
     }
 }

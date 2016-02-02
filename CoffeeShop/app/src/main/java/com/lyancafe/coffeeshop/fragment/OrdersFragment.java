@@ -182,7 +182,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         ordersReceiver = new OrdersReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(AutoFetchOrdersService.ACTION_REFRESH_ORDERS);
-        context.registerReceiver(ordersReceiver,filter);
+        context.registerReceiver(ordersReceiver, filter);
     }
 
     private void unRegisterReceiver(Context context){
@@ -753,10 +753,18 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             sortSpinner.setVisibility(View.VISIBLE);
             categorySpinner.setVisibility(View.VISIBLE);
             refreshbtn.setVisibility(View.VISIBLE);
+            batchHandleBtn.setVisibility(View.VISIBLE);
+            if(batchHandleBtn.getText().toString().equals(mContext.getString(R.string.batch_handle))){
+                batchPromptText.setVisibility(View.GONE);
+            }else{
+                batchPromptText.setVisibility(View.VISIBLE);
+            }
         }else{
             sortSpinner.setVisibility(View.INVISIBLE);
             categorySpinner.setVisibility(View.INVISIBLE);
             refreshbtn.setVisibility(View.INVISIBLE);
+            batchHandleBtn.setVisibility(View.INVISIBLE);
+            batchPromptText.setVisibility(View.INVISIBLE);
         }
     }
 

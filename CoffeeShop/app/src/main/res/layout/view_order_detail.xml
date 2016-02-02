@@ -239,7 +239,7 @@
                     android:layout_weight="1"
                     android:layout_marginRight="10dp"
                     android:scrollbars="none"
-                    android:background="@mipmap/bg_dot"
+                    android:background="@mipmap/bg_normal_dot"
                     >
                     <LinearLayout
                         android:id="@+id/items_container_layout"

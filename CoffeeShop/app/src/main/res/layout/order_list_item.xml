@@ -5,133 +5,141 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:descendantFocusability="blocksDescendants"
+    android:padding="1dp"
     >
-
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginTop="12dp"
-        >
-        <ImageView
-            android:id="@+id/logo_scan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/pay_shop"
-            android:paddingLeft="8dp"
-            android:visibility="gone"
-            />
-        <TextView
-            android:id="@+id/item_order_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:text="CB2015-0911-01"
-            android:layout_marginLeft="8dp"
-
-            />
-    </LinearLayout>
-
-    <RelativeLayout
+        android:id="@+id/second_root_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        >
-        <TextView
-            android:id="@+id/item_contant_produce_effect"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="生产时效"
-            android:padding="0dp"
-            android:textSize="14sp"
-            />
-        <TextView
-            android:id="@+id/item_produce_effect"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/item_contant_produce_effect"
-            android:textSize="20sp"
-            android:text="08:36"
-            />
-        <ImageView
-            android:id="@+id/item_issue_flag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/item_grab_flag"
-            android:layout_below="@id/item_contant_produce_effect"
-            android:layout_marginLeft="2dp"
-            android:layout_marginTop="6dp"
-            android:src="@mipmap/icon_problem"/>
-        <ImageView
-            android:id="@+id/item_grab_flag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/item_remark_flag"
-            android:layout_below="@id/item_contant_produce_effect"
-            android:layout_marginLeft="3dp"
-            android:layout_marginTop="6dp"
-            android:src="@mipmap/icon_accpet"/>
-        <ImageView
-            android:id="@+id/item_remark_flag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/icon_message"
-            android:layout_marginLeft="3dp"
-            android:layout_marginTop="6dp"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/item_contant_produce_effect"
-            />
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/item_container"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/order_item_content_height"
-        android:background="@mipmap/bg_dot"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:layout_marginRight="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="10dp"
-        android:padding="4dp"
+        android:background="@drawable/bg_order"
         >
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        >
-
-        <TextView
-            android:id="@+id/item_produce"
-            android:layout_width="0dp"
-            android:padding="10dp"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="生产完成"
-            android:textSize="14sp"
-            android:textColor="@color/white_font"
-            android:background="@drawable/bg_produce_btn"
-            android:layout_marginRight="3dp"
-            />
-        <TextView
-            android:id="@+id/item_print"
-            android:layout_width="0dp"
-            android:padding="10dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="12dp"
+            >
+            <ImageView
+                android:id="@+id/logo_scan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/pay_shop"
+                android:paddingLeft="8dp"
+                android:visibility="gone"
+                />
+            <TextView
+                android:id="@+id/item_order_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:text="CB2015-0911-01"
+                android:layout_marginLeft="8dp"
+
+                />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/print"
-            android:textSize="14sp"
-            android:layout_marginLeft="3dp"
-            />
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            >
+            <TextView
+                android:id="@+id/item_contant_produce_effect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="生产时效"
+                android:padding="0dp"
+                android:textSize="14sp"
+                />
+            <TextView
+                android:id="@+id/item_produce_effect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/item_contant_produce_effect"
+                android:textSize="20sp"
+                android:text="08:36"
+                />
+            <ImageView
+                android:id="@+id/item_issue_flag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/item_grab_flag"
+                android:layout_below="@id/item_contant_produce_effect"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="6dp"
+                android:src="@mipmap/icon_problem"/>
+            <ImageView
+                android:id="@+id/item_grab_flag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/item_remark_flag"
+                android:layout_below="@id/item_contant_produce_effect"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="6dp"
+                android:src="@mipmap/icon_accpet"/>
+            <ImageView
+                android:id="@+id/item_remark_flag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_message"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="6dp"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/item_contant_produce_effect"
+                />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/item_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/order_item_content_height"
+            android:background="@mipmap/bg_normal_dot"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginRight="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="10dp"
+            android:padding="4dp"
+            >
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            >
+
+            <TextView
+                android:id="@+id/item_produce"
+                android:layout_width="0dp"
+                android:padding="10dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="生产完成"
+                android:textSize="14sp"
+                android:textColor="@color/white_font"
+                android:background="@drawable/bg_produce_btn"
+                android:layout_marginRight="3dp"
+                />
+            <TextView
+                android:id="@+id/item_print"
+                android:layout_width="0dp"
+                android:padding="10dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/print"
+                android:textSize="14sp"
+                android:layout_marginLeft="3dp"
+                />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
