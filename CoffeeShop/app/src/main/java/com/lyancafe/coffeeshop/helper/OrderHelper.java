@@ -209,7 +209,7 @@ public class OrderHelper {
     public static void clearPrintedSet(Context context){
         SharedPreferences sp = context.getSharedPreferences(PRINT_STATUS, Context.MODE_PRIVATE);
         sp.edit().clear().commit();
-        Log.d(TAG,"clear print set");
+        Log.d(TAG, "clear print set");
     }
 
     //计算应该合并的订单集
@@ -219,9 +219,16 @@ public class OrderHelper {
         contentMap.clear();
         int sum = 0;
         for(OrderBean bean:list){
-            //只针对及时单
-            if(bean.getInstant()==0){
+            //非待取货订单不加入合并
+            if(bean.getStatus()!=ASSIGNED_STATUS){
                 continue;
+            }
+            //如果不是半小时内的预约单不加入合并
+            if(bean.getInstant()==0){
+                final long mms = System.currentTimeMillis() - (bean.getExpectedTime() - 30 * 60 * 1000);
+                if(mms<0){
+                    continue;
+                }
             }
             sum+=getTotalQutity(bean);
             if(sum<=MERGECUPLIMIT){
