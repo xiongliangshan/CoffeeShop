@@ -353,9 +353,15 @@ public class OrderGridViewAdapter extends BaseAdapter{
     //生产完成操作接口
     public class DoFinishProduceQry implements Qry{
         private long orderId;
+        private boolean isShowDlg = true;
 
         public DoFinishProduceQry(long orderId) {
             this.orderId = orderId;
+        }
+
+        public DoFinishProduceQry(long orderId,boolean isShowDlg) {
+            this.orderId = orderId;
+            this.isShowDlg = isShowDlg;
         }
 
         @Override
@@ -364,7 +370,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
             String token = LoginHelper.getToken(context);
             String url = HttpUtils.BASE_URL+shopId+"/order/"+orderId+"/produce?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowDlg);
         }
 
         @Override
@@ -378,6 +384,8 @@ public class OrderGridViewAdapter extends BaseAdapter{
                 ToastUtil.showToast(context,R.string.do_success);
                 removeOrderFromList(orderId);
                 orderFragment.updateOrdersNumAfterAction(OrdersFragment.ACTION_PRODUCE);
+                int leftBatchOrderNum = OrderHelper.removeOrderFromBatchList(orderId);
+                orderFragment.updateBatchPromptTextView(leftBatchOrderNum);
             }else{
                 ToastUtil.showToast(context,resp.message);
             }

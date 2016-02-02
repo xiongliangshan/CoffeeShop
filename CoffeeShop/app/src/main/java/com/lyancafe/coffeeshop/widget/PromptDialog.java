@@ -75,10 +75,10 @@ public class PromptDialog extends Dialog {
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dismiss();
                 if (mListener != null) {
                     mListener.onClickOK();
                 }
-                dismiss();
             }
         });
         cacelBtn.setOnClickListener(new View.OnClickListener() {

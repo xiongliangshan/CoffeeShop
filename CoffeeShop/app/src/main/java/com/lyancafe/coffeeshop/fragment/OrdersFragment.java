@@ -276,7 +276,20 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     pd.show();
                 }else if(mContext.getString(R.string.batch_finish).equals(batchBtnText)){
                     //批量完成
-
+                    String content = "是否将 "+OrderHelper.batchOrderCount+" 单同时完成？";
+                    PromptDialog pd = new PromptDialog(mContext, R.style.PromptDialog, new PromptDialog.OnClickOKListener() {
+                        @Override
+                        public void onClickOK() {
+                            batchHandleBtn.setText(R.string.batch_handle);
+                            //开始循环请求
+                            for(int i=0;i<OrderHelper.batchList.size();i++){
+                                adapter.new DoFinishProduceQry(OrderHelper.batchList.get(i).getId(),false).doRequest();
+                            }
+                        }
+                    });
+                    pd.setMode(PromptDialog.Mode.BOTH);
+                    pd.setContent(content);
+                    pd.show();
                 }else{
 
                 }
@@ -846,6 +859,12 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             mHandler.sendMessage(msg);
         }
 
+    }
+    //生产完成后更新批量订单提示栏的可见状态
+    public void updateBatchPromptTextView(int leftBatchOrderNum){
+        if(leftBatchOrderNum<=0){
+            batchPromptText.setVisibility(View.GONE);
+        }
     }
 
     //待生产订单列表接口

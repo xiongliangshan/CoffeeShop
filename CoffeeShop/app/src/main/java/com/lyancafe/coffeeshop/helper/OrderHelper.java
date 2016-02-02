@@ -279,4 +279,18 @@ public class OrderHelper {
         }
         return false;
     }
+
+    //从批量处理的订单集合中移除某个订单,返回当前的批量订单数量
+    public static int removeOrderFromBatchList(long orderId){
+        if(batchList.size()<1){
+            return 0;
+        }
+        for(int i=batchList.size()-1;i>=0;i--){
+            if(batchList.get(i).getId()==orderId){
+                batchList.remove(i);
+                break;
+            }
+        }
+        return batchList.size();
+    }
 }
