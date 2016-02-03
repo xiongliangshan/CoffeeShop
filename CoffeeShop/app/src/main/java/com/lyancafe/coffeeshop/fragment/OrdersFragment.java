@@ -245,6 +245,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     OrderHelper.calculateToMergeOrders(adapter.list);
                     if(OrderHelper.batchList.size()<2){
                         ToastUtil.showToast(mContext,"没有可合并的订单");
+                        OrderHelper.batchList.clear();
                         return;
                     }
                     final String content = OrderHelper.createPromptStr(mContext,OrderHelper.batchList,OrderHelper.batchHandleCupCount);
@@ -777,7 +778,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             categorySpinner.setVisibility(View.INVISIBLE);
             refreshbtn.setVisibility(View.INVISIBLE);
             batchHandleBtn.setVisibility(View.INVISIBLE);
-            batchPromptText.setVisibility(View.INVISIBLE);
+            batchPromptText.setVisibility(View.GONE);
         }
     }
 
