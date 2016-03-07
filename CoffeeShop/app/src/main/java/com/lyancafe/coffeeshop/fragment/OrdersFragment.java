@@ -269,7 +269,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                         public void onClickOK() {
                             batchHandleBtn.setText(R.string.batch_finish);
                             PrintHelpter.getInstance().printBatchCups(OrderHelper.batchList);
-                        //    PrintHelpter.getInstance().printBatchBoxes(OrderHelper.batchList);
+                            PrintHelpter.getInstance().printBatchBoxes(OrderHelper.batchList);
                         }
                     });
                     pd.setMode(PromptDialog.Mode.BOTH);
@@ -445,8 +445,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     //生产完成
                     if (order.getInstant() == 0) {
                         //预约单
-                        final long mms = System.currentTimeMillis() - (order.getExpectedTime() - 30 * 60 * 1000);
-                        if (mms < 0) {
+                        if (!OrderHelper.isCanHandle(order)) {
                             //预约单，生产时间还没到
                             SimpleConfirmDialog scd = new SimpleConfirmDialog(mContext, R.style.MyDialog);
                             scd.setContent(R.string.can_not_operate);
@@ -463,6 +462,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                             grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
                             grabConfirmDialog.show();
                         }
+
                     } else {
                         //及时单
                         ConfirmDialog grabConfirmDialog = new ConfirmDialog(mContext, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
@@ -492,20 +492,20 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 @Override
                 public void onClick(View v) {
                     //打印按钮
-                    if(order.getInstant()==0){
+                    if (order.getInstant() == 0) {
                         //预约单
-                        final long mms = System.currentTimeMillis() - (order.getExpectedTime() - 30 * 60 * 1000);
-                        if (mms < 0) {
-                            //预约单，生产时间还没到
+                        if(!OrderHelper.isCanHandle(order)){
+                            //预约单，打印时间还没到
                             SimpleConfirmDialog scd = new SimpleConfirmDialog(mContext, R.style.MyDialog);
                             scd.setContent(R.string.can_not_operate);
                             scd.show();
-                        } else {
+                        }else{
                             Intent intent = new Intent(mContext, PrintOrderActivity.class);
                             intent.putExtra("order", order);
                             mContext.startActivity(intent);
                         }
-                    }else{
+
+                    } else {
                         //及时单
                         Intent intent = new Intent(mContext, PrintOrderActivity.class);
                         intent.putExtra("order", order);

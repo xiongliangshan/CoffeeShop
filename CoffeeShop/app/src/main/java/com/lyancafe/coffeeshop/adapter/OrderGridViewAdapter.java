@@ -168,8 +168,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
                 //生产完成
                 if(order.getInstant()==0){
                     //预约单
-                    final long mms = System.currentTimeMillis() - (order.getExpectedTime() - 30 * 60 * 1000);
-                    if(mms<0){
+                    if(!OrderHelper.isCanHandle(order)){
                         //生产时间还没到
                         SimpleConfirmDialog scd = new SimpleConfirmDialog(context,R.style.MyDialog);
                         scd.setContent(R.string.can_not_operate);
@@ -186,6 +185,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
                         grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
                         grabConfirmDialog.show();
                     }
+
                 }else{
                     //及时单
                     ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener(){
@@ -208,9 +208,8 @@ public class OrderGridViewAdapter extends BaseAdapter{
                 //打印按钮
                 if(order.getInstant()==0){
                     //预约单
-                    final long mms = System.currentTimeMillis() - (order.getExpectedTime() - 30 * 60 * 1000);
-                    if(mms<0){
-                        //生产时间还没到
+                    if(!OrderHelper.isCanHandle(order)){
+                        //打印时间还没到
                         SimpleConfirmDialog scd = new SimpleConfirmDialog(context,R.style.MyDialog);
                         scd.setContent(R.string.can_not_operate);
                         scd.show();
@@ -219,6 +218,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
                         intent.putExtra("order",order);
                         context.startActivity(intent);
                     }
+
                 }else{
                     //及时单
                     Intent intent = new Intent(context, PrintOrderActivity.class);

@@ -31,6 +31,7 @@ public class OrderHelper {
     private static final String TAG ="OrderHelper";
     public static String PRINT_STATUS = "print_status";
     public static final int MERGECUPLIMIT = 10; //最大合并杯数限制为10杯
+    public static final int ADVANCEDHANDLETIME = 45;//预约单可提前操作的时间,单位：分钟
     public static int batchOrderCount = 0;
     public static int batchHandleCupCount = 0;
     public static List<OrderBean> batchList = new ArrayList<>();
@@ -299,5 +300,21 @@ public class OrderHelper {
             }
         }
         return batchList.size();
+    }
+
+    //判断预约单是否可以进行打印生产操作
+    public static boolean isCanHandle(OrderBean order){
+        if(order.getInstant()!=0){
+            return true;
+        }
+        int totalQutity = getTotalQutity(order);
+        if(totalQutity<=5){
+            final long mms = System.currentTimeMillis() - (order.getExpectedTime() - ADVANCEDHANDLETIME * 60 * 1000);
+            return mms<0?false:true;
+        }else{
+            final long mms = System.currentTimeMillis() - (order.getExpectedTime() - (totalQutity*2+ADVANCEDHANDLETIME) * 60 * 1000);
+            return mms<0?false:true;
+        }
+
     }
 }
