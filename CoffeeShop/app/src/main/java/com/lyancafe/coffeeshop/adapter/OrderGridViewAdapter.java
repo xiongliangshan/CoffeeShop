@@ -93,7 +93,6 @@ public class OrderGridViewAdapter extends BaseAdapter{
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        Log.d(TAG,"getView 执行---------"+position+"---------------"+list.get(position).getOrderSn());
         final ViewHolder holder ;
         if(convertView==null){
             convertView = LayoutInflater.from(context).inflate(R.layout.order_list_item,null);
