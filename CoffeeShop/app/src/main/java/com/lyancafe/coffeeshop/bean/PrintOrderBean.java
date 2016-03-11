@@ -10,6 +10,7 @@ import java.util.List;
 public class PrintOrderBean {
 
     private long orderId;     //订单号
+    private boolean isGiftBox; //是否有礼盒
     private String orderSn;
     private int boxNumber;    //盒号
     private int boxAmount;    //盒子数量
@@ -21,8 +22,9 @@ public class PrintOrderBean {
     private String deliverPhone; //配送员电话
     private List<String> coffeeList;  //当前盒中的咖啡清单
 
-    public PrintOrderBean(long orderId,String orderSn, int boxNumber, int boxAmount, int cupAmount, String receiverName, String receiverPhone, String address, String deliverName, String deliverPhone, List<String> coffeeList) {
+    public PrintOrderBean(long orderId,boolean isGiftBox,String orderSn, int boxNumber, int boxAmount, int cupAmount, String receiverName, String receiverPhone, String address, String deliverName, String deliverPhone, List<String> coffeeList) {
         this.orderId = orderId;
+        this.isGiftBox = isGiftBox;
         this.orderSn = orderSn;
         this.boxNumber = boxNumber;
         this.boxAmount = boxAmount;
@@ -41,6 +43,14 @@ public class PrintOrderBean {
 
     public void setOrderId(long orderId) {
         this.orderId = orderId;
+    }
+
+    public boolean isGiftBox() {
+        return isGiftBox;
+    }
+
+    public void setIsGiftBox(boolean isGiftBox) {
+        this.isGiftBox = isGiftBox;
     }
 
     public String getOrderSn() {
@@ -127,6 +137,8 @@ public class PrintOrderBean {
     public String toString() {
         return "PrintOrderBean{" +
                 "orderId=" + orderId +
+                ", isGiftBox=" + isGiftBox +
+                ", orderSn='" + orderSn + '\'' +
                 ", boxNumber=" + boxNumber +
                 ", boxAmount=" + boxAmount +
                 ", cupAmount=" + cupAmount +

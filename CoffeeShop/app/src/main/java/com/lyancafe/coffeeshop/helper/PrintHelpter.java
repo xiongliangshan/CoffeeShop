@@ -84,6 +84,7 @@ public class PrintHelpter {
     //计算盒子小票信息，生成打印数据模型
     public List<PrintOrderBean> calculatePinterOrderBeanList(OrderBean orderBean){
         Log.d(TAG,"calculatePinterOrderBeanList,order:"+orderBean.toString());
+        boolean isGiftBox = orderBean.getGift()==2?true:false;
         ArrayList<PrintOrderBean> boxList = new ArrayList<>();
         List<String> coffeeList = getCoffeeList(orderBean);
         int totalQuantity = coffeeList.size();
@@ -94,7 +95,7 @@ public class PrintHelpter {
         int i = 0;
         for(i=0;i<totalQuantity/4;i++){
             List<String> coffee = coffeeList.subList(i*4, i*4+4);
-            PrintOrderBean bean = new PrintOrderBean(orderBean.getId(),orderBean.getOrderSn(),(i+1),totalBoxAmount,4,
+            PrintOrderBean bean = new PrintOrderBean(orderBean.getId(),isGiftBox,orderBean.getOrderSn(),(i+1),totalBoxAmount,4,
                     orderBean.getRecipient(),orderBean.getPhone(),orderBean.getAddress(),orderBean.getCourierName(),orderBean.getCourierPhone(),coffee);
             boxList.add(bean);
         }
@@ -103,7 +104,7 @@ public class PrintHelpter {
         if(left_cup>0){
             List<String> coffeeLeft = coffeeList.subList(i*4, coffeeList.size());
             Log.d(TAG,"coffeeLeft.size = "+coffeeLeft.size());
-            PrintOrderBean bean = new PrintOrderBean(orderBean.getId(),orderBean.getOrderSn(),(i+1),totalBoxAmount,left_cup,
+            PrintOrderBean bean = new PrintOrderBean(orderBean.getId(),isGiftBox,orderBean.getOrderSn(),(i+1),totalBoxAmount,left_cup,
                     orderBean.getRecipient(),orderBean.getPhone(),orderBean.getAddress(),orderBean.getCourierName(),orderBean.getCourierPhone(),coffeeLeft);
             boxList.add(bean);
         }
@@ -149,7 +150,7 @@ public class PrintHelpter {
                 break;
         }
 
-        String addressCMD, addr1, addr2;
+        String addressCMD, addr1, addr2,gift;
         Log.d(TAG, "address len: " + bean.getAddress().length());
         if (bean.getAddress().length() <= 22) {
             addressCMD = "A90,160,0,200,1,1,N,\""+bean.getAddress()+"\""+"\n";
@@ -160,7 +161,11 @@ public class PrintHelpter {
                     "A90,190,0,200,1,1,N,\""+addr2+"\""+"\n";
         }
         String orderId = getSelfDefineOrderId(bean.getOrderId());
-
+        if(bean.isGiftBox()){
+            gift = "A480,40,0,200,2,2,N,\"礼盒\""+"\n";
+        }else{
+            gift = "A480,40,0,200,2,2,N,\""+"\n";
+        }
         String text1 =
                 "N"+"\n"+
                 "q640"+"\n"+
@@ -169,9 +174,10 @@ public class PrintHelpter {
                 "D8"+"\n"+
                 "A10,50,0,200,1,1,N,\"订单号:\""+"\n"+ //订单号
                 "A90,40,0,200,2,2,N,\""+orderId+"  "+bean.getBoxAmount()+"-" +bean.getBoxNumber()+"|"+bean.getCupAmount()+"\""+"\n"+ //杯数盒子信息
+                 gift +
                 "A10,90,0,200,1,1,N,\"收货人:\""+"\n"+
                 "A90,100,0,200,2,2,N,\""+bean.getReceiverName()+" "+bean.getReceiverPhone()+"\""+"\n"+
-                addressCMD +                             //配送地址
+                 addressCMD +                             //配送地址
                 "A10,220,0,200,1,1,N,\"清单：\""+"\n"+
                 "A50,250,0,200,1,1,N,\""+order1+"\""+"\n"+
                 "A320,250,0,200,1,1,N,\""+order2+"\""+"\n"+
@@ -186,6 +192,7 @@ public class PrintHelpter {
                 "D8"+"\n"+
                 "A10,50,0,200,1,1,N,\"订单号:\""+"\n"+ //订单号
                 "A90,40,0,200,2,2,N,\""+orderId+"  "+bean.getBoxAmount()+"-" +bean.getBoxNumber()+"|"+bean.getCupAmount()+"\""+"\n"+ //杯数盒子信息
+                 gift +
                 "A10,90,0,200,1,1,N,\"收货人:\""+"\n"+
                 "A90,100,0,200,2,2,N,\""+bean.getReceiverName()+" "+bean.getReceiverPhone()+"\""+"\n"+
                 addressCMD +                             //配送地址

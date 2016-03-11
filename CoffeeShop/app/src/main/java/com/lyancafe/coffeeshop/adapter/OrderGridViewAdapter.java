@@ -97,8 +97,9 @@ public class OrderGridViewAdapter extends BaseAdapter{
         if(convertView==null){
             convertView = LayoutInflater.from(context).inflate(R.layout.order_list_item,null);
             holder  = new ViewHolder();
-            holder.rootLayout = (LinearLayout) convertView.findViewById(R.id.root_view);
+            holder.rootLayout = (RelativeLayout) convertView.findViewById(R.id.root_view);
             holder.secondRootLayout = (LinearLayout) convertView.findViewById(R.id.second_root_view);
+            holder.giftIV = (ImageView) convertView.findViewById(R.id.iv_gift);
             holder.logoScanIV = (ImageView) convertView.findViewById(R.id.logo_scan);
             holder.orderIdTxt = (TextView) convertView.findViewById(R.id.item_order_id);
             holder.contantEffectTimeTxt = (TextView) convertView.findViewById(R.id.item_contant_produce_effect);
@@ -134,6 +135,12 @@ public class OrderGridViewAdapter extends BaseAdapter{
             holder.logoScanIV.setVisibility(View.VISIBLE);
         }else{
             holder.logoScanIV.setVisibility(View.GONE);
+        }
+        if(order.getGift()==2){
+            //礼盒订单
+            holder.giftIV.setVisibility(View.VISIBLE);
+        }else{
+            holder.giftIV.setVisibility(View.GONE);
         }
 
         OrderHelper.showEffect(order, holder.produceBtn, holder.effectTimeTxt);
@@ -273,8 +280,9 @@ public class OrderGridViewAdapter extends BaseAdapter{
 
     static class ViewHolder{
 
-        LinearLayout rootLayout;
+        RelativeLayout rootLayout;
         LinearLayout secondRootLayout;
+        ImageView giftIV;
         ImageView logoScanIV;
         TextView orderIdTxt;
         TextView contantEffectTimeTxt;

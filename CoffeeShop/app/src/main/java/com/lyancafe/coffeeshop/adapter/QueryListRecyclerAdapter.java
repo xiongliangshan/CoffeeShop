@@ -203,7 +203,7 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public LinearLayout rootLayout;
+        public RelativeLayout rootLayout;
         public ImageView logoScanIV;
         public TextView orderIdTxt;
         public TextView contantEffectTimeTxt;
@@ -217,7 +217,7 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
 
         public ViewHolder(View itemView) {
             super(itemView);
-            rootLayout = (LinearLayout) itemView.findViewById(R.id.root_view);
+            rootLayout = (RelativeLayout) itemView.findViewById(R.id.root_view);
             logoScanIV = (ImageView) itemView.findViewById(R.id.logo_scan);
             orderIdTxt = (TextView) itemView.findViewById(R.id.item_order_id);
             contantEffectTimeTxt = (TextView) itemView.findViewById(R.id.item_contant_produce_effect);
