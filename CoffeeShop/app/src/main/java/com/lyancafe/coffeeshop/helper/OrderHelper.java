@@ -224,10 +224,9 @@ public class OrderHelper {
             if(bean.getStatus()!=ASSIGNED_STATUS){
                 continue;
             }
-            //如果不是半小时内的预约单不加入合并
+            //如果没达到能操作条件的预约单不加入合并
             if(bean.getInstant()==0){
-                final long mms = System.currentTimeMillis() - (bean.getExpectedTime() - 30 * 60 * 1000);
-                if(mms<0){
+                if(!isCanHandle(bean)){
                     continue;
                 }
             }

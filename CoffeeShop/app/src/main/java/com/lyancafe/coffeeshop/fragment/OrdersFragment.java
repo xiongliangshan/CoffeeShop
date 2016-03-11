@@ -865,6 +865,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     public void updateBatchPromptTextView(int leftBatchOrderNum){
         if(leftBatchOrderNum<=0){
             batchPromptText.setVisibility(View.GONE);
+            batchHandleBtn.setText(R.string.batch_handle);
+        }else{
+            batchPromptText.setVisibility(View.VISIBLE);
         }
     }
 
@@ -917,6 +920,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }else{
                 updateDetailView(null);
             }
+            updateBatchPromptTextView(OrderHelper.batchList.size());
         }
     }
 
