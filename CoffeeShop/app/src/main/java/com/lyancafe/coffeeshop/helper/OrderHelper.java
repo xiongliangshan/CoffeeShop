@@ -316,4 +316,16 @@ public class OrderHelper {
         }
 
     }
+
+    //检查新订单集合中是否含有批处理订单
+    public static boolean isContainerBatchOrder(List<OrderBean> list){
+        for(OrderBean batchorder:batchList){
+            for(OrderBean order:list){
+                if(order.getId()==batchorder.getId()){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

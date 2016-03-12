@@ -34,6 +34,7 @@ import com.lyancafe.coffeeshop.activity.PrintOrderActivity;
 import com.lyancafe.coffeeshop.adapter.OrderGridViewAdapter;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.event.CancelOrderEvent;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.helper.PrintHelpter;
@@ -49,6 +50,9 @@ import com.xls.http.HttpEntity;
 import com.xls.http.HttpUtils;
 import com.xls.http.Jresp;
 import com.xls.http.Qry;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -203,6 +207,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         Log.d(TAG, "onCreateView");
         mContentView = inflater.inflate(R.layout.fragment_orders,container,false);
         initViews(mContentView);
+        EventBus.getDefault().register(this);
         return mContentView;
     }
 
@@ -239,17 +244,17 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         batchHandleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String batchBtnText  = batchHandleBtn.getText().toString();
-                if(mContext.getString(R.string.batch_handle).equals(batchBtnText)){
+                String batchBtnText = batchHandleBtn.getText().toString();
+                if (mContext.getString(R.string.batch_handle).equals(batchBtnText)) {
                     //批量处理
                     OrderHelper.calculateToMergeOrders(adapter.list);
-                    if(OrderHelper.batchList.size()<2){
-                        ToastUtil.showToast(mContext,"没有可合并的订单");
+                    if (OrderHelper.batchList.size() < 2) {
+                        ToastUtil.showToast(mContext, "没有可合并的订单");
                         OrderHelper.batchList.clear();
                         return;
                     }
-                    final String content = OrderHelper.createPromptStr(mContext,OrderHelper.batchList,OrderHelper.batchHandleCupCount);
-                    PromptDialog pd = new PromptDialog(mContext,R.style.PromptDialog,new PromptDialog.OnClickOKListener(){
+                    final String content = OrderHelper.createPromptStr(mContext, OrderHelper.batchList, OrderHelper.batchHandleCupCount);
+                    PromptDialog pd = new PromptDialog(mContext, R.style.PromptDialog, new PromptDialog.OnClickOKListener() {
                         @Override
                         public void onClickOK() {
                             batchPromptText.setText(content);
@@ -261,10 +266,10 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     pd.setContent(content);
                     pd.show();
 
-                }else if(mContext.getString(R.string.batch_print).equals(batchBtnText)){
+                } else if (mContext.getString(R.string.batch_print).equals(batchBtnText)) {
                     //批量打印
-                    String content = "是否确定将 "+OrderHelper.batchOrderCount+" 单数据同时打印？";
-                    PromptDialog pd = new PromptDialog(mContext,R.style.PromptDialog,new PromptDialog.OnClickOKListener(){
+                    String content = "是否确定将 " + OrderHelper.batchOrderCount + " 单数据同时打印？";
+                    PromptDialog pd = new PromptDialog(mContext, R.style.PromptDialog, new PromptDialog.OnClickOKListener() {
                         @Override
                         public void onClickOK() {
                             batchHandleBtn.setText(R.string.batch_finish);
@@ -275,23 +280,23 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     pd.setMode(PromptDialog.Mode.BOTH);
                     pd.setContent(content);
                     pd.show();
-                }else if(mContext.getString(R.string.batch_finish).equals(batchBtnText)){
+                } else if (mContext.getString(R.string.batch_finish).equals(batchBtnText)) {
                     //批量完成
-                    String content = "是否将 "+OrderHelper.batchOrderCount+" 单同时完成？";
+                    String content = "是否将 " + OrderHelper.batchOrderCount + " 单同时完成？";
                     PromptDialog pd = new PromptDialog(mContext, R.style.PromptDialog, new PromptDialog.OnClickOKListener() {
                         @Override
                         public void onClickOK() {
                             batchHandleBtn.setText(R.string.batch_handle);
                             //开始循环请求
-                            for(int i=0;i<OrderHelper.batchList.size();i++){
-                                adapter.new DoFinishProduceQry(OrderHelper.batchList.get(i).getId(),false).doRequest();
+                            for (int i = 0; i < OrderHelper.batchList.size(); i++) {
+                                adapter.new DoFinishProduceQry(OrderHelper.batchList.get(i).getId(), false).doRequest();
                             }
                         }
                     });
                     pd.setMode(PromptDialog.Mode.BOTH);
                     pd.setContent(content);
                     pd.show();
-                }else{
+                } else {
 
                 }
 
@@ -675,6 +680,11 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         });
 
     }
+    @Subscribe
+    public void OnMessageEvent(CancelOrderEvent event){
+        Log.d(TAG,"event:"+event.orderId);
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -715,6 +725,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onDestroyView() {
+        EventBus.getDefault().unregister(this);
         super.onDestroyView();
         Log.d(TAG, "onDestroyView");
     }
@@ -848,7 +859,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         mHandler.sendMessage(msg);
 
     }
-    //在某些操作后更新相关联的订单数量
+    //在某些操作后更新相关的订单数量
     public void updateOrdersNumAfterAction(int action){
         if(action==ACTION_PRODUCE){
             Message msg =  new Message();
@@ -920,7 +931,12 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }else{
                 updateDetailView(null);
             }
-            updateBatchPromptTextView(OrderHelper.batchList.size());
+            //检查列表中是否有未完成的合并订单
+            if(!OrderHelper.isContainerBatchOrder(orderBeans)){
+                OrderHelper.batchList.clear();
+                updateBatchPromptTextView(0);
+            }
+
         }
     }
 

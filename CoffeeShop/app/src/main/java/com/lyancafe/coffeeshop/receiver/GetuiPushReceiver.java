@@ -18,6 +18,7 @@ import com.igexin.sdk.PushConsts;
 import com.igexin.sdk.PushManager;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.PushMessageBean;
+import com.lyancafe.coffeeshop.event.CancelOrderEvent;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.MyUtil;
@@ -27,6 +28,7 @@ import com.xls.http.HttpUtils;
 import com.xls.http.Jresp;
 import com.xls.http.Qry;
 
+import org.greenrobot.eventbus.EventBus;
 import org.w3c.dom.Text;
 
 import java.util.HashMap;
@@ -139,6 +141,7 @@ public class GetuiPushReceiver extends BroadcastReceiver {
             mBuilder.setDefaults(Notification.DEFAULT_ALL);
         }else if(pmb.getEventType()==11){   //问题已经解决
             mBuilder.setDefaults(Notification.DEFAULT_ALL);
+            EventBus.getDefault().post(new CancelOrderEvent(pmb.getOrderId()));
         }else if(pmb.getEventType()==16){   //订单撤销
             mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.order_undo));
         }
