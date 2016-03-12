@@ -84,8 +84,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private GridView ordersGridView;
     private OrderGridViewAdapter adapter;
 
-    private Button refreshbtn;
-    private Button batchHandleBtn;
+    private TextView refreshbtn;
+    private TextView batchHandleBtn;
     private TextView batchPromptText;
     private TextView totalQuantityTxt;
     private long starttime;
@@ -233,14 +233,14 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         shopNameText.setText(LoginHelper.getShopName(mContext));
 
         batchPromptText = (TextView) contentView.findViewById(R.id.tv_batch_prompt);
-        refreshbtn = (Button) contentView.findViewById(R.id.btn_refresh);
+        refreshbtn = (TextView) contentView.findViewById(R.id.btn_refresh);
         refreshbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true, true);
             }
         });
-        batchHandleBtn = (Button) contentView.findViewById(R.id.btn_batch_handle);
+        batchHandleBtn = (TextView) contentView.findViewById(R.id.btn_batch_handle);
         batchHandleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
