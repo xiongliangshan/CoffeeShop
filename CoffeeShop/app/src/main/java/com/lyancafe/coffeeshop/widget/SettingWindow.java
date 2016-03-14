@@ -183,6 +183,7 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
                 //退出登录
                 new CoffeeShopApplication.LoginOutQry(CoffeeShopApplication.getInstance()).doRequest();
                 LoginHelper.saveToken(context, "");
+                OrderHelper.batchList.clear();
                 ((HomeActivity)context).finish();
                 ((HomeActivity)context).overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);
                 break;
