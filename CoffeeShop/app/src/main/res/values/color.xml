@@ -22,5 +22,11 @@
 
 	<color name="text_red">#e2435a</color>
 	<color name="text_black">#303030</color>
+	<color name="bg_line_separator">#DDDDDD</color>
+
+	<color name="bg_menu_selected">#282828</color>
+	<color name="font_menu_selected">#FFFFFF</color>
+	<color name="font_munu_normal">#1D1D1D</color>
+	<color name="bg_circle_black">#555555</color>
 
 </resources>  

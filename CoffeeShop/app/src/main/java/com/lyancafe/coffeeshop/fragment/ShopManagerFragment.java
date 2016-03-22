@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.FragmentTabAdapter;
@@ -23,6 +25,7 @@ import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
+import com.lyancafe.coffeeshop.widget.PromptDialog;
 import com.xls.http.HttpAsyncTask;
 import com.xls.http.HttpEntity;
 import com.xls.http.HttpUtils;
@@ -37,10 +40,12 @@ import java.util.Map;
 /**
  * Created by Administrator on 2015/9/1.
  */
-public class ShopManagerFragment extends Fragment {
+public class ShopManagerFragment extends Fragment implements View.OnClickListener{
 
     private static final String TAG ="ShopManagerFragment";
     private View mContentView;
+    private LinearLayout printPasterLayout;
+    private TextView printPasterText;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerAdapter recyclerAdapter;
@@ -61,8 +66,9 @@ public class ShopManagerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        /*mContentView = inflater.inflate(R.layout.fragment_shop_manager,container,false);
-        recyclerView= (RecyclerView) mContentView.findViewById(R.id.my_recycler_view);
+        mContentView = inflater.inflate(R.layout.fragment_shop_manager,container,false);
+        initView(mContentView);
+       /* recyclerView= (RecyclerView) mContentView.findViewById(R.id.my_recycler_view);
         layoutManager = new LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
@@ -70,9 +76,35 @@ public class ShopManagerFragment extends Fragment {
         recyclerView.addItemDecoration(new SpaceItemDecoration(OrderHelper.dip2Px(32,mContext)));
         ArrayList<UserBean> itemList = new ArrayList<UserBean>();
         recyclerAdapter = new RecyclerAdapter(itemList,mContext);
-        recyclerView.setAdapter(recyclerAdapter);
-        return mContentView;*/
-        return null;
+        recyclerView.setAdapter(recyclerAdapter);*/
+        return mContentView;
+
+    }
+
+    private void initView(View contentView){
+        printPasterLayout = (LinearLayout) contentView.findViewById(R.id.ll_print_paster);
+        printPasterLayout.setOnClickListener(this);
+        printPasterText = (TextView) contentView.findViewById(R.id.tv_print_paster);
+    }
+
+    //设置左侧菜单选中标志
+    private void setSelected(TextView textView,boolean isSelected){
+        if(isSelected){
+            textView.setBackgroundColor(mContext.getResources().getColor(R.color.bg_menu_selected));
+            textView.setTextColor(mContext.getResources().getColor(R.color.font_menu_selected));
+        }else{
+            textView.setBackgroundColor(mContext.getResources().getColor(android.R.color.transparent));
+            textView.setTextColor(mContext.getResources().getColor(R.color.font_munu_normal));
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.ll_print_paster:
+                setSelected(printPasterText,true);
+                break;
+        }
     }
 
     @Override
@@ -91,9 +123,6 @@ public class ShopManagerFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(TAG,"onResume--调用:"+FragmentTabAdapter.currentTab);
-       /* if(FragmentTabAdapter.getCurrentTab()==2){
-            new BaristasListQry(mContext).doRequest();
-        }*/
 
     }
 
