@@ -22,18 +22,31 @@
         android:layout_width="match_parent"
         android:layout_height="40dip"
         android:layout_below="@+id/btn_print_box"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/bg_printer_btn"
         android:text="打印商品贴纸"
         android:textColor="@color/white_font"
         android:textSize="16dip" />
 
     <Button
+        android:id="@+id/btn_print_all"
+        android:layout_width="match_parent"
+        android:layout_height="40dip"
+        android:layout_below="@+id/btn_print_cup"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bg_printer_btn"
+        android:text="打印全部"
+        android:textColor="@color/white_font"
+        android:textSize="16dip" />
+
+
+
+    <Button
         android:id="@+id/btn_check_printer"
         android:layout_width="match_parent"
         android:layout_height="40dip"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/bg_printer_btn"
         android:text="检查打印机"
         android:textColor="@color/white_font"

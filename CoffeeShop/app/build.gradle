@@ -8,8 +8,8 @@ android {
         applicationId "com.lyancafe.coffeeshop"
         minSdkVersion 8
         targetSdkVersion 22
-        versionCode 8
-        versionName "2.0.8"
+        versionCode 9
+        versionName "2.0.9"
     }
     buildTypes {
         release {

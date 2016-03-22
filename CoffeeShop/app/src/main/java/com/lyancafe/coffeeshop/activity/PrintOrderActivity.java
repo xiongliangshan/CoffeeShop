@@ -19,6 +19,7 @@ public class PrintOrderActivity extends Activity implements View.OnClickListener
     private static final String TAG = "PrintOrderActivity";
     private Button printBoxBtn;
     private Button printCupBtn;
+    private Button printAllBtn;
     private Button checkPrinterBtn;
     private OrderBean mOrderBean;
     private Context mContext;
@@ -37,6 +38,8 @@ public class PrintOrderActivity extends Activity implements View.OnClickListener
         printBoxBtn.setOnClickListener(this);
         printCupBtn = (Button) findViewById(R.id.btn_print_cup);
         printCupBtn.setOnClickListener(this);
+        printAllBtn = (Button) findViewById(R.id.btn_print_all);
+        printAllBtn.setOnClickListener(this);
         checkPrinterBtn = (Button) findViewById(R.id.btn_check_printer);
         checkPrinterBtn.setOnClickListener(this);
     }
@@ -57,6 +60,10 @@ public class PrintOrderActivity extends Activity implements View.OnClickListener
                 PrintHelpter.getInstance().printOrderInfo(mOrderBean);
                 break;
             case R.id.btn_print_cup:
+                PrintHelpter.getInstance().printOrderItems(mOrderBean);
+                break;
+            case R.id.btn_print_all:
+                PrintHelpter.getInstance().printOrderInfo(mOrderBean);
                 PrintHelpter.getInstance().printOrderItems(mOrderBean);
                 break;
             case R.id.btn_check_printer:
