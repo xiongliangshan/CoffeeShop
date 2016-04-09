@@ -2,14 +2,11 @@ package com.lyancafe.coffeeshop.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,20 +16,15 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.FragmentTabAdapter;
-import com.lyancafe.coffeeshop.adapter.RecyclerAdapter;
-import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
-import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.lyancafe.coffeeshop.widget.PromptDialog;
 import com.xls.http.HttpAsyncTask;
 import com.xls.http.HttpEntity;
 import com.xls.http.HttpUtils;
 import com.xls.http.Jresp;
 import com.xls.http.Qry;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,37 +38,33 @@ public class ShopManagerFragment extends Fragment implements View.OnClickListene
     private View mContentView;
     private LinearLayout printPasterLayout;
     private TextView printPasterText;
-    private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
-    private RecyclerAdapter recyclerAdapter;
-    private Activity mContext;
+    private Fragment currentFragment;
+    private FragmentActivity mContext;
+
+    private PrintFragment printFragment;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        this.mContext = activity;
+        this.mContext = (FragmentActivity)activity;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initFragments();
+
+    }
+    private void initFragments(){
+        printFragment = new PrintFragment();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         mContentView = inflater.inflate(R.layout.fragment_shop_manager,container,false);
         initView(mContentView);
-       /* recyclerView= (RecyclerView) mContentView.findViewById(R.id.my_recycler_view);
-        layoutManager = new LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new SpaceItemDecoration(OrderHelper.dip2Px(32,mContext)));
-        ArrayList<UserBean> itemList = new ArrayList<UserBean>();
-        recyclerAdapter = new RecyclerAdapter(itemList,mContext);
-        recyclerView.setAdapter(recyclerAdapter);*/
+        switchFragment(printFragment);
         return mContentView;
 
     }
@@ -84,7 +72,9 @@ public class ShopManagerFragment extends Fragment implements View.OnClickListene
     private void initView(View contentView){
         printPasterLayout = (LinearLayout) contentView.findViewById(R.id.ll_print_paster);
         printPasterLayout.setOnClickListener(this);
-        printPasterText = (TextView) contentView.findViewById(R.id.tv_print_paster);
+        printPasterText = (TextView) contentView.findViewById(R.id.tv_item_paster);
+
+        setSelected(printPasterText,true);
     }
 
     //设置左侧菜单选中标志
@@ -122,7 +112,7 @@ public class ShopManagerFragment extends Fragment implements View.OnClickListene
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG,"onResume--调用:"+FragmentTabAdapter.currentTab);
+        Log.d(TAG, "onResume--调用:" + FragmentTabAdapter.currentTab);
 
     }
 
@@ -151,55 +141,15 @@ public class ShopManagerFragment extends Fragment implements View.OnClickListene
         super.onDetach();
     }
 
-
-    //设置RecyclerView item之间的间距
-    public class SpaceItemDecoration extends RecyclerView.ItemDecoration{
-
-        private int space;
-
-        public SpaceItemDecoration(int space) {
-            this.space = space;
+    private void switchFragment(Fragment fragment){
+        if(fragment == currentFragment || fragment==null){
+            return;
         }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            if(parent.getChildLayoutPosition(view) != 0)
-                outRect.left = space;
-        }
+        FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.fragment_container,fragment).commit();
+        fragment.onResume();
+        currentFragment = fragment;
     }
-
-    //咖啡师列表接口
-    class BaristasListQry implements Qry {
-
-        private Context context;
-
-        public BaristasListQry(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        public void doRequest() {
-            String token = LoginHelper.getToken(context);
-            int shopId = LoginHelper.getShopId(context);
-            String url = HttpUtils.BASE_URL+shopId+"/baristas?token="+token;
-            Map<String,Object> params = new HashMap<String,Object>();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            Log.d(TAG, "BaristasListQry:resp  =" + resp);
-            if(resp==null){
-                ToastUtil.showToast(context, R.string.unknown_error);
-                return;
-            }
-            List<UserBean> userBeans = UserBean.parseJsonUsers(context, resp);
-            Log.d(TAG, "userBeans  =" + userBeans);
-            recyclerAdapter.setData(userBeans);
-
-        }
-    }
-
 
 
 
