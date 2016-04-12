@@ -17,6 +17,7 @@
         android:layout_width="240dp"
         android:layout_height="200dp"
         android:layout_below="@id/iv_cross"
+        android:scaleType="centerCrop"
         android:layout_centerHorizontal="true"/>
 
 

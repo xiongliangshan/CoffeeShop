@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * Created by Administrator on 2016/4/12.
@@ -64,6 +65,7 @@ public class DeliverImageDialog extends Dialog {
             }
         });
         iconImage = (ImageView) findViewById(R.id.iv_deliver_icon);
+        ImageLoader.getInstance().displayImage("",iconImage,mDisplayImageOptions);
         deliverNameText = (TextView) findViewById(R.id.tv_deliver_name);
         deliverPhoneText = (TextView) findViewById(R.id.tv_deliver_phone);
 
@@ -76,9 +78,9 @@ public class DeliverImageDialog extends Dialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_deliver_img);
         mDisplayImageOptions = new DisplayImageOptions.Builder()
-                /*.showImageOnLoading(R.mipmap.img_loading)
-                .showImageOnFail(R.mipmap.img_loading)
-                .showImageForEmptyUri(R.mipmap.img_empty)*/
+                .showImageOnLoading(R.mipmap.deliver_default)
+                .showImageOnFail(R.mipmap.deliver_default)
+                .showImageForEmptyUri(R.mipmap.deliver_default)
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
