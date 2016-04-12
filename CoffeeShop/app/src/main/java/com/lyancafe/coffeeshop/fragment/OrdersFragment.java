@@ -41,6 +41,7 @@ import com.lyancafe.coffeeshop.helper.PrintHelpter;
 import com.lyancafe.coffeeshop.service.AutoFetchOrdersService;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
+import com.lyancafe.coffeeshop.widget.DeliverImageDialog;
 import com.lyancafe.coffeeshop.widget.ListTabButton;
 import com.lyancafe.coffeeshop.widget.PromptDialog;
 import com.lyancafe.coffeeshop.widget.ReportWindow;
@@ -110,6 +111,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private TextView receivePhoneTxt;
     private TextView receiveAddressTxt;
     private RelativeLayout deliverInfoContainerLayout;
+    private LinearLayout  deliverLayout;
     private TextView deliverNameTxt;
     private TextView deliverPhoneTxt;
     private TextView deliverLocationInfoTxt;
@@ -352,6 +354,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         receivePhoneTxt = (TextView) contentView.findViewById(R.id.receiver_phone);
         receiveAddressTxt = (TextView) contentView.findViewById(R.id.receiver_address);
         deliverInfoContainerLayout = (RelativeLayout) contentView.findViewById(R.id.deliver_info_container);
+        deliverLayout = (LinearLayout) contentView.findViewById(R.id.ll_deliver_layout);
         deliverNameTxt = (TextView) contentView.findViewById(R.id.deliver_name);
         deliverPhoneTxt = (TextView) contentView.findViewById(R.id.deliver_phone);
         deliverLocationInfoTxt = (TextView) contentView.findViewById(R.id.deliver_location_info);
@@ -423,7 +426,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             receiveAddressTxt.setText(order.getAddress());
             deliverNameTxt.setText(order.getCourierName());
             deliverPhoneTxt.setText(order.getCourierPhone());
-            deliverLocationInfoTxt.setVisibility(View.VISIBLE);
+        //    deliverLocationInfoTxt.setVisibility(View.VISIBLE);
             deliverLocationInfoTxt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -437,7 +440,15 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }else {
                 deliverInfoContainerLayout.setVisibility(View.VISIBLE);
             }
-
+            deliverLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //弹出对话框显示头像
+                    DeliverImageDialog.getInstance(mContext)
+                            .setContent(order.getCourierName(),order.getCourierPhone(),"")
+                            .show();
+                }
+            });
             fillItemListData(itemsContainerLayout, order.getItems());
             orderPriceTxt.setText("应付: " + OrderHelper.getMoneyStr(OrderHelper.getTotalPrice(order)));
             payWayTxt.setText(order.getPayChannelStr());

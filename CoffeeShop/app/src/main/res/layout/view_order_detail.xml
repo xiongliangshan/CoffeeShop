@@ -185,24 +185,30 @@
                     android:layout_marginTop="10dp"
                     android:text="抢单小哥"
                     />
-                <TextView
-                    android:id="@+id/deliver_name"
+                <LinearLayout
+                    android:id="@+id/ll_deliver_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
                     android:layout_marginLeft="14dp"
                     android:layout_toRightOf="@id/contant_deliver"
-                    android:layout_alignBaseline="@id/contant_deliver"
-                    android:text=""
-                    />
-                <TextView
-                    android:id="@+id/deliver_phone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_alignBaseline="@id/contant_deliver"
-                    android:layout_toRightOf="@id/deliver_name"
-                    android:text=""
-                    />
+                    android:layout_alignTop="@id/contant_deliver">
+                    <TextView
+                        android:id="@+id/deliver_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textColor="@color/blue"
+                        />
+                    <TextView
+                        android:id="@+id/deliver_phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text=""
+                        android:textColor="@color/blue"
+                        />
+                </LinearLayout>
                 <TextView
                     android:id="@+id/deliver_location_info"
                     android:layout_width="wrap_content"
@@ -210,9 +216,10 @@
                     android:layout_marginLeft="15dp"
                     android:padding="5dp"
                     android:layout_alignBaseline="@id/contant_deliver"
-                    android:layout_toRightOf="@id/deliver_phone"
+                    android:layout_toRightOf="@id/ll_deliver_layout"
                     android:background="@null"
                     android:text="查看位置"
+                    android:visibility="gone"
                     android:textColor="@color/blue"
                     />
             </RelativeLayout>

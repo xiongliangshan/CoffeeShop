@@ -29,4 +29,6 @@
 	<color name="font_munu_normal">#1D1D1D</color>
 	<color name="bg_circle_black">#555555</color>
 
+	<color name="font_black">#333333</color>
+
 </resources>  
