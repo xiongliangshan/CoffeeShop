@@ -30,5 +30,6 @@
 	<color name="bg_circle_black">#555555</color>
 
 	<color name="font_black">#333333</color>
+	<color name="font_red">#DD6A6A</color>
 
 </resources>  

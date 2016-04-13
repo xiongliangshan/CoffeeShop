@@ -153,14 +153,46 @@
             </LinearLayout>
 
         </LinearLayout>
-
-        <include
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/detail_view_margin_top"
-            android:layout_weight="1"
-            layout = "@layout/view_order_detail"
-            />
+            android:orientation="vertical"
+            android:layout_weight="1">
+            <LinearLayout
+                android:id="@+id/ll_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="right"
+                android:padding="10dp"
+                android:layout_marginRight="16dp">
+
+                <TextView
+                    android:id="@+id/tv_good_comment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:drawableLeft="@mipmap/smile"
+                    android:text="好评12"
+                    android:textColor="@color/font_red"/>
+
+                <TextView
+                    android:id="@+id/tv_bad_comment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:layout_marginLeft="16dp"
+                    android:drawableLeft="@mipmap/sad"
+                    android:text="差评2"/>
+            </LinearLayout>
+
+            <include
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                layout = "@layout/view_order_detail"
+                />
+        </LinearLayout>
 
     </LinearLayout>
 

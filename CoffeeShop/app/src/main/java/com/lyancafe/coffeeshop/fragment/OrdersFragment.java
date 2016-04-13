@@ -29,6 +29,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.activity.CommentActivity;
 import com.lyancafe.coffeeshop.activity.LocationActivity;
 import com.lyancafe.coffeeshop.activity.PrintOrderActivity;
 import com.lyancafe.coffeeshop.adapter.OrderGridViewAdapter;
@@ -91,6 +92,10 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private TextView totalQuantityTxt;
     private long starttime;
     private long endtime;
+
+    private LinearLayout commentLayout;
+    private TextView goodCommentText;
+    private TextView badCommentText;
 
     private int orderBy = 0;
     private int fillterInstant = 0;
@@ -305,6 +310,29 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
         });
         totalQuantityTxt = (TextView) contentView.findViewById(R.id.total_quantity);
+
+        commentLayout = (LinearLayout) contentView.findViewById(R.id.ll_comment);
+        goodCommentText = (TextView) contentView.findViewById(R.id.tv_good_comment);
+        badCommentText = (TextView) contentView.findViewById(R.id.tv_bad_comment);
+
+        goodCommentText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //好评列表
+                Intent intent =  new Intent(mContext, CommentActivity.class);
+                mContext.startActivity(intent);
+            }
+        });
+
+        badCommentText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //差评列表
+                Intent intent =  new Intent(mContext, CommentActivity.class);
+                mContext.startActivity(intent);
+            }
+        });
+
     }
 
     //更新总杯量
