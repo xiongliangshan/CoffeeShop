@@ -5,11 +5,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.event.ClickCommentEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +44,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.indexText.setText((position+1)+".");
         holder.orderSnText.setText(orderBean.getOrderSn());
         holder.labelText.setText("");
+        holder.itemRootLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(new ClickCommentEvent(orderBean));
+            }
+        });
     }
 
     @Override
@@ -53,11 +63,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        public RelativeLayout itemRootLayout;
         public TextView indexText;
         public TextView orderSnText;
         public TextView labelText;
         public ViewHolder(View itemView) {
             super(itemView);
+            itemRootLayout = (RelativeLayout) itemView.findViewById(R.id.rl_item_root);
             indexText = (TextView) itemView.findViewById(R.id.tv_index);
             orderSnText = (TextView) itemView.findViewById(R.id.tv_order_sn);
             labelText = (TextView) itemView.findViewById(R.id.tv_label);

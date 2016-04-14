@@ -36,6 +36,7 @@ import com.lyancafe.coffeeshop.adapter.OrderGridViewAdapter;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.event.CancelOrderEvent;
+import com.lyancafe.coffeeshop.event.ClickCommentEvent;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.helper.PrintHelpter;
@@ -722,6 +723,11 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     @Subscribe
     public void OnMessageEvent(CancelOrderEvent event){
         Log.d(TAG,"event:"+event.orderId);
+    }
+
+    @Subscribe
+    public void OnMessageEvent(ClickCommentEvent event){
+        updateDetailView(event.orderBean);
     }
 
     @Override
