@@ -321,6 +321,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             public void onClick(View v) {
                 //好评列表
                 Intent intent =  new Intent(mContext, CommentActivity.class);
+                intent.putExtra("coment_type",OrderHelper.GOOD_COMMENT);
                 mContext.startActivity(intent);
             }
         });
@@ -330,6 +331,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             public void onClick(View v) {
                 //差评列表
                 Intent intent =  new Intent(mContext, CommentActivity.class);
+                intent.putExtra("coment_type",OrderHelper.BAD_COMMENT);
                 mContext.startActivity(intent);
             }
         });
@@ -474,7 +476,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 public void onClick(View v) {
                     //弹出对话框显示头像
                     DeliverImageDialog.getInstance(mContext)
-                            .setContent(order.getCourierName(),order.getCourierPhone(),"")
+                            .setContent(order.getCourierName(),order.getCourierPhone(),order.getCourierImgUrl())
                             .show();
                 }
             });
@@ -747,6 +749,14 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         if(adapter.list.size()>0 && adapter.selected>=0){
             updateDetailView(adapter.list.get(adapter.selected));
         }
+
+        //请求评论数量
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                new CommentCountQry(mContext).doRequest();
+            }
+        });
 
     }
 
@@ -1211,6 +1221,54 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 updateOrdersNumAfterAction(OrdersFragment.ACTION_SCANCODE);
             }
         }
+    }
+
+    //评论数量接口
+    class CommentCountQry implements Qry{
+
+        private Context context;
+
+        public CommentCountQry(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public void doRequest() {
+            String token = LoginHelper.getToken(context);
+            int shopId = LoginHelper.getShopId(context);
+            String url = HttpUtils.BASE_URL+shopId+"/orders/feedback/count?token="+token;
+            Map<String,Object> params = new HashMap<String,Object>();
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, false);
+        }
+
+        @Override
+        public void showResult(Jresp resp) {
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    new CommentCountQry(mContext).doRequest();
+                }
+            }, 5*60*1000);
+            Log.d(TAG, "CommentCountQry:resp = " + resp);
+            if(resp==null){
+                return;
+            }
+
+            if(resp.status==0){
+               int positive = resp.data.optInt("positive");
+               int negative = resp.data.optInt("negative");
+                updateCommentCount(positive,negative);
+            }else{
+
+            }
+
+
+        }
+    }
+
+    private void updateCommentCount(int positive,int negative){
+        goodCommentText.setText("好评"+positive);
+        badCommentText.setText("差评"+negative);
     }
 
     //接收自动刷单的广播

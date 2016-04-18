@@ -40,7 +40,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        OrderBean orderBean = orderList.get(position);
+        final OrderBean orderBean = orderList.get(position);
         holder.indexText.setText((position+1)+".");
         holder.orderSnText.setText(orderBean.getOrderSn());
         holder.labelText.setText("");

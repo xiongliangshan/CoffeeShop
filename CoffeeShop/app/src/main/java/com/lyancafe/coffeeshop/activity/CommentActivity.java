@@ -39,6 +39,7 @@ import java.util.Map;
  */
 public class CommentActivity extends BaseActivity {
 
+    private static final String TAG = "CommentActivity";
     private Context mContext;
     private ProgressBar progressBar;
     private Button closeBtn;
@@ -58,9 +59,10 @@ public class CommentActivity extends BaseActivity {
         lp.x = -100;
         lp.y = 40;
         getWindow().setAttributes(lp);
-
+        int type = getIntent().getIntExtra("coment_type",4);
         initView();
-        new OrderFinishedQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,false).doRequest();
+        updateTitle(type,-1);
+        new CommentListQry(mContext,type,false).doRequest();
 
 
     }
@@ -80,7 +82,7 @@ public class CommentActivity extends BaseActivity {
         commentsListView.setLayoutManager(layoutManager);
         mAdapter = new CommentAdapter(mContext);
         commentsListView.setAdapter(mAdapter);
-        commentsListView.addItemDecoration(new MyItemDecoration(this, RecyclerView.VERTICAL) );
+        commentsListView.addItemDecoration(new MyItemDecoration(this, RecyclerView.VERTICAL));
     }
 
     @Override
@@ -98,17 +100,28 @@ public class CommentActivity extends BaseActivity {
         super.onDestroy();
     }
 
+    //更新标题栏
+    private void updateTitle(int commentType,int count){
+        String countStr = count<0?"":(count+"");
+        if(OrderHelper.GOOD_COMMENT==commentType){
+            //好评
+            commentCountText.setText("今日好评 "+countStr);
+        }else if(OrderHelper.BAD_COMMENT==commentType){
+            //差评
+            commentCountText.setText("今日差评 "+countStr);
+        }
+    }
+
     //已完成订单列表接口
-    class OrderFinishedQry implements Qry {
+    class CommentListQry implements Qry {
 
         private Context context;
-        private int orderBy;
-        private int fillterInstant;
+        private int commentType;
         private boolean isShowProgress;
-        public OrderFinishedQry(Context context, int orderBy, int fillterInstant,boolean isShowProgress) {
+
+        public CommentListQry(Context context, int commentType, boolean isShowProgress) {
             this.context = context;
-            this.orderBy = orderBy;
-            this.fillterInstant = fillterInstant;
+            this.commentType = commentType;
             this.isShowProgress = isShowProgress;
         }
 
@@ -117,23 +130,25 @@ public class CommentActivity extends BaseActivity {
             progressBar.setVisibility(View.VISIBLE);
             String token = LoginHelper.getToken(context);
             int shopId = LoginHelper.getShopId(context);
-            String url = HttpUtils.BASE_URL+shopId+"/orders/today/finished?token="+token;
+            String url = HttpUtils.BASE_URL+shopId+"/orders/feedback/"+commentType+"?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
-            params.put("orderBy",orderBy);
-            params.put("fillterInstant", fillterInstant);
-
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, isShowProgress);
         }
 
         @Override
         public void showResult(Jresp resp) {
             progressBar.setVisibility(View.GONE);
+            Log.d(TAG,"CommentListQry: resp = "+commentType+resp);
             if(resp==null){
                 ToastUtil.showToast(context, R.string.unknown_error);
                 return;
             }
-            List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-            mAdapter.setData(orderBeans);
+            if(resp.status==0){
+                List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
+                updateTitle(commentType,orderBeans.size());
+                mAdapter.setData(orderBeans);
+            }
+
         }
     }
 

@@ -65,7 +65,7 @@ public class DeliverImageDialog extends Dialog {
             }
         });
         iconImage = (ImageView) findViewById(R.id.iv_deliver_icon);
-        ImageLoader.getInstance().displayImage("",iconImage,mDisplayImageOptions);
+        ImageLoader.getInstance().displayImage(imgUrl,iconImage,mDisplayImageOptions);
         deliverNameText = (TextView) findViewById(R.id.tv_deliver_name);
         deliverPhoneText = (TextView) findViewById(R.id.tv_deliver_phone);
 

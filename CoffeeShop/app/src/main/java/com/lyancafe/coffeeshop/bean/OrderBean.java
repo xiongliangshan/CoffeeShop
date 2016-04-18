@@ -41,6 +41,7 @@ public class OrderBean implements Serializable{
     private String shopPhone;            //生产点联系电话
     private String courierName;          //小哥名字
     private String courierPhone;         //小哥联系电话
+    private String courierImgUrl;        //抢单小哥的头像url
     private int status;                  //订单状态
     private String statusName;           //订单状态名
     private boolean issueOrder;          //是否是问题订单
@@ -57,6 +58,9 @@ public class OrderBean implements Serializable{
     private int paid;                    //已付费用
     private long handoverTime;           //实际送达时间
     private String receipt;              //小票编号
+    private List<String> feedbackTags;   //评论标签
+    private String feedback;             //评论内容
+    private int feedbackType;            // 0:没有评价，1:好评，2:差评
     private List<ItemContentBean> items; //购买的咖啡内容列表
 
     private CountDownTimer cdt;
@@ -224,6 +228,38 @@ public class OrderBean implements Serializable{
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getCourierImgUrl() {
+        return courierImgUrl;
+    }
+
+    public void setCourierImgUrl(String courierImgUrl) {
+        this.courierImgUrl = courierImgUrl;
+    }
+
+    public List<String> getFeedbackTags() {
+        return feedbackTags;
+    }
+
+    public void setFeedbackTags(List<String> feedbackTags) {
+        this.feedbackTags = feedbackTags;
+    }
+
+    public String getFeedback() {
+        return feedback;
+    }
+
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
+    }
+
+    public int getFeedbackType() {
+        return feedbackType;
+    }
+
+    public void setFeedbackType(int feedbackType) {
+        this.feedbackType = feedbackType;
     }
 
     public String getStatusName() {
@@ -406,6 +442,7 @@ public class OrderBean implements Serializable{
                 ", shopPhone='" + shopPhone + '\'' +
                 ", courierName='" + courierName + '\'' +
                 ", courierPhone='" + courierPhone + '\'' +
+                ", courierImgUrl='" + courierImgUrl + '\'' +
                 ", status=" + status +
                 ", statusName='" + statusName + '\'' +
                 ", issueOrder=" + issueOrder +
@@ -422,6 +459,9 @@ public class OrderBean implements Serializable{
                 ", paid=" + paid +
                 ", handoverTime=" + handoverTime +
                 ", receipt='" + receipt + '\'' +
+                ", feedbackTags=" + feedbackTags +
+                ", feedback='" + feedback + '\'' +
+                ", feedbackType=" + feedbackType +
                 ", items=" + items +
                 ", cdt=" + cdt +
                 '}';
