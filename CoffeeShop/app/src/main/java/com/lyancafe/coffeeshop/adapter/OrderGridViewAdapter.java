@@ -168,7 +168,12 @@ public class OrderGridViewAdapter extends BaseAdapter{
             holder.remarkFlagIV.setVisibility(View.VISIBLE);
         }
         fillItemListData(holder.itemContainerll, order.getItems());
-            holder.produceBtn.setOnClickListener(new View.OnClickListener() {
+        if(OrdersFragment.subTabIndex!=0){
+            holder.produceBtn.setEnabled(false);
+        }else{
+            holder.produceBtn.setEnabled(true);
+        }
+        holder.produceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //生产完成

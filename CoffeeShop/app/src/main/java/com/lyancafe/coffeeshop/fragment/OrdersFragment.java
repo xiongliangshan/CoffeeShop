@@ -494,6 +494,11 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             csadRemarkTxt.setText(order.getCsrNotes());
             userCommentTagsText.setText(OrderHelper.getCommentTagsStr(order.getFeedbackTags()));
             userCommentContentText.setText(order.getFeedback());
+            if(OrdersFragment.subTabIndex!=0){
+                finishProduceBtn.setEnabled(false);
+            }else{
+                finishProduceBtn.setEnabled(true);
+            }
             finishProduceBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -1257,7 +1262,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 public void run() {
                     new CommentCountQry(mContext).doRequest();
                 }
-            }, 20*1000);
+            }, 2*60*1000);
             Log.d(TAG, "CommentCountQry:resp = " + resp);
             if(resp==null){
                 return;
