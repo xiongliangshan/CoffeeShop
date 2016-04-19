@@ -127,6 +127,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private TextView moneyTxt;
     private TextView userRemarkTxt;
     private TextView csadRemarkTxt;
+    private TextView userCommentTagsText;
+    private TextView userCommentContentText;
     private Button finishProduceBtn;
     private Button printOrderBtn;
     private Button moreBtn;
@@ -395,6 +397,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         moneyTxt = (TextView) contentView.findViewById(R.id.money);
         userRemarkTxt = (TextView) contentView.findViewById(R.id.user_remark);
         csadRemarkTxt = (TextView) contentView.findViewById(R.id.csad_remark);
+        userCommentTagsText = (TextView) contentView.findViewById(R.id.user_comment_tags);
+        userCommentContentText = (TextView) contentView.findViewById(R.id.user_comment_content);
         finishProduceBtn = (Button) contentView.findViewById(R.id.btn_finish_produce);
         printOrderBtn = (Button) contentView.findViewById(R.id.btn_print_order);
         moreBtn  = (Button) contentView.findViewById(R.id.btn_more);
@@ -422,6 +426,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             moneyTxt.setText("");
             userRemarkTxt.setText("");
             csadRemarkTxt.setText("");
+            userCommentTagsText.setText("");
+            userCommentContentText.setText("");
             finishProduceBtn.setEnabled(false);
             printOrderBtn.setEnabled(false);
             moreBtn.setEnabled(false);
@@ -486,6 +492,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             moneyTxt.setText(OrderHelper.getMoneyStr(order.getPaid()));
             userRemarkTxt.setText(order.getNotes());
             csadRemarkTxt.setText(order.getCsrNotes());
+            userCommentTagsText.setText(OrderHelper.getCommentTagsStr(order.getFeedbackTags()));
+            userCommentContentText.setText(order.getFeedback());
             finishProduceBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -606,6 +614,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             tv1.setText(item.getProduct() + "(" + item.getUnit() + ")");
             tv1.setMaxEms(7);
             tv1.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
+            tv1.setTextColor(getResources().getColor(R.color.font_black));
             TextView tv2 = new TextView(mContext);
             tv2.setText("X " + item.getQuantity());
             tv2.getPaint().setFakeBoldText(true);
@@ -1248,7 +1257,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 public void run() {
                     new CommentCountQry(mContext).doRequest();
                 }
-            }, 5*60*1000);
+            }, 20*1000);
             Log.d(TAG, "CommentCountQry:resp = " + resp);
             if(resp==null){
                 return;

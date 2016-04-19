@@ -26,6 +26,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="24sp"
                 android:text="CB2015-0919-01"
+                android:textColor="@color/font_black"
                 />
             <TextView
                 android:id="@+id/contant_order_time"
@@ -36,6 +37,7 @@
                 android:textSize="12sp"
                 android:layout_marginLeft="20dp"
                 android:text="下单时间"
+                android:textColor="@color/font_gray"
                 />
             <TextView
                 android:id="@+id/order_time"
@@ -46,6 +48,7 @@
                 android:textSize="12sp"
                 android:layout_marginTop="-2dp"
                 android:text="2015-09-19 14:20"
+                android:textColor="@color/font_gray"
                 />
             <TextView
                 android:id="@+id/order_report"
@@ -57,6 +60,7 @@
                 android:textSize="16sp"
                 android:drawableLeft="@mipmap/icon_report"
                 android:drawablePadding="5dp"
+                android:textColor="@color/font_black"
                 />
         </RelativeLayout>
 
@@ -74,6 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="期望送达时间"
+                android:textColor="@color/font_gray"
                 />
             <TextView
                 android:id="@+id/reach_time"
@@ -84,6 +89,7 @@
                 android:layout_marginLeft="6dp"
                 android:textSize="@dimen/effect_time_text_size"
                 android:text=""
+                android:textColor="@color/font_black"
                 />
             <TextView
                 android:id="@+id/contant_produce_effect"
@@ -93,6 +99,7 @@
                 android:layout_alignBaseline="@id/contant_reach_time"
                 android:layout_marginLeft="14dp"
                 android:text="生产时效"
+                android:textColor="@color/font_gray"
                 />
             <TextView
                 android:id="@+id/produce_effect"
@@ -103,6 +110,7 @@
                 android:layout_alignBaseline="@id/contant_produce_effect"
                 android:textSize="@dimen/effect_time_text_size"
                 android:layout_marginLeft="6dp"
+                android:textColor="@color/font_black"
                 />
             <TextView
                 android:id="@+id/contant_real_reach_time"
@@ -132,6 +140,7 @@
                 android:layout_below="@id/contant_real_reach_time"
                 android:layout_marginTop="20dp"
                 android:text="收货信息"
+                android:textColor="@color/font_gray"
                 />
             <TextView
                 android:id="@+id/receiver_name"
@@ -142,6 +151,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_toRightOf="@id/contant_receiver_info"
                 android:layout_alignBaseline="@id/contant_receiver_info"
+                android:textColor="@color/font_black"
                 />
             <TextView
                 android:id="@+id/receiver_phone"
@@ -152,6 +162,7 @@
                 android:layout_alignBaseline="@id/receiver_name"
                 android:layout_marginLeft="8dp"
                 android:textSize="17sp"
+                android:textColor="@color/font_gray"
                 />
             <TextView
                 android:id="@+id/receiver_address"
@@ -160,6 +171,7 @@
                 android:layout_below="@id/contant_receiver_info"
                 android:layout_alignLeft="@id/receiver_name"
                 android:text=""
+                android:textColor="@color/font_black"
                 />
 
             <RelativeLayout
@@ -184,6 +196,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="抢单小哥"
+                    android:textColor="@color/font_gray"
                     />
                 <LinearLayout
                     android:id="@+id/ll_deliver_layout"
@@ -281,6 +294,7 @@
                         android:text=""
                         android:layout_toRightOf="@id/order_price"
                         android:layout_marginRight="10dp"
+                        android:textColor="@color/font_gray"
                         />
                     <TextView
                         android:id="@+id/money"
@@ -288,6 +302,7 @@
                         android:layout_height="wrap_content"
                         android:text=""
                         android:layout_toRightOf="@id/pay_way"
+                        android:textColor="@color/font_black"
                         />
 
                 </RelativeLayout>
@@ -306,6 +321,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="用户备注"
+                    android:textColor="@color/font_gray"
                     />
                 <TextView
                     android:id="@+id/user_remark"
@@ -313,14 +329,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:text=""
-                    android:textSize="22sp"
+                    android:textColor="@color/font_black"
+                    android:textSize="20sp"
                     />
                 <TextView
                     android:id="@+id/contant_csad_remark"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="客服备注"
-                    android:layout_marginTop="40dp"
+                    android:textColor="@color/font_gray"
+                    android:layout_marginTop="10dp"
                     />
                 <TextView
                     android:id="@+id/csad_remark"
@@ -328,8 +346,36 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:text=""
-                    android:textSize="22sp"
+                    android:textColor="@color/font_black"
+                    android:textSize="20sp"
                     />
+                <TextView
+                    android:id="@+id/contant_user_comment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="用户评价"
+                    android:textColor="@color/font_gray"
+                    android:layout_marginTop="10dp"
+                    />
+                <TextView
+                    android:id="@+id/user_comment_tags"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text=""
+                    android:textColor="@color/font_black"
+                    android:textSize="20sp"
+                    />
+                <TextView
+                    android:id="@+id/user_comment_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text=""
+                    android:textColor="@color/font_black"
+                    android:textSize="20sp"
+                    />
+
             </LinearLayout>
         </LinearLayout>
 

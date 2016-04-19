@@ -31,5 +31,6 @@
 
 	<color name="font_black">#333333</color>
 	<color name="font_red">#DD6A6A</color>
+	<color name="font_gray">#9B9B9B</color>
 
 </resources>  

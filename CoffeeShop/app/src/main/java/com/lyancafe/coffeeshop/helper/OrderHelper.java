@@ -331,4 +331,15 @@ public class OrderHelper {
         }
         return false;
     }
+
+    //多个评论标签组合成一个特定字符串
+    public static String getCommentTagsStr(List<String> tags){
+        StringBuilder sb = new StringBuilder();
+        for(String tag:tags){
+            sb.append("[");
+            sb.append(tag);
+            sb.append("]");
+        }
+        return sb.toString();
+    }
 }

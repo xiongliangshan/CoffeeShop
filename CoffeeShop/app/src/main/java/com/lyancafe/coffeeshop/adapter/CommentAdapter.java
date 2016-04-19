@@ -43,7 +43,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         final OrderBean orderBean = orderList.get(position);
         holder.indexText.setText((position+1)+".");
         holder.orderSnText.setText(orderBean.getOrderSn());
-        holder.labelText.setText("");
+        holder.labelText.setText(orderBean.getFeedbackTags().get(0));
         holder.itemRootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
