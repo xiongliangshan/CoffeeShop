@@ -481,9 +481,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 @Override
                 public void onClick(View v) {
                     //弹出对话框显示头像
-                    DeliverImageDialog.getInstance(mContext)
-                            .setContent(order.getCourierName(),order.getCourierPhone(),order.getCourierImgUrl())
-                            .show();
+                    new DeliverImageDialog(mContext,R.style.PromptDialog,order.getCourierName(),order.getCourierPhone(),order.getCourierImgUrl()).show();
+
                 }
             });
             fillItemListData(itemsContainerLayout, order.getItems());

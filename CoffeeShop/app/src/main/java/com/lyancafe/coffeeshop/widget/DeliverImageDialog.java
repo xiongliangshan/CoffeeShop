@@ -17,7 +17,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  */
 public class DeliverImageDialog extends Dialog {
 
-    private static DeliverImageDialog mDialog;
     private String name;
     private String phone;
     private String imgUrl;
@@ -33,35 +32,33 @@ public class DeliverImageDialog extends Dialog {
         super(context, theme);
     }
 
-    /*public DeliverImageDialog(Context context, int theme, String name, String phone, String url) {
+    public DeliverImageDialog(Context context, int theme, String name, String phone, String imgUrl) {
         super(context, theme);
         this.name = name;
         this.phone = phone;
-        this.url = url;
-    }*/
+        this.imgUrl = imgUrl;
+    }
 
-    public static DeliverImageDialog getInstance(Context context){
+    /*public static DeliverImageDialog getInstance(Context context){
         if(mDialog==null){
             mDialog = new DeliverImageDialog(context, R.style.PromptDialog);
         }
         return mDialog;
-    }
+    }*/
 
-    public DeliverImageDialog setContent(String name,String phone,String imgUrl){
+    /*public DeliverImageDialog setContent(String name,String phone,String imgUrl){
         this.name = name;
         this.phone = phone;
         this.imgUrl = imgUrl;
         return mDialog;
-    }
+    }*/
 
     private void initView(){
         crossImage = (ImageView) findViewById(R.id.iv_cross);
         crossImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mDialog!=null){
-                    mDialog.dismiss();
-                }
+               dismiss();
             }
         });
         iconImage = (ImageView) findViewById(R.id.iv_deliver_icon);
