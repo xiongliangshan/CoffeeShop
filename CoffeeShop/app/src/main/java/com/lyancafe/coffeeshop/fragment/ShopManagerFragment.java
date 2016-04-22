@@ -1,7 +1,6 @@
 package com.lyancafe.coffeeshop.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,18 +15,6 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.FragmentTabAdapter;
-import com.lyancafe.coffeeshop.bean.UserBean;
-import com.lyancafe.coffeeshop.helper.LoginHelper;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.xls.http.HttpAsyncTask;
-import com.xls.http.HttpEntity;
-import com.xls.http.HttpUtils;
-import com.xls.http.Jresp;
-import com.xls.http.Qry;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Administrator on 2015/9/1.
@@ -41,7 +28,7 @@ public class ShopManagerFragment extends Fragment implements View.OnClickListene
     private Fragment currentFragment;
     private FragmentActivity mContext;
 
-    private PrintFragment printFragment;
+    private MaterialFragment materialFragment;
 
     @Override
     public void onAttach(Activity activity) {
@@ -56,7 +43,7 @@ public class ShopManagerFragment extends Fragment implements View.OnClickListene
 
     }
     private void initFragments(){
-        printFragment = new PrintFragment();
+        materialFragment = new MaterialFragment();
     }
 
     @Nullable
@@ -64,7 +51,7 @@ public class ShopManagerFragment extends Fragment implements View.OnClickListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mContentView = inflater.inflate(R.layout.fragment_shop_manager,container,false);
         initView(mContentView);
-        switchFragment(printFragment);
+        switchFragment(materialFragment);
         return mContentView;
 
     }

@@ -39,13 +39,27 @@
             android:textColor="@color/text_black"
             android:gravity="center"
             android:background="@drawable/bg_white_circle"/>
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_material"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:background="@mipmap/info_border"
-            android:layout_gravity="center_vertical"/>
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_material"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp"
+                android:layout_marginLeft="5dp"
+                android:background="@mipmap/info_border"
+                android:layout_gravity="center_vertical"/>
+
+            <android.support.v4.widget.ContentLoadingProgressBar
+                android:id="@+id/progress_bar"
+                style="?android:attr/progressBarStyleInverse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
 
     </LinearLayout>
 
