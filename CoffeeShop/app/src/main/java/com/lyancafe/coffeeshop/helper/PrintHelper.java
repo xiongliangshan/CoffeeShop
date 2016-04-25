@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.lyancafe.coffeeshop.CoffeeShopApplication;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
+import com.lyancafe.coffeeshop.bean.MaterialBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.PrintCupBean;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
@@ -29,19 +30,19 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Administrator on 2016/1/25.
  */
-public class PrintHelpter {
+public class PrintHelper {
 
     private static final String TAG = "PrintHelpter";
     public static String ip_print_order = "192.19.1.231";
     public static String ip_print_cup = "192.19.1.232";
     public static final int MSG_PING = 66;
     public static final int MSG_EXCEPTION = 67;
-    private static PrintHelpter mInstance;
+    private static PrintHelper mInstance;
     private OnPromptListener mlistener;
     private boolean printerIsAvailable = true;
     private  ThreadPoolExecutor mPoolExecutor;
 
-    private PrintHelpter() {
+    private PrintHelper() {
         Log.d(TAG,"PrintHelpter()");
         mPoolExecutor = new ThreadPoolExecutor(1, 5, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
         if(HttpUtils.BASE_URL.contains("test")){
@@ -53,9 +54,9 @@ public class PrintHelpter {
         }
     }
 
-    public static PrintHelpter getInstance(){
+    public static PrintHelper getInstance(){
         if(mInstance == null){
-            mInstance = new PrintHelpter();
+            mInstance = new PrintHelper();
         }
         return mInstance;
     }
@@ -223,7 +224,7 @@ public class PrintHelpter {
         mPoolExecutor.execute(dpt);
     }
 
-    //计算杯子小票信息，生成打印数据模型
+
 
     //打印杯子贴纸信息入口方法
     public  void printOrderItems(OrderBean orderBean){
@@ -477,4 +478,75 @@ public class PrintHelpter {
         }
         return map;
     }
+
+    public  void DoPrintMaterial(String printContent){
+        Log.d(TAG,"DoPrintMaterial");
+        while (printerIsAvailable == false) {
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        DoPrintRunnable dpt = new DoPrintRunnable();
+        dpt.setPrinterIP(ip_print_order);
+        dpt.setPrinterContent(printContent);
+        mPoolExecutor.execute(dpt);
+    }
+
+    //物料内容
+    public String getMaterialContent(MaterialBean materialBean){
+        String text =
+                        "N"+"\n"+
+                        "OD"+"\n"+
+                        "q640"+"\n"+
+                        "Q400,16"+"\n"+
+                        "S3"+"\n"+
+                        "D8"+"\n"+
+                        "A130,160,0,200,2,2,N,\""+materialBean.getName()+"\""+"\n"+
+                        "P1"+"\n";
+        /*String text =
+                        "N"+"\n"+
+                        "q832"+"\n"+
+                        "Q600,24"+"\n"+
+                        "S3"+"\n"+
+                        "D8"+"\n"+
+                        "A90,180,0,4,1,1,N,\"winpos system technology co.ltd.\""+"\n"+
+                        "A60,300,0,200,3,3,N,\"莹浦通科技测试完成\""+"\n"+
+                        "B120,400,0,E80,6,4,120,B,\"01234567\""+"\n"+
+                        "P1"+"\n";*/
+        return text;
+    }
+
+    //打印物料（大纸）
+    public  void printMaterialBig(MaterialBean materialBean){
+        String printMaterialContent = getMaterialContent(materialBean);
+        DoPrintMaterial(printMaterialContent);
+    }
+
+    //贴纸内容
+    public String getPasterContent(){
+        String text =
+                "N"+"\n"+
+                        "OD"+"\n"+
+                        "q240"+"\n"+
+                        "Q160,16"+"\n"+
+                        "S3"+"\n"+
+                        "D8"+"\n"+
+                        "A0,19,0,200,1,1,N,\"报废时间:\""+"\n"+
+                        "A0,46,0,200,1,1,N,\"──────────────────────\""+"\n"+
+                        "A0,72,0,200,1,1,N,\"品名:\""+"\n"+
+                        "A110,72,0,200,1,1,N,\"签名:\""+"\n"+
+                        "A0,98,0,200,1,1,N,\"──────────────────────\""+"\n"+
+                        "A0,125,0,200,1,1,N,\"原始到期日:\""+"\n"+
+                        "P1"+"\n";
+        return text;
+    }
+    //打印贴纸（小纸）
+    public void printPasterSmall(){
+        String pasterContent = getPasterContent();
+        DoPrintMaterial(pasterContent);
+    }
+
+
 }

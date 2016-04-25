@@ -12,12 +12,10 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 
-import com.lyancafe.coffeeshop.CoffeeShopApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
-import com.lyancafe.coffeeshop.helper.PrintHelpter;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.xls.http.HttpUtils;
 

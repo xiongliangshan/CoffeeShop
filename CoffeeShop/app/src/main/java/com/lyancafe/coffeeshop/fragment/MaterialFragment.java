@@ -2,7 +2,6 @@ package com.lyancafe.coffeeshop.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,10 +18,9 @@ import android.widget.TextView;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.MaterialAdatapter;
 import com.lyancafe.coffeeshop.bean.MaterialBean;
-import com.lyancafe.coffeeshop.event.ClickCommentEvent;
 import com.lyancafe.coffeeshop.event.MaterialSelectEvent;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
-import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.helper.PrintHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.xls.http.HttpAsyncTask;
 import com.xls.http.HttpEntity;
@@ -86,11 +84,21 @@ public class MaterialFragment extends Fragment {
 
     private void initView(){
         printPasterText = (TextView) mContentView.findViewById(R.id.tv_print_paster);
+        printPasterText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PrintHelper.getInstance().printPasterSmall();
+            }
+        });
         printMaterialText = (TextView) mContentView.findViewById(R.id.tv_print_material);
         printMaterialText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //开始打印
+                if(toPrintMaterial!=null){
+                    PrintHelper.getInstance().printMaterialBig(toPrintMaterial);
+                }
+
             }
         });
 

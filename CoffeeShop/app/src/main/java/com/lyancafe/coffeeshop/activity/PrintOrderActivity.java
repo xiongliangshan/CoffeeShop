@@ -8,13 +8,13 @@ import android.widget.Button;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.helper.PrintHelpter;
+import com.lyancafe.coffeeshop.helper.PrintHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 /**
  * Created by Administrator on 2016/1/27.
  */
-public class PrintOrderActivity extends Activity implements View.OnClickListener,PrintHelpter.OnPromptListener{
+public class PrintOrderActivity extends Activity implements View.OnClickListener,PrintHelper.OnPromptListener{
 
     private static final String TAG = "PrintOrderActivity";
     private Button printBoxBtn;
@@ -30,7 +30,7 @@ public class PrintOrderActivity extends Activity implements View.OnClickListener
         mContext = this;
         setContentView(R.layout.activity_print_order);
         initView();
-        PrintHelpter.getInstance().setPromptlistener(this);
+        PrintHelper.getInstance().setPromptlistener(this);
         mOrderBean = (OrderBean) getIntent().getSerializableExtra("order");
     }
     private void initView(){
@@ -57,17 +57,17 @@ public class PrintOrderActivity extends Activity implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_print_box:
-                PrintHelpter.getInstance().printOrderInfo(mOrderBean);
+                PrintHelper.getInstance().printOrderInfo(mOrderBean);
                 break;
             case R.id.btn_print_cup:
-                PrintHelpter.getInstance().printOrderItems(mOrderBean);
+                PrintHelper.getInstance().printOrderItems(mOrderBean);
                 break;
             case R.id.btn_print_all:
-                PrintHelpter.getInstance().printOrderInfo(mOrderBean);
-                PrintHelpter.getInstance().printOrderItems(mOrderBean);
+                PrintHelper.getInstance().printOrderInfo(mOrderBean);
+                PrintHelper.getInstance().printOrderItems(mOrderBean);
                 break;
             case R.id.btn_check_printer:
-                PrintHelpter.getInstance().checkPrinterStatus();
+                PrintHelper.getInstance().checkPrinterStatus();
                 break;
         }
     }

@@ -39,7 +39,7 @@ import com.lyancafe.coffeeshop.event.CancelOrderEvent;
 import com.lyancafe.coffeeshop.event.ClickCommentEvent;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
-import com.lyancafe.coffeeshop.helper.PrintHelpter;
+import com.lyancafe.coffeeshop.helper.PrintHelper;
 import com.lyancafe.coffeeshop.service.AutoFetchOrdersService;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
@@ -283,8 +283,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                         @Override
                         public void onClickOK() {
                             batchHandleBtn.setText(R.string.batch_finish);
-                            PrintHelpter.getInstance().printBatchCups(OrderHelper.batchList);
-                            PrintHelpter.getInstance().printBatchBoxes(OrderHelper.batchList);
+                            PrintHelper.getInstance().printBatchCups(OrderHelper.batchList);
+                            PrintHelper.getInstance().printBatchBoxes(OrderHelper.batchList);
                         }
                     });
                     pd.setMode(PromptDialog.Mode.BOTH);
