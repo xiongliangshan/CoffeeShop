@@ -37,3 +37,6 @@
 -keep class com.jsytwy.**{*;}
 -keep interface com.baidu.**{*;}
 -keep interface com.sinovoice.**{*;}
+
+#bugly
+-keep public class com.tencent.bugly.**{*;}

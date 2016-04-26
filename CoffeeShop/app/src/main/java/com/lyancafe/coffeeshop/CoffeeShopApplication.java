@@ -13,6 +13,7 @@ import com.baidu.mapapi.model.LatLng;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.ShopHelper;
 import com.lyancafe.coffeeshop.service.UpdateService;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xls.http.HttpAsyncTask;
 import com.xls.http.HttpEntity;
 import com.xls.http.HttpUtils;
@@ -56,8 +57,8 @@ public class CoffeeShopApplication extends Application {
         //进行定位
         ShopLocation shopLocation = new ShopLocation(this);
         shopLocation.startLocation();
-  /*      CrashHandler crashHandler = CrashHandler.getInstance();
-        crashHandler.init(this);*/
+
+        CrashReport.initCrashReport(getApplicationContext(), "900027459", false);
     }
 
     public static CoffeeShopApplication getInstance(){
