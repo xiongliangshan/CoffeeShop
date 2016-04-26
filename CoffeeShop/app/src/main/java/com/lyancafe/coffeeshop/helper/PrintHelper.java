@@ -334,7 +334,9 @@ public class PrintHelper {
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.e(TAG, "IOException" + e.toString());
-                mlistener.onPrompt(MSG_EXCEPTION,"打印机"+host+"无法连接");
+                if(mlistener!=null){
+                    mlistener.onPrompt(MSG_EXCEPTION,"打印机"+host+"无法连接");
+                }
             } finally {
                 printerIsAvailable = true;
                 Log.d(TAG,"run  finally");
@@ -500,21 +502,11 @@ public class PrintHelper {
                         "N"+"\n"+
                         "OD"+"\n"+
                         "q640"+"\n"+
-                        "Q400,16"+"\n"+
-                        "S3"+"\n"+
-                        "D8"+"\n"+
-                        "A130,160,0,200,2,2,N,\""+materialBean.getName()+"\""+"\n"+
-                        "P1"+"\n";
-        /*String text =
-                        "N"+"\n"+
-                        "q832"+"\n"+
                         "Q600,24"+"\n"+
                         "S3"+"\n"+
                         "D8"+"\n"+
-                        "A90,180,0,4,1,1,N,\"winpos system technology co.ltd.\""+"\n"+
-                        "A60,300,0,200,3,3,N,\"莹浦通科技测试完成\""+"\n"+
-                        "B120,400,0,E80,6,4,120,B,\"01234567\""+"\n"+
-                        "P1"+"\n";*/
+                        "A60,150,0,200,3,4,N,\""+materialBean.getName()+"\""+"\n"+
+                        "P1"+"\n";
         return text;
     }
 
