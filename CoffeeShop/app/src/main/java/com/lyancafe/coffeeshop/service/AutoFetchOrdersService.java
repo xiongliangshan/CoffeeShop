@@ -1,14 +1,26 @@
 package com.lyancafe.coffeeshop.service;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
 import com.igexin.sdk.PushManager;
+import com.lyancafe.coffeeshop.event.CommentCountEvent;
+import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
+import com.xls.http.HttpAsyncTask;
+import com.xls.http.HttpEntity;
+import com.xls.http.HttpUtils;
+import com.xls.http.Jresp;
+import com.xls.http.Qry;
 
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -25,6 +37,11 @@ public class AutoFetchOrdersService extends Service {
     public static  boolean auto_flag = false;
     private static final long PERIOD_TIME = 30*1000;
     private int n = 0;
+
+    //评论数量刷新定时器
+    private Timer commentTimer;
+    private TimerTask commentTask;
+    private static final long COMMENT_PERIOD_TIME = 2*60*1000;//刷新评论间隔时间
 
     @Override
     public void onCreate() {
@@ -43,6 +60,7 @@ public class AutoFetchOrdersService extends Service {
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "onBind");
         startTimer();
+        startCommentTimer();
         return binder;
     }
 
@@ -53,6 +71,8 @@ public class AutoFetchOrdersService extends Service {
             stopTimer();
         }
         n = 0;
+
+        stopCommentTimer();
         return super.onUnbind(intent);
     }
 
@@ -99,4 +119,31 @@ public class AutoFetchOrdersService extends Service {
             return AutoFetchOrdersService.this;
         }
     }
+
+
+
+
+    //刷新评论有关
+    public void startCommentTimer(){
+        commentTimer  = new Timer();
+        commentTask = new TimerTask() {
+            @Override
+            public void run() {
+                Log.d(TAG, "请求服务器--" + (n++));
+                EventBus.getDefault().post(new CommentCountEvent());
+            }
+        };
+        commentTimer.schedule(commentTask, 1000, COMMENT_PERIOD_TIME);
+        Log.d("xiongliangshan", "startCommentTimer ----");
+    }
+
+    public void stopCommentTimer(){
+        Log.d("xiongliangshan","---- stopCommentTimer");
+        if(commentTimer!=null){
+            commentTimer.cancel();
+            commentTimer=null;
+        }
+    }
+
+
 }

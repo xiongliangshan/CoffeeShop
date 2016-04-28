@@ -37,6 +37,7 @@ import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.event.CancelOrderEvent;
 import com.lyancafe.coffeeshop.event.ClickCommentEvent;
+import com.lyancafe.coffeeshop.event.CommentCountEvent;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.helper.PrintHelper;
@@ -56,6 +57,7 @@ import com.xls.http.Qry;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -737,12 +739,19 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     }
     @Subscribe
     public void OnMessageEvent(CancelOrderEvent event){
-        Log.d(TAG,"event:"+event.orderId);
+        Log.d(TAG, "event:" + event.orderId);
     }
 
     @Subscribe
     public void OnMessageEvent(ClickCommentEvent event){
+        Log.d("xiongliangshan","收到评论列表点击消息");
         updateDetailView(event.orderBean);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCountEvent(CommentCountEvent event){
+        Log.d("xiongliangshan","收到Event评论数量消息");
+        new CommentCountQry(mContext).doRequest();
     }
 
     @Override
@@ -762,14 +771,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         if(adapter.list.size()>0 && adapter.selected>=0){
             updateDetailView(adapter.list.get(adapter.selected));
         }
-
-        //请求评论数量
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                new CommentCountQry(mContext).doRequest();
-            }
-        });
 
     }
 
@@ -1252,16 +1253,11 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             String url = HttpUtils.BASE_URL+shopId+"/orders/feedback/count?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, false);
+            Log.d("xiongliangshan", "CommentCountQry请求一次");
         }
 
         @Override
         public void showResult(Jresp resp) {
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    new CommentCountQry(mContext).doRequest();
-                }
-            }, 2*60*1000);
             Log.d(TAG, "CommentCountQry:resp = " + resp);
             if(resp==null){
                 return;

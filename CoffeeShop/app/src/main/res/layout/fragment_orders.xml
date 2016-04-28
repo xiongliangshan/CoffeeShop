@@ -173,7 +173,7 @@
                     android:layout_height="wrap_content"
                     android:padding="4dp"
                     android:drawableLeft="@mipmap/smile"
-                    android:text="好评12"
+                    android:text="好评"
                     android:textColor="@color/font_red"/>
 
                 <TextView
@@ -183,7 +183,7 @@
                     android:padding="4dp"
                     android:layout_marginLeft="16dp"
                     android:drawableLeft="@mipmap/sad"
-                    android:text="差评2"/>
+                    android:text="差评"/>
             </LinearLayout>
 
             <include
