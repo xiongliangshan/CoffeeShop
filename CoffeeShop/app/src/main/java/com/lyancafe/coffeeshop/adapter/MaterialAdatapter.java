@@ -51,10 +51,10 @@ public class MaterialAdatapter extends RecyclerView.Adapter<MaterialAdatapter.Ma
         });
         if(position==selected){
             holder.nameText.setTextColor(mContext.getResources().getColor(R.color.white_font));
-            holder.nameText.setBackground(mContext.getResources().getDrawable(R.drawable.bg_corner_black_no_stroke,null));
+            holder.nameText.setBackgroundResource(R.drawable.bg_corner_black_no_stroke);
         }else{
             holder.nameText.setTextColor(mContext.getResources().getColor(R.color.text_black));
-            holder.nameText.setBackground(mContext.getResources().getDrawable(R.drawable.bg_corner_black_stroke,null));
+            holder.nameText.setBackgroundResource(R.drawable.bg_corner_black_stroke);
         }
     }
 
