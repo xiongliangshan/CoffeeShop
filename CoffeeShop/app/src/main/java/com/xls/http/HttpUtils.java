@@ -11,9 +11,9 @@ import android.widget.Toast;
  */
 public class HttpUtils {
 
-    public static String BASE_URL = "http://api.lyancafe.com/shop/v3/";
+//    public static String BASE_URL = "http://api.lyancafe.com/shop/v3/";
 
-//    public static String BASE_URL = "http://mtest.lyancafe.com/shop/v3/";
+    public static String BASE_URL = "http://mtest.lyancafe.com/shop/v3/";
 
 
     /**
