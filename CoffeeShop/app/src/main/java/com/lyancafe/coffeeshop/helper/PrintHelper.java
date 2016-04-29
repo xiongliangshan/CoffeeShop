@@ -537,7 +537,22 @@ public class PrintHelper {
     //打印贴纸（小纸）
     public void printPasterSmall(){
         String pasterContent = getPasterContent();
-        DoPrintMaterial(pasterContent);
+        DoPrintPaster(pasterContent);
+    }
+
+    public  void DoPrintPaster(String printContent){
+        Log.d(TAG,"DoPrintMaterial");
+        while (printerIsAvailable == false) {
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        DoPrintRunnable dpt = new DoPrintRunnable();
+        dpt.setPrinterIP(ip_print_cup);
+        dpt.setPrinterContent(printContent);
+        mPoolExecutor.execute(dpt);
     }
 
 
