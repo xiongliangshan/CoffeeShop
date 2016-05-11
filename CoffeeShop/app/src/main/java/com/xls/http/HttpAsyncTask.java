@@ -1,5 +1,6 @@
 package com.xls.http;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -66,8 +67,10 @@ public class HttpAsyncTask {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                if(dialog!=null){
-                                    dialog.dismiss();
+                                if(dialog!=null&&dialog.isShowing()){
+                                    if(!isActivityDestroyed(context)){
+                                        dialog.dismiss();
+                                    }
                                 }
                             }
                         },100);
@@ -88,6 +91,17 @@ public class HttpAsyncTask {
         }
 
 
+    }
+
+
+    //检验dialog依附的activity是否已经销毁
+    public static boolean isActivityDestroyed(Context context){
+        Activity parentActivity = (Activity)context;
+        if(parentActivity==null || parentActivity.isDestroyed()||parentActivity.isFinishing()){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 }

@@ -768,7 +768,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         Log.d(TAG, "onResume:");
         //打印界面退出的时候，刷新一下打印按钮文字
         adapter.notifyDataSetChanged();
-        if(adapter.list.size()>0 && adapter.selected>=0){
+        if(adapter.list.size()>0 && adapter.selected>=0 && adapter.selected<adapter.list.size()){
             updateDetailView(adapter.list.get(adapter.selected));
         }
 
