@@ -96,7 +96,7 @@ public class PrintHelper {
         int i = 0;
         for(i=0;i<totalQuantity/4;i++){
             List<String> coffee = coffeeList.subList(i*4, i*4+4);
-            PrintOrderBean bean = new PrintOrderBean(orderBean.getId(),isGiftBox,orderBean.getOrderSn(),(i+1),totalBoxAmount,4,
+            PrintOrderBean bean = new PrintOrderBean(orderBean.getId(),orderBean.getShopOrderNo(),isGiftBox,orderBean.getOrderSn(),orderBean.getInstant(),(i+1),totalBoxAmount,4,
                     orderBean.getRecipient(),orderBean.getPhone(),orderBean.getAddress(),orderBean.getCourierName(),orderBean.getCourierPhone(),coffee);
             boxList.add(bean);
         }
@@ -105,7 +105,7 @@ public class PrintHelper {
         if(left_cup>0){
             List<String> coffeeLeft = coffeeList.subList(i*4, coffeeList.size());
             Log.d(TAG,"coffeeLeft.size = "+coffeeLeft.size());
-            PrintOrderBean bean = new PrintOrderBean(orderBean.getId(),isGiftBox,orderBean.getOrderSn(),(i+1),totalBoxAmount,left_cup,
+            PrintOrderBean bean = new PrintOrderBean(orderBean.getId(),orderBean.getShopOrderNo(),isGiftBox,orderBean.getOrderSn(),orderBean.getInstant(),(i+1),totalBoxAmount,left_cup,
                     orderBean.getRecipient(),orderBean.getPhone(),orderBean.getAddress(),orderBean.getCourierName(),orderBean.getCourierPhone(),coffeeLeft);
             boxList.add(bean);
         }
@@ -154,18 +154,19 @@ public class PrintHelper {
         String addressCMD, addr1, addr2,gift;
         Log.d(TAG, "address len: " + bean.getAddress().length());
         if (bean.getAddress().length() <= 22) {
-            addressCMD = "A90,160,0,200,1,1,N,\""+bean.getAddress()+"\""+"\n";
+            addressCMD = "A120,160,0,200,1,1,N,\""+bean.getAddress()+"\""+"\n";
         } else {
             addr1 = bean.getAddress().substring(0, 22);
             addr2 = bean.getAddress().substring(22);
-            addressCMD = "A90,160,0,200,1,1,N,\""+addr1+"\""+"\n" +
+            addressCMD = "A120,160,0,200,1,1,N,\""+addr1+"\""+"\n" +
                     "A90,190,0,200,1,1,N,\""+addr2+"\""+"\n";
         }
-        String orderId = getSelfDefineOrderId(bean.getOrderId());
+    //    String orderId = getSelfDefineOrderId(bean.getOrderId());
+        String orderId = OrderHelper.getShopOrderSn(bean.getInstant(),bean.getShopOrderNo());
         if(bean.isGiftBox()){
             gift = "A480,40,0,200,2,2,N,\"礼盒\""+"\n";
         }else{
-            gift = "A480,40,0,200,2,2,N,\""+"\n";
+            gift = "A480,40,0,200,2,2,N,\"\""+"\n";
         }
         String text1 =
                 "N"+"\n"+
@@ -173,11 +174,11 @@ public class PrintHelper {
                 "Q400,16"+"\n"+
                 "S3"+"\n"+
                 "D8"+"\n"+
-                "A10,50,0,200,1,1,N,\"订单号:\""+"\n"+ //订单号
-                "A90,40,0,200,2,2,N,\""+orderId+"  "+bean.getBoxAmount()+"-" +bean.getBoxNumber()+"|"+bean.getCupAmount()+"\""+"\n"+ //杯数盒子信息
+                "A10,50,0,200,1,1,N,\"门店单号：\""+"\n"+ //订单号
+                "A120,40,0,200,2,2,N,\""+orderId+"  "+bean.getBoxAmount()+"-" +bean.getBoxNumber()+"|"+bean.getCupAmount()+"\""+"\n"+ //杯数盒子信息
                  gift +
-                "A10,90,0,200,1,1,N,\"收货人:\""+"\n"+
-                "A90,100,0,200,2,2,N,\""+bean.getReceiverName()+" "+bean.getReceiverPhone()+"\""+"\n"+
+                "A10,100,0,200,1,1,N,\"收货人：\""+"\n"+
+                "A120,100,0,200,2,2,N,\""+bean.getReceiverName()+" "+bean.getReceiverPhone()+"\""+"\n"+
                  addressCMD +                             //配送地址
                 "A10,220,0,200,1,1,N,\"清单：\""+"\n"+
                 "A50,250,0,200,1,1,N,\""+order1+"\""+"\n"+
@@ -191,11 +192,11 @@ public class PrintHelper {
                 "Q400,16"+"\n"+
                 "S3"+"\n"+
                 "D8"+"\n"+
-                "A10,50,0,200,1,1,N,\"订单号:\""+"\n"+ //订单号
-                "A90,40,0,200,2,2,N,\""+orderId+"  "+bean.getBoxAmount()+"-" +bean.getBoxNumber()+"|"+bean.getCupAmount()+"\""+"\n"+ //杯数盒子信息
+                "A10,50,0,200,1,1,N,\"门店单号：\""+"\n"+ //订单号
+                "A120,40,0,200,2,2,N,\""+orderId+"  "+bean.getBoxAmount()+"-" +bean.getBoxNumber()+"|"+bean.getCupAmount()+"\""+"\n"+ //杯数盒子信息
                  gift +
-                "A10,90,0,200,1,1,N,\"收货人:\""+"\n"+
-                "A90,100,0,200,2,2,N,\""+bean.getReceiverName()+" "+bean.getReceiverPhone()+"\""+"\n"+
+                "A10,100,0,200,1,1,N,\"收货人：\""+"\n"+
+                "A120,100,0,200,2,2,N,\""+bean.getReceiverName()+" "+bean.getReceiverPhone()+"\""+"\n"+
                 addressCMD +                             //配送地址
                 "A10,220,0,200,1,1,N,\"清单：\""+"\n"+
                 "A50,250,0,200,1,1,N,\""+order1+"\""+"\n"+
@@ -251,7 +252,7 @@ public class PrintHelper {
             boxNumber = i/4+1;
             cupNumber = i%4+1;
             cupAmount = getCupAmountPerBox(boxNumber,totalQuantity,totalBoxAmount);
-            PrintCupBean printCupBean =  new PrintCupBean(orderBean.getId(),boxNumber,totalBoxAmount,cupNumber,cupAmount,coffeeList.get(i));
+            PrintCupBean printCupBean =  new PrintCupBean(orderBean.getId(),orderBean.getShopOrderNo(),orderBean.getInstant(),boxNumber,totalBoxAmount,cupNumber,cupAmount,coffeeList.get(i));
             cupList.add(printCupBean);
         }
         return cupList;
@@ -272,7 +273,8 @@ public class PrintHelper {
     }
     //把要打印的杯子小票信息组装成字符串
     public String getPrintCupContent(PrintCupBean bean){
-        String orderId = getSelfDefineOrderId(bean.getOrderId());
+    //    String orderId = getSelfDefineOrderId(bean.getOrderId());
+        String orderId = OrderHelper.getShopOrderSn(bean.getInstant(), bean.getShopOrderNo());
         String text =
                 "N"+"\n"+
                 "OD"+"\n"+

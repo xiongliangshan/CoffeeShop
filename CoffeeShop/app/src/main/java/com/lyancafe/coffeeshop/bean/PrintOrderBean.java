@@ -10,8 +10,10 @@ import java.util.List;
 public class PrintOrderBean {
 
     private long orderId;     //订单号
+    private int shopOrderNo;  //门店单号
     private boolean isGiftBox; //是否有礼盒
     private String orderSn;
+    private int instant; //1:及时单,2:预约单
     private int boxNumber;    //盒号
     private int boxAmount;    //盒子数量
     private int cupAmount;    //当前盒子中的杯数
@@ -22,10 +24,12 @@ public class PrintOrderBean {
     private String deliverPhone; //配送员电话
     private List<String> coffeeList;  //当前盒中的咖啡清单
 
-    public PrintOrderBean(long orderId,boolean isGiftBox,String orderSn, int boxNumber, int boxAmount, int cupAmount, String receiverName, String receiverPhone, String address, String deliverName, String deliverPhone, List<String> coffeeList) {
+    public PrintOrderBean(long orderId, int shopOrderNo, boolean isGiftBox, String orderSn, int instant, int boxNumber, int boxAmount, int cupAmount, String receiverName, String receiverPhone, String address, String deliverName, String deliverPhone, List<String> coffeeList) {
         this.orderId = orderId;
+        this.shopOrderNo = shopOrderNo;
         this.isGiftBox = isGiftBox;
         this.orderSn = orderSn;
+        this.instant = instant;
         this.boxNumber = boxNumber;
         this.boxAmount = boxAmount;
         this.cupAmount = cupAmount;
@@ -45,12 +49,28 @@ public class PrintOrderBean {
         this.orderId = orderId;
     }
 
+    public int getShopOrderNo() {
+        return shopOrderNo;
+    }
+
+    public void setShopOrderNo(int shopOrderNo) {
+        this.shopOrderNo = shopOrderNo;
+    }
+
     public boolean isGiftBox() {
         return isGiftBox;
     }
 
     public void setIsGiftBox(boolean isGiftBox) {
         this.isGiftBox = isGiftBox;
+    }
+
+    public int getInstant() {
+        return instant;
+    }
+
+    public void setInstant(int instant) {
+        this.instant = instant;
     }
 
     public String getOrderSn() {
@@ -137,8 +157,10 @@ public class PrintOrderBean {
     public String toString() {
         return "PrintOrderBean{" +
                 "orderId=" + orderId +
+                ", shopOrderNo=" + shopOrderNo +
                 ", isGiftBox=" + isGiftBox +
                 ", orderSn='" + orderSn + '\'' +
+                ", instant=" + instant +
                 ", boxNumber=" + boxNumber +
                 ", boxAmount=" + boxAmount +
                 ", cupAmount=" + cupAmount +

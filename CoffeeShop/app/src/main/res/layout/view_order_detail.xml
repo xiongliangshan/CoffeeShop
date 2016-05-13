@@ -35,7 +35,7 @@
                 android:layout_toRightOf="@id/order_id"
                 android:layout_alignTop="@id/order_id"
                 android:textSize="12sp"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="16dp"
                 android:text="下单时间"
                 android:textColor="@color/font_gray"
                 />
@@ -67,8 +67,32 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            >
+
+            <TextView
+                android:id="@+id/constant_order_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="订单号"
+                android:textColor="@color/font_black"/>
+
+            <TextView
+                android:id="@+id/tv_whole_order_sn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/constant_order_id"
+                android:layout_alignBaseline="@id/constant_order_id"
+                android:layout_marginLeft="16dp"
+                android:textColor="@color/font_black"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="8dp"
             android:padding="10dp"
             android:background="@drawable/stroke_background">
 
@@ -77,7 +101,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="期望送达时间"
+                android:text="送达时间"
                 android:textColor="@color/font_gray"
                 />
             <TextView

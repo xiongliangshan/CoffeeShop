@@ -130,7 +130,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
             holder.secondRootLayout.setBackgroundResource(R.drawable.bg_order);
             holder.itemContainerll.setBackgroundResource(R.mipmap.bg_normal_dot);
         }
-        holder.orderIdTxt.setText(order.getOrderSn());
+        holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order.getInstant(),order.getShopOrderNo()));
         if(order.isWxScan()){
             holder.logoScanIV.setVisibility(View.VISIBLE);
         }else{

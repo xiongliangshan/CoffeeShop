@@ -27,6 +27,7 @@ public class OrderBean implements Serializable{
     private static final String TAG = "OrderBean";
     private long id;                     //订单id
     private String orderSn;              //订单编号
+    private int shopOrderNo;             //门店单号
     private boolean wxScan;            //是否是到店扫码的单子
     private int gift;                  //2:此单有礼盒  非2：此单无礼盒
     private long expectedTime;           //期望送达时间
@@ -108,6 +109,14 @@ public class OrderBean implements Serializable{
 
     public void setOrderSn(String orderSn) {
         this.orderSn = orderSn;
+    }
+
+    public int getShopOrderNo() {
+        return shopOrderNo;
+    }
+
+    public void setShopOrderNo(int shopOrderNo) {
+        this.shopOrderNo = shopOrderNo;
     }
 
     public boolean isWxScan() {
@@ -428,6 +437,7 @@ public class OrderBean implements Serializable{
         return "OrderBean{" +
                 "id=" + id +
                 ", orderSn='" + orderSn + '\'' +
+                ", shopOrderNo=" + shopOrderNo +
                 ", wxScan=" + wxScan +
                 ", gift=" + gift +
                 ", expectedTime=" + expectedTime +

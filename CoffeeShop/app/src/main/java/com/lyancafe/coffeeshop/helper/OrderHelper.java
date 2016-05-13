@@ -342,4 +342,21 @@ public class OrderHelper {
         }
         return sb.toString();
     }
+
+    //拼接门店单号
+    public static String getShopOrderSn(int instant,int shopOrderNo){
+        String shopOrderSn = "";
+        if(shopOrderNo<10){
+            shopOrderSn = "00"+shopOrderNo;
+        }else if(shopOrderNo>=10&&shopOrderNo<100){
+            shopOrderSn = "0"+shopOrderNo;
+        }else{
+            shopOrderSn = ""+shopOrderNo;
+        }
+        if(instant==1){//及时单
+            return shopOrderSn;
+        }else{
+            return shopOrderSn+"约";
+        }
+    }
 }
