@@ -1,23 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/lyancafe/coffeeshop/activity/PrinterActivity.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/lyancafe/coffeeshop/adapter/FragmentTabAdapter.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/lyancafe/coffeeshop/fragment/OrdersFragment.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/lyancafe/coffeeshop/utils/CrashHandler.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/lyancafe/coffeeshop/widget/BadgeView.java" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/lyancafe/coffeeshop/widget/TabRadioButton.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/xls/http/HttpUtils.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/xls/http/Jresp.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/xls/http/Qry.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/xls/http/md5/MD5.java" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/xls/http/md5/MD5InputStream.java" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/xls/http/md5/MD5OutputStream.java" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/xls/http/md5/MD5State.java" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_print_order.xml" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_printer.xml" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/back_img.png" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/values/color.xml" charset="UTF-8" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>
