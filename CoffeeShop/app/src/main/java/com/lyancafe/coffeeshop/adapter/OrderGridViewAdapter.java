@@ -100,6 +100,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
             holder.rootLayout = (RelativeLayout) convertView.findViewById(R.id.root_view);
             holder.secondRootLayout = (LinearLayout) convertView.findViewById(R.id.second_root_view);
             holder.giftIV = (ImageView) convertView.findViewById(R.id.iv_gift);
+            holder.labelFlagImg = (ImageView) convertView.findViewById(R.id.iv_label_flag);
             holder.logoScanIV = (ImageView) convertView.findViewById(R.id.logo_scan);
             holder.orderIdTxt = (TextView) convertView.findViewById(R.id.item_order_id);
             holder.contantEffectTimeTxt = (TextView) convertView.findViewById(R.id.item_contant_produce_effect);
@@ -140,7 +141,13 @@ public class OrderGridViewAdapter extends BaseAdapter{
             //礼盒订单
             holder.giftIV.setVisibility(View.VISIBLE);
         }else{
-            holder.giftIV.setVisibility(View.GONE);
+            holder.giftIV.setVisibility(View.INVISIBLE);
+        }
+
+        if(order.isRecipeFittings()){
+            holder.labelFlagImg.setVisibility(View.VISIBLE);
+        }else{
+            holder.labelFlagImg.setVisibility(View.INVISIBLE);
         }
 
         OrderHelper.showEffect(order, holder.produceBtn, holder.effectTimeTxt);
@@ -288,6 +295,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
         RelativeLayout rootLayout;
         LinearLayout secondRootLayout;
         ImageView giftIV;
+        ImageView labelFlagImg;
         ImageView logoScanIV;
         TextView orderIdTxt;
         TextView contantEffectTimeTxt;

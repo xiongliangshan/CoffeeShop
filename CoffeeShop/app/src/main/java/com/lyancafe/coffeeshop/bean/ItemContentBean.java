@@ -1,6 +1,7 @@
 package com.lyancafe.coffeeshop.bean;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Administrator on 2015/9/21.
@@ -12,6 +13,7 @@ public class ItemContentBean implements Serializable{
     private int price;             //单价,单位：分
     private int quantity;          //数量
     private int totalPrice;        //总价,单位：分
+    private List<String> recipeFittingsList; //个性化标签
 
 
     public String getProduct() {
@@ -54,6 +56,14 @@ public class ItemContentBean implements Serializable{
         this.totalPrice = totalPrice;
     }
 
+    public List<String> getRecipeFittingsList() {
+        return recipeFittingsList;
+    }
+
+    public void setRecipeFittingsList(List<String> recipeFittingsList) {
+        this.recipeFittingsList = recipeFittingsList;
+    }
+
     @Override
     public String toString() {
         return "ItemContentBean{" +
@@ -62,6 +72,7 @@ public class ItemContentBean implements Serializable{
                 ", price=" + price +
                 ", quantity=" + quantity +
                 ", totalPrice=" + totalPrice +
+                ", recipeFittingsList=" + recipeFittingsList +
                 '}';
     }
 }

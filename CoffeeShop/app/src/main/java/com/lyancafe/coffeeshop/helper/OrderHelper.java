@@ -359,4 +359,17 @@ public class OrderHelper {
             return shopOrderSn+"约";
         }
     }
+
+    //拼接个性化标签
+    public static String getLabelStr(List<String> list){
+        if(list==null || list.size()<=0){
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        for(String label:list){
+            sb.append("/");
+            sb.append(label);
+        }
+        return sb.toString();
+    }
 }

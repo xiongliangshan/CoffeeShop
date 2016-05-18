@@ -621,8 +621,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         ll.removeAllViews();
         for(ItemContentBean item:items){
             TextView tv1 = new TextView(mContext);
-            tv1.setText(item.getProduct() + "(" + item.getUnit() + ")");
-            tv1.setMaxEms(7);
+            tv1.setText(item.getProduct()+OrderHelper.getLabelStr(item.getRecipeFittingsList()));
+            tv1.setMaxEms(9);
             tv1.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
             tv1.setTextColor(getResources().getColor(R.color.font_black));
             TextView tv2 = new TextView(mContext);
@@ -993,7 +993,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 return;
             }
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-            Log.d(TAG, "orderBeans  =" + orderBeans);
+            Log.e(TAG, "orderBeans  =" + orderBeans);
             updateOrdersNum(0, orderBeans.size());
             if(orderBeans.size()>adapter.cacheToProduceList.size() && !isShowProgress){
                 sendNotificationForAutoNewOrders(true);
