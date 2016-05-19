@@ -372,4 +372,17 @@ public class OrderHelper {
         }
         return sb.toString();
     }
+
+    public static String getLabelPrintStr(List<String> list){
+        if(list==null || list.size()<=0){
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        for(String label:list){
+            sb.append(label);
+            sb.append("/");
+        }
+        sb.deleteCharAt(sb.length()-1);
+        return sb.toString();
+    }
 }

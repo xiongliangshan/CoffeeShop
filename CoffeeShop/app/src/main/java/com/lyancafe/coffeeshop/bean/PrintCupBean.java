@@ -1,5 +1,7 @@
 package com.lyancafe.coffeeshop.bean;
 
+import java.util.List;
+
 /**
  * Created by Administrator on 2016/1/26.
  */
@@ -8,22 +10,26 @@ public class PrintCupBean {
     private long orderId;  //此杯咖啡所属的订单id
     private int shopOrderNo;  //门店单号
     private int instant; //1:及时单,2:预约单
-    private int boxNumber; //盒号
     private int boxAmount; //盒子数量
-    private int cupNumber; //杯号
+    private int boxNumber; //盒号
     private int cupAmount; //当前盒中的杯量
+    private int cupNumber; //杯号
     private String coffee; //咖啡名称
+    private String posStr; //编号位置，如 "1-1|2-2",可以作为此杯在本订单中的唯一标识
+    private List<String> labelList;
 
-    public PrintCupBean(long orderId, int shopOrderNo, int instant, int boxNumber, int boxAmount, int cupNumber, int cupAmount, String coffee) {
-        this.orderId = orderId;
-        this.shopOrderNo = shopOrderNo;
-        this.instant = instant;
-        this.boxNumber = boxNumber;
-        this.boxAmount = boxAmount;
-        this.cupNumber = cupNumber;
-        this.cupAmount = cupAmount;
-        this.coffee = coffee;
+
+    public PrintCupBean() {
     }
+
+    public PrintCupBean(int boxAmount, int boxNumber, int cupAmount, int cupNumber) {
+        this.boxAmount = boxAmount;
+        this.boxNumber = boxNumber;
+        this.cupAmount = cupAmount;
+        this.cupNumber = cupNumber;
+        this.posStr = boxAmount+"-"+boxNumber+"|"+cupAmount+"-" +cupNumber;
+    }
+
 
     public long getOrderId() {
         return orderId;
@@ -89,17 +95,35 @@ public class PrintCupBean {
         this.coffee = coffee;
     }
 
+    public String getPosStr() {
+        return posStr;
+    }
+
+    public void setPosStr(String posStr) {
+        this.posStr = posStr;
+    }
+
+    public List<String> getLabelList() {
+        return labelList;
+    }
+
+    public void setLabelList(List<String> labelList) {
+        this.labelList = labelList;
+    }
+
     @Override
     public String toString() {
         return "PrintCupBean{" +
                 "orderId=" + orderId +
                 ", shopOrderNo=" + shopOrderNo +
                 ", instant=" + instant +
-                ", boxNumber=" + boxNumber +
                 ", boxAmount=" + boxAmount +
-                ", cupNumber=" + cupNumber +
+                ", boxNumber=" + boxNumber +
                 ", cupAmount=" + cupAmount +
+                ", cupNumber=" + cupNumber +
                 ", coffee='" + coffee + '\'' +
+                ", posStr='" + posStr + '\'' +
+                ", labelList=" + labelList +
                 '}';
     }
 }

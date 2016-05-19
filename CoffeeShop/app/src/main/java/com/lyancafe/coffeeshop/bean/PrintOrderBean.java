@@ -14,17 +14,26 @@ public class PrintOrderBean {
     private boolean isGiftBox; //是否有礼盒
     private String orderSn;
     private int instant; //1:及时单,2:预约单
-    private int boxNumber;    //盒号
     private int boxAmount;    //盒子数量
+    private int boxNumber;    //盒号
     private int cupAmount;    //当前盒子中的杯数
     private String receiverName; //收货人的姓名
     private String receiverPhone;  //收货人的电话号码
     private String address;      //收货人的地址
     private String deliverName;  //配送员姓名
     private String deliverPhone; //配送员电话
-    private List<String> coffeeList;  //当前盒中的咖啡清单
+    private List<PrintCupBean> coffeeList;
 
-    public PrintOrderBean(long orderId, int shopOrderNo, boolean isGiftBox, String orderSn, int instant, int boxNumber, int boxAmount, int cupAmount, String receiverName, String receiverPhone, String address, String deliverName, String deliverPhone, List<String> coffeeList) {
+    public PrintOrderBean() {
+    }
+
+    public PrintOrderBean(int boxAmount, int boxNumber, int cupAmount) {
+        this.boxAmount = boxAmount;
+        this.boxNumber = boxNumber;
+        this.cupAmount = cupAmount;
+    }
+
+    public PrintOrderBean(long orderId, int shopOrderNo, boolean isGiftBox, String orderSn, int instant, int boxNumber, int boxAmount, int cupAmount, String receiverName, String receiverPhone, String address, String deliverName, String deliverPhone, List<PrintCupBean> coffeeList) {
         this.orderId = orderId;
         this.shopOrderNo = shopOrderNo;
         this.isGiftBox = isGiftBox;
@@ -145,11 +154,11 @@ public class PrintOrderBean {
         this.deliverPhone = deliverPhone;
     }
 
-    public List<String> getCoffeeList() {
+    public List<PrintCupBean> getCoffeeList() {
         return coffeeList;
     }
 
-    public void setCoffeeList(List<String> coffeeList) {
+    public void setCoffeeList(List<PrintCupBean> coffeeList) {
         this.coffeeList = coffeeList;
     }
 
