@@ -624,7 +624,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             tv1.setText(item.getProduct()+OrderHelper.getLabelStr(item.getRecipeFittingsList()));
             tv1.setMaxEms(9);
             tv1.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
-            tv1.setTextColor(getResources().getColor(R.color.font_black));
+            tv1.setTextColor(mContext.getResources().getColor(R.color.font_black));
             TextView tv2 = new TextView(mContext);
             tv2.setText("X " + item.getQuantity());
             tv2.getPaint().setFakeBoldText(true);
