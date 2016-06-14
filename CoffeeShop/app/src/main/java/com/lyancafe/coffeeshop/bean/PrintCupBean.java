@@ -16,6 +16,7 @@ public class PrintCupBean {
     private int cupNumber; //杯号
     private String coffee; //咖啡名称
     private String posStr; //编号位置，如 "1-1|2-2",可以作为此杯在本订单中的唯一标识
+    private int coldHotProperty;   //1.冷  2.热  3.常温
     private List<String> labelList;
 
 
@@ -103,6 +104,14 @@ public class PrintCupBean {
         this.posStr = posStr;
     }
 
+    public int getColdHotProperty() {
+        return coldHotProperty;
+    }
+
+    public void setColdHotProperty(int coldHotProperty) {
+        this.coldHotProperty = coldHotProperty;
+    }
+
     public List<String> getLabelList() {
         return labelList;
     }
@@ -123,6 +132,7 @@ public class PrintCupBean {
                 ", cupNumber=" + cupNumber +
                 ", coffee='" + coffee + '\'' +
                 ", posStr='" + posStr + '\'' +
+                ", coldHotProperty=" + coldHotProperty +
                 ", labelList=" + labelList +
                 '}';
     }

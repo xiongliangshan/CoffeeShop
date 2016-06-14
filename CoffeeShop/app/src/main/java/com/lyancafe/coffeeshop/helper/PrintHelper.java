@@ -85,14 +85,20 @@ public class PrintHelper {
 
     //计算盒子小票信息，生成打印数据模型
     public List<PrintOrderBean> calculatePinterOrderBeanList(OrderBean orderBean){
+        List<PrintCupBean> hotCupList = new ArrayList<>();
+        List<PrintCupBean> coolCupList = new ArrayList<>();
+        calculatePinterCupBeanList(orderBean,hotCupList,coolCupList);
         ArrayList<PrintOrderBean> boxList = new ArrayList<>();
-        List<PrintCupBean> cupList = calculatePinterCupBeanList(orderBean);
-        int totalBoxAmount = getTotalBoxAmount(cupList.size()); //盒子总数
+    //    List<PrintCupBean> cupList = calculatePinterCupBeanList(orderBean);
+    //    int totalBoxAmount = getTotalBoxAmount(cupList.size()); //盒子总数
+        int hotBoxAmount = getTotalBoxAmount(hotCupList.size());
+        int coolBoxAmount = getTotalBoxAmount(coolCupList.size());
+        int totalBoxAmount = hotBoxAmount+coolBoxAmount; //盒子总数
         boolean isGiftBox = orderBean.getGift()==2?true:false;
         int i = 0;      //盒子号
-        for(i=0;i<cupList.size()/4;i++){
+        for(i=0;i<hotCupList.size()/4;i++){
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,i+1,4);
-            bean.setCoffeeList(cupList.subList(i*4, i*4+4));
+            bean.setCoffeeList(hotCupList.subList(i*4, i*4+4));
             bean.setOrderId(orderBean.getId());
             bean.setShopOrderNo(orderBean.getShopOrderNo());
             bean.setInstant(orderBean.getInstant());
@@ -105,10 +111,10 @@ public class PrintHelper {
             bean.setDeliverPhone(orderBean.getCourierPhone());
             boxList.add(bean);
         }
-        int left_cup = cupList.size()%4;
-        if(left_cup>0){
-            PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,i+1,left_cup);
-            bean.setCoffeeList(cupList.subList(i*4, cupList.size()));
+        int hot_left_cup = hotCupList.size()%4;
+        if(hot_left_cup>0){
+            PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,i+1,hot_left_cup);
+            bean.setCoffeeList(hotCupList.subList(i*4, hotCupList.size()));
             bean.setOrderId(orderBean.getId());
             bean.setShopOrderNo(orderBean.getShopOrderNo());
             bean.setInstant(orderBean.getInstant());
@@ -121,6 +127,40 @@ public class PrintHelper {
             bean.setDeliverPhone(orderBean.getCourierPhone());
             boxList.add(bean);
         }
+
+        int j = 0;      //盒子号
+        for(j=0;j<coolCupList.size()/4;j++){
+            PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,hotBoxAmount+j+1,4);
+            bean.setCoffeeList(coolCupList.subList(j*4, j*4+4));
+            bean.setOrderId(orderBean.getId());
+            bean.setShopOrderNo(orderBean.getShopOrderNo());
+            bean.setInstant(orderBean.getInstant());
+            bean.setOrderSn(orderBean.getOrderSn());
+            bean.setIsGiftBox(isGiftBox);
+            bean.setReceiverName(orderBean.getRecipient());
+            bean.setReceiverPhone(orderBean.getPhone());
+            bean.setAddress(orderBean.getAddress());
+            bean.setDeliverName(orderBean.getCourierName());
+            bean.setDeliverPhone(orderBean.getCourierPhone());
+            boxList.add(bean);
+        }
+        int cool_left_cup = hotCupList.size()%4;
+        if(cool_left_cup>0){
+            PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,i+1,cool_left_cup);
+            bean.setCoffeeList(hotCupList.subList(i*4, hotCupList.size()));
+            bean.setOrderId(orderBean.getId());
+            bean.setShopOrderNo(orderBean.getShopOrderNo());
+            bean.setInstant(orderBean.getInstant());
+            bean.setOrderSn(orderBean.getOrderSn());
+            bean.setIsGiftBox(isGiftBox);
+            bean.setReceiverName(orderBean.getRecipient());
+            bean.setReceiverPhone(orderBean.getPhone());
+            bean.setAddress(orderBean.getAddress());
+            bean.setDeliverName(orderBean.getCourierName());
+            bean.setDeliverPhone(orderBean.getCourierPhone());
+            boxList.add(bean);
+        }
+
 
         return boxList;
     }
@@ -240,9 +280,17 @@ public class PrintHelper {
 
     //打印杯子贴纸信息入口方法
     public  void printOrderItems(OrderBean orderBean){
-        List<PrintCupBean> printList = calculatePinterCupBeanList(orderBean);
-        Log.d(TAG, "printList.size = " + printList);
-        for(PrintCupBean bean:printList){
+        List<PrintCupBean> hotPrintList = new ArrayList<>();
+        List<PrintCupBean> coolPrintList = new ArrayList<>();
+        calculatePinterCupBeanList(orderBean,hotPrintList,coolPrintList);
+    //    List<PrintCupBean> printList = calculatePinterCupBeanList(orderBean);
+        Log.d(TAG, "printList.size = " + hotPrintList.size()+"+"+coolPrintList.size());
+        for(PrintCupBean bean:hotPrintList){
+            String printContent = getPrintCupContent(bean);
+            DoPrintCup(printContent);
+            Log.d(TAG, "打印杯贴纸:" + bean.toString());
+        }
+        for(PrintCupBean bean:coolPrintList){
             String printContent = getPrintCupContent(bean);
             DoPrintCup(printContent);
             Log.d(TAG, "打印杯贴纸:" + bean.toString());
@@ -251,22 +299,50 @@ public class PrintHelper {
 
 
     //计算杯子贴纸信息，生成打印数据模型
-    public List<PrintCupBean> calculatePinterCupBeanList(OrderBean orderBean){
+    public int calculatePinterCupBeanList(OrderBean orderBean,List<PrintCupBean> hotCuplist,List<PrintCupBean> coolCuplist){
+        ArrayList<ItemContentBean> hotItemList = getCoolOrHotItemList(orderBean, true);
+        ArrayList<ItemContentBean> coolItemList = getCoolOrHotItemList(orderBean, false);
+
         ArrayList<PrintCupBean> cupList = new ArrayList<>();
-        List<String> coffeeList = getCoffeeList(orderBean);
-        int totalQuantity = coffeeList.size();
-        int boxAmount = getTotalBoxAmount(totalQuantity);
-        int boxNumber = 1; //当前盒号
-        int cupNumber = 1; //当前杯号
-        int cupAmount = 0; //当前盒中总杯数
+    //    List<String> coffeeList = getCoffeeList(orderBean);
+    //    int totalQuantity = coffeeList.size();
+        int totalQuantity = hotItemList.size()+coolItemList.size();
+    //    int boxAmount = getTotalBoxAmount(totalQuantity);
+        int hotBoxAmount = getTotalBoxAmount(hotItemList.size());
+        int coolBoxAmount = getTotalBoxAmount(coolItemList.size());
+        int boxAmount = hotBoxAmount + coolBoxAmount;
+    //    int boxNumber = 1; //当前盒号
+    //    int cupNumber = 1; //当前杯号
+    //    int cupAmount = 0; //当前盒中总杯数
         int pos = 0;
-        for(int i=0;i<orderBean.getItems().size();i++){
-            ItemContentBean item = orderBean.getItems().get(i);
+        for(int i=0;i<hotItemList.size();i++){
+            ItemContentBean item = hotItemList.get(i);
             int quantity = item.getQuantity();
             for(int j=0;j<quantity;j++){
-                boxNumber = pos/4+1;
-                cupNumber = pos%4+1;
-                cupAmount = getCupAmountPerBox(boxNumber,totalQuantity,boxAmount);
+              int boxNumber = pos/4+1;    //当前盒号
+              int cupNumber = pos%4+1;    //当前杯号
+              int cupAmount = getCupAmountPerBox(boxNumber,totalQuantity,boxAmount);  //当前盒中总杯数
+
+              PrintCupBean printCupBean = new PrintCupBean(boxAmount,boxNumber,cupAmount,cupNumber);
+              printCupBean.setLabelList(item.getRecipeFittingsList());
+              printCupBean.setOrderId(orderBean.getId());
+              printCupBean.setShopOrderNo(orderBean.getShopOrderNo());
+              printCupBean.setInstant(orderBean.getInstant());
+              printCupBean.setCoffee(item.getProduct());
+              printCupBean.setColdHotProperty(item.getColdHotProperty());
+              hotCuplist.add(printCupBean);
+
+              pos++;
+            }
+        }
+        int index = 0;
+        for(int i=0;i<coolItemList.size();i++){
+            ItemContentBean item = coolItemList.get(i);
+            int quantity = item.getQuantity();
+            for(int j=0;j<quantity;j++){
+            int boxNumber = hotBoxAmount+index/4+1;
+            int cupNumber = index%4+1;
+            int cupAmount = getCupAmountPerBox(boxNumber,totalQuantity,boxAmount);
 
                 PrintCupBean printCupBean = new PrintCupBean(boxAmount,boxNumber,cupAmount,cupNumber);
                 printCupBean.setLabelList(item.getRecipeFittingsList());
@@ -274,13 +350,33 @@ public class PrintHelper {
                 printCupBean.setShopOrderNo(orderBean.getShopOrderNo());
                 printCupBean.setInstant(orderBean.getInstant());
                 printCupBean.setCoffee(item.getProduct());
-                cupList.add(printCupBean);
+                printCupBean.setColdHotProperty(item.getColdHotProperty());
+                coolCuplist.add(printCupBean);
 
-                pos++;
+                index++;
             }
         }
-        return cupList;
+        return boxAmount;
     }
+
+    private ArrayList<ItemContentBean> getCoolOrHotItemList(OrderBean orderBean,boolean isHot) {
+        ArrayList<ItemContentBean> itemList = new ArrayList<>();
+        for(int i=0;i<orderBean.getItems().size();i++){
+            ItemContentBean itemContentBean = orderBean.getItems().get(i);
+            if(isHot){
+                if(itemContentBean.getColdHotProperty()!=1){
+                    itemList.add(itemContentBean);
+                }
+
+            }else{
+                if(itemContentBean.getColdHotProperty()==1){
+                    itemList.add(itemContentBean);
+                }
+            }
+        }
+        return itemList;
+    }
+
 
     //根据盒号计算当前盒中总的杯数
     public int getCupAmountPerBox(int boxNumber,int totalQuantity,int totalBoxAmount){
@@ -458,7 +554,11 @@ public class PrintHelper {
     public List<PrintCupBean> calculateBatchCupList(List<OrderBean> orderList){
         List<PrintCupBean> batchCupList = new ArrayList<>();
         for(OrderBean orderBean:orderList){
-            batchCupList.addAll(calculatePinterCupBeanList(orderBean));
+            List<PrintCupBean> hotCupList = new ArrayList<>();
+            List<PrintCupBean> coolCupList = new ArrayList<>();
+            calculatePinterCupBeanList(orderBean,hotCupList,coolCupList);
+            batchCupList.addAll(hotCupList);
+            batchCupList.addAll(coolCupList);
         }
         sortCupList(batchCupList);
         return batchCupList;

@@ -13,6 +13,7 @@ public class ItemContentBean implements Serializable{
     private int price;             //单价,单位：分
     private int quantity;          //数量
     private int totalPrice;        //总价,单位：分
+    private int coldHotProperty;   //1.冷  2.热  3.常温
     private List<String> recipeFittingsList; //个性化标签
 
 
@@ -56,6 +57,14 @@ public class ItemContentBean implements Serializable{
         this.totalPrice = totalPrice;
     }
 
+    public int getColdHotProperty() {
+        return coldHotProperty;
+    }
+
+    public void setColdHotProperty(int coldHotProperty) {
+        this.coldHotProperty = coldHotProperty;
+    }
+
     public List<String> getRecipeFittingsList() {
         return recipeFittingsList;
     }
@@ -72,6 +81,7 @@ public class ItemContentBean implements Serializable{
                 ", price=" + price +
                 ", quantity=" + quantity +
                 ", totalPrice=" + totalPrice +
+                ", coldHotProperty=" + coldHotProperty +
                 ", recipeFittingsList=" + recipeFittingsList +
                 '}';
     }
