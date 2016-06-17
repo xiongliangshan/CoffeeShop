@@ -89,8 +89,6 @@ public class PrintHelper {
         List<PrintCupBean> coolCupList = new ArrayList<>();
         calculatePinterCupBeanList(orderBean,hotCupList,coolCupList);
         ArrayList<PrintOrderBean> boxList = new ArrayList<>();
-    //    List<PrintCupBean> cupList = calculatePinterCupBeanList(orderBean);
-    //    int totalBoxAmount = getTotalBoxAmount(cupList.size()); //盒子总数
         int hotBoxAmount = getTotalBoxAmount(hotCupList.size());
         int coolBoxAmount = getTotalBoxAmount(coolCupList.size());
         int totalBoxAmount = hotBoxAmount+coolBoxAmount; //盒子总数
@@ -284,7 +282,6 @@ public class PrintHelper {
         List<PrintCupBean> hotPrintList = new ArrayList<>();
         List<PrintCupBean> coolPrintList = new ArrayList<>();
         calculatePinterCupBeanList(orderBean, hotPrintList, coolPrintList);
-    //    List<PrintCupBean> printList = calculatePinterCupBeanList(orderBean);
         Log.d(TAG, "printList.size = " + hotPrintList.size() + "+" + coolPrintList.size());
         for(PrintCupBean bean:hotPrintList){
             String printContent = getPrintCupContent(bean);
@@ -305,10 +302,6 @@ public class PrintHelper {
         ArrayList<ItemContentBean> coolItemList = getCoolOrHotItemList(orderBean, false);
 
         ArrayList<PrintCupBean> cupList = new ArrayList<>();
-    //    List<String> coffeeList = getCoffeeList(orderBean);
-    //    int totalQuantity = coffeeList.size();
-    //    int totalQuantity = hotItemList.size()+coolItemList.size();
-    //    int boxAmount = getTotalBoxAmount(totalQuantity);
         int hotTotalQuantity = getTotalQuantity(hotItemList);
         int coolTotalQuantity = getTotalQuantity(coolItemList);
         Log.e(TAG,"hotTotalQuantity = "+hotTotalQuantity+" | coolTotalQuantity = "+coolTotalQuantity);
@@ -316,9 +309,6 @@ public class PrintHelper {
         int coolBoxAmount = getTotalBoxAmount(coolTotalQuantity);
         int boxAmount = hotBoxAmount + coolBoxAmount;
         Log.e(TAG,"hotBoxAmount = "+hotBoxAmount+" | coolBoxAmount = "+coolBoxAmount);
-    //    int boxNumber = 1; //当前盒号
-    //    int cupNumber = 1; //当前杯号
-    //    int cupAmount = 0; //当前盒中总杯数
         int pos = 0;
         for(int i=0;i<hotItemList.size();i++){
             ItemContentBean item = hotItemList.get(i);
@@ -406,7 +396,6 @@ public class PrintHelper {
     }
     //把要打印的杯子小票信息组装成字符串
     public String getPrintCupContent(PrintCupBean bean){
-    //    String orderId = getSelfDefineOrderId(bean.getOrderId());
         String orderId = OrderHelper.getShopOrderSn(bean.getInstant(), bean.getShopOrderNo());
         String text =
                 "N"+"\n"+
