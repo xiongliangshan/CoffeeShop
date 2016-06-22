@@ -146,7 +146,7 @@ public class PrintHelper {
         int cool_left_cup = coolCupList.size()%4;
         if(cool_left_cup>0){
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,hotBoxAmount+j+1,cool_left_cup);
-            bean.setCoffeeList(coolCupList.subList(i*4, coolCupList.size()));
+            bean.setCoffeeList(coolCupList.subList(j*4, coolCupList.size()));
             bean.setOrderId(orderBean.getId());
             bean.setShopOrderNo(orderBean.getShopOrderNo());
             bean.setInstant(orderBean.getInstant());
