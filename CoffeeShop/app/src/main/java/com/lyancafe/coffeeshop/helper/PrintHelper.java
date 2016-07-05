@@ -228,7 +228,7 @@ public class PrintHelper {
                 "A120,40,0,200,2,2,N,\""+orderId+"  "+bean.getBoxAmount()+"-" +bean.getBoxNumber()+"|"+bean.getCupAmount()+"\""+"\n"+ //杯数盒子信息
                  gift +
                 "A10,100,0,200,1,1,N,\"收货人：\""+"\n"+
-                "A120,100,0,200,2,2,N,\""+bean.getReceiverName()+" "+bean.getReceiverPhone()+"\""+"\n"+
+                "A120,100,0,200,2,2,N,\""+bean.getReceiverName()+" "+OrderHelper.getHidePhone(bean.getReceiverPhone())+"\""+"\n"+
                  addressCMD +                             //配送地址
                 "A10,220,0,200,1,1,N,\"清单：\""+"\n"+
                 "A20,250,0,200,1,1,N,\""+order1+"\""+"\n"+
@@ -246,7 +246,7 @@ public class PrintHelper {
                 "A120,40,0,200,2,2,N,\""+orderId+"  "+bean.getBoxAmount()+"-" +bean.getBoxNumber()+"|"+bean.getCupAmount()+"\""+"\n"+ //杯数盒子信息
                  gift +
                 "A10,100,0,200,1,1,N,\"收货人：\""+"\n"+
-                "A120,100,0,200,2,2,N,\""+bean.getReceiverName()+" "+bean.getReceiverPhone()+"\""+"\n"+
+                "A120,100,0,200,2,2,N,\""+bean.getReceiverName()+" "+OrderHelper.getHidePhone(bean.getReceiverPhone())+"\""+"\n"+
                 addressCMD +                             //配送地址
                 "A10,220,0,200,1,1,N,\"清单：\""+"\n"+
                 "A20,250,0,200,1,1,N,\""+order1+"\""+"\n"+

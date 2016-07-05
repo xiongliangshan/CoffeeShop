@@ -45,6 +45,7 @@ import com.lyancafe.coffeeshop.service.AutoFetchOrdersService;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
 import com.lyancafe.coffeeshop.widget.DeliverImageDialog;
+import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
 import com.lyancafe.coffeeshop.widget.ListTabButton;
 import com.lyancafe.coffeeshop.widget.PromptDialog;
 import com.lyancafe.coffeeshop.widget.ReportWindow;
@@ -106,6 +107,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private ReportWindow reportWindow;
     NotificationManager mNotificationManager;
 
+    private IndoDetailListener indoDetailListener;
+
     /**
      * 订单详情页UI组件
      */
@@ -128,8 +131,11 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private TextView orderPriceTxt;
     private TextView payWayTxt;
     private TextView moneyTxt;
+    private LinearLayout userRemarkLayout;
     private TextView userRemarkTxt;
+    private LinearLayout csadRemarkLayout;
     private TextView csadRemarkTxt;
+    private LinearLayout userCommentLayout;
     private TextView userCommentTagsText;
     private TextView userCommentContentText;
     private Button finishProduceBtn;
@@ -213,6 +219,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
         ltbListener = new ListTabButtonListener();
+        indoDetailListener = new IndoDetailListener();
     }
 
     @Override
@@ -399,8 +406,14 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         orderPriceTxt = (TextView) contentView.findViewById(R.id.order_price);
         payWayTxt = (TextView) contentView.findViewById(R.id.pay_way);
         moneyTxt = (TextView) contentView.findViewById(R.id.money);
+        userRemarkLayout = (LinearLayout) contentView.findViewById(R.id.ll_user_remark);
+        userRemarkLayout.setOnClickListener(indoDetailListener);
         userRemarkTxt = (TextView) contentView.findViewById(R.id.user_remark);
+        csadRemarkLayout = (LinearLayout) contentView.findViewById(R.id.ll_csad_remark);
+        csadRemarkLayout.setOnClickListener(indoDetailListener);
         csadRemarkTxt = (TextView) contentView.findViewById(R.id.csad_remark);
+        userCommentLayout = (LinearLayout) contentView.findViewById(R.id.ll_user_comment);
+        userCommentLayout.setOnClickListener(indoDetailListener);
         userCommentTagsText = (TextView) contentView.findViewById(R.id.user_comment_tags);
         userCommentContentText = (TextView) contentView.findViewById(R.id.user_comment_content);
         finishProduceBtn = (Button) contentView.findViewById(R.id.btn_finish_produce);
@@ -1322,6 +1335,29 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 mNotificationManager.cancel(notifyId);
             }
         }, 2*60*1000);
+    }
+
+
+    class IndoDetailListener implements View.OnClickListener{
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.ll_user_remark:
+                    //用户备注
+                    InfoDetailDialog.getInstance(mContext).show(userRemarkTxt.getText().toString());
+                //    InfoDetailDialog infoDetailDialog = new InfoDetailDialog(mContext,R.style.MyDialog);
+                //    infoDetailDialog.show(userRemarkTxt.getText().toString());
+                    break;
+                case R.id.ll_csad_remark:
+                    //客服备注
+                    InfoDetailDialog.getInstance(mContext).show(csadRemarkTxt.getText().toString());
+                    break;
+                case R.id.ll_user_comment:
+                    //用户评价
+                    InfoDetailDialog.getInstance(mContext).show(userCommentTagsText.getText().toString()+"\n"+userCommentContentText.getText().toString());
+                    break;
+            }
+        }
     }
 
 

@@ -3,6 +3,7 @@ package com.lyancafe.coffeeshop.helper;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -384,5 +385,14 @@ public class OrderHelper {
         }
         sb.deleteCharAt(sb.length()-1);
         return sb.toString();
+    }
+
+
+    //手机号码隐藏中间四位
+    public static String getHidePhone(String phone){
+        if(TextUtils.isEmpty(phone) || phone.length()<11){
+            return phone;
+        }
+        return phone.substring(0,phone.length()-8)+"####"+phone.substring(phone.length()-3,phone.length());
     }
 }
