@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -438,7 +439,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             deliverNameTxt.setText("");
             deliverPhoneTxt.setText("");
             deliverLocationInfoTxt.setVisibility(View.GONE);
-            fillItemListData(itemsContainerLayout, new ArrayList<ItemContentBean>());
+            fillItemListData(itemsContainerLayout, order);
             orderPriceTxt.setText("");
             payWayTxt.setText("");
             moneyTxt.setText("");
@@ -504,7 +505,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
                 }
             });
-            fillItemListData(itemsContainerLayout, order.getItems());
+            fillItemListData(itemsContainerLayout, order);
             orderPriceTxt.setText("应付: " + OrderHelper.getMoneyStr(OrderHelper.getTotalPrice(order)));
             payWayTxt.setText(order.getPayChannelStr());
             moneyTxt.setText(OrderHelper.getMoneyStr(order.getPaid()));
@@ -630,8 +631,12 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
     }
     //填充item数据
-    private void fillItemListData(LinearLayout ll,List<ItemContentBean> items){
+    private void fillItemListData(LinearLayout ll,final OrderBean order){
+        if(order==null){
+            return;
+        }
         ll.removeAllViews();
+        List<ItemContentBean> items = order.getItems();
         for(ItemContentBean item:items){
             TextView tv1 = new TextView(mContext);
             tv1.setText(item.getProduct()+OrderHelper.getLabelStr(item.getRecipeFittingsList()));
@@ -666,6 +671,42 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             lp.topMargin = OrderHelper.dip2Px(4,mContext);
             ll.addView(rl,lp);
         }
+        if(order.getGift()==2){
+            TextView tv3 = new TextView(mContext);
+            tv3.setText("礼品卡");
+            tv3.setMaxEms(9);
+            tv3.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
+            tv3.setTextColor(mContext.getResources().getColor(R.color.font_black));
+            TextView tv4 = new TextView(mContext);
+            tv4.setText(order.getWishes());
+            tv4.getPaint().setFakeBoldText(true);
+            tv4.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
+            RelativeLayout r2 = new RelativeLayout(mContext);
+            r2.setBackgroundColor(Color.YELLOW);
+            RelativeLayout.LayoutParams lp3=new RelativeLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp3.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            lp3.leftMargin = OrderHelper.dip2Px(5,mContext);;
+            tv3.setLayoutParams(lp3);
+            r2.addView(tv3);
+
+            RelativeLayout.LayoutParams lp4=new RelativeLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp4.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            lp4.rightMargin = OrderHelper.dip2Px(5,mContext);
+            tv4.setLayoutParams(lp4);
+            r2.addView(tv4);
+
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            lp.topMargin = OrderHelper.dip2Px(4,mContext);
+            ll.addView(r2,lp);
+        }
+
         ll.invalidate();
     }
     private void initTabButtons(View contentView){

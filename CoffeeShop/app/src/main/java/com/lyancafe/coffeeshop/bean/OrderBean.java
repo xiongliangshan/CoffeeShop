@@ -30,7 +30,8 @@ public class OrderBean implements Serializable{
     private int shopOrderNo;             //门店单号
     private boolean wxScan;            //是否是到店扫码的单子
     private boolean isRecipeFittings;  //是否有个性化标签
-    private int gift;                  //2:此单有礼盒  非2：此单无礼盒
+    private int gift;                  //2:此单有礼品  非2：此单无礼品
+    private String wishes;             //礼品代号
     private long expectedTime;           //期望送达时间
     private long orderTime;              //下单时间
     private long produceEffect;         //计算生产时效的基准时间
@@ -142,6 +143,14 @@ public class OrderBean implements Serializable{
 
     public void setGift(int gift) {
         this.gift = gift;
+    }
+
+    public String getWishes() {
+        return wishes;
+    }
+
+    public void setWishes(String wishes) {
+        this.wishes = wishes;
     }
 
     public long getExpectedTime() {
@@ -450,6 +459,7 @@ public class OrderBean implements Serializable{
                 ", wxScan=" + wxScan +
                 ", isRecipeFittings=" + isRecipeFittings +
                 ", gift=" + gift +
+                ", wishes='" + wishes + '\'' +
                 ", expectedTime=" + expectedTime +
                 ", orderTime=" + orderTime +
                 ", produceEffect=" + produceEffect +
