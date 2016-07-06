@@ -51,7 +51,7 @@ public class InfoDetailDialog extends Dialog {
 
     public void show(String content){
         Log.d(TAG, "show:" + content);
-        if(TextUtils.isEmpty(content)){
+        if(TextUtils.isEmpty(content)||"\n".equals(content)){
             return;
         }
         mDialog.show();
