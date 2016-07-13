@@ -393,6 +393,7 @@ public class OrderHelper {
         if(TextUtils.isEmpty(phone) || phone.length()<11){
             return phone;
         }
-        return phone.substring(0,phone.length()-8)+"####"+phone.substring(phone.length()-3,phone.length());
+
+        return phone.substring(0,phone.length()-8)+"####"+phone.substring(phone.length()-4,phone.length());
     }
 }
