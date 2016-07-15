@@ -39,6 +39,7 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.event.CancelOrderEvent;
 import com.lyancafe.coffeeshop.event.ClickCommentEvent;
 import com.lyancafe.coffeeshop.event.CommentCountEvent;
+import com.lyancafe.coffeeshop.event.UpdatePrintStatusEvent;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.helper.PrintHelper;
@@ -704,7 +705,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
             lp.topMargin = OrderHelper.dip2Px(4,mContext);
-            ll.addView(r2,lp);
+            ll.addView(r2, lp);
         }
 
         ll.invalidate();
@@ -795,6 +796,17 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         });
 
     }
+
+    @Subscribe
+    public void OnUpdatePrintStatusEvent(UpdatePrintStatusEvent event){
+        Log.d(TAG,"OnUpdatePrintStatusEvent,orderSn = "+event.orderSn);
+        //打印界面退出的时候，刷新一下打印按钮文字
+        adapter.notifyDataSetChanged();
+        if(adapter.list.size()>0 && adapter.selected>=0 && adapter.selected<adapter.list.size()){
+            updateDetailView(adapter.list.get(adapter.selected));
+        }
+    }
+
     @Subscribe
     public void OnMessageEvent(CancelOrderEvent event){
         Log.d(TAG, "event:" + event.orderId);
@@ -824,11 +836,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume:");
-        //打印界面退出的时候，刷新一下打印按钮文字
-        adapter.notifyDataSetChanged();
-        if(adapter.list.size()>0 && adapter.selected>=0 && adapter.selected<adapter.list.size()){
-            updateDetailView(adapter.list.get(adapter.selected));
-        }
 
     }
 

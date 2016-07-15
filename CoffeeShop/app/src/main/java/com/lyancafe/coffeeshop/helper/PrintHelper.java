@@ -9,7 +9,10 @@ import com.lyancafe.coffeeshop.bean.MaterialBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.PrintCupBean;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
+import com.lyancafe.coffeeshop.event.UpdatePrintStatusEvent;
 import com.xls.http.HttpUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -175,6 +178,7 @@ public class PrintHelper {
             Log.d(TAG, "打印盒子清单:" + bean.toString());
         }
         OrderHelper.addPrintedSet(CoffeeShopApplication.getInstance(), orderBean.getOrderSn());
+        EventBus.getDefault().post(new UpdatePrintStatusEvent(orderBean.getOrderSn()));
     }
     //把要打印的盒子小票信息组装成字符串
     public String getPrintOrderContent(PrintOrderBean bean){
