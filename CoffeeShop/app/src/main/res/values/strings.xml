@@ -85,4 +85,5 @@
 
     <string name="print_paster">打印\n贴纸</string>
     <string name="print_material">打印\n物料</string>
+    <string name="menu_assign_order">指派订单</string>
 </resources>

@@ -30,6 +30,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.activity.AssignOrderActivity;
 import com.lyancafe.coffeeshop.activity.CommentActivity;
 import com.lyancafe.coffeeshop.activity.LocationActivity;
 import com.lyancafe.coffeeshop.activity.PrintOrderActivity;
@@ -609,6 +610,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     if(order.getStatus()!=OrderHelper.ASSIGNED_STATUS){
                         popup.getMenu().findItem(R.id.menu_undo_order).setVisible(false);
                     }
+                    if(order.getStatus()!=OrderHelper.UNASSIGNED_STATUS){
+                        popup.getMenu().findItem(R.id.menu_assign_order).setVisible(false);
+                    }
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
@@ -618,6 +622,10 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                                     break;
                                 case R.id.menu_scan_code:
                                     new ScanCodeQry(mContext, order.getId()).doRequest();
+                                    break;
+                                case R.id.menu_assign_order:
+                                    Intent intent = new Intent(mContext, AssignOrderActivity.class);
+                                    mContext.startActivity(intent);
                                     break;
                             }
                             popup.dismiss();
