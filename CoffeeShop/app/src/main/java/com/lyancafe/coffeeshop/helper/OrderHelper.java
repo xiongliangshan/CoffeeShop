@@ -74,6 +74,12 @@ public class OrderHelper {
         return "￥" + df.format(money/100.0);
     }
 
+    //距离显示格式化
+    public static String getDistanceFormat(int distance){
+        DecimalFormat df   =new  DecimalFormat("#.#");
+        return df.format(distance/1000.0)+"公里";
+    }
+
     /*
     * converts dip to px
     */

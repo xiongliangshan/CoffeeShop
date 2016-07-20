@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.CourierBean;
+import com.lyancafe.coffeeshop.helper.OrderHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,7 @@ public class CourierListAdapter extends BaseAdapter{
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.courier_list_item,null);
             holder = new CourierViewHolder();
             holder.courierNameText = (TextView) convertView.findViewById(R.id.courier_name);
+            holder.courierJobText = (TextView) convertView.findViewById(R.id.courier_job);
             holder.courierDistanceText = (TextView) convertView.findViewById(R.id.courier_distance);
             holder.courierOrderCountText = (TextView) convertView.findViewById(R.id.courier_order_count);
             convertView.setTag(holder);
@@ -58,8 +60,19 @@ public class CourierListAdapter extends BaseAdapter{
         }
         CourierBean courierBean = courierList.get(position);
         holder.courierNameText.setText(courierBean.getName());
-        holder.courierDistanceText.setText(courierBean.getDistance()+"");
-        holder.courierOrderCountText.setText(courierBean.getOrderCount()+"");
+        if(courierBean.getType()==1){
+            holder.courierJobText.setText("(全职)");
+        }else if(courierBean.getType()==2){
+            holder.courierJobText.setText("(兼职)");
+        }else{
+            holder.courierJobText.setText("(其他)");
+        }
+        if(courierBean.getDistance()==-1){
+            holder.courierDistanceText.setText("未知");
+        }else{
+            holder.courierDistanceText.setText(OrderHelper.getDistanceFormat(courierBean.getDistance()));
+        }
+        holder.courierOrderCountText.setText(courierBean.getOrderCount()+"单未完成");
         return convertView;
     }
 
@@ -72,6 +85,7 @@ public class CourierListAdapter extends BaseAdapter{
 
     public static class CourierViewHolder{
         public TextView courierNameText;
+        public TextView courierJobText;
         public TextView courierDistanceText;
         public TextView courierOrderCountText;
     }

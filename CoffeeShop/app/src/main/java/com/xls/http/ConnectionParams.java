@@ -52,7 +52,7 @@ public class ConnectionParams {
             JSONObject jsonObject = new JSONObject(txt);
             JSONObject data = jsonObject.optJSONObject("data");
             int response = jsonObject.optInt("status");
-            String message = jsonObject.getString("message");
+            String message = jsonObject.optString("message");
             Jresp jresp = new Jresp(response,message,data);
             return jresp;
         }  catch (Exception e) {

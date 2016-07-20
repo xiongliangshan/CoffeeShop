@@ -625,6 +625,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                                     break;
                                 case R.id.menu_assign_order:
                                     Intent intent = new Intent(mContext, AssignOrderActivity.class);
+                                    intent.putExtra("orderId",order.getId());
                                     mContext.startActivity(intent);
                                     break;
                             }
