@@ -109,8 +109,11 @@ public class OrderGridViewAdapter extends BaseAdapter{
             holder.grabFlagIV = (ImageView) convertView.findViewById(R.id.item_grab_flag);
             holder.remarkFlagIV = (ImageView) convertView.findViewById(R.id.item_remark_flag);
             holder.itemContainerll = (LinearLayout) convertView.findViewById(R.id.item_container);
+            holder.twobtnContainerLayout = (LinearLayout) convertView.findViewById(R.id.ll_twobtn_container);
+            holder.onebtnContainerlayout = (LinearLayout) convertView.findViewById(R.id.ll_onebtn_container);
             holder.produceBtn = (TextView) convertView.findViewById(R.id.item_produce);
             holder.printBtn = (TextView) convertView.findViewById(R.id.item_print);
+            holder.produceAndPrintBtn = (TextView) convertView.findViewById(R.id.item_produce_and_print);
             convertView.setTag(holder);
         }else{
             holder = (ViewHolder) convertView.getTag();
@@ -149,8 +152,16 @@ public class OrderGridViewAdapter extends BaseAdapter{
         }else{
             holder.labelFlagImg.setVisibility(View.INVISIBLE);
         }
+        if(OrdersFragment.subTabIndex==0){
+            if(order.getInstant()==0){
+                holder.produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
+            }else{
+                holder.produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn);
+            }
+        }else{
+            OrderHelper.showEffect(order, holder.produceBtn, holder.effectTimeTxt);
+        }
 
-        OrderHelper.showEffect(order, holder.produceBtn, holder.effectTimeTxt);
 
         if(OrderHelper.isPrinted(context, order.getOrderSn())){
             holder.printBtn.setText(R.string.print_again);
@@ -175,77 +186,92 @@ public class OrderGridViewAdapter extends BaseAdapter{
             holder.remarkFlagIV.setVisibility(View.VISIBLE);
         }
         fillItemListData(holder.itemContainerll, order.getItems());
-        if(OrdersFragment.subTabIndex!=0){
-            holder.produceBtn.setEnabled(false);
+        if(OrdersFragment.subTabIndex == 0){
+            holder.twobtnContainerLayout.setVisibility(View.GONE);
+            holder.onebtnContainerlayout.setVisibility(View.VISIBLE);
+            holder.produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //点击开始生产（打印）按钮
+                }
+            });
         }else{
-            holder.produceBtn.setEnabled(true);
-        }
-        holder.produceBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //生产完成
-                if(order.getInstant()==0){
-                    //预约单
-                    if(!OrderHelper.isCanHandle(order)){
-                        //生产时间还没到
-                        SimpleConfirmDialog scd = new SimpleConfirmDialog(context,R.style.MyDialog);
-                        scd.setContent(R.string.can_not_operate);
-                        scd.show();
-                    }else{
-                        ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener(){
+            holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
+            holder.onebtnContainerlayout.setVisibility(View.GONE);
+            if(OrdersFragment.subTabIndex!=1){
+                holder.produceBtn.setEnabled(false);
+            }else{
+                holder.produceBtn.setEnabled(true);
+            }
+            holder.produceBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //生产完成
+                    if (order.getInstant() == 0) {
+                        //预约单
+                        if (!OrderHelper.isCanHandle(order)) {
+                            //生产时间还没到
+                            SimpleConfirmDialog scd = new SimpleConfirmDialog(context, R.style.MyDialog);
+                            scd.setContent(R.string.can_not_operate);
+                            scd.show();
+                        } else {
+                            ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
+                                @Override
+                                public void onClickYes() {
+                                    Log.d(TAG, "postion = " + position + ",orderId = " + order.getOrderSn());
+                                    new DoFinishProduceQry(order.getId()).doRequest();
+                                }
+                            });
+                            grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 生产完成？");
+                            grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
+                            grabConfirmDialog.show();
+                        }
+
+                    } else {
+                        //及时单
+                        ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
                             @Override
                             public void onClickYes() {
-                                Log.d(TAG,"postion = "+position+",orderId = "+order.getOrderSn());
+                                Log.d(TAG, "postion = " + position + ",orderId = " + order.getOrderSn());
                                 new DoFinishProduceQry(order.getId()).doRequest();
                             }
                         });
-                        grabConfirmDialog.setContent("订单 "+order.getOrderSn()+" 生产完成？");
+                        grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 生产完成？");
                         grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
                         grabConfirmDialog.show();
                     }
 
-                }else{
-                    //及时单
-                    ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener(){
-                        @Override
-                        public void onClickYes() {
-                            Log.d(TAG,"postion = "+position+",orderId = "+order.getOrderSn());
-                            new DoFinishProduceQry(order.getId()).doRequest();
-                        }
-                    });
-                    grabConfirmDialog.setContent("订单 "+order.getOrderSn()+" 生产完成？");
-                    grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
-                    grabConfirmDialog.show();
                 }
+            });
+            holder.printBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //打印按钮
+                    if (order.getInstant() == 0) {
+                        //预约单
+                        if (!OrderHelper.isCanHandle(order)) {
+                            //打印时间还没到
+                            SimpleConfirmDialog scd = new SimpleConfirmDialog(context, R.style.MyDialog);
+                            scd.setContent(R.string.can_not_operate);
+                            scd.show();
+                        } else {
+                            Intent intent = new Intent(context, PrintOrderActivity.class);
+                            intent.putExtra("order", order);
+                            context.startActivity(intent);
+                        }
 
-            }
-        });
-        holder.printBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //打印按钮
-                if(order.getInstant()==0){
-                    //预约单
-                    if(!OrderHelper.isCanHandle(order)){
-                        //打印时间还没到
-                        SimpleConfirmDialog scd = new SimpleConfirmDialog(context,R.style.MyDialog);
-                        scd.setContent(R.string.can_not_operate);
-                        scd.show();
-                    }else{
+                    } else {
+                        //及时单
                         Intent intent = new Intent(context, PrintOrderActivity.class);
-                        intent.putExtra("order",order);
+                        intent.putExtra("order", order);
                         context.startActivity(intent);
                     }
 
-                }else{
-                    //及时单
-                    Intent intent = new Intent(context, PrintOrderActivity.class);
-                    intent.putExtra("order",order);
-                    context.startActivity(intent);
                 }
+            });
+        }
 
-            }
-        });
+
         return convertView;
     }
 
@@ -304,6 +330,9 @@ public class OrderGridViewAdapter extends BaseAdapter{
         ImageView grabFlagIV;
         ImageView remarkFlagIV;
         LinearLayout itemContainerll;
+        LinearLayout twobtnContainerLayout;
+        LinearLayout onebtnContainerlayout;
+        TextView produceAndPrintBtn;
         TextView produceBtn;
         TextView printBtn;
     }

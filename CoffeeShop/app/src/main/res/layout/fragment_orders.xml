@@ -24,6 +24,14 @@
             android:layout_marginRight="10dp"
             />
         <com.lyancafe.coffeeshop.widget.ListTabButton
+            android:id="@+id/tab_doing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            ltb:ltb_text = "生产中"
+            android:padding="5dp"
+            android:layout_marginRight="10dp"
+            />
+        <com.lyancafe.coffeeshop.widget.ListTabButton
             android:id="@+id/tab_have_done"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

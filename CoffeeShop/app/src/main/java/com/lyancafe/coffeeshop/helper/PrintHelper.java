@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -265,14 +266,7 @@ public class PrintHelper {
         return text2;
     }
     public  void DoPrintOrder(String printContent){
-        Log.d(TAG,"DoPrintOrder");
-        while (printerIsAvailable == false) {
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        Log.i(TAG,"DoPrintOrder");
         DoPrintRunnable dpt = new DoPrintRunnable();
         dpt.setPrinterIP(ip_print_order);
         dpt.setPrinterContent(printContent);
@@ -445,18 +439,36 @@ public class PrintHelper {
         }
         @Override
         public void run() {
+            Log.i(TAG,"printerIsAvailable = "+printerIsAvailable);
+            while (printerIsAvailable == false) {
+                try {
+                    Thread.sleep(300);
+                    Log.i(TAG, "sleep");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
             String host = printerIP;
             int port = 9100;
             Socket client;
             printerIsAvailable = false;
             try {
+                Log.i(TAG,"开始连接打印机....");
                 client = new Socket(host, port);
+                client.setSoTimeout(5*1000);
+                client.connect(new InetSocketAddress(host,port));
+                Log.i(TAG, "xls---------------1");
                 Writer writer = new OutputStreamWriter(client.getOutputStream(), "GBK");
+                Log.i(TAG, "xls---------------2");
                 String tempString = null;
                 writer.write(printConent);
+                Log.i(TAG, "xls---------------3");
                 writer.flush();
+                Log.i(TAG, "xls---------------4");
                 writer.close();
                 client.close();
+                Log.i(TAG, "xls---------------5");
             } catch (UnknownHostException e) {
                 e.printStackTrace();
                 Log.e(TAG, "UnknownHostException:"+e.toString());
@@ -468,7 +480,7 @@ public class PrintHelper {
                 }
             } finally {
                 printerIsAvailable = true;
-                Log.d(TAG,"run  finally");
+                Log.i(TAG,"run  finally");
             }
         }
     }

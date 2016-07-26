@@ -108,11 +108,13 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_twobtn_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
+            android:visibility="gone"
             >
 
             <TextView
@@ -138,6 +140,30 @@
                 android:text="@string/print"
                 android:textSize="14sp"
                 android:layout_marginLeft="3dp"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_onebtn_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            >
+            <TextView
+                android:id="@+id/item_produce_and_print"
+                android:layout_width="match_parent"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="开始生产（打印）"
+                android:textSize="13sp"
+                android:textColor="@color/white_font"
+                android:background="@drawable/bg_produce_btn"
+                android:layout_marginRight="3dp"
                 />
         </LinearLayout>
     </LinearLayout>

@@ -80,6 +80,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     public static int subTabIndex = 0;
 
     private ListTabButton toDoTab;
+    private ListTabButton doingTab;
     private ListTabButton haveDoneTab;
     private ListTabButton deliveringTab;
     private ListTabButton deliveryFinishedTab;
@@ -141,6 +142,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private LinearLayout userCommentLayout;
     private TextView userCommentTagsText;
     private TextView userCommentContentText;
+    private LinearLayout twoBtnLayout;
+    private LinearLayout oneBtnLayout;
+    private Button produceAndPrintBtn;
     private Button finishProduceBtn;
     private Button printOrderBtn;
     private Button moreBtn;
@@ -167,10 +171,12 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     if(whichTab==0){
                         toDoTab.setCount(num);
                     }else if(whichTab==1){
-                        haveDoneTab.setCount(num);
+                        doingTab.setCount(num);
                     }else if(whichTab==2){
-                        deliveringTab.setCount(num);
+                        haveDoneTab.setCount(num);
                     }else if(whichTab==3){
+                        deliveringTab.setCount(num);
+                    }else if(whichTab==4){
                         deliveryFinishedTab.setCount(num);
                     }
                     break;
@@ -376,12 +382,15 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 new OrderToProduceQry(context, orderBy, fillterInstant,isShowProgress).doRequest();
                 break;
             case 1:
-                new OrderProducedQry(context, orderBy, fillterInstant,isShowProgress).doRequest();
+                new OrderToProduceQry(context, orderBy, fillterInstant,isShowProgress).doRequest();
                 break;
             case 2:
-                new OrderDeliveryingQry(context, orderBy, fillterInstant,isShowProgress).doRequest();
+                new OrderProducedQry(context, orderBy, fillterInstant,isShowProgress).doRequest();
                 break;
             case 3:
+                new OrderDeliveryingQry(context, orderBy, fillterInstant,isShowProgress).doRequest();
+                break;
+            case 4:
                 new OrderFinishedQry(context, orderBy, fillterInstant,isShowProgress).doRequest();
                 break;
         }
@@ -419,6 +428,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         userCommentLayout.setOnClickListener(indoDetailListener);
         userCommentTagsText = (TextView) contentView.findViewById(R.id.user_comment_tags);
         userCommentContentText = (TextView) contentView.findViewById(R.id.user_comment_content);
+        twoBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_twobtn);
+        oneBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_onebtn);
+        produceAndPrintBtn = (Button) contentView.findViewById(R.id.btn_produce_print);
         finishProduceBtn = (Button) contentView.findViewById(R.id.btn_finish_produce);
         printOrderBtn = (Button) contentView.findViewById(R.id.btn_print_order);
         moreBtn  = (Button) contentView.findViewById(R.id.btn_more);
@@ -457,7 +469,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             printOrderBtn.setEnabled(true);
             moreBtn.setEnabled(true);
 
-            orderIdTxt.setText(OrderHelper.getShopOrderSn(order.getInstant(),order.getShopOrderNo()));
+            orderIdTxt.setText(OrderHelper.getShopOrderSn(order.getInstant(), order.getShopOrderNo()));
             wholeOrderText.setText(order.getOrderSn());
             orderTimeTxt.setText(OrderHelper.getDateToString(order.getOrderTime()));
             orderReportTxt.setEnabled(true);
@@ -478,7 +490,15 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             });
             reachTimeTxt.setText(order.getInstant() == 1 ? "尽快送达" : OrderHelper.getDateToMonthDay(order.getExpectedTime()));
 
-            OrderHelper.showEffect(order, finishProduceBtn, produceEffectTxt);
+            if(OrdersFragment.subTabIndex==0){
+                if(order.getInstant()==0){
+                    produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
+                }else{
+                    produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn);
+                }
+            }else{
+                OrderHelper.showEffect(order, finishProduceBtn, produceEffectTxt);
+            }
 
             receiveNameTxt.setText(order.getRecipient());
             receivePhoneTxt.setText(order.getPhone());
@@ -503,7 +523,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 @Override
                 public void onClick(View v) {
                     //弹出对话框显示头像
-                    new DeliverImageDialog(mContext,R.style.PromptDialog,order.getCourierName(),order.getCourierPhone(),order.getCourierImgUrl()).show();
+                    new DeliverImageDialog(mContext, R.style.PromptDialog, order.getCourierName(), order.getCourierPhone(), order.getCourierImgUrl()).show();
 
                 }
             });
@@ -515,23 +535,50 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             csadRemarkTxt.setText(order.getCsrNotes());
             userCommentTagsText.setText(OrderHelper.getCommentTagsStr(order.getFeedbackTags()));
             userCommentContentText.setText(order.getFeedback());
-            if(OrdersFragment.subTabIndex!=0){
-                finishProduceBtn.setEnabled(false);
+
+            if(OrdersFragment.subTabIndex == 0){
+                oneBtnLayout.setVisibility(View.VISIBLE);
+                twoBtnLayout.setVisibility(View.GONE);
+                produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //点击开始生产（打印）按钮
+                    }
+                });
             }else{
-                finishProduceBtn.setEnabled(true);
-            }
-            finishProduceBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //生产完成
-                    if (order.getInstant() == 0) {
-                        //预约单
-                        if (!OrderHelper.isCanHandle(order)) {
-                            //预约单，生产时间还没到
-                            SimpleConfirmDialog scd = new SimpleConfirmDialog(mContext, R.style.MyDialog);
-                            scd.setContent(R.string.can_not_operate);
-                            scd.show();
+                oneBtnLayout.setVisibility(View.GONE);
+                twoBtnLayout.setVisibility(View.VISIBLE);
+                if(OrdersFragment.subTabIndex!=1){
+                    finishProduceBtn.setEnabled(false);
+                }else{
+                    finishProduceBtn.setEnabled(true);
+                }
+                finishProduceBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //生产完成
+                        if (order.getInstant() == 0) {
+                            //预约单
+                            if (!OrderHelper.isCanHandle(order)) {
+                                //预约单，生产时间还没到
+                                SimpleConfirmDialog scd = new SimpleConfirmDialog(mContext, R.style.MyDialog);
+                                scd.setContent(R.string.can_not_operate);
+                                scd.show();
+                            } else {
+                                ConfirmDialog grabConfirmDialog = new ConfirmDialog(mContext, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
+                                    @Override
+                                    public void onClickYes() {
+                                        Log.d(TAG, "orderId = " + order.getOrderSn());
+                                        adapter.new DoFinishProduceQry(order.getId()).doRequest();
+                                    }
+                                });
+                                grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 生产完成？");
+                                grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
+                                grabConfirmDialog.show();
+                            }
+
                         } else {
+                            //及时单
                             ConfirmDialog grabConfirmDialog = new ConfirmDialog(mContext, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
                                 @Override
                                 public void onClickYes() {
@@ -544,64 +591,52 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                             grabConfirmDialog.show();
                         }
 
-                    } else {
-                        //及时单
-                        ConfirmDialog grabConfirmDialog = new ConfirmDialog(mContext, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
-                            @Override
-                            public void onClickYes() {
-                                Log.d(TAG, "orderId = " + order.getOrderSn());
-                                adapter.new DoFinishProduceQry(order.getId()).doRequest();
-                            }
-                        });
-                        grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 生产完成？");
-                        grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
-                        grabConfirmDialog.show();
+
                     }
-
-
+                });
+                if(OrderHelper.isPrinted(mContext, order.getOrderSn())){
+                    printOrderBtn.setText(R.string.print_again);
+                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_red));
+                }else{
+                    printOrderBtn.setText(R.string.print);
+                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_black));
                 }
-            });
-            if(OrderHelper.isPrinted(mContext, order.getOrderSn())){
-                printOrderBtn.setText(R.string.print_again);
-                printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_red));
-            }else{
-                printOrderBtn.setText(R.string.print);
-                printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_black));
-            }
-            printOrderBtn.setEnabled(true);
-            printOrderBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //打印按钮
-                    if (order.getInstant() == 0) {
-                        //预约单
-                        if(!OrderHelper.isCanHandle(order)){
-                            //预约单，打印时间还没到
-                            SimpleConfirmDialog scd = new SimpleConfirmDialog(mContext, R.style.MyDialog);
-                            scd.setContent(R.string.can_not_operate);
-                            scd.show();
-                        }else{
+                printOrderBtn.setEnabled(true);
+                printOrderBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //打印按钮
+                        if (order.getInstant() == 0) {
+                            //预约单
+                            if (!OrderHelper.isCanHandle(order)) {
+                                //预约单，打印时间还没到
+                                SimpleConfirmDialog scd = new SimpleConfirmDialog(mContext, R.style.MyDialog);
+                                scd.setContent(R.string.can_not_operate);
+                                scd.show();
+                            } else {
+                                Intent intent = new Intent(mContext, PrintOrderActivity.class);
+                                intent.putExtra("order", order);
+                                mContext.startActivity(intent);
+                            }
+
+                        } else {
+                            //及时单
                             Intent intent = new Intent(mContext, PrintOrderActivity.class);
                             intent.putExtra("order", order);
                             mContext.startActivity(intent);
                         }
 
-                    } else {
-                        //及时单
-                        Intent intent = new Intent(mContext, PrintOrderActivity.class);
-                        intent.putExtra("order", order);
-                        mContext.startActivity(intent);
                     }
+                });
+            }
 
-                }
-            });
             moreBtn.setEnabled(true);
             moreBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     final PopupMenu popup = new PopupMenu(mContext, v);
                     popup.inflate(R.menu.menu_order_detail_more);
-                    if(order.isWxScan() && subTabIndex ==1){
+                    if(order.isWxScan() && subTabIndex ==2){
                         popup.getMenu().findItem(R.id.menu_scan_code).setVisible(true);
                     }else{
                         popup.getMenu().findItem(R.id.menu_scan_code).setVisible(false);
@@ -721,16 +756,19 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     }
     private void initTabButtons(View contentView){
         toDoTab = (ListTabButton) contentView.findViewById(R.id.tab_to_do);
+        doingTab  = (ListTabButton) contentView.findViewById(R.id.tab_doing);
         haveDoneTab = (ListTabButton) contentView.findViewById(R.id.tab_have_done);
         deliveringTab = (ListTabButton) contentView.findViewById(R.id.tab_delivering);
         deliveryFinishedTab = (ListTabButton) contentView.findViewById(R.id.tab_delivery_finished);
 
         toDoTab.setClickBg(true);
+        doingTab.setClickBg(false);
         haveDoneTab.setClickBg(false);
         deliveringTab.setClickBg(false);
         deliveryFinishedTab.setClickBg(false);
 
         toDoTab.setOnClickListener(ltbListener);
+        doingTab.setOnClickListener(ltbListener);
         haveDoneTab.setOnClickListener(ltbListener);
         deliveringTab.setOnClickListener(ltbListener);
         deliveryFinishedTab.setOnClickListener(ltbListener);
@@ -945,6 +983,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             switch (v.getId()){
                 case R.id.tab_to_do:
                     toDoTab.setClickBg(true);
+                    doingTab.setClickBg(false);
                     haveDoneTab.setClickBg(false);
                     deliveringTab.setClickBg(false);
                     deliveryFinishedTab.setClickBg(false);
@@ -953,38 +992,52 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     new OrderToProduceQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true).doRequest();
                     resetSpinners();
                     break;
+                case R.id.tab_doing:
+                    toDoTab.setClickBg(false);
+                    doingTab.setClickBg(true);
+                    haveDoneTab.setClickBg(false);
+                    deliveringTab.setClickBg(false);
+                    deliveryFinishedTab.setClickBg(false);
+                    showWidget(true);
+                    subTabIndex = 1;
+                    new OrderToProduceQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true).doRequest();
+                    resetSpinners();
+                    break;
                 case R.id.tab_have_done:
                     toDoTab.setClickBg(false);
+                    doingTab.setClickBg(false);
                     haveDoneTab.setClickBg(true);
                     deliveringTab.setClickBg(false);
                     deliveryFinishedTab.setClickBg(false);
                     showWidget(false);
-                    subTabIndex = 1;
+                    subTabIndex = 2;
                     new OrderProducedQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true).doRequest();
                     resetSpinners();
                     break;
                 case R.id.tab_delivering:
                     toDoTab.setClickBg(false);
+                    doingTab.setClickBg(false);
                     haveDoneTab.setClickBg(false);
                     deliveringTab.setClickBg(true);
                     deliveryFinishedTab.setClickBg(false);
                     showWidget(false);
-                    subTabIndex = 2;
+                    subTabIndex = 3;
                     new OrderDeliveryingQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true).doRequest();
                     resetSpinners();
                     break;
                 case R.id.tab_delivery_finished:
                     toDoTab.setClickBg(false);
+                    doingTab.setClickBg(false);
                     haveDoneTab.setClickBg(false);
                     deliveringTab.setClickBg(false);
                     deliveryFinishedTab.setClickBg(true);
                     showWidget(false);
-                    subTabIndex = 3;
+                    subTabIndex = 4;
                     new OrderFinishedQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true).doRequest();
                     resetSpinners();
                     break;
             }
-            if(subTabIndex == 3){
+            if(subTabIndex == 4){
                 totalQuantityTxt.setVisibility(View.VISIBLE);
             }else{
                 totalQuantityTxt.setVisibility(View.INVISIBLE);
