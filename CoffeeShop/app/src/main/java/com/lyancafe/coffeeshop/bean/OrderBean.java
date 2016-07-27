@@ -29,6 +29,7 @@ public class OrderBean implements Serializable{
     private long id;                     //订单id
     private String orderSn;              //订单编号
     private int shopOrderNo;             //门店单号
+    private boolean orderVip;            //是否是vip订单
     private boolean wxScan;            //是否是到店扫码的单子
     private boolean isRecipeFittings;  //是否有个性化标签
     private int gift;                  //2:此单有礼品  非2：此单无礼品
@@ -121,6 +122,14 @@ public class OrderBean implements Serializable{
 
     public void setShopOrderNo(int shopOrderNo) {
         this.shopOrderNo = shopOrderNo;
+    }
+
+    public boolean isOrderVip() {
+        return orderVip;
+    }
+
+    public void setOrderVip(boolean orderVip) {
+        this.orderVip = orderVip;
     }
 
     public boolean isWxScan() {
@@ -466,6 +475,7 @@ public class OrderBean implements Serializable{
                 "id=" + id +
                 ", orderSn='" + orderSn + '\'' +
                 ", shopOrderNo=" + shopOrderNo +
+                ", orderVip=" + orderVip +
                 ", wxScan=" + wxScan +
                 ", isRecipeFittings=" + isRecipeFittings +
                 ", gift=" + gift +
