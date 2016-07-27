@@ -50,8 +50,8 @@ public class PrintHelper {
         Log.d(TAG,"PrintHelpter()");
         mPoolExecutor = new ThreadPoolExecutor(1, 5, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
         if(HttpUtils.BASE_URL.contains("test")){
-            ip_print_order = "192.168.1.231";
-            ip_print_cup = "192.168.1.231";
+            ip_print_order = "192.168.1.240";
+            ip_print_cup = "192.168.1.240";
         }else{
             ip_print_order = "192.19.1.231";
             ip_print_cup = "192.19.1.232";
@@ -412,13 +412,6 @@ public class PrintHelper {
 
     public void DoPrintCup(String printContent){
         Log.d(TAG,"DoPrintCup");
-        while (printerIsAvailable == false) {
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
         DoPrintRunnable dpt = new DoPrintRunnable();
         dpt.setPrinterIP(ip_print_cup);
         dpt.setPrinterContent(printContent);
@@ -454,21 +447,13 @@ public class PrintHelper {
             Socket client;
             printerIsAvailable = false;
             try {
-                Log.i(TAG,"开始连接打印机....");
                 client = new Socket(host, port);
-                client.setSoTimeout(5*1000);
-                client.connect(new InetSocketAddress(host,port));
-                Log.i(TAG, "xls---------------1");
                 Writer writer = new OutputStreamWriter(client.getOutputStream(), "GBK");
-                Log.i(TAG, "xls---------------2");
                 String tempString = null;
                 writer.write(printConent);
-                Log.i(TAG, "xls---------------3");
                 writer.flush();
-                Log.i(TAG, "xls---------------4");
                 writer.close();
                 client.close();
-                Log.i(TAG, "xls---------------5");
             } catch (UnknownHostException e) {
                 e.printStackTrace();
                 Log.e(TAG, "UnknownHostException:"+e.toString());
@@ -628,13 +613,6 @@ public class PrintHelper {
 
     public  void DoPrintMaterial(String printContent){
         Log.d(TAG,"DoPrintMaterial");
-        while (printerIsAvailable == false) {
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
         DoPrintRunnable dpt = new DoPrintRunnable();
         dpt.setPrinterIP(ip_print_order);
         dpt.setPrinterContent(printContent);
@@ -687,13 +665,6 @@ public class PrintHelper {
 
     public  void DoPrintPaster(String printContent){
         Log.d(TAG,"DoPrintMaterial");
-        while (printerIsAvailable == false) {
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
         DoPrintRunnable dpt = new DoPrintRunnable();
         dpt.setPrinterIP(ip_print_cup);
         dpt.setPrinterContent(printContent);
