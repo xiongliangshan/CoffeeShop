@@ -153,11 +153,13 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
     private OrdersReceiver ordersReceiver;
     //消息处理
+    private static final int MSG_ACTION_START_PRODUCE = 100;
     private static final int MSG_UPDATE_ORDER_NUMBER = 101;
     private static final int MSG_ACTION_PRODUCE = 102;
     private static final int MSG_ACTION_SCANCODE = 103;
     public static final int MSG_UPDATE_QUESTION_ORDER_FLAG = 104;
     //定义操作
+    public static final int ACTION_START_PRODUCE = 300; //点击开始生产
     public static final int ACTION_PRODUCE = 301; //点击生产完成
     public static final int ACTION_SCANCODE = 302;//点击扫码交付
     private Handler mHandler = new Handler(){
@@ -180,8 +182,12 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                         deliveryFinishedTab.setCount(num);
                     }
                     break;
-                case MSG_ACTION_PRODUCE:
+                case MSG_ACTION_START_PRODUCE:
                     toDoTab.setCount(toDoTab.getCount()-1);
+                    doingTab.setCount(doingTab.getCount()+1);
+                    break;
+                case MSG_ACTION_PRODUCE:
+                    doingTab.setCount(doingTab.getCount()-1);
                     haveDoneTab.setCount(haveDoneTab.getCount()+1);
                     break;
                 case MSG_ACTION_SCANCODE:
@@ -382,7 +388,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 new OrderToProduceQry(context, orderBy, fillterInstant,isShowProgress).doRequest();
                 break;
             case 1:
-                new OrderToProduceQry(context, orderBy, fillterInstant,isShowProgress).doRequest();
+                new OrderProducingQry(context, orderBy, fillterInstant,isShowProgress).doRequest();
                 break;
             case 2:
                 new OrderProducedQry(context, orderBy, fillterInstant,isShowProgress).doRequest();
@@ -543,6 +549,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     @Override
                     public void onClick(View v) {
                         //点击开始生产（打印）按钮
+                        startProduceAndPrint(mContext,order);
                     }
                 });
             }else{
@@ -557,41 +564,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     @Override
                     public void onClick(View v) {
                         //生产完成
-                        if (order.getInstant() == 0) {
-                            //预约单
-                            if (!OrderHelper.isCanHandle(order)) {
-                                //预约单，生产时间还没到
-                                SimpleConfirmDialog scd = new SimpleConfirmDialog(mContext, R.style.MyDialog);
-                                scd.setContent(R.string.can_not_operate);
-                                scd.show();
-                            } else {
-                                ConfirmDialog grabConfirmDialog = new ConfirmDialog(mContext, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
-                                    @Override
-                                    public void onClickYes() {
-                                        Log.d(TAG, "orderId = " + order.getOrderSn());
-                                        adapter.new DoFinishProduceQry(order.getId()).doRequest();
-                                    }
-                                });
-                                grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 生产完成？");
-                                grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
-                                grabConfirmDialog.show();
-                            }
-
-                        } else {
-                            //及时单
-                            ConfirmDialog grabConfirmDialog = new ConfirmDialog(mContext, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
-                                @Override
-                                public void onClickYes() {
-                                    Log.d(TAG, "orderId = " + order.getOrderSn());
-                                    adapter.new DoFinishProduceQry(order.getId()).doRequest();
-                                }
-                            });
-                            grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 生产完成？");
-                            grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
-                            grabConfirmDialog.show();
-                        }
-
-
+                        finishProduce(mContext,order);
                     }
                 });
                 if(OrderHelper.isPrinted(mContext, order.getOrderSn())){
@@ -605,27 +578,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 printOrderBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //打印按钮
-                        if (order.getInstant() == 0) {
-                            //预约单
-                            if (!OrderHelper.isCanHandle(order)) {
-                                //预约单，打印时间还没到
-                                SimpleConfirmDialog scd = new SimpleConfirmDialog(mContext, R.style.MyDialog);
-                                scd.setContent(R.string.can_not_operate);
-                                scd.show();
-                            } else {
-                                Intent intent = new Intent(mContext, PrintOrderActivity.class);
-                                intent.putExtra("order", order);
-                                mContext.startActivity(intent);
-                            }
-
-                        } else {
-                            //及时单
-                            Intent intent = new Intent(mContext, PrintOrderActivity.class);
-                            intent.putExtra("order", order);
-                            mContext.startActivity(intent);
-                        }
-
+                        //打印
+                        printOrder(mContext,order);
                     }
                 });
             }
@@ -636,16 +590,16 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 public void onClick(View v) {
                     final PopupMenu popup = new PopupMenu(mContext, v);
                     popup.inflate(R.menu.menu_order_detail_more);
-                    if(order.isWxScan() && subTabIndex ==2){
+                    if (order.isWxScan() && subTabIndex == 2) {
                         popup.getMenu().findItem(R.id.menu_scan_code).setVisible(true);
-                    }else{
+                    } else {
                         popup.getMenu().findItem(R.id.menu_scan_code).setVisible(false);
                     }
 
-                    if(order.getStatus()!=OrderHelper.ASSIGNED_STATUS){
+                    if (order.getStatus() != OrderHelper.ASSIGNED_STATUS) {
                         popup.getMenu().findItem(R.id.menu_undo_order).setVisible(false);
                     }
-                    if(order.getStatus()!=OrderHelper.UNASSIGNED_STATUS){
+                    if (order.getStatus() != OrderHelper.UNASSIGNED_STATUS) {
                         popup.getMenu().findItem(R.id.menu_assign_order).setVisible(false);
                     }
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -660,7 +614,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                                     break;
                                 case R.id.menu_assign_order:
                                     Intent intent = new Intent(mContext, AssignOrderActivity.class);
-                                    intent.putExtra("orderId",order.getId());
+                                    intent.putExtra("orderId", order.getId());
                                     mContext.startActivity(intent);
                                     break;
                             }
@@ -876,7 +830,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated");
         subTabIndex = 0;
-        requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true,true);
+        requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true, true);
     }
 
     @Override
@@ -1000,7 +954,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     deliveryFinishedTab.setClickBg(false);
                     showWidget(true);
                     subTabIndex = 1;
-                    new OrderToProduceQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true).doRequest();
+                    new OrderProducingQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true).doRequest();
                     resetSpinners();
                     break;
                 case R.id.tab_have_done:
@@ -1057,7 +1011,11 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     }
     //在某些操作后更新相关的订单数量
     public void updateOrdersNumAfterAction(int action){
-        if(action==ACTION_PRODUCE){
+        if(action==ACTION_START_PRODUCE){
+            Message msg =  new Message();
+            msg.what = MSG_ACTION_START_PRODUCE;
+            mHandler.sendMessage(msg);
+        }else if(action==ACTION_PRODUCE){
             Message msg =  new Message();
             msg.what = MSG_ACTION_PRODUCE;
             mHandler.sendMessage(msg);
@@ -1136,6 +1094,60 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         }
     }
 
+    //生产中列表接口
+    class OrderProducingQry implements Qry{
+
+        private Context context;
+        private int orderBy;
+        private int fillterInstant;
+        private boolean isShowProgress;
+
+        public OrderProducingQry(Context context, int orderBy, int fillterInstant,boolean isShowProgress) {
+            this.context = context;
+            this.orderBy = orderBy;
+            this.fillterInstant = fillterInstant;
+            this.isShowProgress = isShowProgress;
+        }
+
+        @Override
+        public void doRequest() {
+            String token = LoginHelper.getToken(context);
+            int shopId = LoginHelper.getShopId(context);
+            String url = HttpUtils.BASE_URL+shopId+"/orders/today/producing?token="+token;
+            Map<String,Object> params = new HashMap<String,Object>();
+            params.put("orderBy",orderBy);
+            params.put("fillterInstant", fillterInstant);
+
+            starttime = System.currentTimeMillis();
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowProgress);
+        }
+
+        @Override
+        public void showResult(Jresp resp) {
+            endtime = System.currentTimeMillis();
+            Log.d(TAG,"请求耗时:"+(endtime - starttime));
+            Log.d(TAG, "OrderQry:resp  =" + resp);
+            if(resp==null){
+                ToastUtil.showToast(context,R.string.unknown_error);
+                return;
+            }
+            List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
+            updateOrdersNum(1, orderBeans.size());
+            adapter.setData(orderBeans);
+            if(orderBeans.size()>0){
+                updateDetailView(orderBeans.get(0));
+            }else{
+                updateDetailView(null);
+            }
+            //检查列表中是否有未完成的合并订单
+            if(!OrderHelper.isContainerBatchOrder(orderBeans)){
+                OrderHelper.batchList.clear();
+                updateBatchPromptTextView(0);
+            }
+
+        }
+    }
+
     //生产已完成订单列表接口
     class OrderProducedQry implements Qry{
 
@@ -1175,7 +1187,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
             Log.d(TAG, "orderBeans  =" + orderBeans);
-            updateOrdersNum(1,orderBeans.size());
+            updateOrdersNum(2,orderBeans.size());
             adapter.setData(orderBeans);
             if(orderBeans.size()>0){
                 updateDetailView(orderBeans.get(0));
@@ -1223,7 +1235,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
             Log.d(TAG, "orderBeans  =" + orderBeans);
-            updateOrdersNum(2,orderBeans.size());
+            updateOrdersNum(3,orderBeans.size());
             adapter.setData(orderBeans);
             if(orderBeans.size()>0){
                 updateDetailView(orderBeans.get(0));
@@ -1271,7 +1283,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
             Log.d(TAG, "orderBeans  =" + orderBeans);
-            updateOrdersNum(3, orderBeans.size());
+            updateOrdersNum(4, orderBeans.size());
             updateTotalQuantity(orderBeans);
             adapter.setData(orderBeans);
             if(orderBeans.size()>0){
@@ -1468,6 +1480,113 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     break;
             }
         }
+    }
+
+
+    //开始生产并打印
+    public void startProduceAndPrint(Context context,final OrderBean order){
+        if (order.getInstant() == 0) {
+            //预约单
+            if (!OrderHelper.isCanHandle(order)) {
+                //预约单，生产时间还没到
+                SimpleConfirmDialog scd = new SimpleConfirmDialog(context, R.style.MyDialog);
+                scd.setContent(R.string.can_not_operate);
+                scd.show();
+            } else {
+                ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
+                    @Override
+                    public void onClickYes() {
+                        Log.d(TAG, "orderId = " + order.getOrderSn());
+                        //请求服务器改变该订单状态，由 待生产--生产中
+                        //打印全部
+                        PrintHelper.getInstance().printOrderInfo(order);
+                        PrintHelper.getInstance().printOrderItems(order);
+                    }
+                });
+                grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 开始生产？");
+                grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
+                grabConfirmDialog.show();
+            }
+
+        } else {
+            //及时单
+            ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
+                @Override
+                public void onClickYes() {
+                    Log.d(TAG, "orderId = " + order.getOrderSn());
+                    //请求服务器改变该订单状态，由 待生产--生产中
+                    adapter.new startProduceQry(order.getId()).doRequest();
+                    //打印全部
+                    PrintHelper.getInstance().printOrderInfo(order);
+                    PrintHelper.getInstance().printOrderItems(order);
+                }
+            });
+            grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 开始生产？");
+            grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
+            grabConfirmDialog.show();
+        }
+    }
+
+    //生产完成
+    public void finishProduce(Context context,final OrderBean order){
+        if (order.getInstant() == 0) {
+            //预约单
+            if (!OrderHelper.isCanHandle(order)) {
+                //预约单，生产时间还没到
+                SimpleConfirmDialog scd = new SimpleConfirmDialog(context, R.style.MyDialog);
+                scd.setContent(R.string.can_not_operate);
+                scd.show();
+            } else {
+                ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
+                    @Override
+                    public void onClickYes() {
+                        Log.d(TAG, "orderId = " + order.getOrderSn());
+                        adapter.new DoFinishProduceQry(order.getId()).doRequest();
+                    }
+                });
+                grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 生产完成？");
+                grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
+                grabConfirmDialog.show();
+            }
+
+        } else {
+            //及时单
+            ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
+                @Override
+                public void onClickYes() {
+                    Log.d(TAG, "orderId = " + order.getOrderSn());
+                    adapter.new DoFinishProduceQry(order.getId()).doRequest();
+                }
+            });
+            grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 生产完成？");
+            grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
+            grabConfirmDialog.show();
+        }
+    }
+
+    //打印
+    public void printOrder(Context context,final OrderBean order){
+        //打印按钮
+        if (order.getInstant() == 0) {
+            //预约单
+            if (!OrderHelper.isCanHandle(order)) {
+                //预约单，打印时间还没到
+                SimpleConfirmDialog scd = new SimpleConfirmDialog(context, R.style.MyDialog);
+                scd.setContent(R.string.can_not_operate);
+                scd.show();
+            } else {
+                Intent intent = new Intent(context, PrintOrderActivity.class);
+                intent.putExtra("order", order);
+                context.startActivity(intent);
+            }
+
+        } else {
+            //及时单
+            Intent intent = new Intent(context, PrintOrderActivity.class);
+            intent.putExtra("order", order);
+            context.startActivity(intent);
+        }
+
     }
 
 

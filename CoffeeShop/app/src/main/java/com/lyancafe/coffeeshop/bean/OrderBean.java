@@ -46,6 +46,7 @@ public class OrderBean implements Serializable{
     private String courierPhone;         //小哥联系电话
     private String courierImgUrl;        //抢单小哥的头像url
     private int status;                  //订单状态
+    private int produceStatus;            //生产状态 4000:待生产  4005:生产中  4010:生产完成
     private String statusName;           //订单状态名
     private boolean issueOrder;          //是否是问题订单
     private String issueRemark;          //问题描述
@@ -255,6 +256,14 @@ public class OrderBean implements Serializable{
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public int getProduceStatus() {
+        return produceStatus;
+    }
+
+    public void setProduceStatus(int produceStatus) {
+        this.produceStatus = produceStatus;
     }
 
     public String getCourierImgUrl() {
@@ -474,6 +483,7 @@ public class OrderBean implements Serializable{
                 ", courierPhone='" + courierPhone + '\'' +
                 ", courierImgUrl='" + courierImgUrl + '\'' +
                 ", status=" + status +
+                ", produceStatus=" + produceStatus +
                 ", statusName='" + statusName + '\'' +
                 ", issueOrder=" + issueOrder +
                 ", issueRemark='" + issueRemark + '\'' +
