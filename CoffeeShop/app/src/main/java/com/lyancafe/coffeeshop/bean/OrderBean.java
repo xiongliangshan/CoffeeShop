@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.xls.http.Jresp;
@@ -300,16 +301,16 @@ public class OrderBean implements Serializable{
 
     public String getStatusName() {
         switch (this.status) {
-            case OrderHelper.UNASSIGNED_STATUS:
+            case OrderStatus.UNASSIGNED:
                 this.statusName = "待抢单";
                 break;
-            case OrderHelper.ASSIGNED_STATUS:
+            case OrderStatus.ASSIGNED:
                 this.statusName = "待取货";
                 break;
-            case OrderHelper.DELIVERING_STATUS:
+            case OrderStatus.DELIVERING:
                 this.statusName = "配送中";
                 break;
-            case OrderHelper.DELIVERED_STATUS:
+            case OrderStatus.FINISHED:
                 this.statusName = "已完成";
                 break;
 

@@ -127,7 +127,8 @@
                     android:layout_centerVertical="true"
                     android:textColor="@color/white_font"
                     android:textSize="14sp"
-                    android:text="@string/batch_handle"/>
+                    android:text="@string/batch_handle"
+                    android:visibility="invisible"/>
             </RelativeLayout>
             <LinearLayout
                 android:layout_width="match_parent"

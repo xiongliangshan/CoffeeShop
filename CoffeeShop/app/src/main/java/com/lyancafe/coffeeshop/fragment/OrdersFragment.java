@@ -37,6 +37,7 @@ import com.lyancafe.coffeeshop.activity.PrintOrderActivity;
 import com.lyancafe.coffeeshop.adapter.OrderGridViewAdapter;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.CancelOrderEvent;
 import com.lyancafe.coffeeshop.event.ClickCommentEvent;
 import com.lyancafe.coffeeshop.event.CommentCountEvent;
@@ -63,7 +64,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,9 +98,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private TextView batchHandleBtn;
     private TextView batchPromptText;
     private TextView totalQuantityTxt;
-    private long starttime;
-    private long endtime;
-
     private LinearLayout commentLayout;
     private TextView goodCommentText;
     private TextView badCommentText;
@@ -256,7 +253,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 adapter.selected = position;
                 adapter.notifyDataSetChanged();
                 updateDetailView(adapter.list.get(position));
-                Log.d(TAG, "点击了 " + position);
             }
         });
 
@@ -520,7 +516,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     mContext.startActivity(intent);
                 }
             });
-            if(order.getStatus()== OrderHelper.UNASSIGNED_STATUS){
+            if(order.getStatus()== OrderStatus.UNASSIGNED){
                 deliverInfoContainerLayout.setVisibility(View.GONE);
             }else {
                 deliverInfoContainerLayout.setVisibility(View.VISIBLE);
@@ -590,16 +586,16 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 public void onClick(View v) {
                     final PopupMenu popup = new PopupMenu(mContext, v);
                     popup.inflate(R.menu.menu_order_detail_more);
-                    if (order.isWxScan() && subTabIndex == 2) {
+                    if (order.isWxScan() && OrderStatus.PRODUCED == order.getProduceStatus()) {
                         popup.getMenu().findItem(R.id.menu_scan_code).setVisible(true);
                     } else {
                         popup.getMenu().findItem(R.id.menu_scan_code).setVisible(false);
                     }
 
-                    if (order.getStatus() != OrderHelper.ASSIGNED_STATUS) {
+                    if (order.getStatus() != OrderStatus.ASSIGNED) {
                         popup.getMenu().findItem(R.id.menu_undo_order).setVisible(false);
                     }
-                    if (order.getStatus() != OrderHelper.UNASSIGNED_STATUS) {
+                    if (order.getStatus() != OrderStatus.UNASSIGNED) {
                         popup.getMenu().findItem(R.id.menu_assign_order).setVisible(false);
                     }
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -747,7 +743,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("xiong", "排序：positon =" + position + "选择了 " + adapter_sort.getItem(position));
                 switch (position){
                     case 0:
                         orderBy = OrderHelper.PRODUCE_TIME;
@@ -775,7 +770,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("xiong", "排序：positon =" + position + "选择了 " + adapter_category.getItem(position));
                 switch (position) {
                     case 0:
                         fillterInstant = OrderHelper.ALL;
@@ -815,13 +809,11 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
     @Subscribe
     public void OnMessageEvent(ClickCommentEvent event){
-        Log.d("xiongliangshan","收到评论列表点击消息");
         updateDetailView(event.orderBean);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCountEvent(CommentCountEvent event){
-        Log.d("xiongliangshan","收到Event评论数量消息");
         new CommentCountQry(mContext).doRequest();
     }
 
@@ -913,7 +905,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             sortSpinner.setVisibility(View.VISIBLE);
             categorySpinner.setVisibility(View.VISIBLE);
             refreshbtn.setVisibility(View.VISIBLE);
-            batchHandleBtn.setVisibility(View.VISIBLE);
+            batchHandleBtn.setVisibility(View.INVISIBLE);
             if(batchHandleBtn.getText().toString().equals(mContext.getString(R.string.batch_handle))){
                 batchPromptText.setVisibility(View.GONE);
             }else{
@@ -1059,22 +1051,17 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             Map<String,Object> params = new HashMap<String,Object>();
             params.put("orderBy",orderBy);
             params.put("fillterInstant", fillterInstant);
-
-            starttime = System.currentTimeMillis();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowProgress);
         }
 
         @Override
         public void showResult(Jresp resp) {
-            endtime = System.currentTimeMillis();
-            Log.d(TAG,"请求耗时:"+(endtime - starttime));
-            Log.d(TAG, "OrderQry:resp  =" + resp);
+            Log.d(TAG, "OrderToProduceQry:resp  =" + resp);
             if(resp==null){
                 ToastUtil.showToast(context,R.string.unknown_error);
                 return;
             }
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-            Log.e(TAG, "orderBeans  =" + orderBeans);
             updateOrdersNum(0, orderBeans.size());
             if(orderBeans.size()>adapter.cacheToProduceList.size() && !isShowProgress){
                 sendNotificationForAutoNewOrders(true);
@@ -1117,15 +1104,11 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             Map<String,Object> params = new HashMap<String,Object>();
             params.put("orderBy",orderBy);
             params.put("fillterInstant", fillterInstant);
-
-            starttime = System.currentTimeMillis();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowProgress);
         }
 
         @Override
         public void showResult(Jresp resp) {
-            endtime = System.currentTimeMillis();
-            Log.d(TAG,"请求耗时:"+(endtime - starttime));
             Log.d(TAG, "OrderQry:resp  =" + resp);
             if(resp==null){
                 ToastUtil.showToast(context,R.string.unknown_error);
@@ -1171,22 +1154,17 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             Map<String,Object> params = new HashMap<String,Object>();
             params.put("orderBy",orderBy);
             params.put("fillterInstant", fillterInstant);
-
-            starttime = System.currentTimeMillis();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowProgress);
         }
 
         @Override
         public void showResult(Jresp resp) {
-            endtime = System.currentTimeMillis();
-            Log.d(TAG,"请求耗时:"+(endtime - starttime));
-            Log.d(TAG, "OrderQry:resp  =" + resp);
+            Log.d(TAG, "OrderProducedQry:resp  =" + resp);
             if(resp==null){
                 ToastUtil.showToast(context,R.string.unknown_error);
                 return;
             }
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-            Log.d(TAG, "orderBeans  =" + orderBeans);
             updateOrdersNum(2,orderBeans.size());
             adapter.setData(orderBeans);
             if(orderBeans.size()>0){
@@ -1219,22 +1197,17 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             Map<String,Object> params = new HashMap<String,Object>();
             params.put("orderBy",orderBy);
             params.put("fillterInstant", fillterInstant);
-
-            starttime = System.currentTimeMillis();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowProgress);
         }
 
         @Override
         public void showResult(Jresp resp) {
-            endtime = System.currentTimeMillis();
-            Log.d(TAG,"请求耗时:"+(endtime - starttime));
-            Log.d(TAG, "OrderQry:resp  =" + resp);
+            Log.d(TAG, "OrderDeliveryingQry:resp  =" + resp);
             if(resp==null){
                 ToastUtil.showToast(context,R.string.unknown_error);
                 return;
             }
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-            Log.d(TAG, "orderBeans  =" + orderBeans);
             updateOrdersNum(3,orderBeans.size());
             adapter.setData(orderBeans);
             if(orderBeans.size()>0){
@@ -1267,22 +1240,17 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             Map<String,Object> params = new HashMap<String,Object>();
             params.put("orderBy",orderBy);
             params.put("fillterInstant", fillterInstant);
-
-            starttime = System.currentTimeMillis();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowProgress);
         }
 
         @Override
         public void showResult(Jresp resp) {
-            endtime = System.currentTimeMillis();
-            Log.d(TAG,"请求耗时:"+(endtime - starttime));
-            Log.d(TAG, "OrderQry:resp  =" + resp);
+            Log.d(TAG, "OrderFinishedQry:resp  =" + resp);
             if(resp==null){
                 ToastUtil.showToast(context,R.string.unknown_error);
                 return;
             }
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-            Log.d(TAG, "orderBeans  =" + orderBeans);
             updateOrdersNum(4, orderBeans.size());
             updateTotalQuantity(orderBeans);
             adapter.setData(orderBeans);
@@ -1313,7 +1281,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             int shopId = LoginHelper.getShopId(context);
             String url = HttpUtils.BASE_URL+shopId+"/order/"+orderId+"/recall?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
-            starttime = System.currentTimeMillis();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
         }
 
@@ -1328,7 +1295,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 ToastUtil.showToast(context,R.string.do_success);
                 for(OrderBean order:adapter.cacheToProduceList){
                     if(orderId == order.getId()){
-                        order.setStatus(OrderHelper.UNASSIGNED_STATUS);
+                        order.setStatus(OrderStatus.UNASSIGNED);
                         break;
                     }
                 }
@@ -1357,7 +1324,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             int shopId = LoginHelper.getShopId(context);
             String url = HttpUtils.BASE_URL+shopId+"/order/"+orderId+"/deliver?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
-            starttime = System.currentTimeMillis();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
         }
 
@@ -1370,7 +1336,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
             if(resp.status==0){
                 ToastUtil.showToast(context, R.string.do_success);
-                adapter.removeOrderFromProducedList(orderId);
+                adapter.removeOrderFromList(orderId,adapter.cacheProducedList);
                 updateOrdersNumAfterAction(OrdersFragment.ACTION_SCANCODE);
             }
         }
@@ -1392,7 +1358,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             String url = HttpUtils.BASE_URL+shopId+"/orders/feedback/count?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, false);
-            Log.d("xiongliangshan", "CommentCountQry请求一次");
         }
 
         @Override
@@ -1467,8 +1432,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 case R.id.ll_user_remark:
                     //用户备注
                     InfoDetailDialog.getInstance(mContext).show(userRemarkTxt.getText().toString());
-                //    InfoDetailDialog infoDetailDialog = new InfoDetailDialog(mContext,R.style.MyDialog);
-                //    infoDetailDialog.show(userRemarkTxt.getText().toString());
                     break;
                 case R.id.ll_csad_remark:
                     //客服备注
@@ -1498,6 +1461,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     public void onClickYes() {
                         Log.d(TAG, "orderId = " + order.getOrderSn());
                         //请求服务器改变该订单状态，由 待生产--生产中
+                        adapter.new startProduceQry(order.getId()).doRequest();
                         //打印全部
                         PrintHelper.getInstance().printOrderInfo(order);
                         PrintHelper.getInstance().printOrderItems(order);

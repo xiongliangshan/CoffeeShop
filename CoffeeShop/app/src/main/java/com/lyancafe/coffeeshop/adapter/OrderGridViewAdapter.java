@@ -21,6 +21,7 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.activity.PrintOrderActivity;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
@@ -177,7 +178,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
         }else{
             holder.issueFlagIV.setVisibility(View.INVISIBLE);
         }
-        if(order.getStatus()==OrderHelper.UNASSIGNED_STATUS){
+        if(order.getStatus()== OrderStatus.UNASSIGNED){
             holder.grabFlagIV.setVisibility(View.INVISIBLE);
         }else{
             holder.grabFlagIV.setVisibility(View.VISIBLE);
@@ -408,40 +409,23 @@ public class OrderGridViewAdapter extends BaseAdapter{
         notifyDataSetChanged();
     }
 
-    //生产完成后从生产中列表移除
-    private void removeOrderFromPrducingList(long orderId){
-        for(int i = 0;i<cacheProducingList.size();i++){
-            if(cacheProducingList.get(i).getId()==orderId){
-                cacheProducingList.remove(i);
-                this.list = cacheProducingList;
+
+    /**
+     * 点击开始生产，生产完成，扫码交付时从当前列表移除该订单
+     * @param orderId
+     * @param list
+     */
+    public void removeOrderFromList(long orderId,List<OrderBean> list){
+        for(int i = 0;i<list.size();i++){
+            if(list.get(i).getId()==orderId){
+                list.remove(i);
+                this.list = list;
                 notifyDataSetChanged();
                 break;
             }
         }
     }
 
-    //开始生产后从当前列表中移除此单
-    private void removeOrderFromList(long orderId){
-        for(int i = 0;i<cacheToProduceList.size();i++){
-            if(cacheToProduceList.get(i).getId()==orderId){
-                cacheToProduceList.remove(i);
-                this.list = cacheToProduceList;
-                notifyDataSetChanged();
-                break;
-            }
-        }
-    }
-    //交付完成后从当前列表中移除此单
-    public void removeOrderFromProducedList(long orderId){
-        for(int i = 0;i<cacheProducedList.size();i++){
-            if(cacheProducedList.get(i).getId()==orderId){
-                cacheProducedList.remove(i);
-                this.list = cacheProducedList;
-                notifyDataSetChanged();
-                break;
-            }
-        }
-    }
     //生产完成操作接口
     public class DoFinishProduceQry implements Qry{
         private long orderId;
@@ -473,8 +457,8 @@ public class OrderGridViewAdapter extends BaseAdapter{
                 return;
             }
             if(resp.status == 0){
-                ToastUtil.showToast(context,R.string.do_success);
-                removeOrderFromPrducingList(orderId);
+                ToastUtil.showToast(context, R.string.do_success);
+                removeOrderFromList(orderId,cacheProducingList);
                 orderFragment.updateOrdersNumAfterAction(OrdersFragment.ACTION_PRODUCE);
             //    int leftBatchOrderNum = OrderHelper.removeOrderFromBatchList(orderId);
             //    orderFragment.updateBatchPromptTextView(leftBatchOrderNum);
@@ -517,7 +501,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
             }
             if(resp.status == 0){
                 ToastUtil.showToast(context,R.string.do_success);
-                removeOrderFromList(orderId);
+                removeOrderFromList(orderId,cacheToProduceList);
                 orderFragment.updateOrdersNumAfterAction(OrdersFragment.ACTION_START_PRODUCE);
             //    int leftBatchOrderNum = OrderHelper.removeOrderFromBatchList(orderId);
             //    orderFragment.updateBatchPromptTextView(leftBatchOrderNum);

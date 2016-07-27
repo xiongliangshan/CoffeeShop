@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.constant.OrderStatus;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -41,13 +42,6 @@ public class OrderHelper {
     public static final int GOOD_COMMENT = 4;  //好评
     public static final int BAD_COMMENT = 5;   //差评
 
-    /**
-     * 订单状态
-     */
-    public static final int DELIVERING_STATUS = 5000;
-    public static final int DELIVERED_STATUS = 6000;
-    public static final int UNASSIGNED_STATUS = 3010;
-    public static final int ASSIGNED_STATUS = 3020;
 
     /**
      * 排序规则
@@ -231,7 +225,7 @@ public class OrderHelper {
         int sum = 0;
         for(OrderBean bean:list){
             //非待取货订单不加入合并
-            if(bean.getStatus()!=ASSIGNED_STATUS){
+            if(bean.getStatus()!= OrderStatus.ASSIGNED){
                 continue;
             }
             //如果没达到能操作条件的预约单不加入合并

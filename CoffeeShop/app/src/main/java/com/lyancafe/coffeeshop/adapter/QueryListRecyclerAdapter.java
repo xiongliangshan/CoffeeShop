@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.fragment.OrderQueryFragment;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
@@ -113,7 +114,7 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
         }else{
             holder.issueFlagIV.setVisibility(View.INVISIBLE);
         }
-        if(order.getStatus()==OrderHelper.UNASSIGNED_STATUS){
+        if(order.getStatus()== OrderStatus.UNASSIGNED){
             holder.grabFlagIV.setVisibility(View.INVISIBLE);
         }else{
             holder.grabFlagIV.setVisibility(View.VISIBLE);

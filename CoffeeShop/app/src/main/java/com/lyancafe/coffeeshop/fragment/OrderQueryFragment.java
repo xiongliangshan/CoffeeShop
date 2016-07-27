@@ -30,6 +30,7 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.QueryListRecyclerAdapter;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
@@ -286,7 +287,7 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
             receiveAddressTxt.setText(order.getAddress());
             deliverNameTxt.setText(order.getCourierName());
             deliverPhoneTxt.setText(order.getCourierPhone());
-            if(order.getStatus()== OrderHelper.UNASSIGNED_STATUS){
+            if(order.getStatus()== OrderStatus.UNASSIGNED){
                 deliverInfoContainerLayout.setVisibility(View.GONE);
             }else {
                 deliverInfoContainerLayout.setVisibility(View.VISIBLE);
