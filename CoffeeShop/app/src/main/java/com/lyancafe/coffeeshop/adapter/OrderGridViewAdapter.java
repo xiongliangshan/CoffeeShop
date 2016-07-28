@@ -25,6 +25,9 @@ import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.constant.TabList;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
+import com.lyancafe.coffeeshop.event.FinishProduceEvent;
+import com.lyancafe.coffeeshop.event.PrintOrderEvent;
+import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
@@ -201,7 +204,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
                 @Override
                 public void onClick(View v) {
                     //点击开始生产（打印）按钮
-                    startProduceAndPrint(context,order);
+                    EventBus.getDefault().post(new StartProduceEvent(order));
                 }
             });
         }else{
@@ -216,46 +219,14 @@ public class OrderGridViewAdapter extends BaseAdapter{
                 @Override
                 public void onClick(View v) {
                     //生产完成
-                    if (order.getInstant() == 0) {
-                        //预约单
-                        if (!OrderHelper.isCanHandle(order)) {
-                            //生产时间还没到
-                            SimpleConfirmDialog scd = new SimpleConfirmDialog(context, R.style.MyDialog);
-                            scd.setContent(R.string.can_not_operate);
-                            scd.show();
-                        } else {
-                            ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
-                                @Override
-                                public void onClickYes() {
-                                    Log.d(TAG, "postion = " + position + ",orderId = " + order.getOrderSn());
-                                    new DoFinishProduceQry(order.getId()).doRequest();
-                                }
-                            });
-                            grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 生产完成？");
-                            grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
-                            grabConfirmDialog.show();
-                        }
-
-                    } else {
-                        //及时单
-                        ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
-                            @Override
-                            public void onClickYes() {
-                                Log.d(TAG, "postion = " + position + ",orderId = " + order.getOrderSn());
-                                new DoFinishProduceQry(order.getId()).doRequest();
-                            }
-                        });
-                        grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 生产完成？");
-                        grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
-                        grabConfirmDialog.show();
-                    }
-
+                    EventBus.getDefault().post(new FinishProduceEvent(order));
                 }
             });
             holder.printBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    orderFragment.printOrder(context,order);
+                //    orderFragment.printOrder(context,order);
+                    EventBus.getDefault().post(new PrintOrderEvent(order));
                 }
             });
         }
@@ -264,50 +235,6 @@ public class OrderGridViewAdapter extends BaseAdapter{
         return convertView;
     }
 
-    //开始生产并打印
-    private void startProduceAndPrint(Context context,final OrderBean order){
-        if (order.getInstant() == 0) {
-            //预约单
-            if (!OrderHelper.isCanHandle(order)) {
-                //预约单，生产时间还没到
-                SimpleConfirmDialog scd = new SimpleConfirmDialog(context, R.style.MyDialog);
-                scd.setContent(R.string.can_not_operate);
-                scd.show();
-            } else {
-                ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
-                    @Override
-                    public void onClickYes() {
-                        Log.d(TAG, "orderId = " + order.getOrderSn());
-                        //请求服务器改变该订单状态，由 待生产--生产中
-                        new startProduceQry(order.getId()).doRequest();
-                        //打印全部
-                        PrintHelper.getInstance().printOrderInfo(order);
-                        PrintHelper.getInstance().printOrderItems(order);
-                    }
-                });
-                grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 开始生产？");
-                grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
-                grabConfirmDialog.show();
-            }
-
-        } else {
-            //及时单
-            ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
-                @Override
-                public void onClickYes() {
-                    Log.d(TAG, "orderId = " + order.getOrderSn());
-                    //请求服务器改变该订单状态，由 待生产--生产中
-                    new startProduceQry(order.getId()).doRequest();
-                    //打印全部
-                    PrintHelper.getInstance().printOrderInfo(order);
-                    PrintHelper.getInstance().printOrderItems(order);
-                }
-            });
-            grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 开始生产？");
-            grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
-            grabConfirmDialog.show();
-        }
-    }
 
     //填充item数据
     private void fillItemListData(LinearLayout ll,List<ItemContentBean> items){
@@ -431,88 +358,8 @@ public class OrderGridViewAdapter extends BaseAdapter{
         }
     }
 
-    //生产完成操作接口
-    public class DoFinishProduceQry implements Qry{
-        private long orderId;
-        private boolean isShowDlg = true;
 
-        public DoFinishProduceQry(long orderId) {
-            this.orderId = orderId;
-        }
 
-        public DoFinishProduceQry(long orderId,boolean isShowDlg) {
-            this.orderId = orderId;
-            this.isShowDlg = isShowDlg;
-        }
-
-        @Override
-        public void doRequest() {
-            int shopId = LoginHelper.getShopId(context);
-            String token = LoginHelper.getToken(context);
-            String url = HttpUtils.BASE_URL+shopId+"/order/"+orderId+"/produce?token="+token;
-            Map<String,Object> params = new HashMap<String,Object>();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowDlg);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            Log.d(TAG,"DoFinishProduceQry:resp = "+resp);
-            if(resp==null){
-                ToastUtil.showToast(context, R.string.unknown_error);
-                return;
-            }
-            if(resp.status == 0){
-                ToastUtil.showToast(context, R.string.do_success);
-                removeOrderFromList(orderId, cacheProducingList);
-                EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.FINISHPRODUCE));
-            //    int leftBatchOrderNum = OrderHelper.removeOrderFromBatchList(orderId);
-            //    orderFragment.updateBatchPromptTextView(leftBatchOrderNum);
-            }else{
-                ToastUtil.showToast(context,resp.message);
-            }
-        }
-    }
-
-    //开始生产接口
-
-    public class startProduceQry implements Qry{
-        private long orderId;
-        private boolean isShowDlg = true;
-
-        public startProduceQry(long orderId) {
-            this.orderId = orderId;
-        }
-
-        public startProduceQry(long orderId,boolean isShowDlg) {
-            this.orderId = orderId;
-            this.isShowDlg = isShowDlg;
-        }
-
-        @Override
-        public void doRequest() {
-            int shopId = LoginHelper.getShopId(context);
-            String token = LoginHelper.getToken(context);
-            String url = HttpUtils.BASE_URL+shopId+"/order/"+orderId+"/beginproduce?token="+token;
-            Map<String,Object> params = new HashMap<String,Object>();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowDlg);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            Log.d(TAG,"startProduceQry:resp = "+resp);
-            if(resp==null){
-                ToastUtil.showToast(context, R.string.unknown_error);
-                return;
-            }
-            if(resp.status == 0){
-                ToastUtil.showToast(context,R.string.do_success);
-                removeOrderFromList(orderId, cacheToProduceList);
-                EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE));
-            }else{
-                ToastUtil.showToast(context,resp.message);
-            }
-        }
-    }
 
 
 }
