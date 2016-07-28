@@ -23,6 +23,7 @@ import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
+import com.lyancafe.coffeeshop.constant.TabList;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
@@ -68,7 +69,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case 1:
-                    if(OrdersFragment.subTabIndex==0){
+                    if(OrdersFragment.subTabIndex== TabList.TAB_TOPRODUCE){
                         refreshTimerData(cacheToProduceList);
                     }
                     break;
@@ -374,7 +375,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
         this.list = list;
         notifyDataSetChanged();
         selected = 0;
-        if(OrdersFragment.subTabIndex==0){
+        if(OrdersFragment.subTabIndex==TabList.TAB_TOPRODUCE){
             //缓存订单列表
             cacheToProduceList.clear();
             cacheToProduceList.addAll(list);

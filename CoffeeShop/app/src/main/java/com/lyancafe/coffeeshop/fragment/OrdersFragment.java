@@ -911,7 +911,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     deliveringTab.setClickBg(false);
                     deliveryFinishedTab.setClickBg(false);
                     showWidget(false);
-                    subTabIndex = TabList.TAB_PRODUCING;
+                    subTabIndex = TabList.TAB_PRODUCED;
                     new OrderProducedQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true).doRequest();
                     resetSpinners();
                     break;
@@ -950,6 +950,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
      * 刷新列表的时候，更新当前列表标签上的订单数量
      * @param event
      */
+    @Subscribe
     public void onUpdateTabOrderListCountEvent(UpdateTabOrderListCountEvent event){
         switch (event.witchTab){
             case TabList.TAB_TOPRODUCE:
@@ -974,6 +975,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
      * 对订单操作后更改相关列表中的订单数量角标显示
      * @param event
      */
+    @Subscribe
     public void onChangeTabCountByActionEvent(ChangeTabCountByActionEvent event){
         switch (event.action){
             case OrderAction.STARTPRODUCE:
@@ -996,6 +998,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
      * 提交问题订单后立即更新订单显示状态
      * @param event
      */
+    @Subscribe
     public void onCommitIssueOrderEvent(CommitIssueOrderEvent event){
         long orderId = event.orderId;
         for(int i=0;i<adapter.list.size();i++){
@@ -1051,10 +1054,12 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 return;
             }
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-        //    updateOrdersNum(0, orderBeans.size());
             EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_TOPRODUCE,orderBeans.size()));
             if(orderBeans.size()>adapter.cacheToProduceList.size() && !isShowProgress){
                 sendNotificationForAutoNewOrders(true);
+            }
+            if(subTabIndex!=TabList.TAB_TOPRODUCE){
+                return;
             }
             adapter.setData(orderBeans);
             if(orderBeans.size()>0){
@@ -1099,13 +1104,12 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
         @Override
         public void showResult(Jresp resp) {
-            Log.d(TAG, "OrderQry:resp  =" + resp);
+            Log.d(TAG, "OrderProducingQry:resp  =" + resp);
             if(resp==null){
                 ToastUtil.showToast(context,R.string.unknown_error);
                 return;
             }
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-        //    updateOrdersNum(1, orderBeans.size());
             EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_PRODUCING,orderBeans.size()));
             adapter.setData(orderBeans);
             if(orderBeans.size()>0){
@@ -1156,7 +1160,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 return;
             }
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-        //    updateOrdersNum(2,orderBeans.size());
             EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_PRODUCED,orderBeans.size()));
             adapter.setData(orderBeans);
             if(orderBeans.size()>0){
@@ -1200,7 +1203,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 return;
             }
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-        //    updateOrdersNum(3,orderBeans.size());
             EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_DELIVERING,orderBeans.size()));
             adapter.setData(orderBeans);
             if(orderBeans.size()>0){
@@ -1244,7 +1246,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 return;
             }
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-        //    updateOrdersNum(4, orderBeans.size());
             EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_FINISHED,orderBeans.size()));
             updateTotalQuantity(orderBeans);
             adapter.setData(orderBeans);
@@ -1383,7 +1384,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d("AutoFetchOrdersService","收到广播消息");
+            Log.d(TAG,"收自动刷新的广播消息");
             requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true,false);
         }
     }

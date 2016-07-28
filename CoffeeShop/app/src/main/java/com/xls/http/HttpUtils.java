@@ -15,7 +15,7 @@ public class HttpUtils {
 
 //    public static String BASE_URL = "http://mtest.lyancafe.com/shop/v3/";
 
-    public static String BASE_URL = "http://192.168.1.184:8080/shop/v3/";
+    public static String BASE_URL = "http://192.168.1.30:8080/shop/v3/";
     
 
 
