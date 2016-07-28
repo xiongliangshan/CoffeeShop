@@ -11,7 +11,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -37,11 +36,16 @@ import com.lyancafe.coffeeshop.activity.PrintOrderActivity;
 import com.lyancafe.coffeeshop.adapter.OrderGridViewAdapter;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
+import com.lyancafe.coffeeshop.constant.TabList;
 import com.lyancafe.coffeeshop.event.CancelOrderEvent;
+import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.ClickCommentEvent;
 import com.lyancafe.coffeeshop.event.CommentCountEvent;
+import com.lyancafe.coffeeshop.event.CommitIssueOrderEvent;
 import com.lyancafe.coffeeshop.event.UpdatePrintStatusEvent;
+import com.lyancafe.coffeeshop.event.UpdateTabOrderListCountEvent;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.helper.PrintHelper;
@@ -149,60 +153,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private Button nextBtn;
 
     private OrdersReceiver ordersReceiver;
-    //消息处理
-    private static final int MSG_ACTION_START_PRODUCE = 100;
-    private static final int MSG_UPDATE_ORDER_NUMBER = 101;
-    private static final int MSG_ACTION_PRODUCE = 102;
-    private static final int MSG_ACTION_SCANCODE = 103;
-    public static final int MSG_UPDATE_QUESTION_ORDER_FLAG = 104;
-    //定义操作
-    public static final int ACTION_START_PRODUCE = 300; //点击开始生产
-    public static final int ACTION_PRODUCE = 301; //点击生产完成
-    public static final int ACTION_SCANCODE = 302;//点击扫码交付
     private Handler mHandler = new Handler(){
-
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what){
-                case MSG_UPDATE_ORDER_NUMBER:
-                    int whichTab = msg.arg1;
-                    int num = msg.arg2;
-                    if(whichTab==0){
-                        toDoTab.setCount(num);
-                    }else if(whichTab==1){
-                        doingTab.setCount(num);
-                    }else if(whichTab==2){
-                        haveDoneTab.setCount(num);
-                    }else if(whichTab==3){
-                        deliveringTab.setCount(num);
-                    }else if(whichTab==4){
-                        deliveryFinishedTab.setCount(num);
-                    }
-                    break;
-                case MSG_ACTION_START_PRODUCE:
-                    toDoTab.setCount(toDoTab.getCount()-1);
-                    doingTab.setCount(doingTab.getCount()+1);
-                    break;
-                case MSG_ACTION_PRODUCE:
-                    doingTab.setCount(doingTab.getCount()-1);
-                    haveDoneTab.setCount(haveDoneTab.getCount()+1);
-                    break;
-                case MSG_ACTION_SCANCODE:
-                    haveDoneTab.setCount(haveDoneTab.getCount()-1);
-                    deliveryFinishedTab.setCount(deliveryFinishedTab.getCount()+1);
-                    break;
-                case MSG_UPDATE_QUESTION_ORDER_FLAG:
-                    long orderId = msg.getData().getLong("orderId");
-                    for(int i=0;i<adapter.list.size();i++){
-                        if(adapter.list.get(i).getId()==orderId){
-                            adapter.list.get(i).setIssueOrder(true);
-                            break;
-                        }
-                    }
-                    adapter.notifyDataSetChanged();
-                    break;
-            }
-        }
     };
 
     @Override
@@ -479,7 +430,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 @Override
                 public void onClick(View v) {
                     if (reportWindow == null) {
-                        reportWindow = new ReportWindow(mContext, mHandler);
+                        reportWindow = new ReportWindow(mContext);
                         reportWindow.setOrder(order);
                         reportWindow.showReportWindow(detailRootView);
                     } else {
@@ -802,18 +753,22 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         }
     }
 
+    /**
+     * 订单被撤销
+     * @param event
+     */
     @Subscribe
-    public void OnMessageEvent(CancelOrderEvent event){
+    public void onCancelOrderEvent(CancelOrderEvent event){
         Log.d(TAG, "event:" + event.orderId);
     }
 
     @Subscribe
-    public void OnMessageEvent(ClickCommentEvent event){
+    public void onClickCommentEvent(ClickCommentEvent event){
         updateDetailView(event.orderBean);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCountEvent(CommentCountEvent event){
+    public void onCommentCountEvent(CommentCountEvent event){
         new CommentCountQry(mContext).doRequest();
     }
 
@@ -991,33 +946,67 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-
-    //更新订单数量显示
-    public void updateOrdersNum(int whichTab,int num){
-        Message msg =  new Message();
-        msg.what = MSG_UPDATE_ORDER_NUMBER;
-        msg.arg1 = whichTab;
-        msg.arg2 = num;
-        mHandler.sendMessage(msg);
-
-    }
-    //在某些操作后更新相关的订单数量
-    public void updateOrdersNumAfterAction(int action){
-        if(action==ACTION_START_PRODUCE){
-            Message msg =  new Message();
-            msg.what = MSG_ACTION_START_PRODUCE;
-            mHandler.sendMessage(msg);
-        }else if(action==ACTION_PRODUCE){
-            Message msg =  new Message();
-            msg.what = MSG_ACTION_PRODUCE;
-            mHandler.sendMessage(msg);
-        }else if(action==ACTION_SCANCODE){
-            Message msg =  new Message();
-            msg.what = MSG_ACTION_SCANCODE;
-            mHandler.sendMessage(msg);
+    /**
+     * 刷新列表的时候，更新当前列表标签上的订单数量
+     * @param event
+     */
+    public void onUpdateTabOrderListCountEvent(UpdateTabOrderListCountEvent event){
+        switch (event.witchTab){
+            case TabList.TAB_TOPRODUCE:
+                toDoTab.setCount(event.count);
+                break;
+            case TabList.TAB_PRODUCING:
+                doingTab.setCount(event.count);
+                break;
+            case TabList.TAB_PRODUCED:
+                haveDoneTab.setCount(event.count);
+                break;
+            case TabList.TAB_DELIVERING:
+                deliveringTab.setCount(event.count);
+                break;
+            case TabList.TAB_FINISHED:
+                deliveryFinishedTab.setCount(event.count);
+                break;
         }
-
     }
+
+    /**
+     * 对订单操作后更改相关列表中的订单数量角标显示
+     * @param event
+     */
+    public void onChangeTabCountByActionEvent(ChangeTabCountByActionEvent event){
+        switch (event.action){
+            case OrderAction.STARTPRODUCE:
+                toDoTab.setCount(toDoTab.getCount()-1);
+                doingTab.setCount(doingTab.getCount()+1);
+                break;
+            case OrderAction.FINISHPRODUCE:
+                doingTab.setCount(doingTab.getCount()-1);
+                haveDoneTab.setCount(haveDoneTab.getCount()+1);
+                break;
+            case OrderAction.SCANCODE:
+                haveDoneTab.setCount(haveDoneTab.getCount()-1);
+                deliveryFinishedTab.setCount(deliveryFinishedTab.getCount()+1);
+                break;
+        }
+    }
+
+
+    /**
+     * 提交问题订单后立即更新订单显示状态
+     * @param event
+     */
+    public void onCommitIssueOrderEvent(CommitIssueOrderEvent event){
+        long orderId = event.orderId;
+        for(int i=0;i<adapter.list.size();i++){
+            if(adapter.list.get(i).getId()==orderId){
+                adapter.list.get(i).setIssueOrder(true);
+                break;
+            }
+        }
+        adapter.notifyDataSetChanged();
+    }
+
     //生产完成后更新批量订单提示栏的可见状态
     public void updateBatchPromptTextView(int leftBatchOrderNum){
         if(leftBatchOrderNum<=0){
@@ -1062,7 +1051,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 return;
             }
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-            updateOrdersNum(0, orderBeans.size());
+        //    updateOrdersNum(0, orderBeans.size());
+            EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_TOPRODUCE,orderBeans.size()));
             if(orderBeans.size()>adapter.cacheToProduceList.size() && !isShowProgress){
                 sendNotificationForAutoNewOrders(true);
             }
@@ -1115,7 +1105,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 return;
             }
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-            updateOrdersNum(1, orderBeans.size());
+        //    updateOrdersNum(1, orderBeans.size());
+            EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_PRODUCING,orderBeans.size()));
             adapter.setData(orderBeans);
             if(orderBeans.size()>0){
                 updateDetailView(orderBeans.get(0));
@@ -1131,7 +1122,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    //生产已完成订单列表接口
+    //已生产订单列表接口
     class OrderProducedQry implements Qry{
 
         private Context context;
@@ -1165,7 +1156,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 return;
             }
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-            updateOrdersNum(2,orderBeans.size());
+        //    updateOrdersNum(2,orderBeans.size());
+            EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_PRODUCED,orderBeans.size()));
             adapter.setData(orderBeans);
             if(orderBeans.size()>0){
                 updateDetailView(orderBeans.get(0));
@@ -1208,7 +1200,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 return;
             }
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-            updateOrdersNum(3,orderBeans.size());
+        //    updateOrdersNum(3,orderBeans.size());
+            EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_DELIVERING,orderBeans.size()));
             adapter.setData(orderBeans);
             if(orderBeans.size()>0){
                 updateDetailView(orderBeans.get(0));
@@ -1251,7 +1244,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 return;
             }
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-            updateOrdersNum(4, orderBeans.size());
+        //    updateOrdersNum(4, orderBeans.size());
+            EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_FINISHED,orderBeans.size()));
             updateTotalQuantity(orderBeans);
             adapter.setData(orderBeans);
             if(orderBeans.size()>0){
@@ -1336,8 +1330,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
             if(resp.status==0){
                 ToastUtil.showToast(context, R.string.do_success);
-                adapter.removeOrderFromList(orderId,adapter.cacheProducedList);
-                updateOrdersNumAfterAction(OrdersFragment.ACTION_SCANCODE);
+                adapter.removeOrderFromList(orderId, adapter.cacheProducedList);
+                EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.SCANCODE));
             }
         }
     }

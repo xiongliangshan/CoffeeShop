@@ -1,9 +1,6 @@
 package com.lyancafe.coffeeshop.widget;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,7 +15,7 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.fragment.OrdersFragment;
+import com.lyancafe.coffeeshop.event.CommitIssueOrderEvent;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
@@ -27,6 +24,8 @@ import com.xls.http.HttpEntity;
 import com.xls.http.HttpUtils;
 import com.xls.http.Jresp;
 import com.xls.http.Qry;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,12 +49,11 @@ public class ReportWindow extends PopupWindow implements View.OnClickListener{
     private static int  QUESTION_TYPE = 17; //14.产线繁忙 15.无法生产 16.定位错误，应属其他区域 17.其他
     private static int  QUESTION_IDEA = 1; //1.取消订单 2.改约时间
     private static String QUESTION_DESCRIPTION ="";
-    private Handler handler;
 
-    public ReportWindow(Context context,Handler handler) {
+
+    public ReportWindow(Context context) {
         super(context);
         mContext = context;
-        this.handler = handler;
         contentView = LayoutInflater.from(context).inflate(R.layout.window_popup_report,null);
         this.setContentView(contentView);
         initView(contentView,mContext);
@@ -226,12 +224,7 @@ public class ReportWindow extends PopupWindow implements View.OnClickListener{
             }
             if(resp.status==0){
                 ToastUtil.showToast(context, R.string.do_success);
-                Message msg = new Message();
-                msg.what = OrdersFragment.MSG_UPDATE_QUESTION_ORDER_FLAG;
-                Bundle bundle = new Bundle();
-                bundle.putLong("orderId",orderId);
-                msg.setData(bundle);
-                handler.sendMessage(msg);
+                EventBus.getDefault().post(new CommitIssueOrderEvent(orderId));
             }else{
                 ToastUtil.showToast(context, resp.message);
             }

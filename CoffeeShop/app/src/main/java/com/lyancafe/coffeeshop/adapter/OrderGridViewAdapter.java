@@ -21,7 +21,9 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.activity.PrintOrderActivity;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
+import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
@@ -34,6 +36,8 @@ import com.xls.http.HttpEntity;
 import com.xls.http.HttpUtils;
 import com.xls.http.Jresp;
 import com.xls.http.Qry;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -458,8 +462,8 @@ public class OrderGridViewAdapter extends BaseAdapter{
             }
             if(resp.status == 0){
                 ToastUtil.showToast(context, R.string.do_success);
-                removeOrderFromList(orderId,cacheProducingList);
-                orderFragment.updateOrdersNumAfterAction(OrdersFragment.ACTION_PRODUCE);
+                removeOrderFromList(orderId, cacheProducingList);
+                EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.FINISHPRODUCE));
             //    int leftBatchOrderNum = OrderHelper.removeOrderFromBatchList(orderId);
             //    orderFragment.updateBatchPromptTextView(leftBatchOrderNum);
             }else{
@@ -501,10 +505,8 @@ public class OrderGridViewAdapter extends BaseAdapter{
             }
             if(resp.status == 0){
                 ToastUtil.showToast(context,R.string.do_success);
-                removeOrderFromList(orderId,cacheToProduceList);
-                orderFragment.updateOrdersNumAfterAction(OrdersFragment.ACTION_START_PRODUCE);
-            //    int leftBatchOrderNum = OrderHelper.removeOrderFromBatchList(orderId);
-            //    orderFragment.updateBatchPromptTextView(leftBatchOrderNum);
+                removeOrderFromList(orderId, cacheToProduceList);
+                EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE));
             }else{
                 ToastUtil.showToast(context,resp.message);
             }
