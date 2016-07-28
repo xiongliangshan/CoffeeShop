@@ -81,7 +81,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private static final String TAG  ="OrdersFragment";
     private View mContentView;
     private Activity mContext;
-    public static int subTabIndex = 0;
+    public static int subTabIndex = TabList.TAB_TOPRODUCE;
 
     private ListTabButton toDoTab;
     private ListTabButton doingTab;
@@ -331,19 +331,19 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     }
     private void requestData(Context context, int orderBy, int fillterInstant,boolean isRefresh,boolean isShowProgress){
         switch (subTabIndex){
-            case 0:
+            case TabList.TAB_TOPRODUCE:
                 new OrderToProduceQry(context, orderBy, fillterInstant,isShowProgress).doRequest();
                 break;
-            case 1:
+            case TabList.TAB_PRODUCING:
                 new OrderProducingQry(context, orderBy, fillterInstant,isShowProgress).doRequest();
                 break;
-            case 2:
+            case TabList.TAB_PRODUCED:
                 new OrderProducedQry(context, orderBy, fillterInstant,isShowProgress).doRequest();
                 break;
-            case 3:
+            case TabList.TAB_DELIVERING:
                 new OrderDeliveryingQry(context, orderBy, fillterInstant,isShowProgress).doRequest();
                 break;
-            case 4:
+            case TabList.TAB_FINISHED:
                 new OrderFinishedQry(context, orderBy, fillterInstant,isShowProgress).doRequest();
                 break;
         }
@@ -443,7 +443,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             });
             reachTimeTxt.setText(order.getInstant() == 1 ? "尽快送达" : OrderHelper.getDateToMonthDay(order.getExpectedTime()));
 
-            if(OrdersFragment.subTabIndex==0){
+            if(OrdersFragment.subTabIndex==TabList.TAB_TOPRODUCE){
                 if(order.getInstant()==0){
                     produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
                 }else{
@@ -489,7 +489,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             userCommentTagsText.setText(OrderHelper.getCommentTagsStr(order.getFeedbackTags()));
             userCommentContentText.setText(order.getFeedback());
 
-            if(OrdersFragment.subTabIndex == 0){
+            if(OrdersFragment.subTabIndex == TabList.TAB_TOPRODUCE){
                 oneBtnLayout.setVisibility(View.VISIBLE);
                 twoBtnLayout.setVisibility(View.GONE);
                 produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
@@ -502,7 +502,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }else{
                 oneBtnLayout.setVisibility(View.GONE);
                 twoBtnLayout.setVisibility(View.VISIBLE);
-                if(OrdersFragment.subTabIndex!=1){
+                if(OrdersFragment.subTabIndex!=TabList.TAB_PRODUCING){
                     finishProduceBtn.setEnabled(false);
                 }else{
                     finishProduceBtn.setEnabled(true);
@@ -776,7 +776,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated");
-        subTabIndex = 0;
+        subTabIndex = TabList.TAB_TOPRODUCE;
         requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true, true);
     }
 
@@ -889,7 +889,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     deliveringTab.setClickBg(false);
                     deliveryFinishedTab.setClickBg(false);
                     showWidget(true);
-                    subTabIndex = 0;
+                    subTabIndex = TabList.TAB_TOPRODUCE;
                     new OrderToProduceQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true).doRequest();
                     resetSpinners();
                     break;
@@ -900,7 +900,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     deliveringTab.setClickBg(false);
                     deliveryFinishedTab.setClickBg(false);
                     showWidget(true);
-                    subTabIndex = 1;
+                    subTabIndex = TabList.TAB_PRODUCING;
                     new OrderProducingQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true).doRequest();
                     resetSpinners();
                     break;
@@ -911,7 +911,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     deliveringTab.setClickBg(false);
                     deliveryFinishedTab.setClickBg(false);
                     showWidget(false);
-                    subTabIndex = 2;
+                    subTabIndex = TabList.TAB_PRODUCING;
                     new OrderProducedQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true).doRequest();
                     resetSpinners();
                     break;
@@ -922,7 +922,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     deliveringTab.setClickBg(true);
                     deliveryFinishedTab.setClickBg(false);
                     showWidget(false);
-                    subTabIndex = 3;
+                    subTabIndex = TabList.TAB_DELIVERING;
                     new OrderDeliveryingQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true).doRequest();
                     resetSpinners();
                     break;
@@ -933,12 +933,12 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     deliveringTab.setClickBg(false);
                     deliveryFinishedTab.setClickBg(true);
                     showWidget(false);
-                    subTabIndex = 4;
+                    subTabIndex = TabList.TAB_FINISHED;
                     new OrderFinishedQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true).doRequest();
                     resetSpinners();
                     break;
             }
-            if(subTabIndex == 4){
+            if(subTabIndex ==  TabList.TAB_FINISHED){
                 totalQuantityTxt.setVisibility(View.VISIBLE);
             }else{
                 totalQuantityTxt.setVisibility(View.INVISIBLE);
