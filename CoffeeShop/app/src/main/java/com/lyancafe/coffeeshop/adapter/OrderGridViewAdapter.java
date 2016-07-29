@@ -28,6 +28,7 @@ import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
+import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
@@ -300,8 +301,8 @@ public class OrderGridViewAdapter extends BaseAdapter{
 
     public void setData(List<OrderBean> list){
         this.list = list;
+    //    selected = 0;
         notifyDataSetChanged();
-        selected = 0;
         if(OrdersFragment.subTabIndex==TabList.TAB_TOPRODUCE){
             //缓存订单列表
             cacheToProduceList.clear();
@@ -352,6 +353,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
             if(list.get(i).getId()==orderId){
                 list.remove(i);
                 this.list = list;
+                selected=0;
                 notifyDataSetChanged();
                 break;
             }
@@ -359,7 +361,10 @@ public class OrderGridViewAdapter extends BaseAdapter{
     }
 
 
-
-
-
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+        //通知详情板块内容变更
+        EventBus.getDefault().post(new UpdateOrderDetailEvent());
+    }
 }

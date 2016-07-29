@@ -47,6 +47,7 @@ import com.lyancafe.coffeeshop.event.CommitIssueOrderEvent;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
+import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.event.UpdatePrintStatusEvent;
 import com.lyancafe.coffeeshop.event.UpdateTabOrderListCountEvent;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
@@ -206,7 +207,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 adapter.selected = position;
                 adapter.notifyDataSetChanged();
-                updateDetailView(adapter.list.get(position));
             }
         });
 
@@ -751,9 +751,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         Log.d(TAG,"OnUpdatePrintStatusEvent,orderSn = "+event.orderSn);
         //打印界面退出的时候，刷新一下打印按钮文字
         adapter.notifyDataSetChanged();
-        if(adapter.list.size()>0 && adapter.selected>=0 && adapter.selected<adapter.list.size()){
-            updateDetailView(adapter.list.get(adapter.selected));
-        }
     }
 
     /**
@@ -839,7 +836,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             case R.id.btn_prev:  //上一单
                 if(adapter.selected>0){
                     adapter.selected -= 1;
-                    updateDetailView(adapter.list.get(adapter.selected));
                     adapter.notifyDataSetChanged();
                     ordersGridView.smoothScrollToPosition(adapter.selected);
 
@@ -848,7 +844,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             case R.id.btn_next:  //下一单
                 if(adapter.selected<adapter.list.size()-1 && adapter.selected!=-1 ){
                     adapter.selected += 1;
-                    updateDetailView(adapter.list.get(adapter.selected));
                     adapter.notifyDataSetChanged();
                     ordersGridView.smoothScrollToPosition(adapter.selected);
                 }
@@ -1037,8 +1032,21 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
      */
     @Subscribe
     public void onPrintOrderEvent(PrintOrderEvent event){
-        printOrder(mContext,event.order);
+        printOrder(mContext, event.order);
     }
+
+    @Subscribe
+    public void onUpdateOrderDetailEvent(UpdateOrderDetailEvent event){
+        if(adapter!=null && adapter.list.size()>0&&adapter.selected>=0&&adapter.selected<adapter.list.size()){
+            updateDetailView(adapter.list.get(adapter.selected));
+        }else{
+            updateDetailView(null);
+        }
+    }
+
+
+
+
 
     //生产完成后更新批量订单提示栏的可见状态
     public void updateBatchPromptTextView(int leftBatchOrderNum){
@@ -1092,11 +1100,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 return;
             }
             adapter.setData(orderBeans);
-            if(orderBeans.size()>0){
-                updateDetailView(orderBeans.get(0));
-            }else{
-                updateDetailView(null);
-            }
             //检查列表中是否有未完成的合并订单
             if(!OrderHelper.isContainerBatchOrder(orderBeans)){
                 OrderHelper.batchList.clear();
@@ -1142,11 +1145,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
             EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_PRODUCING,orderBeans.size()));
             adapter.setData(orderBeans);
-            if(orderBeans.size()>0){
-                updateDetailView(orderBeans.get(0));
-            }else{
-                updateDetailView(null);
-            }
             //检查列表中是否有未完成的合并订单
             if(!OrderHelper.isContainerBatchOrder(orderBeans)){
                 OrderHelper.batchList.clear();
@@ -1192,11 +1190,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
             EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_PRODUCED,orderBeans.size()));
             adapter.setData(orderBeans);
-            if(orderBeans.size()>0){
-                updateDetailView(orderBeans.get(0));
-            }else{
-                updateDetailView(null);
-            }
         }
     }
 
@@ -1235,11 +1228,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
             EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_DELIVERING,orderBeans.size()));
             adapter.setData(orderBeans);
-            if(orderBeans.size()>0){
-                updateDetailView(orderBeans.get(0));
-            }else{
-                updateDetailView(null);
-            }
         }
     }
 
@@ -1279,11 +1267,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_FINISHED,orderBeans.size()));
             updateTotalQuantity(orderBeans);
             adapter.setData(orderBeans);
-            if(orderBeans.size()>0){
-                updateDetailView(orderBeans.get(0));
-            }else{
-                updateDetailView(null);
-            }
         }
     }
 
