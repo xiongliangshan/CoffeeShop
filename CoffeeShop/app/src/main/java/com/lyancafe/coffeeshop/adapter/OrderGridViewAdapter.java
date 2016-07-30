@@ -1,7 +1,6 @@
 package com.lyancafe.coffeeshop.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
@@ -18,36 +17,21 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.activity.PrintOrderActivity;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.constant.TabList;
-import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
-import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
-import com.lyancafe.coffeeshop.helper.PrintHelper;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.lyancafe.coffeeshop.widget.ConfirmDialog;
-import com.lyancafe.coffeeshop.widget.SimpleConfirmDialog;
-import com.xls.http.HttpAsyncTask;
-import com.xls.http.HttpEntity;
-import com.xls.http.HttpUtils;
-import com.xls.http.Jresp;
-import com.xls.http.Qry;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -164,7 +148,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
         }else{
             holder.labelFlagImg.setVisibility(View.INVISIBLE);
         }
-        if(OrdersFragment.subTabIndex==0){
+        if(OrdersFragment.subTabIndex==TabList.TAB_TOPRODUCE){
             if(order.getInstant()==0){
                 holder.produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
             }else{
@@ -198,7 +182,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
             holder.remarkFlagIV.setVisibility(View.VISIBLE);
         }
         fillItemListData(holder.itemContainerll, order.getItems());
-        if(OrdersFragment.subTabIndex == 0){
+        if(OrdersFragment.subTabIndex == TabList.TAB_TOPRODUCE){
             holder.twobtnContainerLayout.setVisibility(View.GONE);
             holder.onebtnContainerlayout.setVisibility(View.VISIBLE);
             holder.produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
@@ -211,7 +195,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
         }else{
             holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
             holder.onebtnContainerlayout.setVisibility(View.GONE);
-            if(OrdersFragment.subTabIndex!=1){
+            if(OrdersFragment.subTabIndex!=TabList.TAB_PRODUCING){
                 holder.produceBtn.setEnabled(false);
             }else{
                 holder.produceBtn.setEnabled(true);
@@ -322,12 +306,12 @@ public class OrderGridViewAdapter extends BaseAdapter{
                 timer.schedule(timerTask,DELTA_TIME,DELTA_TIME);
             }
 
-        }else if(OrdersFragment.subTabIndex==1){
+        }else if(OrdersFragment.subTabIndex==TabList.TAB_PRODUCING){
             //缓存订单列表
             cacheProducingList.clear();
             cacheProducingList.addAll(list);
 
-        } else if(OrdersFragment.subTabIndex==2){
+        } else if(OrdersFragment.subTabIndex==TabList.TAB_PRODUCED){
             cacheProducedList.clear();
             cacheProducedList.addAll(list);
         }
