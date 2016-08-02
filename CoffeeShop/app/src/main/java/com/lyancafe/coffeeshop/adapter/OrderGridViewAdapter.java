@@ -136,18 +136,41 @@ public class OrderGridViewAdapter extends BaseAdapter{
         }else{
             holder.logoScanIV.setVisibility(View.GONE);
         }
-        if(order.getGift()==2){
-            //礼盒订单
-            holder.giftIV.setVisibility(View.VISIBLE);
+        //定制
+        if(order.isRecipeFittings()){
+            holder.labelFlagImg.setImageResource(R.mipmap.flag_ding);
         }else{
-            holder.giftIV.setVisibility(View.INVISIBLE);
+            holder.labelFlagImg.setImageResource(R.mipmap.flag_placeholder);
         }
 
-        if(order.isRecipeFittings()){
-            holder.labelFlagImg.setVisibility(View.VISIBLE);
+        //礼盒订单 or 礼品卡
+        if(order.getGift()==2){
+            holder.giftIV.setImageResource(R.mipmap.flag_li);
         }else{
-            holder.labelFlagImg.setVisibility(View.INVISIBLE);
+            holder.giftIV.setImageResource(R.mipmap.flag_placeholder);
         }
+
+        //抢单
+        if(order.getStatus()== OrderStatus.UNASSIGNED){
+            holder.grabFlagIV.setImageResource(R.mipmap.flag_placeholder);
+        }else{
+            holder.grabFlagIV.setImageResource(R.mipmap.flag_qiang);
+        }
+
+        //备注
+        if(TextUtils.isEmpty(order.getNotes()) && TextUtils.isEmpty(order.getCsrNotes())){
+            holder.remarkFlagIV.setImageResource(R.mipmap.flag_placeholder);
+        }else {
+            holder.remarkFlagIV.setImageResource(R.mipmap.flag_zhu);
+        }
+
+        //问题
+        if(order.issueOrder()){
+            holder.issueFlagIV.setImageResource(R.mipmap.flag_issue);
+        }else{
+            holder.issueFlagIV.setImageResource(R.mipmap.flag_placeholder);
+        }
+
         if(OrdersFragment.subTabIndex==TabList.TAB_TOPRODUCE){
             if(order.getInstant()==0){
                 holder.produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
@@ -158,7 +181,6 @@ public class OrderGridViewAdapter extends BaseAdapter{
             OrderHelper.showEffect(order, holder.produceBtn, holder.effectTimeTxt);
         }
 
-
         if(OrderHelper.isPrinted(context, order.getOrderSn())){
             holder.printBtn.setText(R.string.print_again);
             holder.printBtn.setTextColor(context.getResources().getColor(R.color.text_red));
@@ -166,21 +188,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
             holder.printBtn.setText(R.string.print);
             holder.printBtn.setTextColor(context.getResources().getColor(R.color.text_black));
         }
-        if(order.issueOrder()){
-            holder.issueFlagIV.setVisibility(View.VISIBLE);
-        }else{
-            holder.issueFlagIV.setVisibility(View.INVISIBLE);
-        }
-        if(order.getStatus()== OrderStatus.UNASSIGNED){
-            holder.grabFlagIV.setVisibility(View.INVISIBLE);
-        }else{
-            holder.grabFlagIV.setVisibility(View.VISIBLE);
-        }
-        if(TextUtils.isEmpty(order.getNotes()) && TextUtils.isEmpty(order.getCsrNotes())){
-            holder.remarkFlagIV.setVisibility(View.INVISIBLE);
-        }else {
-            holder.remarkFlagIV.setVisibility(View.VISIBLE);
-        }
+
         fillItemListData(holder.itemContainerll, order.getItems());
         if(OrdersFragment.subTabIndex == TabList.TAB_TOPRODUCE){
             holder.twobtnContainerLayout.setVisibility(View.GONE);
@@ -226,11 +234,11 @@ public class OrderGridViewAdapter extends BaseAdapter{
         ll.removeAllViews();
         for(ItemContentBean item:items){
             TextView tv1 = new TextView(context);
-            tv1.setText(item.getProduct() + "(" + item.getUnit() + ")");
+            tv1.setText(item.getProduct());
             tv1.setMaxEms(6);
             tv1.setTextSize(context.getResources().getDimension(R.dimen.content_item_text_size));
             TextView tv2 = new TextView(context);
-            tv2.setText("X " + item.getQuantity());
+            tv2.setText("x  " + item.getQuantity());
             tv2.setTextSize(context.getResources().getDimension(R.dimen.content_item_text_size));
             TextPaint tp = tv2.getPaint();
             tp.setFakeBoldText(true);
@@ -239,7 +247,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             lp1.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            lp1.leftMargin = OrderHelper.dip2Px(5,context);
+            lp1.leftMargin = OrderHelper.dip2Px(2,context);
             tv1.setLayoutParams(lp1);
             rl.addView(tv1);
 
@@ -247,14 +255,14 @@ public class OrderGridViewAdapter extends BaseAdapter{
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             lp2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            lp2.rightMargin = OrderHelper.dip2Px(5,context);
+            lp2.rightMargin = OrderHelper.dip2Px(2,context);
             tv2.setLayoutParams(lp2);
             rl.addView(tv2);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
-            lp.topMargin = OrderHelper.dip2Px(4,context);
+            lp.topMargin = OrderHelper.dip2Px(2,context);
             ll.addView(rl,lp);
         }
         ll.invalidate();
@@ -318,6 +326,10 @@ public class OrderGridViewAdapter extends BaseAdapter{
 
 
 
+
+    }
+
+    private void setFlag(OrderBean orderBean){
 
     }
 

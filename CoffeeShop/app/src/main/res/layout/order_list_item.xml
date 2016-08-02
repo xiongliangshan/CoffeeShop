@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:descendantFocusability="blocksDescendants"
-    android:padding="2dp"
+    android:padding="1dp"
     >
     <LinearLayout
         android:id="@+id/second_root_view"
@@ -14,82 +14,102 @@
         android:background="@drawable/bg_order"
         >
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
             >
             <ImageView
                 android:id="@+id/logo_scan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/pay_shop"
-                android:paddingLeft="8dp"
+                android:layout_marginRight="2dp"
                 android:visibility="gone"
                 />
             <TextView
                 android:id="@+id/item_order_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:text="CB2015-0911-01"
-                android:layout_marginLeft="8dp"
-
+                android:textSize="14sp"
+                android:text="003约"
                 />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="right|center_vertical">
+                <TextView
+                    android:id="@+id/item_contant_produce_effect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="生产时效"
+                    android:textSize="10sp"
+                    android:textColor="@color/font_gray"
+                    android:layout_marginRight="4dp"
+                    />
+                <TextView
+                    android:id="@+id/item_produce_effect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:text="08:36"
+                    />
+            </LinearLayout>
         </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_marginTop="4dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
             >
-            <TextView
-                android:id="@+id/item_contant_produce_effect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="生产时效"
-                android:padding="0dp"
-                android:textSize="14sp"
-                />
-            <TextView
-                android:id="@+id/item_produce_effect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/item_contant_produce_effect"
-                android:textSize="20sp"
-                android:text="08:36"
-                />
             <ImageView
-                android:id="@+id/item_issue_flag"
+                android:id="@+id/iv_label_flag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/item_grab_flag"
-                android:layout_below="@id/item_contant_produce_effect"
-                android:layout_marginLeft="2dp"
-                android:layout_marginTop="6dp"
-                android:src="@mipmap/icon_problem"/>
+                android:src="@mipmap/flag_ding"
+                />
+
+            <ImageView
+                android:id="@+id/iv_gift"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/flag_li"
+                android:layout_toRightOf="@id/iv_label_flag"
+                android:layout_marginLeft="4dp"
+                />
+
+
             <ImageView
                 android:id="@+id/item_grab_flag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/item_remark_flag"
-                android:layout_below="@id/item_contant_produce_effect"
-                android:layout_marginLeft="3dp"
-                android:layout_marginTop="6dp"
-                android:src="@mipmap/icon_accpet"/>
+                android:layout_toRightOf="@id/iv_gift"
+                android:src="@mipmap/flag_qiang"
+                android:layout_marginLeft="4dp"/>
+
             <ImageView
                 android:id="@+id/item_remark_flag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/icon_message"
-                android:layout_marginLeft="3dp"
-                android:layout_marginTop="6dp"
-                android:layout_alignParentRight="true"
-                android:layout_below="@id/item_contant_produce_effect"
+                android:layout_marginLeft="4dp"
+                android:src="@mipmap/flag_zhu"
+                android:layout_toRightOf="@id/item_grab_flag"
                 />
+
+            <ImageView
+                android:id="@+id/item_issue_flag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/item_remark_flag"
+                android:src="@mipmap/flag_issue"
+                android:layout_marginLeft="4dp"/>
         </RelativeLayout>
 
         <LinearLayout
@@ -99,10 +119,10 @@
             android:background="@mipmap/bg_normal_dot"
             android:orientation="vertical"
             android:gravity="center_horizontal"
-            android:layout_marginRight="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="10dp"
-            android:padding="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="8dp"
+            android:padding="2dp"
             >
 
         </LinearLayout>
@@ -112,8 +132,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
             android:visibility="gone"
             >
 
@@ -148,9 +168,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="4dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_margin="4dp"
             >
             <TextView
                 android:id="@+id/item_produce_and_print"
@@ -163,26 +181,7 @@
                 android:textSize="13sp"
                 android:textColor="@color/white_font"
                 android:background="@drawable/bg_produce_btn"
-                android:layout_marginRight="3dp"
                 />
         </LinearLayout>
     </LinearLayout>
-    <ImageView
-        android:id="@+id/iv_gift"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/gift_flag"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="10dp"
-        android:visibility="invisible"/>
-    <ImageView
-        android:id="@+id/iv_label_flag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/special_flag"
-        android:layout_toLeftOf="@id/iv_gift"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="5dp"
-        android:visibility="invisible"/>
 </RelativeLayout>

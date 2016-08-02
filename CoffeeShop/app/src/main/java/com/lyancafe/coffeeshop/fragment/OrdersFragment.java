@@ -593,7 +593,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             tv1.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
             tv1.setTextColor(mContext.getResources().getColor(R.color.font_black));
             TextView tv2 = new TextView(mContext);
-            tv2.setText("X " + item.getQuantity());
+            tv2.setText("x  " + item.getQuantity());
             tv2.getPaint().setFakeBoldText(true);
             tv2.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
             RelativeLayout rl = new RelativeLayout(mContext);
