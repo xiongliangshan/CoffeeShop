@@ -157,7 +157,7 @@ public class OrderHelper {
         }
         return sum;
     }
-    //显示时效
+    //显示时效并改变生产完成按钮颜色
     public static void showEffect(OrderBean order,TextView produceBtn,TextView effectTimeTxt){
         final long mms = order.getProduceEffect();
         Log.d(TAG, "mms = " + mms);
@@ -176,6 +176,19 @@ public class OrderHelper {
             }else{
                 produceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
             }
+            effectTimeTxt.setTextColor(Color.parseColor("#000000"));
+            effectTimeTxt.setText(OrderHelper.getDateToMinutes(mms));
+        }
+    }
+
+    //单独显示待生产界面的时效
+    public static void showEffectOnly(OrderBean order,TextView effectTimeTxt){
+        final long mms = order.getProduceEffect();
+        Log.d(TAG, "mms = " + mms);
+        if(mms<=0){
+            effectTimeTxt.setTextColor(Color.parseColor("#e2435a"));
+            effectTimeTxt.setText("+"+OrderHelper.getDateToMinutes(Math.abs(mms)));
+        }else{
             effectTimeTxt.setTextColor(Color.parseColor("#000000"));
             effectTimeTxt.setText(OrderHelper.getDateToMinutes(mms));
         }
