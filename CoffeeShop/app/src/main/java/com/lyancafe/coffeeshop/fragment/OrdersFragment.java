@@ -8,11 +8,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -137,9 +139,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private TextView deliverPhoneTxt;
     private TextView deliverLocationInfoTxt;
     private LinearLayout itemsContainerLayout;
-    private TextView orderPriceTxt;
-    private TextView payWayTxt;
-    private TextView moneyTxt;
+//    private TextView orderPriceTxt;
+//    private TextView payWayTxt;
+//    private TextView moneyTxt;
     private LinearLayout userRemarkLayout;
     private TextView userRemarkTxt;
     private LinearLayout csadRemarkLayout;
@@ -371,9 +373,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         deliverPhoneTxt = (TextView) contentView.findViewById(R.id.deliver_phone);
         deliverLocationInfoTxt = (TextView) contentView.findViewById(R.id.deliver_location_info);
         itemsContainerLayout = (LinearLayout) contentView.findViewById(R.id.items_container_layout);
-        orderPriceTxt = (TextView) contentView.findViewById(R.id.order_price);
-        payWayTxt = (TextView) contentView.findViewById(R.id.pay_way);
-        moneyTxt = (TextView) contentView.findViewById(R.id.money);
+//        orderPriceTxt = (TextView) contentView.findViewById(R.id.order_price);
+//        payWayTxt = (TextView) contentView.findViewById(R.id.pay_way);
+//        moneyTxt = (TextView) contentView.findViewById(R.id.money);
         userRemarkLayout = (LinearLayout) contentView.findViewById(R.id.ll_user_remark);
         userRemarkLayout.setOnClickListener(indoDetailListener);
         userRemarkTxt = (TextView) contentView.findViewById(R.id.user_remark);
@@ -410,9 +412,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             deliverPhoneTxt.setText("");
             deliverLocationInfoTxt.setVisibility(View.GONE);
             fillItemListData(itemsContainerLayout, order);
-            orderPriceTxt.setText("");
-            payWayTxt.setText("");
-            moneyTxt.setText("");
+//            orderPriceTxt.setText("");
+//            payWayTxt.setText("");
+//            moneyTxt.setText("");
             userRemarkTxt.setText("");
             csadRemarkTxt.setText("");
             userCommentTagsText.setText("");
@@ -485,9 +487,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 }
             });
             fillItemListData(itemsContainerLayout, order);
-            orderPriceTxt.setText("应付: " + OrderHelper.getMoneyStr(OrderHelper.getTotalPrice(order)));
-            payWayTxt.setText(order.getPayChannelStr());
-            moneyTxt.setText(OrderHelper.getMoneyStr(order.getPaid()));
+//            orderPriceTxt.setText("应付: " + OrderHelper.getMoneyStr(OrderHelper.getTotalPrice(order)));
+//            payWayTxt.setText(order.getPayChannelStr());
+//            moneyTxt.setText(OrderHelper.getMoneyStr(order.getPaid()));
             userRemarkTxt.setText(order.getNotes());
             csadRemarkTxt.setText(order.getCsrNotes());
             userCommentTagsText.setText(OrderHelper.getCommentTagsStr(order.getFeedbackTags()));
@@ -589,20 +591,23 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         List<ItemContentBean> items = order.getItems();
         for(ItemContentBean item:items){
             TextView tv1 = new TextView(mContext);
-            tv1.setText(item.getProduct()+OrderHelper.getLabelStr(item.getRecipeFittingsList()));
+            tv1.setId(R.id.item_name);
+            tv1.setText(item.getProduct());
             tv1.setMaxEms(9);
             tv1.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
             tv1.setTextColor(mContext.getResources().getColor(R.color.font_black));
             TextView tv2 = new TextView(mContext);
+            tv2.setId(R.id.item_num);
             tv2.setText("x  " + item.getQuantity());
             tv2.getPaint().setFakeBoldText(true);
             tv2.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
+
             RelativeLayout rl = new RelativeLayout(mContext);
             RelativeLayout.LayoutParams lp1=new RelativeLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             lp1.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            lp1.leftMargin = OrderHelper.dip2Px(5,mContext);;
+            lp1.leftMargin = OrderHelper.dip2Px(2,mContext);
             tv1.setLayoutParams(lp1);
             rl.addView(tv1);
 
@@ -610,15 +615,35 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             lp2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            lp2.rightMargin = OrderHelper.dip2Px(5,mContext);
+            lp2.rightMargin = OrderHelper.dip2Px(2,mContext);
             tv2.setLayoutParams(lp2);
             rl.addView(tv2);
+
+            String dingzhi = OrderHelper.getLabelStr(item.getRecipeFittingsList());
+            if(!TextUtils.isEmpty(dingzhi)){
+                TextView tv3 = new TextView(mContext);
+                tv3.setId(R.id.item_flag);
+                tv3.setText(dingzhi);
+                Drawable drawable = mContext.getResources().getDrawable(R.mipmap.flag_ding,null);
+                drawable.setBounds(0, 1, OrderHelper.dip2Px(14, mContext), OrderHelper.dip2Px(14, mContext));
+                tv3.setCompoundDrawablePadding(OrderHelper.dip2Px(4, mContext));
+                tv3.setCompoundDrawables(drawable, null, null, null);
+                tv3.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
+                tv3.setTextColor(mContext.getResources().getColor(R.color.font_black));
+                RelativeLayout.LayoutParams lp3=new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+                lp3.addRule(RelativeLayout.BELOW,tv1.getId());
+                lp3.addRule(RelativeLayout.ALIGN_LEFT,tv1.getId());
+                tv3.setLayoutParams(lp3);
+                rl.addView(tv3);
+            }
 
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
-            lp.topMargin = OrderHelper.dip2Px(4,mContext);
+            lp.topMargin = OrderHelper.dip2Px(2,mContext);
             ll.addView(rl,lp);
         }
         if(order.getGift()==2){
@@ -637,7 +662,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             lp3.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            lp3.leftMargin = OrderHelper.dip2Px(5,mContext);;
+            lp3.leftMargin = OrderHelper.dip2Px(2,mContext);
             tv3.setLayoutParams(lp3);
             r2.addView(tv3);
 

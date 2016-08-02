@@ -82,8 +82,8 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
     private TextView deliverNameTxt;
     private TextView deliverPhoneTxt;
     private LinearLayout itemsContainerLayout;
-    private TextView payWayTxt;
-    private TextView moneyTxt;
+//    private TextView payWayTxt;
+//    private TextView moneyTxt;
     private TextView userRemarkTxt;
     private TextView csadRemarkTxt;
     private Button finishProduceBtn;
@@ -211,8 +211,8 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
         deliverNameTxt = (TextView) contentView.findViewById(R.id.deliver_name);
         deliverPhoneTxt = (TextView) contentView.findViewById(R.id.deliver_phone);
         itemsContainerLayout = (LinearLayout) contentView.findViewById(R.id.items_container_layout);
-        payWayTxt = (TextView) contentView.findViewById(R.id.pay_way);
-        moneyTxt = (TextView) contentView.findViewById(R.id.money);
+//        payWayTxt = (TextView) contentView.findViewById(R.id.pay_way);
+//        moneyTxt = (TextView) contentView.findViewById(R.id.money);
         userRemarkTxt = (TextView) contentView.findViewById(R.id.user_remark);
         csadRemarkTxt = (TextView) contentView.findViewById(R.id.csad_remark);
         finishProduceBtn = (Button) contentView.findViewById(R.id.btn_finish_produce);
@@ -237,8 +237,8 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
             deliverNameTxt.setText("");
             deliverPhoneTxt.setText("");
             fillItemListData(itemsContainerLayout, new ArrayList<ItemContentBean>());
-            payWayTxt.setText("");
-            moneyTxt.setText("");
+//            payWayTxt.setText("");
+//            moneyTxt.setText("");
             userRemarkTxt.setText("");
             csadRemarkTxt.setText("");
             finishProduceBtn.setEnabled(false);
@@ -294,8 +294,8 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
             }
 
             fillItemListData(itemsContainerLayout, order.getItems());
-            payWayTxt.setText(order.getPayChannelStr());
-            moneyTxt.setText(OrderHelper.getMoneyStr(order.getPaid()));
+//            payWayTxt.setText(order.getPayChannelStr());
+//            moneyTxt.setText(OrderHelper.getMoneyStr(order.getPaid()));
             userRemarkTxt.setText(order.getNotes());
             csadRemarkTxt.setText(order.getCsrNotes());
             finishProduceBtn.setEnabled(true);

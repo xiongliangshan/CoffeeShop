@@ -381,9 +381,10 @@ public class OrderHelper {
         }
         StringBuilder sb = new StringBuilder();
         for(String label:list){
-            sb.append("/");
             sb.append(label);
+            sb.append("/");
         }
+        sb.deleteCharAt(sb.length()-1);
         return sb.toString();
     }
 

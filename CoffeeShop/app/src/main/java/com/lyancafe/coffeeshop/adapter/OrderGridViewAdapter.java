@@ -1,12 +1,14 @@
 package com.lyancafe.coffeeshop.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -238,6 +240,12 @@ public class OrderGridViewAdapter extends BaseAdapter{
             tv1.setText(item.getProduct());
             tv1.setMaxEms(6);
             tv1.setTextSize(context.getResources().getDimension(R.dimen.content_item_text_size));
+            if(!TextUtils.isEmpty(OrderHelper.getLabelStr(item.getRecipeFittingsList()))){
+                Drawable drawable = context.getResources().getDrawable(R.mipmap.flag_ding,null);
+                drawable.setBounds(0,1,OrderHelper.dip2Px(12,context),OrderHelper.dip2Px(12,context));
+                tv1.setCompoundDrawablePadding(OrderHelper.dip2Px(4,context));
+                tv1.setCompoundDrawables(null, null,drawable,null);
+            }
             TextView tv2 = new TextView(context);
             tv2.setText("x  " + item.getQuantity());
             tv2.setTextSize(context.getResources().getDimension(R.dimen.content_item_text_size));
