@@ -177,6 +177,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
             }else{
                 holder.produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn);
             }
+            OrderHelper.showEffectOnly(order,holder.effectTimeTxt);
         }else{
             OrderHelper.showEffect(order, holder.produceBtn, holder.effectTimeTxt);
         }
