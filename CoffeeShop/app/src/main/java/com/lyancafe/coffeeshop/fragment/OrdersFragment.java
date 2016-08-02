@@ -452,6 +452,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 }else{
                     produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn);
                 }
+                OrderHelper.showEffectOnly(order,produceEffectTxt);
             }else{
                 OrderHelper.showEffect(order, finishProduceBtn, produceEffectTxt);
             }
