@@ -647,7 +647,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             lp.topMargin = OrderHelper.dip2Px(2,mContext);
             ll.addView(rl,lp);
         }
-        if(order.getGift()==2){
+        if(!TextUtils.isEmpty(order.getWishes())){
             TextView tv3 = new TextView(mContext);
             tv3.setText("礼品卡");
             tv3.setMaxEms(9);

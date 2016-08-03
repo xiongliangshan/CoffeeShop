@@ -147,7 +147,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
         }
 
         //礼盒订单 or 礼品卡
-        if(order.getGift()==2){
+        if(order.getGift()==2||order.getGift()==5){
             holder.giftIV.setImageResource(R.mipmap.flag_li);
         }else{
             holder.giftIV.setImageResource(R.mipmap.flag_placeholder);
