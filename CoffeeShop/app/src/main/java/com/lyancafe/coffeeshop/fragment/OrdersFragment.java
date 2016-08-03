@@ -798,6 +798,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         new CommentCountQry(mContext).doRequest();
     }
 
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -1327,13 +1328,13 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
             if(resp.status==0){
                 ToastUtil.showToast(context,R.string.do_success);
-                for(OrderBean order:adapter.cacheToProduceList){
+                for(OrderBean order:adapter.list){
                     if(orderId == order.getId()){
                         order.setStatus(OrderStatus.UNASSIGNED);
                         break;
                     }
                 }
-                adapter.list = adapter.cacheToProduceList;
+            //    adapter.list = adapter.cacheToProduceList;
                 adapter.notifyDataSetChanged();
             }else{
                 ToastUtil.showToast(context, resp.message);
