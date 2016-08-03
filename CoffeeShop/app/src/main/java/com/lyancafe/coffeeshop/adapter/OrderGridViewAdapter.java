@@ -107,6 +107,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
             holder.grabFlagIV = (ImageView) convertView.findViewById(R.id.item_grab_flag);
             holder.remarkFlagIV = (ImageView) convertView.findViewById(R.id.item_remark_flag);
             holder.itemContainerll = (LinearLayout) convertView.findViewById(R.id.item_container);
+            holder.cupCountText = (TextView) convertView.findViewById(R.id.tv_cup_count);
             holder.twobtnContainerLayout = (LinearLayout) convertView.findViewById(R.id.ll_twobtn_container);
             holder.onebtnContainerlayout = (LinearLayout) convertView.findViewById(R.id.ll_onebtn_container);
             holder.produceBtn = (TextView) convertView.findViewById(R.id.item_produce);
@@ -193,6 +194,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
         }
 
         fillItemListData(holder.itemContainerll, order.getItems());
+        holder.cupCountText.setText(context.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
         if(OrdersFragment.subTabIndex == TabList.TAB_TOPRODUCE){
             holder.twobtnContainerLayout.setVisibility(View.GONE);
             holder.onebtnContainerlayout.setVisibility(View.VISIBLE);
@@ -293,6 +295,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
         ImageView grabFlagIV;
         ImageView remarkFlagIV;
         LinearLayout itemContainerll;
+        TextView cupCountText;
         LinearLayout twobtnContainerLayout;
         LinearLayout onebtnContainerlayout;
         TextView produceAndPrintBtn;

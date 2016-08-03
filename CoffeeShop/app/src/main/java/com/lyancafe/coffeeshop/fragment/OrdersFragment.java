@@ -16,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -621,22 +622,22 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
             String dingzhi = OrderHelper.getLabelStr(item.getRecipeFittingsList());
             if(!TextUtils.isEmpty(dingzhi)){
-                TextView tv3 = new TextView(mContext);
-                tv3.setId(R.id.item_flag);
-                tv3.setText(dingzhi);
+                TextView tv5 = new TextView(mContext);
+                tv5.setId(R.id.item_flag);
+                tv5.setText(dingzhi);
                 Drawable drawable = mContext.getResources().getDrawable(R.mipmap.flag_ding,null);
                 drawable.setBounds(0, 1, OrderHelper.dip2Px(14, mContext), OrderHelper.dip2Px(14, mContext));
-                tv3.setCompoundDrawablePadding(OrderHelper.dip2Px(4, mContext));
-                tv3.setCompoundDrawables(drawable, null, null, null);
-                tv3.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
-                tv3.setTextColor(mContext.getResources().getColor(R.color.font_black));
-                RelativeLayout.LayoutParams lp3=new RelativeLayout.LayoutParams(
+                tv5.setCompoundDrawablePadding(OrderHelper.dip2Px(4, mContext));
+                tv5.setCompoundDrawables(drawable, null, null, null);
+                tv5.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
+                tv5.setTextColor(mContext.getResources().getColor(R.color.font_black));
+                RelativeLayout.LayoutParams lp5=new RelativeLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
-                lp3.addRule(RelativeLayout.BELOW,tv1.getId());
-                lp3.addRule(RelativeLayout.ALIGN_LEFT,tv1.getId());
-                tv3.setLayoutParams(lp3);
-                rl.addView(tv3);
+                lp5.addRule(RelativeLayout.BELOW,tv1.getId());
+                lp5.addRule(RelativeLayout.ALIGN_LEFT,tv1.getId());
+                tv5.setLayoutParams(lp5);
+                rl.addView(tv5);
             }
 
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -681,6 +682,18 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             lp.topMargin = OrderHelper.dip2Px(4,mContext);
             ll.addView(r2, lp);
         }
+
+        TextView tv6 = new TextView(mContext);
+        tv6.setText(mContext.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
+        tv6.setGravity(Gravity.CENTER);
+        tv6.getPaint().setFakeBoldText(true);
+        LinearLayout.LayoutParams lp6 = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        lp6.topMargin = OrderHelper.dip2Px(30,mContext);
+        tv6.setLayoutParams(lp6);
+        ll.addView(tv6, lp6);
 
         ll.invalidate();
     }
