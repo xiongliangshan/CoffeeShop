@@ -96,7 +96,7 @@ public class PrintHelper {
         int coolBoxAmount = getTotalBoxAmount(coolCupList.size());
         int totalBoxAmount = hotBoxAmount+coolBoxAmount; //盒子总数
         Log.i(TAG,"hotBoxAmount = "+hotBoxAmount+" | coolBoxAmount = "+coolBoxAmount+" | totalBoxAmount = "+totalBoxAmount);
-        boolean isGiftBox = orderBean.getGift()==2?true:false;
+        boolean isGiftBox = orderBean.getGift()==5?true:false;
         int i = 0;      //盒子号
         for(i=0;i<hotCupList.size()/4;i++){
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,i+1,4);
