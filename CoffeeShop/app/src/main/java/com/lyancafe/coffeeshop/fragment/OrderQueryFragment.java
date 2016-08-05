@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,6 +30,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.lyancafe.coffeeshop.CoffeeShopApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.QueryListRecyclerAdapter;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
@@ -409,7 +411,7 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
                 TextView tv5 = new TextView(mContext);
                 tv5.setId(R.id.item_flag);
                 tv5.setText(dingzhi);
-                Drawable drawable = mContext.getResources().getDrawable(R.mipmap.flag_ding,null);
+                Drawable drawable = ContextCompat.getDrawable(CoffeeShopApplication.getInstance(),R.mipmap.flag_ding);
                 drawable.setBounds(0, 1, OrderHelper.dip2Px(14, mContext), OrderHelper.dip2Px(14, mContext));
                 tv5.setCompoundDrawablePadding(OrderHelper.dip2Px(4, mContext));
                 tv5.setCompoundDrawables(drawable, null, null, null);
@@ -456,7 +458,7 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             lp4.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            lp4.rightMargin = OrderHelper.dip2Px(5,mContext);
+            lp4.rightMargin = OrderHelper.dip2Px(2,mContext);
             tv4.setLayoutParams(lp4);
             r2.addView(tv4);
 

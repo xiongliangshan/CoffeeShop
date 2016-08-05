@@ -3,6 +3,7 @@ package com.lyancafe.coffeeshop.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextPaint;
 import android.text.TextUtils;
@@ -15,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.lyancafe.coffeeshop.CoffeeShopApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
@@ -197,13 +199,13 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
             tv1.setMaxEms(6);
             tv1.setTextSize(context.getResources().getDimension(R.dimen.content_item_text_size));
             if(!TextUtils.isEmpty(OrderHelper.getLabelStr(item.getRecipeFittingsList()))){
-                Drawable drawable = context.getResources().getDrawable(R.mipmap.flag_ding,null);
+                Drawable drawable = ContextCompat.getDrawable(CoffeeShopApplication.getInstance(),R.mipmap.flag_ding);
                 drawable.setBounds(0,1,OrderHelper.dip2Px(12,context),OrderHelper.dip2Px(12,context));
                 tv1.setCompoundDrawablePadding(OrderHelper.dip2Px(4,context));
                 tv1.setCompoundDrawables(null, null,drawable,null);
             }
             TextView tv2 = new TextView(context);
-            tv2.setText("X " + item.getQuantity());
+            tv2.setText("x " + item.getQuantity());
             tv2.setTextSize(context.getResources().getDimension(R.dimen.content_item_text_size));
             TextPaint tp = tv2.getPaint();
             tp.setFakeBoldText(true);
