@@ -2,6 +2,7 @@ package com.lyancafe.coffeeshop.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextPaint;
 import android.text.TextUtils;
@@ -18,6 +19,7 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
+import com.lyancafe.coffeeshop.constant.TabList;
 import com.lyancafe.coffeeshop.fragment.OrderQueryFragment;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
@@ -74,11 +76,47 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
         }else{
             holder.logoScanIV.setVisibility(View.GONE);
         }
-        holder.orderIdTxt.setText(order.getOrderSn());
+
+        //定制
+        if(order.isRecipeFittings()){
+            holder.labelFlagImg.setImageResource(R.mipmap.flag_ding);
+        }else{
+            holder.labelFlagImg.setImageResource(R.mipmap.flag_placeholder);
+        }
+
+        //礼盒订单 or 礼品卡
+        if(order.getGift()==2||order.getGift()==5){
+            holder.giftIV.setImageResource(R.mipmap.flag_li);
+        }else{
+            holder.giftIV.setImageResource(R.mipmap.flag_placeholder);
+        }
+
+        //抢单
+        if(order.getStatus()== OrderStatus.UNASSIGNED){
+            holder.grabFlagIV.setImageResource(R.mipmap.flag_placeholder);
+        }else{
+            holder.grabFlagIV.setImageResource(R.mipmap.flag_qiang);
+        }
+
+        //备注
+        if(TextUtils.isEmpty(order.getNotes()) && TextUtils.isEmpty(order.getCsrNotes())){
+            holder.remarkFlagIV.setImageResource(R.mipmap.flag_placeholder);
+        }else {
+            holder.remarkFlagIV.setImageResource(R.mipmap.flag_zhu);
+        }
+
+        //问题
+        if(order.issueOrder()){
+            holder.issueFlagIV.setImageResource(R.mipmap.flag_issue);
+        }else{
+            holder.issueFlagIV.setImageResource(R.mipmap.flag_placeholder);
+        }
+
+        holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order.getInstant(), order.getShopOrderNo()));
         final long mms = order.getProduceEffect();
         Log.d(TAG, "mms = " + mms);
 
-        if(OrdersFragment.subTabIndex==0){
+        if(OrdersFragment.subTabIndex== TabList.TAB_TOPRODUCE){
             holder.produceBtn.setEnabled(true);
 
             if(mms<=0){
@@ -95,7 +133,6 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
                 holder.effectTimeTxt.setText(OrderHelper.getDateToMinutes(mms));
             }
 
-
         }else{
             holder.produceBtn.setEnabled(false);
             holder.produceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
@@ -109,22 +146,9 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
             holder.printBtn.setText(R.string.print);
             holder.printBtn.setTextColor(context.getResources().getColor(R.color.text_black));
         }
-        if(order.issueOrder()){
-            holder.issueFlagIV.setVisibility(View.VISIBLE);
-        }else{
-            holder.issueFlagIV.setVisibility(View.INVISIBLE);
-        }
-        if(order.getStatus()== OrderStatus.UNASSIGNED){
-            holder.grabFlagIV.setVisibility(View.INVISIBLE);
-        }else{
-            holder.grabFlagIV.setVisibility(View.VISIBLE);
-        }
-        if(TextUtils.isEmpty(order.getNotes()) && TextUtils.isEmpty(order.getCsrNotes())){
-            holder.remarkFlagIV.setVisibility(View.INVISIBLE);
-        }else {
-            holder.remarkFlagIV.setVisibility(View.VISIBLE);
-        }
+
         fillItemListData(holder.itemContainerll, order.getItems());
+        holder.cupCountText.setText(context.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
         holder.produceBtn.setEnabled(false);
         /*holder.produceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,9 +193,15 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
         ll.removeAllViews();
         for(ItemContentBean item:items){
             TextView tv1 = new TextView(context);
-            tv1.setText(item.getProduct() + "(" + item.getUnit() + ")");
+            tv1.setText(item.getProduct());
             tv1.setMaxEms(6);
             tv1.setTextSize(context.getResources().getDimension(R.dimen.content_item_text_size));
+            if(!TextUtils.isEmpty(OrderHelper.getLabelStr(item.getRecipeFittingsList()))){
+                Drawable drawable = context.getResources().getDrawable(R.mipmap.flag_ding,null);
+                drawable.setBounds(0,1,OrderHelper.dip2Px(12,context),OrderHelper.dip2Px(12,context));
+                tv1.setCompoundDrawablePadding(OrderHelper.dip2Px(4,context));
+                tv1.setCompoundDrawables(null, null,drawable,null);
+            }
             TextView tv2 = new TextView(context);
             tv2.setText("X " + item.getQuantity());
             tv2.setTextSize(context.getResources().getDimension(R.dimen.content_item_text_size));
@@ -206,13 +236,16 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public RelativeLayout rootLayout;
         public ImageView logoScanIV;
-        public TextView orderIdTxt;
-        public TextView contantEffectTimeTxt;
-        public TextView effectTimeTxt;
+        public ImageView giftIV;
+        public ImageView labelFlagImg;
         public ImageView issueFlagIV;
         public ImageView grabFlagIV;
         public ImageView remarkFlagIV;
+        public TextView orderIdTxt;
+        public TextView contantEffectTimeTxt;
+        public TextView effectTimeTxt;
         public LinearLayout itemContainerll;
+        public TextView cupCountText;
         public TextView produceBtn;
         public TextView printBtn;
 
@@ -220,6 +253,8 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
             super(itemView);
             rootLayout = (RelativeLayout) itemView.findViewById(R.id.root_view);
             logoScanIV = (ImageView) itemView.findViewById(R.id.logo_scan);
+            giftIV = (ImageView) itemView.findViewById(R.id.iv_gift);
+            labelFlagImg = (ImageView) itemView.findViewById(R.id.iv_label_flag);
             orderIdTxt = (TextView) itemView.findViewById(R.id.item_order_id);
             contantEffectTimeTxt = (TextView) itemView.findViewById(R.id.item_contant_produce_effect);
             effectTimeTxt = (TextView) itemView.findViewById(R.id.item_produce_effect);
@@ -227,6 +262,7 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
             grabFlagIV = (ImageView) itemView.findViewById(R.id.item_grab_flag);
             remarkFlagIV = (ImageView) itemView.findViewById(R.id.item_remark_flag);
             itemContainerll = (LinearLayout) itemView.findViewById(R.id.item_container);
+            cupCountText = (TextView) itemView.findViewById(R.id.tv_cup_count);
             produceBtn = (TextView) itemView.findViewById(R.id.item_produce);
             printBtn = (TextView) itemView.findViewById(R.id.item_print);
         }
