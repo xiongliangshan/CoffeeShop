@@ -74,7 +74,7 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
         }
         final OrderBean order = itemList.get(position);
         if(order.isWxScan()){
-            holder.logoScanIV.setVisibility(View.INVISIBLE);
+            holder.logoScanIV.setVisibility(View.VISIBLE);
         }else{
             holder.logoScanIV.setVisibility(View.GONE);
         }
