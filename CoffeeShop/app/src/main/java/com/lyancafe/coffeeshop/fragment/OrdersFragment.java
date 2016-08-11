@@ -850,6 +850,10 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onDestroyView() {
         EventBus.getDefault().unregister(this);
+        if(adapter.timer!=null){
+            adapter.timer.cancel();
+            adapter.timer.purge();
+        }
         super.onDestroyView();
         Log.d(TAG, "onDestroyView");
     }
@@ -857,9 +861,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(adapter.timer!=null){
-            adapter.timer.cancel();
-        }
         Log.d(TAG, "onDestroy");
     }
 

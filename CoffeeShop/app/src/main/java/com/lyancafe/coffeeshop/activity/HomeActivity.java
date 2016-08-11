@@ -27,6 +27,7 @@ import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.fragment.ShopManagerFragment;
 import com.lyancafe.coffeeshop.service.AutoFetchOrdersService;
 import com.lyancafe.coffeeshop.service.UpdateService;
+import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
 import com.lyancafe.coffeeshop.widget.SettingWindow;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
@@ -205,9 +206,12 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
+        InfoDetailDialog.getInstance(context).dismiss();
+        unbindService(serviceConnection);
         super.onDestroy();
         Log.d("AutoFetchOrdersService", "unbindService");
-        unbindService(serviceConnection);
+
+
     }
 
     //发送自动刷单语音提示
