@@ -114,6 +114,13 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
             holder.issueFlagIV.setImageResource(R.mipmap.flag_placeholder);
         }
 
+        //vip订单
+        if(order.isOrderVip()){
+            holder.vipFlagIV.setImageResource(R.mipmap.flag_vip);
+        }else{
+            holder.vipFlagIV.setImageResource(R.mipmap.flag_placeholder);
+        }
+
         holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order.getInstant(), order.getShopOrderNo()));
         final long mms = order.getProduceEffect();
         Log.d(TAG, "mms = " + mms);
@@ -241,6 +248,7 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
         public ImageView giftIV;
         public ImageView labelFlagImg;
         public ImageView issueFlagIV;
+        public ImageView vipFlagIV;
         public ImageView grabFlagIV;
         public ImageView remarkFlagIV;
         public TextView orderIdTxt;
@@ -261,6 +269,7 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
             contantEffectTimeTxt = (TextView) itemView.findViewById(R.id.item_contant_produce_effect);
             effectTimeTxt = (TextView) itemView.findViewById(R.id.item_produce_effect);
             issueFlagIV = (ImageView) itemView.findViewById(R.id.item_issue_flag);
+            vipFlagIV = (ImageView) itemView.findViewById(R.id.item_vip_flag);
             grabFlagIV = (ImageView) itemView.findViewById(R.id.item_grab_flag);
             remarkFlagIV = (ImageView) itemView.findViewById(R.id.item_remark_flag);
             itemContainerll = (LinearLayout) itemView.findViewById(R.id.item_container);
