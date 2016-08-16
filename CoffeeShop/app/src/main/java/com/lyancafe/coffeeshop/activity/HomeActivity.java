@@ -1,9 +1,11 @@
 package com.lyancafe.coffeeshop.activity;
 
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.net.Uri;
@@ -27,6 +29,8 @@ import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.fragment.ShopManagerFragment;
 import com.lyancafe.coffeeshop.service.AutoFetchOrdersService;
 import com.lyancafe.coffeeshop.service.UpdateService;
+import com.lyancafe.coffeeshop.utils.PropertiesUtil;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
 import com.lyancafe.coffeeshop.widget.SettingWindow;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
@@ -39,6 +43,7 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.decode.BaseImageDecoder;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
+import com.xls.http.HttpUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -131,6 +136,43 @@ public class HomeActivity extends BaseActivity {
                 .writeDebugLogs()
                 .build();
         ImageLoader.getInstance().init(config);
+
+
+        checkNewVersion();
+    }
+
+    /**
+     * 检测新版本
+     */
+    private void checkNewVersion(){
+        if(!PropertiesUtil.isNeedtoUpdate(context)){
+            Log.d(TAG, "not need to update,return");
+        }else{
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setMessage(context.getResources().getString(R.string.confirm_download, UpdateService.mNewestVersionName));
+            builder.setTitle(context.getResources().getString(R.string.version_update));
+            builder.setIcon(R.mipmap.app_icon);
+            builder.setPositiveButton(context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    //启动Service下载apk文件
+                    Intent intent = new Intent(context, UpdateService.class);
+                    intent.putExtra(UpdateService.KEY_TYPE, UpdateService.DOWNLOADAPK);
+                    context.startService(intent);
+                }
+            });
+            builder.setNegativeButton(context.getResources().getString(R.string.cacel), new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.create().show();
+        }
+
     }
 
     private void initViews(){

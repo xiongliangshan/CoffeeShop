@@ -106,6 +106,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
             holder.contantEffectTimeTxt = (TextView) convertView.findViewById(R.id.item_contant_produce_effect);
             holder.effectTimeTxt = (TextView) convertView.findViewById(R.id.item_produce_effect);
             holder.issueFlagIV = (ImageView) convertView.findViewById(R.id.item_issue_flag);
+            holder.vipFlagIV = (ImageView) convertView.findViewById(R.id.item_vip_flag);
             holder.grabFlagIV = (ImageView) convertView.findViewById(R.id.item_grab_flag);
             holder.remarkFlagIV = (ImageView) convertView.findViewById(R.id.item_remark_flag);
             holder.itemContainerll = (LinearLayout) convertView.findViewById(R.id.item_container);
@@ -174,6 +175,13 @@ public class OrderGridViewAdapter extends BaseAdapter{
             holder.issueFlagIV.setImageResource(R.mipmap.flag_issue);
         }else{
             holder.issueFlagIV.setImageResource(R.mipmap.flag_placeholder);
+        }
+
+        //vip订单
+        if(order.isOrderVip()){
+            holder.vipFlagIV.setImageResource(R.mipmap.flag_vip);
+        }else{
+            holder.vipFlagIV.setImageResource(R.mipmap.flag_placeholder);
         }
 
         if(OrdersFragment.subTabIndex==TabList.TAB_TOPRODUCE){
@@ -294,6 +302,7 @@ public class OrderGridViewAdapter extends BaseAdapter{
         TextView contantEffectTimeTxt;
         TextView effectTimeTxt;
         ImageView issueFlagIV;
+        ImageView vipFlagIV;
         ImageView grabFlagIV;
         ImageView remarkFlagIV;
         LinearLayout itemContainerll;
