@@ -38,7 +38,7 @@ public class UpdateService extends Service {
     public static final int DOWNLOADAPK = 2;
     private static final int DOWNLOADNOTIFICATIONID = 333;
     private static final int TIMEOUT = 60 * 1000;// 超时时间
-    public static final String DOWNLOAD_DIR = "http://dev.lyancafe.com/app/apk/";
+    public static final String DOWNLOAD_DIR = "http://download.lyancafe.com/app/apk/";
     public static String DOWNLOAD_URL = "";
     private boolean isDownloading = false;
     private NotificationManager mNotificationManager;

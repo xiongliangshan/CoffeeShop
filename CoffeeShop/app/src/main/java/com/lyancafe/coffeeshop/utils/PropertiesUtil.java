@@ -33,8 +33,8 @@ public class PropertiesUtil {
     public static final String APKNAME = "apkname";
     public static final String APK_DIR = Environment.getExternalStorageDirectory() +File.separator+"lyancoffee"+File.separator+"apk";
     private static String PROFILEURL = "";
-    private static final String profile_url_qa = "http://dev.lyancafe.com/app/apk/qa/"+PROPERTY_FILE_NAME;
-    private static final String profile_url_ol = "http://dev.lyancafe.com/app/apk/"+PROPERTY_FILE_NAME;
+    private static final String profile_url_qa = "http://download.lyancafe.com/app/apk/qa/"+PROPERTY_FILE_NAME;
+    private static final String profile_url_ol = "http://download.lyancafe.com/app/apk/"+PROPERTY_FILE_NAME;
     private static final int TIMEOUT = 60 * 1000;// 超时时间
     private static PropertiesUtil mProUtil;
 
