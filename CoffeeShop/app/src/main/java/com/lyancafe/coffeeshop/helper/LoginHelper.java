@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.lyancafe.coffeeshop.CoffeeShopApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
@@ -74,6 +75,18 @@ public class LoginHelper {
         return sp.getString("shop_name","");
     }
 
+    //保存当前模式， 是否是顺风单模式
+    public static void saveSfFlag(Context context ,boolean isSF){
+        SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
+        sp.edit().putBoolean("is_sf",isSF).commit();
+    }
+
+    //获取当前模式
+    public static boolean getSfFlag(Context context){
+        SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
+        return sp.getBoolean("is_sf", false);
+    }
+
     //记录当天第一次登陆的时间
     public static void saveCurrentDayFirstLoginTime(Context context,long loginTime){
         SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
@@ -108,5 +121,14 @@ public class LoginHelper {
         saveShopId(context,shopId);
         saveShopName(context,shopName);
         saveToken(context,token);
+    }
+
+
+    /**
+     * 判断是否为顺风单模式
+     * @return
+     */
+    public static boolean isSFMode(){
+       return getSfFlag(CoffeeShopApplication.getInstance());
     }
 }

@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +16,9 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -93,6 +97,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     public static int subTabIndex = TabList.TAB_TOPRODUCE;
 
     private ListTabButton toDoTab;
+    private ListTabButton sfTAb;
     private ListTabButton doingTab;
     private ListTabButton haveDoneTab;
     private ListTabButton deliveringTab;
@@ -104,7 +109,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private Spinner sortSpinner;
     private Spinner categorySpinner;
 
-    private GridView ordersGridView;
+    private RecyclerView ordersGridView;
+    private RecyclerView.LayoutManager mLayoutManager;
     private OrderGridViewAdapter adapter;
 
     private TextView refreshbtn;
@@ -204,16 +210,15 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     }
 
     private void initViews(View contentView){
-        ordersGridView = (GridView) contentView.findViewById(R.id.gv_order_list);
+        ordersGridView = (RecyclerView) contentView.findViewById(R.id.gv_order_list);
+        mLayoutManager = new GridLayoutManager(mContext,4,GridLayoutManager.VERTICAL,false);
+        ordersGridView.setLayoutManager(mLayoutManager);
+        ordersGridView.setHasFixedSize(true);
+        ordersGridView.setItemAnimator(new DefaultItemAnimator());
+        ordersGridView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(16, mContext), false));
         adapter = new OrderGridViewAdapter(mContext,OrdersFragment.this);
         ordersGridView.setAdapter(adapter);
-        ordersGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                adapter.selected = position;
-                adapter.notifyDataSetChanged();
-            }
-        });
+
 
         initTabButtons(contentView);
         initDetailView(contentView);
@@ -320,6 +325,52 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
     }
 
+    /**
+     * 列表数据变更，及时更新详情
+     */
+    private void UpdateUI(){
+        adapter.notifyDataSetChanged();
+        EventBus.getDefault().post(new UpdateOrderDetailEvent());
+    }
+
+    //设置RecyclerView item之间的间距
+    public class SpaceItemDecoration extends RecyclerView.ItemDecoration{
+
+        private int spanCount;
+        private int space;
+        private boolean includeEdge;
+
+
+        public SpaceItemDecoration(int spanCount, int space, boolean includeEdge) {
+            this.spanCount = spanCount;
+            this.space = space;
+            this.includeEdge = includeEdge;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            int position = parent.getChildAdapterPosition(view); // item position
+            int column = position % spanCount; // item column
+
+            if (includeEdge) {
+                outRect.left = space - column * space / spanCount; // spacing - column * ((1f / spanCount) * spacing)
+                outRect.right = (column + 1) * space / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
+
+                if (position < spanCount) { // top edge
+                    outRect.top = space;
+                }
+                outRect.bottom = space; // item bottom
+            } else {
+                outRect.left = column * space / spanCount; // column * ((1f / spanCount) * spacing)
+                outRect.right = space - (column + 1) * space / spanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)
+                if (position >= spanCount) {
+                    outRect.top = space; // item top
+                }
+            }
+
+        }
+    }
+
     //更新总杯量
     private void updateTotalQuantity(List<OrderBean> orderList){
         if(orderList==null){
@@ -335,7 +386,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             sum+=item_num;
         }
 
-        totalQuantityTxt.setText("总杯量:"+sum);
+        totalQuantityTxt.setText("总杯量:" + sum);
     }
     private void requestData(Context context, int orderBy, int fillterInstant,boolean isRefresh,boolean isShowProgress){
         switch (subTabIndex){
@@ -701,18 +752,21 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     }
     private void initTabButtons(View contentView){
         toDoTab = (ListTabButton) contentView.findViewById(R.id.tab_to_do);
+        sfTAb = (ListTabButton) contentView.findViewById(R.id.tab_sf);
         doingTab  = (ListTabButton) contentView.findViewById(R.id.tab_doing);
         haveDoneTab = (ListTabButton) contentView.findViewById(R.id.tab_have_done);
         deliveringTab = (ListTabButton) contentView.findViewById(R.id.tab_delivering);
         deliveryFinishedTab = (ListTabButton) contentView.findViewById(R.id.tab_delivery_finished);
 
         toDoTab.setClickBg(true);
+        sfTAb.setClickBg(false);
         doingTab.setClickBg(false);
         haveDoneTab.setClickBg(false);
         deliveringTab.setClickBg(false);
         deliveryFinishedTab.setClickBg(false);
 
         toDoTab.setOnClickListener(ltbListener);
+        sfTAb.setOnClickListener(ltbListener);
         doingTab.setOnClickListener(ltbListener);
         haveDoneTab.setOnClickListener(ltbListener);
         deliveringTab.setOnClickListener(ltbListener);
@@ -789,9 +843,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
     @Subscribe
     public void OnUpdatePrintStatusEvent(UpdatePrintStatusEvent event){
-        Log.d(TAG,"OnUpdatePrintStatusEvent,orderSn = "+event.orderSn);
+        Log.d(TAG, "OnUpdatePrintStatusEvent,orderSn = " + event.orderSn);
         //打印界面退出的时候，刷新一下打印按钮文字
-        adapter.notifyDataSetChanged();
+        UpdateUI();
     }
 
     /**
@@ -879,7 +933,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             case R.id.btn_prev:  //上一单
                 if(adapter.selected>0){
                     adapter.selected -= 1;
-                    adapter.notifyDataSetChanged();
+                    UpdateUI();
                     ordersGridView.smoothScrollToPosition(adapter.selected);
 
                 }
@@ -887,7 +941,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             case R.id.btn_next:  //下一单
                 if(adapter.selected<adapter.list.size()-1 && adapter.selected!=-1 ){
                     adapter.selected += 1;
-                    adapter.notifyDataSetChanged();
+                    UpdateUI();
                     ordersGridView.smoothScrollToPosition(adapter.selected);
                 }
                 break;
@@ -925,6 +979,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             switch (v.getId()){
                 case R.id.tab_to_do:
                     toDoTab.setClickBg(true);
+                    sfTAb.setClickBg(false);
                     doingTab.setClickBg(false);
                     haveDoneTab.setClickBg(false);
                     deliveringTab.setClickBg(false);
@@ -934,8 +989,21 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     new OrderToProduceQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true).doRequest();
                     resetSpinners();
                     break;
+                case R.id.tab_sf:
+                    toDoTab.setClickBg(false);
+                    sfTAb.setClickBg(true);
+                    doingTab.setClickBg(false);
+                    haveDoneTab.setClickBg(false);
+                    deliveringTab.setClickBg(false);
+                    deliveryFinishedTab.setClickBg(false);
+                    showWidget(true);
+                    subTabIndex = TabList.TAB_SF;
+                    new SFToProduceQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true).doRequest();
+                    resetSpinners();
+                    break;
                 case R.id.tab_doing:
                     toDoTab.setClickBg(false);
+                    sfTAb.setClickBg(false);
                     doingTab.setClickBg(true);
                     haveDoneTab.setClickBg(false);
                     deliveringTab.setClickBg(false);
@@ -947,6 +1015,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     break;
                 case R.id.tab_have_done:
                     toDoTab.setClickBg(false);
+                    sfTAb.setClickBg(false);
                     doingTab.setClickBg(false);
                     haveDoneTab.setClickBg(true);
                     deliveringTab.setClickBg(false);
@@ -958,6 +1027,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     break;
                 case R.id.tab_delivering:
                     toDoTab.setClickBg(false);
+                    sfTAb.setClickBg(false);
                     doingTab.setClickBg(false);
                     haveDoneTab.setClickBg(false);
                     deliveringTab.setClickBg(true);
@@ -969,6 +1039,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     break;
                 case R.id.tab_delivery_finished:
                     toDoTab.setClickBg(false);
+                    sfTAb.setClickBg(false);
                     doingTab.setClickBg(false);
                     haveDoneTab.setClickBg(false);
                     deliveringTab.setClickBg(false);
@@ -997,6 +1068,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             case TabList.TAB_TOPRODUCE:
                 toDoTab.setCount(event.count);
                 break;
+            case TabList.TAB_SF:
+                sfTAb.setCount(event.count);
             case TabList.TAB_PRODUCING:
                 doingTab.setCount(event.count);
                 break;
@@ -1020,7 +1093,11 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     public void onChangeTabCountByActionEvent(ChangeTabCountByActionEvent event){
         switch (event.action){
             case OrderAction.STARTPRODUCE:
-                toDoTab.setCount(toDoTab.getCount()-1);
+                if(LoginHelper.isSFMode()){
+                    sfTAb.setCount(sfTAb.getCount()-1);
+                }else{
+                    toDoTab.setCount(toDoTab.getCount()-1);
+                }
                 doingTab.setCount(doingTab.getCount()+1);
                 break;
             case OrderAction.FINISHPRODUCE:
@@ -1048,7 +1125,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 break;
             }
         }
-        adapter.notifyDataSetChanged();
+        UpdateUI();
     }
 
     /**
@@ -1110,6 +1187,57 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         private boolean isShowProgress;
 
         public OrderToProduceQry(Context context, int orderBy, int fillterInstant,boolean isShowProgress) {
+            this.context = context;
+            this.orderBy = orderBy;
+            this.fillterInstant = fillterInstant;
+            this.isShowProgress = isShowProgress;
+        }
+
+        @Override
+        public void doRequest() {
+            String token = LoginHelper.getToken(context);
+            int shopId = LoginHelper.getShopId(context);
+            String url = HttpUtils.BASE_URL+shopId+"/orders/today/toproduce?token="+token;
+            Map<String,Object> params = new HashMap<String,Object>();
+            params.put("orderBy",orderBy);
+            params.put("fillterInstant", fillterInstant);
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowProgress);
+        }
+
+        @Override
+        public void showResult(Jresp resp) {
+            Log.d(TAG, "OrderToProduceQry:resp  =" + resp);
+            if(resp==null){
+                ToastUtil.showToast(context, R.string.unknown_error);
+                return;
+            }
+            List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
+            EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_TOPRODUCE, orderBeans.size()));
+            if(orderBeans.size()>adapter.cacheToProduceList.size() && !isShowProgress){
+                sendNotificationForAutoNewOrders(true);
+            }
+            if(subTabIndex!=TabList.TAB_TOPRODUCE){
+                return;
+            }
+            adapter.setData(orderBeans);
+            //检查列表中是否有未完成的合并订单
+            if(!OrderHelper.isContainerBatchOrder(orderBeans)){
+                OrderHelper.batchList.clear();
+                updateBatchPromptTextView(0);
+            }
+
+        }
+    }
+
+    //待生产顺风单组列表接口
+    class SFToProduceQry implements Qry{
+
+        private Context context;
+        private int orderBy;
+        private int fillterInstant;
+        private boolean isShowProgress;
+
+        public SFToProduceQry(Context context, int orderBy, int fillterInstant,boolean isShowProgress) {
             this.context = context;
             this.orderBy = orderBy;
             this.fillterInstant = fillterInstant;
@@ -1351,7 +1479,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     }
                 }
             //    adapter.list = adapter.cacheToProduceList;
-                adapter.notifyDataSetChanged();
+                UpdateUI();
             }else{
                 ToastUtil.showToast(context, resp.message);
             }

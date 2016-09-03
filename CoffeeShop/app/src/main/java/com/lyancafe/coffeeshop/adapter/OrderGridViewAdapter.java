@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.Log;
@@ -42,15 +43,15 @@ import java.util.TimerTask;
 /**
  * Created by Administrator on 2015/9/21.
  */
-public class OrderGridViewAdapter extends BaseAdapter{
+public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdapter.ViewHolder>{
 
     private static final String TAG  ="OrderGridViewAdapter";
     private Context context;
-    private OrdersFragment orderFragment;
     public List<OrderBean> list = new ArrayList<OrderBean>();
     public int selected = -1;
     public Timer timer;
     private TimerTask timerTask;
+    private OrdersFragment fragment;
     private final static long DELTA_TIME = 30*1000;//单位ms
     public static  ArrayList<OrderBean> testList =  new ArrayList<OrderBean>();
     public ArrayList<OrderBean> cacheToProduceList =  new ArrayList<OrderBean>();
@@ -70,64 +71,39 @@ public class OrderGridViewAdapter extends BaseAdapter{
         }
     };
 
-    public OrderGridViewAdapter(Context context,Fragment fragment) {
+    public OrderGridViewAdapter(Context context,OrdersFragment fragment) {
         this.context = context;
         timer =  new Timer(true);
-        this.orderFragment = (OrdersFragment)fragment;
+        this.fragment = fragment;
     }
 
     @Override
-    public int getCount() {
-        return list.size();
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_list_item, parent, false);
+        return new ViewHolder(v);
     }
 
     @Override
-    public Object getItem(int position) {
-        return list.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        final ViewHolder holder ;
-        if(convertView==null){
-            convertView = LayoutInflater.from(context).inflate(R.layout.order_list_item,null);
-            holder  = new ViewHolder();
-            holder.rootLayout = (RelativeLayout) convertView.findViewById(R.id.root_view);
-            holder.secondRootLayout = (LinearLayout) convertView.findViewById(R.id.second_root_view);
-            holder.giftIV = (ImageView) convertView.findViewById(R.id.iv_gift);
-            holder.labelFlagImg = (ImageView) convertView.findViewById(R.id.iv_label_flag);
-            holder.logoScanIV = (ImageView) convertView.findViewById(R.id.logo_scan);
-            holder.orderIdTxt = (TextView) convertView.findViewById(R.id.item_order_id);
-            holder.contantEffectTimeTxt = (TextView) convertView.findViewById(R.id.item_contant_produce_effect);
-            holder.effectTimeTxt = (TextView) convertView.findViewById(R.id.item_produce_effect);
-            holder.issueFlagIV = (ImageView) convertView.findViewById(R.id.item_issue_flag);
-            holder.vipFlagIV = (ImageView) convertView.findViewById(R.id.item_vip_flag);
-            holder.grabFlagIV = (ImageView) convertView.findViewById(R.id.item_grab_flag);
-            holder.remarkFlagIV = (ImageView) convertView.findViewById(R.id.item_remark_flag);
-            holder.itemContainerll = (LinearLayout) convertView.findViewById(R.id.item_container);
-            holder.cupCountText = (TextView) convertView.findViewById(R.id.tv_cup_count);
-            holder.twobtnContainerLayout = (LinearLayout) convertView.findViewById(R.id.ll_twobtn_container);
-            holder.onebtnContainerlayout = (LinearLayout) convertView.findViewById(R.id.ll_onebtn_container);
-            holder.produceBtn = (TextView) convertView.findViewById(R.id.item_produce);
-            holder.printBtn = (TextView) convertView.findViewById(R.id.item_print);
-            holder.produceAndPrintBtn = (TextView) convertView.findViewById(R.id.item_produce_and_print);
-            convertView.setTag(holder);
-        }else{
-            holder = (ViewHolder) convertView.getTag();
-        }
-
+    public void onBindViewHolder(ViewHolder holder, final int position) {
+        holder.rootLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(selected!=position && selected>-1){
+                    notifyItemChanged(selected);
+                    notifyItemChanged(position);
+                    //通知详情板块内容变更
+                    EventBus.getDefault().post(new UpdateOrderDetailEvent());
+                }
+                selected = position;
+                Log.d(TAG, "点击了 " + position);
+            }
+        });
 
         if(selected==position){
             holder.rootLayout.setBackgroundResource(R.mipmap.touch_border);
         }else{
             holder.rootLayout.setBackground(null);
         }
-
         final OrderBean order = list.get(position);
         if(OrderHelper.isBatchOrder(order.getId())){
             holder.secondRootLayout.setBackgroundResource(R.drawable.bg_batch_order);
@@ -155,28 +131,24 @@ public class OrderGridViewAdapter extends BaseAdapter{
         }else{
             holder.giftIV.setImageResource(R.mipmap.flag_placeholder);
         }
-
         //抢单
         if(order.getStatus()== OrderStatus.UNASSIGNED){
             holder.grabFlagIV.setImageResource(R.mipmap.flag_placeholder);
         }else{
             holder.grabFlagIV.setImageResource(R.mipmap.flag_qiang);
         }
-
         //备注
         if(TextUtils.isEmpty(order.getNotes()) && TextUtils.isEmpty(order.getCsrNotes())){
             holder.remarkFlagIV.setImageResource(R.mipmap.flag_placeholder);
         }else {
             holder.remarkFlagIV.setImageResource(R.mipmap.flag_zhu);
         }
-
         //问题
         if(order.issueOrder()){
             holder.issueFlagIV.setImageResource(R.mipmap.flag_issue);
         }else{
             holder.issueFlagIV.setImageResource(R.mipmap.flag_placeholder);
         }
-
         //vip订单
         if(order.isOrderVip()){
             holder.vipFlagIV.setImageResource(R.mipmap.flag_vip);
@@ -194,7 +166,6 @@ public class OrderGridViewAdapter extends BaseAdapter{
         }else{
             OrderHelper.showEffect(order, holder.produceBtn, holder.effectTimeTxt);
         }
-
         if(OrderHelper.isPrinted(context, order.getOrderSn())){
             holder.printBtn.setText(R.string.print_again);
             holder.printBtn.setTextColor(context.getResources().getColor(R.color.text_red));
@@ -202,7 +173,6 @@ public class OrderGridViewAdapter extends BaseAdapter{
             holder.printBtn.setText(R.string.print);
             holder.printBtn.setTextColor(context.getResources().getColor(R.color.text_black));
         }
-
         fillItemListData(holder.itemContainerll, order.getItems());
         holder.cupCountText.setText(context.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
         if(OrdersFragment.subTabIndex == TabList.TAB_TOPRODUCE){
@@ -233,16 +203,25 @@ public class OrderGridViewAdapter extends BaseAdapter{
             holder.printBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                //    orderFragment.printOrder(context,order);
                     EventBus.getDefault().post(new PrintOrderEvent(order));
                 }
             });
         }
 
-
-        return convertView;
     }
 
+
+
+    @Override
+    public int getItemCount() {
+        return list.size();
+    }
+
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
     //填充item数据
     private void fillItemListData(LinearLayout ll,List<ItemContentBean> items){
@@ -291,27 +270,51 @@ public class OrderGridViewAdapter extends BaseAdapter{
 
 
 
-    static class ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        RelativeLayout rootLayout;
-        LinearLayout secondRootLayout;
-        ImageView giftIV;
-        ImageView labelFlagImg;
-        ImageView logoScanIV;
-        TextView orderIdTxt;
-        TextView contantEffectTimeTxt;
-        TextView effectTimeTxt;
-        ImageView issueFlagIV;
-        ImageView vipFlagIV;
-        ImageView grabFlagIV;
-        ImageView remarkFlagIV;
-        LinearLayout itemContainerll;
-        TextView cupCountText;
-        LinearLayout twobtnContainerLayout;
-        LinearLayout onebtnContainerlayout;
-        TextView produceAndPrintBtn;
-        TextView produceBtn;
-        TextView printBtn;
+        public RelativeLayout rootLayout;
+        public LinearLayout secondRootLayout;
+        public ImageView giftIV;
+        public ImageView labelFlagImg;
+        public ImageView logoScanIV;
+        public TextView orderIdTxt;
+        public TextView contantEffectTimeTxt;
+        public TextView effectTimeTxt;
+        public ImageView issueFlagIV;
+        public ImageView vipFlagIV;
+        public ImageView grabFlagIV;
+        public ImageView remarkFlagIV;
+        public LinearLayout itemContainerll;
+        public TextView cupCountText;
+        public LinearLayout twobtnContainerLayout;
+        public LinearLayout onebtnContainerlayout;
+        public TextView produceAndPrintBtn;
+        public TextView produceBtn;
+        public TextView printBtn;
+
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            rootLayout = (RelativeLayout) itemView.findViewById(R.id.root_view);
+            secondRootLayout = (LinearLayout) itemView.findViewById(R.id.second_root_view);
+            giftIV = (ImageView) itemView.findViewById(R.id.iv_gift);
+            labelFlagImg = (ImageView) itemView.findViewById(R.id.iv_label_flag);
+            logoScanIV = (ImageView) itemView.findViewById(R.id.logo_scan);
+            orderIdTxt = (TextView) itemView.findViewById(R.id.item_order_id);
+            contantEffectTimeTxt = (TextView) itemView.findViewById(R.id.item_contant_produce_effect);
+            effectTimeTxt = (TextView) itemView.findViewById(R.id.item_produce_effect);
+            issueFlagIV = (ImageView) itemView.findViewById(R.id.item_issue_flag);
+            vipFlagIV = (ImageView) itemView.findViewById(R.id.item_vip_flag);
+            grabFlagIV = (ImageView) itemView.findViewById(R.id.item_grab_flag);
+            remarkFlagIV = (ImageView) itemView.findViewById(R.id.item_remark_flag);
+            itemContainerll = (LinearLayout) itemView.findViewById(R.id.item_container);
+            cupCountText = (TextView) itemView.findViewById(R.id.tv_cup_count);
+            twobtnContainerLayout = (LinearLayout) itemView.findViewById(R.id.ll_twobtn_container);
+            onebtnContainerlayout = (LinearLayout) itemView.findViewById(R.id.ll_onebtn_container);
+            produceBtn = (TextView) itemView.findViewById(R.id.item_produce);
+            printBtn = (TextView) itemView.findViewById(R.id.item_print);
+            produceAndPrintBtn = (TextView) itemView.findViewById(R.id.item_produce_and_print);
+        }
     }
 
     public void setData(List<OrderBean> list){
@@ -380,10 +383,15 @@ public class OrderGridViewAdapter extends BaseAdapter{
     }
 
 
-    @Override
+    /*@Override
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
         //通知详情板块内容变更
         EventBus.getDefault().post(new UpdateOrderDetailEvent());
-    }
+    }*/
+
+
+
+
+
 }
