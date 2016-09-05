@@ -18,6 +18,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -43,8 +44,10 @@ import com.lyancafe.coffeeshop.activity.CommentActivity;
 import com.lyancafe.coffeeshop.activity.LocationActivity;
 import com.lyancafe.coffeeshop.activity.PrintOrderActivity;
 import com.lyancafe.coffeeshop.adapter.OrderGridViewAdapter;
+import com.lyancafe.coffeeshop.adapter.OrderListViewAdapter;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.bean.SFGroupBean;
 import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.constant.TabList;
@@ -81,6 +84,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,7 +115,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
     private RecyclerView ordersGridView;
     private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView.LayoutManager mSFLayoutManager;
     private OrderGridViewAdapter adapter;
+    private OrderListViewAdapter sfAdaper;
 
     private TextView refreshbtn;
     private TextView batchHandleBtn;
@@ -212,6 +218,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private void initViews(View contentView){
         ordersGridView = (RecyclerView) contentView.findViewById(R.id.gv_order_list);
         mLayoutManager = new GridLayoutManager(mContext,4,GridLayoutManager.VERTICAL,false);
+        mSFLayoutManager = new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false);
+        sfAdaper = new OrderListViewAdapter(mContext);
         ordersGridView.setLayoutManager(mLayoutManager);
         ordersGridView.setHasFixedSize(true);
         ordersGridView.setItemAnimator(new DefaultItemAnimator());
@@ -998,7 +1006,21 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     deliveryFinishedTab.setClickBg(false);
                     showWidget(true);
                     subTabIndex = TabList.TAB_SF;
-                    new SFToProduceQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true).doRequest();
+                 //   new SFToProduceQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true).doRequest();
+                    ordersGridView.setLayoutManager(mSFLayoutManager);
+                    ordersGridView.setAdapter(sfAdaper);
+                    List<SFGroupBean> list = new ArrayList<>();
+                    for(int i=0;i<5;i++){
+                        SFGroupBean sfGroupBean  = new SFGroupBean();
+                        List<OrderBean> itemList = new ArrayList<>();
+                        for(int j=0;j<3;j++){
+                            OrderBean orderBean = new OrderBean();
+                            itemList.add(orderBean);
+                        }
+                        sfGroupBean.setOrderGroup(itemList);
+                        list.add(sfGroupBean);
+                    }
+                    sfAdaper.setData(list);
                     resetSpinners();
                     break;
                 case R.id.tab_doing:

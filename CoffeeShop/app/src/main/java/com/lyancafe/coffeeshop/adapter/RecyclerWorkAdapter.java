@@ -1,7 +1,6 @@
 package com.lyancafe.coffeeshop.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,13 +30,13 @@ import java.util.Map;
 /**
  * Created by Administrator on 2015/10/21.
  */
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
+public class RecyclerWorkAdapter extends RecyclerView.Adapter<RecyclerWorkAdapter.ViewHolder> {
 
-    private static final String TAG = "RecyclerAdapter";
+    private static final String TAG = "RecyclerWorkAdapter";
     private List<UserBean> itemList = new ArrayList<UserBean>();
     private Context context;
 
-    public RecyclerAdapter(List<UserBean> itemList, Context context) {
+    public RecyclerWorkAdapter(List<UserBean> itemList, Context context) {
         this.itemList = itemList;
         this.context = context;
     }

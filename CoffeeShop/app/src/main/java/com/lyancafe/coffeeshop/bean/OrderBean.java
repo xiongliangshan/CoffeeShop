@@ -99,6 +99,10 @@ public class OrderBean implements Serializable{
             }.start();
         }
     }
+
+    public OrderBean() {
+    }
+
     public long getId() {
         return id;
     }
