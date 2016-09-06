@@ -1,6 +1,7 @@
 package com.lyancafe.coffeeshop.adapter;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -45,11 +46,11 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
     private List<SFGroupBean> groupList = new ArrayList<>();
     private Context mContext;
     public int selected = -1;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private SpaceItemDecoration mItemDecoration;
 
     public OrderListViewAdapter(Context mContext) {
         this.mContext = mContext;
-        mLayoutManager = new LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false);
+        mItemDecoration = new SpaceItemDecoration(4,OrderHelper.dip2Px(12, mContext),false);
     }
 
     @Override
@@ -62,218 +63,15 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
     public void onBindViewHolder(OrderListViewAdapter.ViewHolder holder, int position) {
         SFGroupBean sfGroupBean = groupList.get(position);
         holder.batchPromptText.setText(position + "条");
-        holder.horizontalListView.setLayoutManager(mLayoutManager);
+        holder.horizontalListView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         holder.horizontalListView.setHasFixedSize(true);
         holder.horizontalListView.setItemAnimator(new DefaultItemAnimator());
-        SFItemListAdapter adapter = new SFItemListAdapter(mContext,sfGroupBean.getOrderGroup());
+    //    holder.horizontalListView.addItemDecoration(mItemDecoration);
+        SFItemListAdapter adapter = new SFItemListAdapter(mContext,sfGroupBean.getItemGroup());
         holder.horizontalListView.setAdapter(adapter);
-    //    createItems(holder.sfItemContainerLayout,sfGroupBean);
-    }
-
-    private void createItems(LinearLayout sfItemContainerLayout, SFGroupBean sfGroupBean) {
-        sfItemContainerLayout.removeAllViews();
-        for(OrderBean orderBean:sfGroupBean.getOrderGroup()){
-            View v = createItemView(orderBean);
-            sfItemContainerLayout.addView(v);
-        }
-        sfItemContainerLayout.invalidate();
-    }
-
-    private View createItemView(final OrderBean order) {
-        View itemView = LayoutInflater.from(mContext).inflate(R.layout.order_list_item,null);
-
-        RelativeLayout rootLayout = (RelativeLayout) itemView.findViewById(R.id.root_view);
-        LinearLayout secondRootLayout = (LinearLayout) itemView.findViewById(R.id.second_root_view);
-        ImageView giftIV = (ImageView) itemView.findViewById(R.id.iv_gift);
-        ImageView labelFlagImg = (ImageView) itemView.findViewById(R.id.iv_label_flag);
-        ImageView logoScanIV = (ImageView) itemView.findViewById(R.id.logo_scan);
-        TextView orderIdTxt = (TextView) itemView.findViewById(R.id.item_order_id);
-        TextView contantEffectTimeTxt = (TextView) itemView.findViewById(R.id.item_contant_produce_effect);
-        TextView effectTimeTxt = (TextView) itemView.findViewById(R.id.item_produce_effect);
-        ImageView issueFlagIV = (ImageView) itemView.findViewById(R.id.item_issue_flag);
-        ImageView vipFlagIV = (ImageView) itemView.findViewById(R.id.item_vip_flag);
-        ImageView grabFlagIV = (ImageView) itemView.findViewById(R.id.item_grab_flag);
-        ImageView remarkFlagIV = (ImageView) itemView.findViewById(R.id.item_remark_flag);
-        LinearLayout itemContainerll = (LinearLayout) itemView.findViewById(R.id.item_container);
-        TextView cupCountText = (TextView) itemView.findViewById(R.id.tv_cup_count);
-        LinearLayout twobtnContainerLayout = (LinearLayout) itemView.findViewById(R.id.ll_twobtn_container);
-        LinearLayout onebtnContainerlayout = (LinearLayout) itemView.findViewById(R.id.ll_onebtn_container);
-        TextView produceBtn = (TextView) itemView.findViewById(R.id.item_produce);
-        TextView printBtn = (TextView) itemView.findViewById(R.id.item_print);
-        TextView produceAndPrintBtn = (TextView) itemView.findViewById(R.id.item_produce_and_print);
-
-        rootLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               /* if(selected!=position && selected>-1){
-                    notifyItemChanged(selected);
-                    notifyItemChanged(position);
-                    //通知详情板块内容变更
-                    EventBus.getDefault().post(new UpdateOrderDetailEvent());
-                }
-                selected = position;
-                Log.d(TAG, "点击了 " + position);*/
-            }
-        });
-
-       /* if(selected==position){
-            holder.rootLayout.setBackgroundResource(R.mipmap.touch_border);
-        }else{
-            holder.rootLayout.setBackground(null);
-        }*/
-        if(OrderHelper.isBatchOrder(order.getId())){
-            secondRootLayout.setBackgroundResource(R.drawable.bg_batch_order);
-            itemContainerll.setBackgroundResource(R.mipmap.bg_batch_dot);
-        }else{
-            secondRootLayout.setBackgroundResource(R.drawable.bg_order);
-            itemContainerll.setBackgroundResource(R.mipmap.bg_normal_dot);
-        }
-        orderIdTxt.setText(OrderHelper.getShopOrderSn(order.getInstant(),order.getShopOrderNo()));
-        if(order.isWxScan()){
-            logoScanIV.setVisibility(View.VISIBLE);
-        }else{
-            logoScanIV.setVisibility(View.GONE);
-        }
-        //定制
-        if(order.isRecipeFittings()){
-            labelFlagImg.setImageResource(R.mipmap.flag_ding);
-        }else{
-            labelFlagImg.setImageResource(R.mipmap.flag_placeholder);
-        }
-
-        //礼盒订单 or 礼品卡
-        if(order.getGift()==2||order.getGift()==5){
-            giftIV.setImageResource(R.mipmap.flag_li);
-        }else{
-            giftIV.setImageResource(R.mipmap.flag_placeholder);
-        }
-        //抢单
-        if(order.getStatus()== OrderStatus.UNASSIGNED){
-            grabFlagIV.setImageResource(R.mipmap.flag_placeholder);
-        }else{
-            grabFlagIV.setImageResource(R.mipmap.flag_qiang);
-        }
-        //备注
-        if(TextUtils.isEmpty(order.getNotes()) && TextUtils.isEmpty(order.getCsrNotes())){
-            remarkFlagIV.setImageResource(R.mipmap.flag_placeholder);
-        }else {
-            remarkFlagIV.setImageResource(R.mipmap.flag_zhu);
-        }
-        //问题
-        if(order.issueOrder()){
-            issueFlagIV.setImageResource(R.mipmap.flag_issue);
-        }else{
-            issueFlagIV.setImageResource(R.mipmap.flag_placeholder);
-        }
-        //vip订单
-        if(order.isOrderVip()){
-            vipFlagIV.setImageResource(R.mipmap.flag_vip);
-        }else{
-            vipFlagIV.setImageResource(R.mipmap.flag_placeholder);
-        }
-
-        if(OrdersFragment.subTabIndex== TabList.TAB_TOPRODUCE){
-            if(order.getInstant()==0){
-                produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
-            }else{
-                produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn);
-            }
-            OrderHelper.showEffectOnly(order,effectTimeTxt);
-        }else{
-            OrderHelper.showEffect(order, produceBtn, effectTimeTxt);
-        }
-        if(OrderHelper.isPrinted(mContext, order.getOrderSn())){
-            printBtn.setText(R.string.print_again);
-            printBtn.setTextColor(mContext.getResources().getColor(R.color.text_red));
-        }else{
-            printBtn.setText(R.string.print);
-            printBtn.setTextColor(mContext.getResources().getColor(R.color.text_black));
-        }
-        fillItemListData(itemContainerll, order.getItems());
-        cupCountText.setText(mContext.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
-        if(OrdersFragment.subTabIndex == TabList.TAB_TOPRODUCE){
-            twobtnContainerLayout.setVisibility(View.GONE);
-            onebtnContainerlayout.setVisibility(View.VISIBLE);
-            produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //点击开始生产（打印）按钮
-                    EventBus.getDefault().post(new StartProduceEvent(order));
-                }
-            });
-        }else{
-            twobtnContainerLayout.setVisibility(View.VISIBLE);
-            onebtnContainerlayout.setVisibility(View.GONE);
-            if(OrdersFragment.subTabIndex!=TabList.TAB_PRODUCING){
-                produceBtn.setEnabled(false);
-            }else{
-                produceBtn.setEnabled(true);
-            }
-            produceBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //生产完成
-                    EventBus.getDefault().post(new FinishProduceEvent(order));
-                }
-            });
-            printBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    EventBus.getDefault().post(new PrintOrderEvent(order));
-                }
-            });
-        }
-
-
-
-        return itemView;
     }
 
 
-    //填充item数据
-    private void fillItemListData(LinearLayout ll,List<ItemContentBean> items){
-        ll.removeAllViews();
-        for(ItemContentBean item:items){
-            TextView tv1 = new TextView(mContext);
-            tv1.setText(item.getProduct());
-            tv1.setMaxEms(6);
-            tv1.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
-            if(!TextUtils.isEmpty(OrderHelper.getLabelStr(item.getRecipeFittingsList()))){
-                Drawable drawable = ContextCompat.getDrawable(CoffeeShopApplication.getInstance(), R.mipmap.flag_ding);
-                drawable.setBounds(0,1,OrderHelper.dip2Px(12,mContext),OrderHelper.dip2Px(12,mContext));
-                tv1.setCompoundDrawablePadding(OrderHelper.dip2Px(4,mContext));
-                tv1.setCompoundDrawables(null, null,drawable,null);
-            }
-            TextView tv2 = new TextView(mContext);
-            tv2.setText("x  " + item.getQuantity());
-            tv2.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
-            TextPaint tp = tv2.getPaint();
-            tp.setFakeBoldText(true);
-            RelativeLayout rl = new RelativeLayout(mContext);
-            RelativeLayout.LayoutParams lp1=new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
-            lp1.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            lp1.leftMargin = OrderHelper.dip2Px(2,mContext);
-            tv1.setLayoutParams(lp1);
-            rl.addView(tv1);
-
-            RelativeLayout.LayoutParams lp2=new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
-            lp2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            lp2.rightMargin = OrderHelper.dip2Px(2,mContext);
-            tv2.setLayoutParams(lp2);
-            rl.addView(tv2);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            );
-            lp.topMargin = OrderHelper.dip2Px(2,mContext);
-            ll.addView(rl,lp);
-        }
-        ll.invalidate();
-    }
 
     @Override
     public int getItemCount() {
@@ -289,20 +87,70 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
 
 
 
-
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
         public TextView batchPromptText;
         public Button batchHandlerBtn;
-    //    public LinearLayout sfItemContainerLayout;
         public RecyclerView horizontalListView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             batchPromptText = (TextView) itemView.findViewById(R.id.tv_sf_prompt);
             batchHandlerBtn = (Button) itemView.findViewById(R.id.btn_sf_handler);
-        //    sfItemContainerLayout = (LinearLayout) itemView.findViewById(R.id.ll_sf_item_container);
             horizontalListView = (RecyclerView) itemView.findViewById(R.id.sf_horizontal_list);
+        }
+    }
+
+    /*public class SpaceItemDecoration extends RecyclerView.ItemDecoration{
+
+        private int space;
+
+        public SpaceItemDecoration(int space) {
+            this.space = space;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            if(parent.getChildAdapterPosition(view) != 0)
+                outRect.right = space;
+        }
+    }*/
+
+    //设置RecyclerView item之间的间距
+    public class SpaceItemDecoration extends RecyclerView.ItemDecoration{
+
+        private int spanCount;
+        private int space;
+        private boolean includeEdge;
+
+
+        public SpaceItemDecoration(int spanCount, int space, boolean includeEdge) {
+            this.spanCount = spanCount;
+            this.space = space;
+            this.includeEdge = includeEdge;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            int position = parent.getChildAdapterPosition(view); // item position
+            int column = position % spanCount; // item column
+
+            if (includeEdge) {
+                outRect.left = space - column * space / spanCount; // spacing - column * ((1f / spanCount) * spacing)
+                outRect.right = (column + 1) * space / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
+
+                if (position < spanCount) { // top edge
+                    outRect.top = space;
+                }
+                outRect.bottom = space; // item bottom
+            } else {
+                outRect.left = column * space / spanCount; // column * ((1f / spanCount) * spacing)
+                outRect.right = space - (column + 1) * space / spanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)
+                if (position >= spanCount) {
+                    outRect.top = space; // item top
+                }
+            }
+
         }
     }
 }

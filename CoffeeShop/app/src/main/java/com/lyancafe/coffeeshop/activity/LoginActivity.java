@@ -137,7 +137,8 @@ public class LoginActivity extends BaseActivity {
                 int userId = resp.data.optInt("userId");
                 String shopName = resp.data.optString("shopName");
                 String token = resp.data.optString("token");
-                LoginHelper.saveUserInfo(mContext,userId,shopId,shopName,token);
+                boolean isSFMode = resp.data.optBoolean("isSFMode");
+                LoginHelper.saveUserInfo(mContext,userId,shopId,shopName,isSFMode,token);
                 //如果是当天第一次登陆，就清空本地缓存的订单打印记录
                 if(LoginHelper.isCurrentDayFirstLogin(mContext)){
                     OrderHelper.clearPrintedSet(mContext);

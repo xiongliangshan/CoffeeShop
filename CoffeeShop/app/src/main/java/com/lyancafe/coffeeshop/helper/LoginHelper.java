@@ -116,10 +116,11 @@ public class LoginHelper {
         }
     }
 
-    public static void  saveUserInfo(Context context,int userId,int shopId,String shopName,String token){
+    public static void  saveUserInfo(Context context,int userId,int shopId,String shopName,boolean isSFMode,String token){
         saveUserId(context,userId);
         saveShopId(context,shopId);
         saveShopName(context,shopName);
+        saveSfFlag(context,isSFMode);
         saveToken(context,token);
     }
 
