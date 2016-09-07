@@ -45,8 +45,8 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
     private static final String TAG  ="OrderListViewAdapter";
     private List<SFGroupBean> groupList = new ArrayList<>();
     private Context mContext;
-    public int selected = -1;
     private SpaceItemDecoration mItemDecoration;
+    public static long selectedOrderId = 0;
 
     public OrderListViewAdapter(Context mContext) {
         this.mContext = mContext;

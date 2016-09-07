@@ -335,9 +335,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
     }
 
-    /**
+   /* *//**
      * 列表数据变更，及时更新详情
-     */
+     *//*
     private void UpdateUI(){
         if(LoginHelper.isSFMode()){
             sfAdaper.notifyDataSetChanged();
@@ -345,7 +345,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             adapter.notifyDataSetChanged();
         }
         EventBus.getDefault().post(new UpdateOrderDetailEvent());
-    }
+    }*/
 
     //设置RecyclerView item之间的间距
     public class SpaceItemDecoration extends RecyclerView.ItemDecoration{
@@ -518,7 +518,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             });
             reachTimeTxt.setText(order.getInstant() == 1 ? "尽快送达" : OrderHelper.getDateToMonthDay(order.getExpectedTime()));
 
-            if(OrdersFragment.subTabIndex==TabList.TAB_TOPRODUCE){
+            if(order.getProduceStatus()==OrderStatus.UNPRODUCED){
                 if(order.getInstant()==0){
                     produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
                 }else{
@@ -565,7 +565,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             userCommentTagsText.setText(OrderHelper.getCommentTagsStr(order.getFeedbackTags()));
             userCommentContentText.setText(order.getFeedback());
 
-            if(OrdersFragment.subTabIndex == TabList.TAB_TOPRODUCE){
+            /*if(OrdersFragment.subTabIndex == TabList.TAB_TOPRODUCE){
                 oneBtnLayout.setVisibility(View.VISIBLE);
                 twoBtnLayout.setVisibility(View.GONE);
                 produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
@@ -605,7 +605,60 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                          EventBus.getDefault().post(new PrintOrderEvent(order));
                     }
                 });
+            }*/
+            if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
+                twoBtnLayout.setVisibility(View.GONE);
+                oneBtnLayout.setVisibility(View.VISIBLE);
+                produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //点击开始生产（打印）按钮
+                        EventBus.getDefault().post(new StartProduceEvent(order));
+                    }
+                });
+            }else if(order.getProduceStatus() == OrderStatus.PRODUCING){
+                twoBtnLayout.setVisibility(View.VISIBLE);
+                oneBtnLayout.setVisibility(View.GONE);
+                finishProduceBtn.setVisibility(View.VISIBLE);
+                finishProduceBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //生产完成
+                        EventBus.getDefault().post(new FinishProduceEvent(order));
+                    }
+                });
+                if(OrderHelper.isPrinted(mContext, order.getOrderSn())){
+                    printOrderBtn.setText(R.string.print_again);
+                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_red));
+                }else{
+                    printOrderBtn.setText(R.string.print);
+                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_black));
+                }
+                printOrderBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        EventBus.getDefault().post(new PrintOrderEvent(order));
+                    }
+                });
+            }else{
+                twoBtnLayout.setVisibility(View.VISIBLE);
+                oneBtnLayout.setVisibility(View.GONE);
+                finishProduceBtn.setVisibility(View.GONE);
+                if(OrderHelper.isPrinted(mContext, order.getOrderSn())){
+                    printOrderBtn.setText(R.string.print_again);
+                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_red));
+                }else{
+                    printOrderBtn.setText(R.string.print);
+                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_black));
+                }
+                printOrderBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        EventBus.getDefault().post(new PrintOrderEvent(order));
+                    }
+                });
             }
+
 
             moreBtn.setEnabled(true);
             moreBtn.setOnClickListener(new View.OnClickListener() {
@@ -787,10 +840,13 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     }
 
     private void resetSpinners(){
-        orderBy = OrderHelper.PRODUCE_TIME;
-        fillterInstant = OrderHelper.ALL;
-        sortSpinner.setSelection(0, true);
-        categorySpinner.setSelection(0, true);
+        if(!LoginHelper.isSFMode()){
+            orderBy = OrderHelper.PRODUCE_TIME;
+            fillterInstant = OrderHelper.ALL;
+            sortSpinner.setSelection(0, true);
+            categorySpinner.setSelection(0, true);
+        }
+
     }
     private void initSpinner(View contentView,Context context){
         sortSpinner = (Spinner) contentView.findViewById(R.id.spinner_sort);
@@ -805,7 +861,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position){
+                switch (position) {
                     case 0:
                         orderBy = OrderHelper.PRODUCE_TIME;
                         break;
@@ -813,7 +869,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                         orderBy = OrderHelper.ORDER_TIME;
                         break;
                 }
-                requestData(mContext, orderBy, fillterInstant, false,true);
+                requestData(mContext, orderBy, fillterInstant, false, true);
             }
 
             @Override
@@ -852,13 +908,21 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
         });
 
+        if(LoginHelper.isSFMode()){
+            sortSpinner.setVisibility(View.INVISIBLE);
+            categorySpinner.setVisibility(View.INVISIBLE);
+        }else {
+            sortSpinner.setVisibility(View.VISIBLE);
+            categorySpinner.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Subscribe
     public void OnUpdatePrintStatusEvent(UpdatePrintStatusEvent event){
         Log.d(TAG, "OnUpdatePrintStatusEvent,orderSn = " + event.orderSn);
         //打印界面退出的时候，刷新一下打印按钮文字
-        UpdateUI();
+        EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
     }
 
     /**
@@ -917,7 +981,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onDestroyView() {
         EventBus.getDefault().unregister(this);
-        if(adapter.timer!=null){
+        if(adapter!=null && adapter.timer!=null){
             adapter.timer.cancel();
             adapter.timer.purge();
         }
@@ -946,7 +1010,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             case R.id.btn_prev:  //上一单
                 if(adapter.selected>0){
                     adapter.selected -= 1;
-                    UpdateUI();
+                    EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
                     ordersGridView.smoothScrollToPosition(adapter.selected);
 
                 }
@@ -954,7 +1018,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             case R.id.btn_next:  //下一单
                 if(adapter.selected<adapter.list.size()-1 && adapter.selected!=-1 ){
                     adapter.selected += 1;
-                    UpdateUI();
+                    EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
                     ordersGridView.smoothScrollToPosition(adapter.selected);
                 }
                 break;
@@ -965,8 +1029,10 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     //隐藏spinner和刷新按钮
     private void showWidget(boolean isShow){
         if(isShow){
-            sortSpinner.setVisibility(View.VISIBLE);
-            categorySpinner.setVisibility(View.VISIBLE);
+            if(!LoginHelper.isSFMode()){
+                sortSpinner.setVisibility(View.VISIBLE);
+                categorySpinner.setVisibility(View.VISIBLE);
+            }
             refreshbtn.setVisibility(View.VISIBLE);
             batchHandleBtn.setVisibility(View.INVISIBLE);
             if(batchHandleBtn.getText().toString().equals(mContext.getString(R.string.batch_handle))){
@@ -1115,7 +1181,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 break;
             }
         }
-        UpdateUI();
+        EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
     }
 
     /**
@@ -1147,11 +1213,19 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
     @Subscribe
     public void onUpdateOrderDetailEvent(UpdateOrderDetailEvent event){
-        if(adapter!=null && adapter.list.size()>0&&adapter.selected>=0&&adapter.selected<adapter.list.size()){
-            updateDetailView(adapter.list.get(adapter.selected));
+        if(LoginHelper.isSFMode()){
+            if(sfAdaper!=null){
+                sfAdaper.notifyDataSetChanged();
+            }
         }else{
-            updateDetailView(null);
+            if(adapter!=null){
+                adapter.notifyDataSetChanged();
+                if(event.orderBean==null){
+                    event.orderBean = adapter.list.get(adapter.selected);
+                }
+            }
         }
+        updateDetailView(event.orderBean);
     }
 
 
@@ -1213,7 +1287,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
             if(isSFMode){
                 List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(context, resp);
-                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_TOPRODUCE, sfGroupBeans.size()));
+                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_TOPRODUCE, OrderHelper.getGroupTotalCount(sfGroupBeans)));
                 sfAdaper.setData(sfGroupBeans);
             }else{
                 List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
@@ -1275,7 +1349,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
             if(isSFMode){
                 List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(context, resp);
-                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_PRODUCING,sfGroupBeans.size()));
+                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_PRODUCING,OrderHelper.getGroupTotalCount(sfGroupBeans)));
                 sfAdaper.setData(sfGroupBeans);
             }else{
                 List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
@@ -1335,7 +1409,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
             if(isSFMode){
                 List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(context,resp);
-                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_PRODUCED,sfGroupBeans.size()));
+                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_PRODUCED,OrderHelper.getGroupTotalCount(sfGroupBeans)));
                 sfAdaper.setData(sfGroupBeans);
             }else{
                 List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
@@ -1389,7 +1463,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
             if(isSFMode){
                 List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(context,resp);
-                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_DELIVERING,sfGroupBeans.size()));
+                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_DELIVERING,OrderHelper.getGroupTotalCount(sfGroupBeans)));
                 sfAdaper.setData(sfGroupBeans);
             }else{
                 List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
@@ -1442,7 +1516,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
             if(isSFMode){
                 List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(context, resp);
-                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_FINISHED,sfGroupBeans.size()));
+                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_FINISHED,OrderHelper.getGroupTotalCount(sfGroupBeans)));
                 sfAdaper.setData(sfGroupBeans);
             }else{
                 List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
@@ -1492,7 +1566,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     }
                 }
             //    adapter.list = adapter.cacheToProduceList;
-                UpdateUI();
+                EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
             }else{
                 ToastUtil.showToast(context, resp.message);
             }
@@ -1671,11 +1745,15 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 return;
             }
             if(resp.status == 0){
-                ToastUtil.showToast(context,R.string.do_success);
-                adapter.removeOrderFromList(orderId, adapter.cacheToProduceList);
-                EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE));
+                ToastUtil.showToast(context, R.string.do_success);
+                if(LoginHelper.isSFMode()){
+
+                }else{
+                    adapter.removeOrderFromList(orderId, adapter.cacheToProduceList);
+                    EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE));
+                }
             }else{
-                ToastUtil.showToast(context,resp.message);
+                ToastUtil.showToast(context, resp.message);
             }
         }
     }
@@ -1715,12 +1793,17 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
             if(resp.status == 0){
                 ToastUtil.showToast(context, R.string.do_success);
-                adapter.removeOrderFromList(orderId, adapter.cacheProducingList);
-                EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.FINISHPRODUCE));
+                if(LoginHelper.isSFMode()){
+
+                }else{
+                    adapter.removeOrderFromList(orderId, adapter.cacheProducingList);
+                    EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.FINISHPRODUCE));
+                }
+
                 //    int leftBatchOrderNum = OrderHelper.removeOrderFromBatchList(orderId);
                 //    orderFragment.updateBatchPromptTextView(leftBatchOrderNum);
             }else{
-                ToastUtil.showToast(context,resp.message);
+                ToastUtil.showToast(context, resp.message);
             }
         }
     }

@@ -85,12 +85,8 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(selected!=position && selected>-1){
-                    notifyItemChanged(selected);
-                    notifyItemChanged(position);
-                    //通知详情板块内容变更
-                    EventBus.getDefault().post(new UpdateOrderDetailEvent());
-                }
+                //通知详情板块内容变更
+                EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
                 selected = position;
                 Log.d(TAG, "点击了 " + position);
             }
@@ -172,7 +168,7 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
         }
         fillItemListData(holder.itemContainerll, order.getItems());
         holder.cupCountText.setText(context.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
-        if(OrdersFragment.subTabIndex == TabList.TAB_TOPRODUCE){
+        if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
             holder.twobtnContainerLayout.setVisibility(View.GONE);
             holder.onebtnContainerlayout.setVisibility(View.VISIBLE);
             holder.produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
@@ -182,14 +178,10 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
                     EventBus.getDefault().post(new StartProduceEvent(order));
                 }
             });
-        }else{
+        }else if(order.getProduceStatus() == OrderStatus.PRODUCING){
             holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
             holder.onebtnContainerlayout.setVisibility(View.GONE);
-            if(OrdersFragment.subTabIndex!=TabList.TAB_PRODUCING){
-                holder.produceBtn.setEnabled(false);
-            }else{
-                holder.produceBtn.setEnabled(true);
-            }
+            holder.produceBtn.setVisibility(View.VISIBLE);
             holder.produceBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -197,6 +189,16 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
                     EventBus.getDefault().post(new FinishProduceEvent(order));
                 }
             });
+            holder.printBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    EventBus.getDefault().post(new PrintOrderEvent(order));
+                }
+            });
+        }else{
+            holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
+            holder.onebtnContainerlayout.setVisibility(View.GONE);
+            holder.produceBtn.setVisibility(View.GONE);
             holder.printBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

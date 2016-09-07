@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.bean.SFGroupBean;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 
 import java.text.DecimalFormat;
@@ -167,11 +168,6 @@ public class OrderHelper {
             effectTimeTxt.setText("+"+OrderHelper.getDateToMinutes(Math.abs(mms)));
         }else{
             if(order.getInstant()==0){
-                /*if(Math.abs(mms)-OrderHelper.getTotalQutity(order)*2*60*1000>0){
-                    produceBtn.setEnabled(false);
-                }else{
-                    produceBtn.setEnabled(true);
-                }*/
                 produceBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
             }else{
                 produceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
@@ -409,6 +405,32 @@ public class OrderHelper {
         }
 
         return phone.substring(0,phone.length()-8)+"####"+phone.substring(phone.length()-4,phone.length());
+    }
+
+
+
+    /**
+     * 判断一组顺风单中是否与参考状态一致
+     * @param sfGroupBean 顺风单组
+     * @param produceStatus 参考状态
+     * @return
+     */
+    public static boolean isSameStatus(SFGroupBean sfGroupBean,int produceStatus){
+        for(OrderBean orderBean:sfGroupBean.getItemGroup()){
+            if(orderBean.getProduceStatus()!=produceStatus){
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    public static int getGroupTotalCount(List<SFGroupBean> sfGroupBeanList){
+        int sum = 0;
+        for(int i = 0;i<sfGroupBeanList.size();i++){
+            sum+=sfGroupBeanList.get(i).getItemGroup().size();
+        }
+        return sum;
     }
 
 

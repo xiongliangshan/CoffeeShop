@@ -149,20 +149,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
+            android:layout_margin="4dp"
             android:visibility="gone"
             >
 
             <TextView
                 android:id="@+id/item_produce"
                 android:layout_width="0dp"
-                android:padding="10dp"
+                android:padding="8dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="生产完成"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:textColor="@color/white_font"
                 android:background="@drawable/bg_produce_btn"
                 android:layout_marginRight="3dp"
@@ -170,12 +169,12 @@
             <TextView
                 android:id="@+id/item_print"
                 android:layout_width="0dp"
-                android:padding="10dp"
+                android:padding="8dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/print"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:layout_marginLeft="3dp"
                 />
         </LinearLayout>

@@ -42,7 +42,6 @@ public class SFItemListAdapter extends RecyclerView.Adapter<SFItemListAdapter.Vi
     private static String TAG ="SFItemListAdapter";
     private Context context;
     public List<OrderBean> list = new ArrayList<OrderBean>();
-    public int selected = -1;
 
 
     public SFItemListAdapter(Context context, List<OrderBean> list) {
@@ -53,7 +52,7 @@ public class SFItemListAdapter extends RecyclerView.Adapter<SFItemListAdapter.Vi
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_list_item, parent, false);
-        v.getLayoutParams().width = OrderHelper.dip2Px(168, context);
+        v.getLayoutParams().width = OrderHelper.dip2Px(172, context);
         return new ViewHolder(v);
     }
 
@@ -62,18 +61,13 @@ public class SFItemListAdapter extends RecyclerView.Adapter<SFItemListAdapter.Vi
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(selected!=position && selected>-1){
-                    notifyItemChanged(selected);
-                    notifyItemChanged(position);
-                    //通知详情板块内容变更
-                    EventBus.getDefault().post(new UpdateOrderDetailEvent());
-                }
-                selected = position;
+                EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
+                OrderListViewAdapter.selectedOrderId = list.get(position).getId();
                 Log.d(TAG, "点击了 " + position);
             }
         });
 
-        if(selected==position){
+        if(OrderListViewAdapter.selectedOrderId==list.get(position).getId()){
             holder.rootLayout.setBackgroundResource(R.mipmap.touch_border);
         }else{
             holder.rootLayout.setBackground(null);
@@ -130,7 +124,7 @@ public class SFItemListAdapter extends RecyclerView.Adapter<SFItemListAdapter.Vi
             holder.vipFlagIV.setImageResource(R.mipmap.flag_placeholder);
         }
 
-        if(OrdersFragment.subTabIndex== TabList.TAB_TOPRODUCE){
+        if(order.getProduceStatus()== OrderStatus.UNPRODUCED){
             if(order.getInstant()==0){
                 holder.produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
             }else{
@@ -149,7 +143,7 @@ public class SFItemListAdapter extends RecyclerView.Adapter<SFItemListAdapter.Vi
         }
         fillItemListData(holder.itemContainerll, order.getItems());
         holder.cupCountText.setText(context.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
-        if(OrdersFragment.subTabIndex == TabList.TAB_TOPRODUCE){
+        if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
             holder.twobtnContainerLayout.setVisibility(View.GONE);
             holder.onebtnContainerlayout.setVisibility(View.VISIBLE);
             holder.produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
@@ -159,14 +153,10 @@ public class SFItemListAdapter extends RecyclerView.Adapter<SFItemListAdapter.Vi
                     EventBus.getDefault().post(new StartProduceEvent(order));
                 }
             });
-        }else{
+        }else if(order.getProduceStatus() == OrderStatus.PRODUCING){
             holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
             holder.onebtnContainerlayout.setVisibility(View.GONE);
-            if(OrdersFragment.subTabIndex!=TabList.TAB_PRODUCING){
-                holder.produceBtn.setEnabled(false);
-            }else{
-                holder.produceBtn.setEnabled(true);
-            }
+            holder.produceBtn.setVisibility(View.VISIBLE);
             holder.produceBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -174,6 +164,16 @@ public class SFItemListAdapter extends RecyclerView.Adapter<SFItemListAdapter.Vi
                     EventBus.getDefault().post(new FinishProduceEvent(order));
                 }
             });
+            holder.printBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    EventBus.getDefault().post(new PrintOrderEvent(order));
+                }
+            });
+        }else{
+            holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
+            holder.onebtnContainerlayout.setVisibility(View.GONE);
+            holder.produceBtn.setVisibility(View.GONE);
             holder.printBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
