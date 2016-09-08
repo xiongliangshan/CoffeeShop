@@ -7,7 +7,10 @@ public class ChangeTabCountByActionEvent {
 
     public int action;
 
-    public ChangeTabCountByActionEvent(int action) {
+    public int count;
+
+    public ChangeTabCountByActionEvent(int action, int count) {
         this.action = action;
+        this.count = count;
     }
 }

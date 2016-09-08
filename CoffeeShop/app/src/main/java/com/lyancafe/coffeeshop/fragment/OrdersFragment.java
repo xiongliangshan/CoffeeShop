@@ -294,7 +294,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                             batchHandleBtn.setText(R.string.batch_handle);
                             //开始循环请求
                             for (int i = 0; i < OrderHelper.batchList.size(); i++) {
-                                new DoFinishProduceQry(mContext,OrderHelper.batchList.get(i).getId(), false).doRequest();
+                                new DoFinishProduceQry(mContext,OrderHelper.batchList.get(i), false).doRequest();
                             }
                         }
                     });
@@ -565,47 +565,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             userCommentTagsText.setText(OrderHelper.getCommentTagsStr(order.getFeedbackTags()));
             userCommentContentText.setText(order.getFeedback());
 
-            /*if(OrdersFragment.subTabIndex == TabList.TAB_TOPRODUCE){
-                oneBtnLayout.setVisibility(View.VISIBLE);
-                twoBtnLayout.setVisibility(View.GONE);
-                produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //点击开始生产（打印）按钮
-                        EventBus.getDefault().post(new StartProduceEvent(order));
-                    }
-                });
-            }else{
-                oneBtnLayout.setVisibility(View.GONE);
-                twoBtnLayout.setVisibility(View.VISIBLE);
-                if(OrdersFragment.subTabIndex!=TabList.TAB_PRODUCING){
-                    finishProduceBtn.setEnabled(false);
-                }else{
-                    finishProduceBtn.setEnabled(true);
-                }
-                finishProduceBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //生产完成
-                        EventBus.getDefault().post(new FinishProduceEvent(order));
-                    }
-                });
-                if(OrderHelper.isPrinted(mContext, order.getOrderSn())){
-                    printOrderBtn.setText(R.string.print_again);
-                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_red));
-                }else{
-                    printOrderBtn.setText(R.string.print);
-                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_black));
-                }
-                printOrderBtn.setEnabled(true);
-                printOrderBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //打印
-                         EventBus.getDefault().post(new PrintOrderEvent(order));
-                    }
-                });
-            }*/
             if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
                 twoBtnLayout.setVisibility(View.GONE);
                 oneBtnLayout.setVisibility(View.VISIBLE);
@@ -683,10 +642,10 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                         public boolean onMenuItemClick(MenuItem item) {
                             switch (item.getItemId()) {
                                 case R.id.menu_undo_order:
-                                    new RecallQry(mContext, order.getId()).doRequest();
+                                    new RecallQry(mContext, order).doRequest();
                                     break;
                                 case R.id.menu_scan_code:
-                                    new ScanCodeQry(mContext, order.getId()).doRequest();
+                                    new ScanCodeQry(mContext, order).doRequest();
                                     break;
                                 case R.id.menu_assign_order:
                                     Intent intent = new Intent(mContext, AssignOrderActivity.class);
@@ -1151,20 +1110,38 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
      */
     @Subscribe
     public void onChangeTabCountByActionEvent(ChangeTabCountByActionEvent event){
-        switch (event.action){
-            case OrderAction.STARTPRODUCE:
-                toDoTab.setCount(toDoTab.getCount()-1);
-                doingTab.setCount(doingTab.getCount()+1);
-                break;
-            case OrderAction.FINISHPRODUCE:
-                doingTab.setCount(doingTab.getCount()-1);
-                haveDoneTab.setCount(haveDoneTab.getCount()+1);
-                break;
-            case OrderAction.SCANCODE:
-                haveDoneTab.setCount(haveDoneTab.getCount()-1);
-                deliveryFinishedTab.setCount(deliveryFinishedTab.getCount()+1);
-                break;
+        if(LoginHelper.isSFMode()){
+            switch (event.action){
+                case OrderAction.STARTPRODUCE:
+                    toDoTab.setCount(toDoTab.getCount()-event.count);
+                    doingTab.setCount(doingTab.getCount()+event.count);
+                    break;
+                case OrderAction.FINISHPRODUCE:
+                    doingTab.setCount(doingTab.getCount()-event.count);
+                    haveDoneTab.setCount(haveDoneTab.getCount()+event.count);
+                    break;
+                case OrderAction.SCANCODE:
+                    haveDoneTab.setCount(haveDoneTab.getCount()-event.count);
+                    deliveryFinishedTab.setCount(deliveryFinishedTab.getCount()+event.count);
+                    break;
+            }
+        }else{
+            switch (event.action){
+                case OrderAction.STARTPRODUCE:
+                    toDoTab.setCount(toDoTab.getCount()-1);
+                    doingTab.setCount(doingTab.getCount()+1);
+                    break;
+                case OrderAction.FINISHPRODUCE:
+                    doingTab.setCount(doingTab.getCount()-1);
+                    haveDoneTab.setCount(haveDoneTab.getCount()+1);
+                    break;
+                case OrderAction.SCANCODE:
+                    haveDoneTab.setCount(haveDoneTab.getCount()-1);
+                    deliveryFinishedTab.setCount(deliveryFinishedTab.getCount()+1);
+                    break;
+            }
         }
+
     }
 
 
@@ -1533,11 +1510,11 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     class RecallQry implements Qry{
         ///{shopid}/order/{orderid}/recall
         private Context context;
-        private long orderId;
+        private OrderBean mOrder;
 
-        public RecallQry(Context context, long orderId) {
+        public RecallQry(Context context, OrderBean mOrder) {
             this.context = context;
-            this.orderId = orderId;
+            this.mOrder = mOrder;
         }
 
         @Override
@@ -1545,7 +1522,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
             String token = LoginHelper.getToken(context);
             int shopId = LoginHelper.getShopId(context);
-            String url = HttpUtils.BASE_URL+shopId+"/order/"+orderId+"/recall?token="+token;
+            String url = HttpUtils.BASE_URL+shopId+"/order/"+mOrder.getId()+"/recall?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
         }
@@ -1559,13 +1536,24 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
             if(resp.status==0){
                 ToastUtil.showToast(context,R.string.do_success);
-                for(OrderBean order:adapter.list){
-                    if(orderId == order.getId()){
-                        order.setStatus(OrderStatus.UNASSIGNED);
-                        break;
+                if(LoginHelper.isSFMode()){
+                    for(SFGroupBean sfGroup:sfAdaper.groupList){
+                        if(mOrder.getGroupId()==sfGroup.getId()){
+                            for(OrderBean orderBean:sfGroup.getItemGroup()){
+                                orderBean.setStatus(OrderStatus.UNASSIGNED);
+                            }
+                            break;
+                        }
+                    }
+                }else{
+                    for(OrderBean order:adapter.list){
+                        if(mOrder.getId() == order.getId()){
+                            order.setStatus(OrderStatus.UNASSIGNED);
+                            break;
+                        }
                     }
                 }
-            //    adapter.list = adapter.cacheToProduceList;
+
                 EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
             }else{
                 ToastUtil.showToast(context, resp.message);
@@ -1576,11 +1564,11 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     //扫码交付接口
     class ScanCodeQry implements Qry{
         private Context context;
-        private long orderId;
+        private OrderBean mOrder;
 
-        public ScanCodeQry(Context context, long orderId) {
+        public ScanCodeQry(Context context, OrderBean mOrder) {
             this.context = context;
-            this.orderId = orderId;
+            this.mOrder = mOrder;
         }
 
         @Override
@@ -1588,7 +1576,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
             String token = LoginHelper.getToken(context);
             int shopId = LoginHelper.getShopId(context);
-            String url = HttpUtils.BASE_URL+shopId+"/order/"+orderId+"/deliver?token="+token;
+            String url = HttpUtils.BASE_URL+shopId+"/order/"+mOrder.getId()+"/deliver?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
         }
@@ -1602,8 +1590,13 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
             if(resp.status==0){
                 ToastUtil.showToast(context, R.string.do_success);
-                adapter.removeOrderFromList(orderId, adapter.cacheProducedList);
-                EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.SCANCODE));
+                if(LoginHelper.isSFMode()){
+                    sfAdaper.changeAndRemoveOrderFromList(mOrder.getId(),OrderStatus.FINISHED);
+                }else{
+                    adapter.removeOrderFromList(mOrder.getId(), adapter.cacheProducedList);
+                    EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.SCANCODE,1));
+                }
+
             }
         }
     }
@@ -1714,17 +1707,17 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     //开始生产接口
     public class startProduceQry implements Qry{
         private Context context;
-        private long orderId;
+        private OrderBean mOrder;
         private boolean isShowDlg = true;
 
-        public startProduceQry(Context context, long orderId) {
+        public startProduceQry(Context context, OrderBean mOrder) {
             this.context = context;
-            this.orderId = orderId;
+            this.mOrder = mOrder;
         }
 
-        public startProduceQry(Context context, long orderId, boolean isShowDlg) {
+        public startProduceQry(Context context, OrderBean mOrder, boolean isShowDlg) {
             this.context = context;
-            this.orderId = orderId;
+            this.mOrder = mOrder;
             this.isShowDlg = isShowDlg;
         }
 
@@ -1732,7 +1725,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         public void doRequest() {
             int shopId = LoginHelper.getShopId(context);
             String token = LoginHelper.getToken(context);
-            String url = HttpUtils.BASE_URL+shopId+"/order/"+orderId+"/beginproduce?token="+token;
+            String url = HttpUtils.BASE_URL+shopId+"/order/"+mOrder.getId()+"/beginproduce?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowDlg);
         }
@@ -1747,10 +1740,10 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             if(resp.status == 0){
                 ToastUtil.showToast(context, R.string.do_success);
                 if(LoginHelper.isSFMode()){
-
+                    sfAdaper.changeAndRemoveOrderFromList(mOrder.getId(), OrderStatus.PRODUCING);
                 }else{
-                    adapter.removeOrderFromList(orderId, adapter.cacheToProduceList);
-                    EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE));
+                    adapter.removeOrderFromList(mOrder.getId(), adapter.cacheToProduceList);
+                    EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,1));
                 }
             }else{
                 ToastUtil.showToast(context, resp.message);
@@ -1761,17 +1754,17 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     //生产完成操作接口
     public class DoFinishProduceQry implements Qry{
         private Context context;
-        private long orderId;
+        private OrderBean mOrder;
         private boolean isShowDlg = true;
 
-        public DoFinishProduceQry(Context context, long orderId) {
+        public DoFinishProduceQry(Context context, OrderBean mOrder) {
             this.context = context;
-            this.orderId = orderId;
+            this.mOrder = mOrder;
         }
 
-        public DoFinishProduceQry(Context context, long orderId, boolean isShowDlg) {
+        public DoFinishProduceQry(Context context, OrderBean mOrder, boolean isShowDlg) {
             this.context = context;
-            this.orderId = orderId;
+            this.mOrder = mOrder;
             this.isShowDlg = isShowDlg;
         }
 
@@ -1779,7 +1772,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         public void doRequest() {
             int shopId = LoginHelper.getShopId(context);
             String token = LoginHelper.getToken(context);
-            String url = HttpUtils.BASE_URL+shopId+"/order/"+orderId+"/produce?token="+token;
+            String url = HttpUtils.BASE_URL+shopId+"/order/"+mOrder.getId()+"/produce?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowDlg);
         }
@@ -1794,10 +1787,10 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             if(resp.status == 0){
                 ToastUtil.showToast(context, R.string.do_success);
                 if(LoginHelper.isSFMode()){
-
+                    sfAdaper.changeAndRemoveOrderFromList(mOrder.getId(),OrderStatus.PRODUCED);
                 }else{
-                    adapter.removeOrderFromList(orderId, adapter.cacheProducingList);
-                    EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.FINISHPRODUCE));
+                    adapter.removeOrderFromList(mOrder.getId(), adapter.cacheProducingList);
+                    EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.FINISHPRODUCE,1));
                 }
 
                 //    int leftBatchOrderNum = OrderHelper.removeOrderFromBatchList(orderId);
@@ -1823,7 +1816,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     public void onClickYes() {
                         Log.d(TAG, "orderId = " + order.getOrderSn());
                         //请求服务器改变该订单状态，由 待生产--生产中
-                        new startProduceQry(context,order.getId()).doRequest();
+                        new startProduceQry(context,order).doRequest();
                         //打印全部
                         PrintHelper.getInstance().printOrderInfo(order);
                         PrintHelper.getInstance().printOrderItems(order);
@@ -1841,7 +1834,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 public void onClickYes() {
                     Log.d(TAG, "orderId = " + order.getOrderSn());
                     //请求服务器改变该订单状态，由 待生产--生产中
-                    new startProduceQry(context,order.getId()).doRequest();
+                    new startProduceQry(context,order).doRequest();
                     //打印全部
                     PrintHelper.getInstance().printOrderInfo(order);
                     PrintHelper.getInstance().printOrderItems(order);
@@ -1867,7 +1860,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     @Override
                     public void onClickYes() {
                         Log.d(TAG, "orderId = " + order.getOrderSn());
-                        new DoFinishProduceQry(context,order.getId()).doRequest();
+                        new DoFinishProduceQry(context,order).doRequest();
                     }
                 });
                 grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 生产完成？");
@@ -1881,7 +1874,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 @Override
                 public void onClickYes() {
                     Log.d(TAG, "orderId = " + order.getOrderSn());
-                    new DoFinishProduceQry(context,order.getId()).doRequest();
+                    new DoFinishProduceQry(context,order).doRequest();
                 }
             });
             grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 生产完成？");

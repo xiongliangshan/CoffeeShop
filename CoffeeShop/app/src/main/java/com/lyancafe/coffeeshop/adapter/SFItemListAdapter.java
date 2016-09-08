@@ -51,8 +51,11 @@ public class SFItemListAdapter extends RecyclerView.Adapter<SFItemListAdapter.Vi
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_list_item, parent, false);
-        v.getLayoutParams().width = OrderHelper.dip2Px(172, context);
+        RelativeLayout v = (RelativeLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.order_list_item,parent,false);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(v.getLayoutParams());
+        lp.width = OrderHelper.dip2Px(172, context);
+        lp.rightMargin = OrderHelper.dip2Px(8, context);
+        v.setLayoutParams(lp);
         return new ViewHolder(v);
     }
 

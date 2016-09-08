@@ -19,9 +19,19 @@ import java.util.List;
  */
 public class SFGroupBean {
 
+    private int id;
+
     private List<OrderBean> itemGroup;
 
     public SFGroupBean() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public List<OrderBean> getItemGroup() {
@@ -36,11 +46,10 @@ public class SFGroupBean {
     @Override
     public String toString() {
         return "SFGroupBean{" +
-                "itemGroup=" + itemGroup +
+                "id=" + id +
+                ", itemGroup=" + itemGroup +
                 '}';
     }
-
-
 
     //解析数据
     public  static List<SFGroupBean> parseJsonGroups(Context context,Jresp resp){

@@ -1,34 +1,21 @@
 package com.lyancafe.coffeeshop.adapter;
 
 import android.content.Context;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextPaint;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.lyancafe.coffeeshop.CoffeeShopApplication;
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.SFGroupBean;
+import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
-import com.lyancafe.coffeeshop.constant.TabList;
-import com.lyancafe.coffeeshop.event.FinishProduceEvent;
-import com.lyancafe.coffeeshop.event.PrintOrderEvent;
-import com.lyancafe.coffeeshop.event.StartProduceEvent;
-import com.lyancafe.coffeeshop.fragment.OrdersFragment;
+import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 
 import org.greenrobot.eventbus.EventBus;
@@ -43,14 +30,12 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
 
 
     private static final String TAG  ="OrderListViewAdapter";
-    private List<SFGroupBean> groupList = new ArrayList<>();
+    public List<SFGroupBean> groupList = new ArrayList<>();
     private Context mContext;
-    private SpaceItemDecoration mItemDecoration;
     public static long selectedOrderId = 0;
 
     public OrderListViewAdapter(Context mContext) {
         this.mContext = mContext;
-        mItemDecoration = new SpaceItemDecoration(4,OrderHelper.dip2Px(12, mContext),false);
     }
 
     @Override
@@ -66,7 +51,6 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
         holder.horizontalListView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         holder.horizontalListView.setHasFixedSize(true);
         holder.horizontalListView.setItemAnimator(new DefaultItemAnimator());
-    //    holder.horizontalListView.addItemDecoration(mItemDecoration);
         SFItemListAdapter adapter = new SFItemListAdapter(mContext,sfGroupBean.getItemGroup());
         holder.horizontalListView.setAdapter(adapter);
     }
@@ -101,56 +85,37 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
         }
     }
 
-    /*public class SpaceItemDecoration extends RecyclerView.ItemDecoration{
 
-        private int space;
+    /**
+     * 点击开始生产，生产完成，扫码交付时从当前列表移除该订单
+     * @param orderId 顺风单组中被操作的订单Id
+     */
+    public void changeAndRemoveOrderFromList(long orderId,int produceStatus){
+        for(int i=groupList.size()-1;i>=0;i--){
+            for(OrderBean orderBean:groupList.get(i).getItemGroup()){
+                if(orderId==orderBean.getId()){
+                    orderBean.setProduceStatus(produceStatus);
+                    if(OrderHelper.isSameStatus(groupList.get(i),produceStatus)){
+                        int changeOrderSize = groupList.get(i).getItemGroup().size();
+                        groupList.remove(i);
+                        switch (produceStatus){
+                            case OrderStatus.PRODUCING:
+                                EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,changeOrderSize));
+                                break;
+                            case OrderStatus.PRODUCED:
+                                EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.FINISHPRODUCE,changeOrderSize));
+                                break;
+                        }
 
-        public SpaceItemDecoration(int space) {
-            this.space = space;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            if(parent.getChildAdapterPosition(view) != 0)
-                outRect.right = space;
-        }
-    }*/
-
-    //设置RecyclerView item之间的间距
-    public class SpaceItemDecoration extends RecyclerView.ItemDecoration{
-
-        private int spanCount;
-        private int space;
-        private boolean includeEdge;
-
-
-        public SpaceItemDecoration(int spanCount, int space, boolean includeEdge) {
-            this.spanCount = spanCount;
-            this.space = space;
-            this.includeEdge = includeEdge;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            int position = parent.getChildAdapterPosition(view); // item position
-            int column = position % spanCount; // item column
-
-            if (includeEdge) {
-                outRect.left = space - column * space / spanCount; // spacing - column * ((1f / spanCount) * spacing)
-                outRect.right = (column + 1) * space / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
-
-                if (position < spanCount) { // top edge
-                    outRect.top = space;
-                }
-                outRect.bottom = space; // item bottom
-            } else {
-                outRect.left = column * space / spanCount; // column * ((1f / spanCount) * spacing)
-                outRect.right = space - (column + 1) * space / spanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)
-                if (position >= spanCount) {
-                    outRect.top = space; // item top
+                    }
+                    notifyDataSetChanged();
+                    return;
                 }
             }
-
         }
+
     }
+
+
+
 }
