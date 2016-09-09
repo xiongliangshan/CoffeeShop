@@ -290,6 +290,7 @@ public class OrderHelper {
     //    return "系统已将"+orderCount+"单合并在一起，共有"+cupCount+"杯咖啡待生产，生产时效为"+cupCount*2+"分钟\n建议生产顺序为 : "+sb.toString();
     }
 
+
     //判断一个订单是否已经处于批量处理中
     public static boolean isBatchOrder(long orderId){
         for(OrderBean orderBean:batchList){
@@ -424,7 +425,20 @@ public class OrderHelper {
         return true;
     }
 
+    //计算一组顺风单的总杯量
+    public static int getSFOderTotalQutity(SFGroupBean sfGroupBean){
+        if(sfGroupBean.getItemGroup()==null){
+            return 0;
+        }
+        int sum=0;
+        for(int i=0;i<sfGroupBean.getItemGroup().size();i++){
+            sum+=getTotalQutity(sfGroupBean.getItemGroup().get(i));
+        }
+        return sum;
+    }
 
+
+    //计算顺风单组列表的总单数
     public static int getGroupTotalCount(List<SFGroupBean> sfGroupBeanList){
         int sum = 0;
         for(int i = 0;i<sfGroupBeanList.size();i++){
@@ -433,6 +447,42 @@ public class OrderHelper {
         return sum;
     }
 
+    //计算顺风单订单列表的的咖啡名和对应的杯数
+    public static  Map<String,Integer> getSFBatchMap(List<OrderBean> orderList){
+        Map<String,Integer> contentSFMap = new HashMap<>();
+        for(int i=0;i<orderList.size();i++){
+            List<ItemContentBean> itemList = orderList.get(i).getItems();
+            for(int j=0;j<itemList.size();j++){
+                ItemContentBean item = itemList.get(j);
+                if(contentSFMap.containsKey(item.getProduct())){
+                    int newCount = contentSFMap.get(item.getProduct())+item.getQuantity();
+                    contentSFMap.put(item.getProduct(),newCount);
+                }else {
+                    contentSFMap.put(item.getProduct(),item.getQuantity());
+                }
+            }
+        }
+        return contentSFMap;
+    }
 
+
+    //顺风单组批量处理订单的咖啡内容信息
+    public static String createSFPromptStr(Context context,SFGroupBean sfGroupBean){
+        int cupCount = getSFOderTotalQutity(sfGroupBean);
+        int orderCount = sfGroupBean.getItemGroup()==null?0:sfGroupBean.getItemGroup().size();
+        List<Map.Entry<String, Integer>> list_map = new ArrayList<>(getSFBatchMap(sfGroupBean.getItemGroup()).entrySet());
+        Collections.sort(list_map, new Comparator<Map.Entry<String, Integer>>() {
+            @Override
+            public int compare(Map.Entry<String, Integer> lhs, Map.Entry<String, Integer> rhs) {
+                return rhs.getValue() - lhs.getValue();
+            }
+        });
+        StringBuilder sb = new StringBuilder();
+        for(Map.Entry<String,Integer> entry:list_map){
+            sb.append(entry.getKey() + " * " + entry.getValue()+"  ");
+        }
+        return context.getResources().getString(R.string.batch_sf_prompt,orderCount,cupCount,sb.toString());
+        //    return "系统已将"+orderCount+"单合并在一起，共有"+cupCount+"杯咖啡待生产，生产时效为"+cupCount*2+"分钟\n建议生产顺序为 : "+sb.toString();
+    }
 
 }

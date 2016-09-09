@@ -83,9 +83,15 @@
     <string name="batch_coffee_prompt">系统已将<xliff:g id="order_num">%d</xliff:g>单合并在一起，共有<xliff:g id="cup_num">%d</xliff:g>杯咖啡待生产，生成时效为<xliff:g id="time_effect">%d</xliff:g>分钟\n
                  建议生产顺序为 : <xliff:g id = "sort">%s</xliff:g></string>
 
+    <string name="batch_sf_prompt">本组有<xliff:g id="order_num">%d</xliff:g>单顺风单，共有<xliff:g id="cup_num">%d</xliff:g>杯咖啡待生产
+                \n建议生产顺序为 : <xliff:g id = "sort">%s</xliff:g></string>
+
     <string name="print_paster">打印\n贴纸</string>
     <string name="print_material">打印\n物料</string>
     <string name="menu_assign_order">指派订单</string>
 
     <string name="total_quantity">共计 :   x  <xliff:g id="cup_count">%d</xliff:g></string>
+    <string name="sf_batch_start">批量开始</string>
+    <string name="sf_batch_produced">批量完成</string>
+    <string name="sf_batch_print">批量打印</string>
 </resources>

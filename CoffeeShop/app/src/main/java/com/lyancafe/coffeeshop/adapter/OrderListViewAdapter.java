@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +16,24 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.SFGroupBean;
 import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
+import com.lyancafe.coffeeshop.constant.TabList;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
+import com.lyancafe.coffeeshop.fragment.OrdersFragment;
+import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
+import com.xls.http.HttpAsyncTask;
+import com.xls.http.HttpEntity;
+import com.xls.http.HttpUtils;
+import com.xls.http.Jresp;
+import com.xls.http.Qry;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2016/9/5.
@@ -45,14 +57,34 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
     }
 
     @Override
-    public void onBindViewHolder(OrderListViewAdapter.ViewHolder holder, int position) {
-        SFGroupBean sfGroupBean = groupList.get(position);
-        holder.batchPromptText.setText(position + "条");
+    public void onBindViewHolder(final OrderListViewAdapter.ViewHolder holder, int position) {
+        final SFGroupBean sfGroupBean = groupList.get(position);
+        holder.batchPromptText.setText(OrderHelper.createSFPromptStr(mContext, sfGroupBean));
         holder.horizontalListView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         holder.horizontalListView.setHasFixedSize(true);
         holder.horizontalListView.setItemAnimator(new DefaultItemAnimator());
         SFItemListAdapter adapter = new SFItemListAdapter(mContext,sfGroupBean.getItemGroup());
         holder.horizontalListView.setAdapter(adapter);
+        if(OrdersFragment.subTabIndex== TabList.TAB_TOPRODUCE){
+            holder.batchHandlerBtn.setText(R.string.sf_batch_start);
+        }else if(OrdersFragment.subTabIndex== TabList.TAB_PRODUCING){
+            holder.batchHandlerBtn.setText(R.string.sf_batch_produced);
+        }else{
+            holder.batchHandlerBtn.setText(R.string.sf_batch_print);
+        }
+        holder.batchHandlerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mContext.getString(R.string.sf_batch_start).equals(holder.batchHandlerBtn.getText())){
+                    new startBatchProduceQry(mContext,sfGroupBean.getId()).doRequest();
+                }else if(mContext.getString(R.string.sf_batch_produced).equals(holder.batchHandlerBtn.getText())){
+                    new DoFinishBatchProduceQry(mContext,sfGroupBean.getId()).doRequest();
+                }else{
+                    //打印
+                }
+
+            }
+        });
     }
 
 
@@ -114,6 +146,115 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
             }
         }
 
+    }
+
+    /**
+     * 点击开始生产，生产完成，扫码交付时从当前列表移除该订单
+     * @param groupId 顺风单组Id
+     */
+    public void removeGroupFromList(int groupId,int produceStatus){
+        for(int i=groupList.size()-1;i>=0;i--){
+            if(groupId==groupList.get(i).getId()){
+                int changeOrderSize = groupList.get(i).getItemGroup().size();
+                groupList.remove(i);
+                switch (produceStatus){
+                    case OrderStatus.PRODUCING:
+                        EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,changeOrderSize));
+                        break;
+                    case OrderStatus.PRODUCED:
+                        EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.FINISHPRODUCE,changeOrderSize));
+                        break;
+                }
+                notifyDataSetChanged();
+                break;
+            }
+        }
+    }
+
+
+
+    //顺风单组批量开始生产接口
+    public class startBatchProduceQry implements Qry {
+        private Context context;
+        private int groupId;
+        private boolean isShowDlg = true;
+
+        public startBatchProduceQry(Context context, int groupId) {
+            this.context = context;
+            this.groupId = groupId;
+        }
+
+        public startBatchProduceQry(Context context, int groupId, boolean isShowDlg) {
+            this.context = context;
+            this.groupId = groupId;
+            this.isShowDlg = isShowDlg;
+        }
+
+        @Override
+        public void doRequest() {
+            int shopId = LoginHelper.getShopId(context);
+            String token = LoginHelper.getToken(context);
+            String url = HttpUtils.BASE_URL+shopId+"/order/"+groupId+"/beginproducebatch?token="+token;
+            Map<String,Object> params = new HashMap<String,Object>();
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, isShowDlg);
+        }
+
+        @Override
+        public void showResult(Jresp resp) {
+            Log.d(TAG, "startBatchProduceQry:resp = " + resp);
+            if(resp==null){
+                ToastUtil.showToast(context, R.string.unknown_error);
+                return;
+            }
+            if(resp.status == 0){
+                ToastUtil.showToast(context, R.string.do_success);
+                removeGroupFromList(groupId, OrderStatus.PRODUCING);
+            }else{
+                ToastUtil.showToast(context, resp.message);
+            }
+        }
+    }
+
+    //顺风单组批量完成操作接口
+    public class DoFinishBatchProduceQry implements Qry{
+        private Context context;
+        private int groupId;
+        private boolean isShowDlg = true;
+
+        public DoFinishBatchProduceQry(Context context, int groupId) {
+            this.context = context;
+            this.groupId = groupId;
+        }
+
+        public DoFinishBatchProduceQry(Context context, int groupId, boolean isShowDlg) {
+            this.context = context;
+            this.groupId = groupId;
+            this.isShowDlg = isShowDlg;
+        }
+
+        @Override
+        public void doRequest() {
+            int shopId = LoginHelper.getShopId(context);
+            String token = LoginHelper.getToken(context);
+            String url = HttpUtils.BASE_URL+shopId+"/order/"+groupId+"/producebatch?token="+token;
+            Map<String,Object> params = new HashMap<String,Object>();
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowDlg);
+        }
+
+        @Override
+        public void showResult(Jresp resp) {
+            Log.d(TAG, "DoFinishBatchProduceQry:resp = " + resp);
+            if(resp==null){
+                ToastUtil.showToast(context, R.string.unknown_error);
+                return;
+            }
+            if(resp.status == 0){
+                ToastUtil.showToast(context, R.string.do_success);
+                removeGroupFromList(groupId, OrderStatus.PRODUCED);
+            }else{
+                ToastUtil.showToast(context, resp.message);
+            }
+        }
     }
 
 
