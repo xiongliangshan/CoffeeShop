@@ -437,6 +437,15 @@ public class OrderHelper {
         return sum;
     }
 
+    //计算顺风单列表的总杯量
+    public static int getSFOrderTotalQutity(List<SFGroupBean> sfGroupBeanList){
+        int cupCount = 0;
+        for(int i=0;i<sfGroupBeanList.size();i++){
+            cupCount+=getSFOderTotalQutity(sfGroupBeanList.get(i));
+        }
+        return cupCount;
+    }
+
 
     //计算顺风单组列表的总单数
     public static int getGroupTotalCount(List<SFGroupBean> sfGroupBeanList){

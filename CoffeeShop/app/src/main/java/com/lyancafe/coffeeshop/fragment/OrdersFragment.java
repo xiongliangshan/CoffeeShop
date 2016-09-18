@@ -402,6 +402,10 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
         totalQuantityTxt.setText("总杯量:" + sum);
     }
+    //更新顺风单总杯量
+    private void updateSFTotalQuantity(List<SFGroupBean> sfGroupBeanList){
+        totalQuantityTxt.setText("总杯量:" + OrderHelper.getSFOrderTotalQutity(sfGroupBeanList));
+    }
     private void requestData(Context context, int orderBy, int fillterInstant,boolean isRefresh,boolean isShowProgress){
 
         switch (subTabIndex){
@@ -1265,6 +1269,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             if(isSFMode){
                 List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(context, resp);
                 EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_TOPRODUCE, OrderHelper.getGroupTotalCount(sfGroupBeans)));
+                if(sfGroupBeans.size()>sfAdaper.groupList.size() && !isShowProgress){
+                    sendNotificationForAutoNewOrders(true);
+                }
                 sfAdaper.setData(sfGroupBeans);
             }else{
                 List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
@@ -1494,6 +1501,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             if(isSFMode){
                 List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(context, resp);
                 EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_FINISHED,OrderHelper.getGroupTotalCount(sfGroupBeans)));
+                updateSFTotalQuantity(sfGroupBeans);
                 sfAdaper.setData(sfGroupBeans);
             }else{
                 List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);

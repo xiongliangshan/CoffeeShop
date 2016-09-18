@@ -9,4 +9,6 @@
     <dimen name="btn_refresh_margin_left">400dp</dimen>
     <dimen name="effect_time_text_size">24sp</dimen>
     <dimen name="detail_view_margin_top">50dp</dimen>
+
+    <dimen name="sf_group_height">370dp</dimen>
 </resources>
