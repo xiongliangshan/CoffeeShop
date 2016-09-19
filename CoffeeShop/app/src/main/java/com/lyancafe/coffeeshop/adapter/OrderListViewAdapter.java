@@ -21,6 +21,7 @@ import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.helper.PrintHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.xls.http.HttpAsyncTask;
 import com.xls.http.HttpEntity;
@@ -77,10 +78,17 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
             public void onClick(View v) {
                 if(mContext.getString(R.string.sf_batch_start).equals(holder.batchHandlerBtn.getText())){
                     new startBatchProduceQry(mContext,sfGroupBean.getId()).doRequest();
+                    //筛选出未打印的组内订单集合
+                    List<OrderBean> unPrintList = OrderHelper.selectUnPrintList(mContext,sfGroupBean.getItemGroup());
+                    //打印
+                    PrintHelper.getInstance().printBatchCups(unPrintList);
+                    PrintHelper.getInstance().printBatchBoxes(unPrintList);
                 }else if(mContext.getString(R.string.sf_batch_produced).equals(holder.batchHandlerBtn.getText())){
                     new DoFinishBatchProduceQry(mContext,sfGroupBean.getId()).doRequest();
                 }else{
                     //打印
+                    PrintHelper.getInstance().printBatchCups(sfGroupBean.getItemGroup());
+                    PrintHelper.getInstance().printBatchBoxes(sfGroupBean.getItemGroup());
                 }
 
             }

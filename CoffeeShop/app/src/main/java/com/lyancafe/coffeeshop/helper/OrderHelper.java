@@ -219,6 +219,17 @@ public class OrderHelper {
             return false;
         }
     }
+    //筛选出未打印的订单集合
+    public static List<OrderBean> selectUnPrintList(Context context,List<OrderBean> list){
+        List<OrderBean> unPrintList = new ArrayList<>();
+        for(OrderBean orderBean:list){
+            if(!OrderHelper.isPrinted(context,orderBean.getOrderSn())){
+                unPrintList.add(orderBean);
+            }
+        }
+        return unPrintList;
+    }
+
     //清空打印状态缓存记录
     public static void clearPrintedSet(Context context){
         SharedPreferences sp = context.getSharedPreferences(PRINT_STATUS, Context.MODE_PRIVATE);

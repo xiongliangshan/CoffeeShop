@@ -49,8 +49,8 @@ public class PrintHelper {
         Log.d(TAG,"PrintHelpter()");
         mPoolExecutor = new ThreadPoolExecutor(1, 5, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
         if(HttpUtils.BASE_URL.contains("test")||HttpUtils.BASE_URL.contains("192.168")){
-            ip_print_order = "192.168.1.240";
-            ip_print_cup = "192.168.1.240";
+            ip_print_order = "192.168.1.177";
+            ip_print_cup = "192.168.1.177";
         }else{
             ip_print_order = "192.19.1.231";
             ip_print_cup = "192.19.1.232";
