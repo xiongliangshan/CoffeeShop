@@ -344,7 +344,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:orientation="vertical"
-                    android:layout_weight="1">
+                    android:layout_weight="2">
                     <TextView
                         android:id="@+id/contant_user_remark"
                         android:layout_width="wrap_content"
@@ -367,7 +367,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:orientation="vertical"
-                    android:layout_weight="1">
+                    android:layout_weight="2">
                     <TextView
                         android:id="@+id/contant_csad_remark"
                         android:layout_width="wrap_content"
@@ -392,7 +392,14 @@
                     android:layout_height="0dp"
                     android:orientation="vertical"
                     android:layout_weight="1">
-                    <TextView
+
+                    <Button
+                        android:id="@+id/btn_check_comments"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textSize="18sp"
+                        android:text="查看用户评价"/>
+                    <!--<TextView
                         android:id="@+id/contant_user_comment"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -417,7 +424,7 @@
                         android:text=""
                         android:textColor="@color/font_black"
                         android:textSize="18sp"
-                        />
+                        />-->
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

@@ -132,6 +132,10 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
     private IndoDetailListener indoDetailListener;
 
+
+    //详情板块当前显示的订单id
+    private long mOrderId;
+
     /**
      * 订单详情页UI组件
      */
@@ -159,8 +163,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private LinearLayout csadRemarkLayout;
     private TextView csadRemarkTxt;
     private LinearLayout userCommentLayout;
-    private TextView userCommentTagsText;
-    private TextView userCommentContentText;
+//    private TextView userCommentTagsText;
+//    private TextView userCommentContentText;
+    private Button checkCommentBtn;
     private LinearLayout twoBtnLayout;
     private LinearLayout oneBtnLayout;
     private Button produceAndPrintBtn;
@@ -457,9 +462,10 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         csadRemarkLayout.setOnClickListener(indoDetailListener);
         csadRemarkTxt = (TextView) contentView.findViewById(R.id.csad_remark);
         userCommentLayout = (LinearLayout) contentView.findViewById(R.id.ll_user_comment);
-        userCommentLayout.setOnClickListener(indoDetailListener);
-        userCommentTagsText = (TextView) contentView.findViewById(R.id.user_comment_tags);
-        userCommentContentText = (TextView) contentView.findViewById(R.id.user_comment_content);
+        checkCommentBtn = (Button) contentView.findViewById(R.id.btn_check_comments);
+        checkCommentBtn.setOnClickListener(indoDetailListener);
+    //    userCommentTagsText = (TextView) contentView.findViewById(R.id.user_comment_tags);
+    //    userCommentContentText = (TextView) contentView.findViewById(R.id.user_comment_content);
         twoBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_twobtn);
         oneBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_onebtn);
         produceAndPrintBtn = (Button) contentView.findViewById(R.id.btn_produce_print);
@@ -491,15 +497,18 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 //            moneyTxt.setText("");
             userRemarkTxt.setText("");
             csadRemarkTxt.setText("");
-            userCommentTagsText.setText("");
-            userCommentContentText.setText("");
+       //     userCommentTagsText.setText("");
+       //     userCommentContentText.setText("");
             finishProduceBtn.setEnabled(false);
             printOrderBtn.setEnabled(false);
             moreBtn.setEnabled(false);
+            checkCommentBtn.setEnabled(false);
         }else{
+            mOrderId = order.getId();
             finishProduceBtn.setEnabled(true);
             printOrderBtn.setEnabled(true);
             moreBtn.setEnabled(true);
+            checkCommentBtn.setEnabled(true);
 
             orderIdTxt.setText(OrderHelper.getShopOrderSn(order.getInstant(), order.getShopOrderNo()));
             wholeOrderText.setText(order.getOrderSn());
@@ -566,8 +575,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 //            moneyTxt.setText(OrderHelper.getMoneyStr(order.getPaid()));
             userRemarkTxt.setText(order.getNotes());
             csadRemarkTxt.setText(order.getCsrNotes());
-            userCommentTagsText.setText(OrderHelper.getCommentTagsStr(order.getFeedbackTags()));
-            userCommentContentText.setText(order.getFeedback());
+        //    userCommentTagsText.setText(OrderHelper.getCommentTagsStr(order.getFeedbackTags()));
+        //    userCommentContentText.setText(order.getFeedback());
 
             if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
                 twoBtnLayout.setVisibility(View.GONE);
@@ -1704,9 +1713,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     //客服备注
                     InfoDetailDialog.getInstance(mContext).show(csadRemarkTxt.getText().toString());
                     break;
-                case R.id.ll_user_comment:
+                case R.id.btn_check_comments:
                     //用户评价
-                    InfoDetailDialog.getInstance(mContext).show(userCommentTagsText.getText().toString()+"\n"+userCommentContentText.getText().toString());
+                    InfoDetailDialog.getInstance(mContext).show(mOrderId);
                     break;
             }
         }
