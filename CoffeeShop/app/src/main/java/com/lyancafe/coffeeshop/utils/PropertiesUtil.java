@@ -26,7 +26,7 @@ import java.util.Properties;
 public class PropertiesUtil {
 
     private static final String TAG = "PropertiesUtil";
-    public static final String APK_DIR = Environment.getExternalStorageDirectory() +File.separator+"lyancoffee"+File.separator+"apk";
+    public static final String APK_DIR = Environment.getExternalStorageDirectory() +File.separator+"coffeeshop"+File.separator+"apk";
     private static final int TIMEOUT = 60 * 1000;// 超时时间
     private static PropertiesUtil mProUtil;
 

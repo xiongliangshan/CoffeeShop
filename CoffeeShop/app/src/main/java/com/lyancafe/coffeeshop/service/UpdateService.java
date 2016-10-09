@@ -177,7 +177,7 @@ public class UpdateService extends IntentService {
      * newVersionCode 从服务器端获取的最新版本号
      */
     private boolean isNewestAPKexist(ApkInfoBean apkInfoBean){
-        mFile = new File(PropertiesUtil.APK_DIR+File.separator+"lyancoffee_"+apkInfoBean.getAppNo()+".apk");
+        mFile = new File(PropertiesUtil.APK_DIR+File.separator+"coffeeshop_"+apkInfoBean.getAppNo()+".apk");
         if(mFile!=null && mFile.exists()){
             Log.d(TAG,"newestapk file exist!");
             //F6C95DAA257080223CC4211F05744AF8
