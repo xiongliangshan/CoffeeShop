@@ -93,7 +93,7 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
                     ToastUtil.show(context, context.getResources().getString(R.string.check_internet));
                 } else {
                     SettingWindow.this.dismiss();
-                    new CoffeeShopApplication.CheckUpdateQry(context, MyUtil.getVersionCode(context)).doRequest();
+                    new CoffeeShopApplication.CheckUpdateQry(context, MyUtil.getVersionCode(context),true).doRequest();
                 }
             }
         });

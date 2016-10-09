@@ -129,7 +129,7 @@ public class HomeActivity extends BaseActivity {
         ImageLoader.getInstance().init(config);
 
 
-        new CoffeeShopApplication.CheckUpdateQry(context, MyUtil.getVersionCode(context)).doRequest();
+        new CoffeeShopApplication.CheckUpdateQry(context, MyUtil.getVersionCode(context),false).doRequest();
     }
 
     private void initViews(){

@@ -16,6 +16,7 @@ import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.ShopHelper;
 import com.lyancafe.coffeeshop.service.UpdateService;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xls.http.HttpAsyncTask;
 import com.xls.http.HttpEntity;
@@ -116,10 +117,12 @@ public class CoffeeShopApplication extends Application {
 
         private Context context;
         private int curVersion;
+        private boolean isShowToast;
 
-        public CheckUpdateQry(Context context, int curVersion) {
+        public CheckUpdateQry(Context context, int curVersion, boolean isShowToast) {
             this.context = context;
             this.curVersion = curVersion;
+            this.isShowToast = isShowToast;
         }
 
         @Override
@@ -127,13 +130,13 @@ public class CoffeeShopApplication extends Application {
             String token = LoginHelper.getToken(context);
             String url = HttpUtils.BASE_URL + "/token/"+curVersion+"/isUpdateApp?token="+token;
             Map<String,Object> params = new HashMap<>();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, false);
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, isShowToast);
         }
 
         @Override
         public void showResult(Jresp resp) {
             if(resp==null){
-                Log.e(TAG, "resp = "+resp);
+                Log.e(TAG, "resp = " + resp);
                 return;
             }
             Log.d(TAG, "resp = " + resp);
@@ -163,6 +166,10 @@ public class CoffeeShopApplication extends Application {
                     }
                 });
                 builder.create().show();
+            }else {
+                if(isShowToast){
+                    ToastUtil.show(context, resp.message);
+                }
             }
 
         }
