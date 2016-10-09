@@ -26,26 +26,12 @@ import java.util.Properties;
 public class PropertiesUtil {
 
     private static final String TAG = "PropertiesUtil";
-    public static final String PROPERTY_FILE_NAME = "coffeeshop_update.properties";
-    public static final String VERSIONCODE = "versioncode";
-    public static final String VERSIONNAME = "versionname";
-    public static final String MD5CODE = "md5";
-    public static final String APKNAME = "apkname";
     public static final String APK_DIR = Environment.getExternalStorageDirectory() +File.separator+"lyancoffee"+File.separator+"apk";
-    private static String PROFILEURL = "";
-    private static final String profile_url_qa = "http://download.lyancafe.com/app/apk/qa/"+PROPERTY_FILE_NAME;
-    private static final String profile_url_ol = "http://download.lyancafe.com/app/apk/"+PROPERTY_FILE_NAME;
     private static final int TIMEOUT = 60 * 1000;// 超时时间
     private static PropertiesUtil mProUtil;
 
     private PropertiesUtil() {
-        if(HttpUtils.BASE_URL.contains("mtest")){
-            //QA环境
-            PROFILEURL = profile_url_qa;
-        }else{
-            //线上环境
-            PROFILEURL = profile_url_ol;
-        }
+
     }
 
     public static PropertiesUtil getInstance(){
@@ -56,17 +42,6 @@ public class PropertiesUtil {
         }
     }
 
-    /**
-     * 下载配置文件
-     */
-    public boolean downloadPropertiesFile(File file){
-        Log.d("xiong","PROFILEURL = "+PROFILEURL);
-        if(createFile(file)){
-            return downloadFile(PROFILEURL,file);
-        }else{
-            return false;
-        }
-    }
     /***
      * 下载文件
      */
@@ -129,56 +104,6 @@ public class PropertiesUtil {
             }
         }
 
-        return false;
-    }
-    /**
-     * 读取本地配置文件
-
-     */
-    public String getProperties(Context context, String key) {
-        final File propertiesFile  = new File(APK_DIR+File.separator+PROPERTY_FILE_NAME);
-        if(!propertiesFile.exists()){
-            ToastUtil.show(context.getApplicationContext(), R.string.profile_not_exist);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    downloadPropertiesFile(propertiesFile);
-                }
-            }).start();
-            return "0";
-        }
-        String value = "0";
-        Properties properties = new Properties();
-        try {
-            properties.load(new FileInputStream(propertiesFile));
-            value = properties.getProperty(key);
-            if(value==null){
-                return "0";
-            }
-            Log.d(TAG, "read properties value = " + value);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(TAG,"read properties error :"+e.getMessage());
-            return "0";
-        }
-        return value;
-    }
-
-
-    /**
-     * 判断是否有新版本
-     */
-    public static boolean isNeedtoUpdate(Context context){
-        UpdateService.mNewestVersionCode = Integer.parseInt(PropertiesUtil.getInstance().getProperties(context, PropertiesUtil.VERSIONCODE));
-        UpdateService.mNewestVersionName = PropertiesUtil.getInstance().getProperties(context, PropertiesUtil.VERSIONNAME);
-        UpdateService.mMD5 = PropertiesUtil.getInstance().getProperties(context, PropertiesUtil.MD5CODE);
-        UpdateService.mApkName = PropertiesUtil.getInstance().getProperties(context,PropertiesUtil.APKNAME);
-        UpdateService.DOWNLOAD_URL =UpdateService.DOWNLOAD_DIR+UpdateService.mApkName;
-        Log.d(TAG, "getAppcode = " + getAppVersionCode(context) + "\n mNewestVersionCode=" + UpdateService.mNewestVersionCode
-                + ",mNewestVersionName = " + UpdateService.mNewestVersionName+"\n md5="+UpdateService.mMD5);
-        if(getAppVersionCode(context)<UpdateService.mNewestVersionCode){
-            return  true;
-        }
         return false;
     }
 

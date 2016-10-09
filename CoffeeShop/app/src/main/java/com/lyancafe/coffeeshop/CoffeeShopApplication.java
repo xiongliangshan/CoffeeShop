@@ -1,7 +1,9 @@
 package com.lyancafe.coffeeshop;
 
+import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Environment;
 import android.util.DisplayMetrics;
@@ -10,6 +12,7 @@ import android.view.WindowManager;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.model.LatLng;
+import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.ShopHelper;
 import com.lyancafe.coffeeshop.service.UpdateService;
@@ -40,8 +43,6 @@ public class CoffeeShopApplication extends Application {
 
     public static int screenWidth = 0;
     public static int screenHeight = 0;
-
-//    public Set<String> printedSet;
 
     public CoffeeShopApplication() {
         Log.d(TAG,"CoffeeShopApplication");
@@ -108,6 +109,62 @@ public class CoffeeShopApplication extends Application {
             Log.d(TAG, "LoginOutQry:" + resp);
             Intent intent_update = new Intent(context, UpdateService.class);
             context.stopService(intent_update);
+        }
+    }
+
+    public static class CheckUpdateQry implements Qry {
+
+        private Context context;
+        private int curVersion;
+
+        public CheckUpdateQry(Context context, int curVersion) {
+            this.context = context;
+            this.curVersion = curVersion;
+        }
+
+        @Override
+        public void doRequest() {
+            String token = LoginHelper.getToken(context);
+            String url = HttpUtils.BASE_URL + "/token/"+curVersion+"/isUpdateApp?token="+token;
+            Map<String,Object> params = new HashMap<>();
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, false);
+        }
+
+        @Override
+        public void showResult(Jresp resp) {
+            if(resp==null){
+                Log.e(TAG, "resp = "+resp);
+                return;
+            }
+            Log.d(TAG, "resp = " + resp);
+            if(resp.status==0){
+                final ApkInfoBean apkInfoBean = ApkInfoBean.parseJsonToBean(resp.data.toString());
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage(context.getResources().getString(R.string.confirm_download, apkInfoBean.getAppName()));
+                builder.setTitle(context.getResources().getString(R.string.version_update));
+                builder.setIcon(R.mipmap.ic_launcher);
+                builder.setPositiveButton(context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        //启动Service下载apk文件
+                        Intent intent = new Intent(context, UpdateService.class);
+                        intent.putExtra(UpdateService.KEY_TYPE, UpdateService.DOWNLOADAPK);
+                        intent.putExtra("apk",apkInfoBean);
+                        context.startService(intent);
+                    }
+                });
+                builder.setNegativeButton(context.getResources().getString(R.string.cacel), new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.create().show();
+            }
+
         }
     }
 }

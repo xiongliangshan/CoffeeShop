@@ -1,8 +1,8 @@
 package com.lyancafe.coffeeshop.service;
 
+import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.lyancafe.coffeeshop.CoffeeShopApplication;
 import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 import com.lyancafe.coffeeshop.utils.PropertiesUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
@@ -29,7 +30,7 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class UpdateService extends Service {
+public class UpdateService extends IntentService {
 
     private static final String TAG = "UpdateService";
 
@@ -38,18 +39,14 @@ public class UpdateService extends Service {
     public static final int DOWNLOADAPK = 2;
     private static final int DOWNLOADNOTIFICATIONID = 333;
     private static final int TIMEOUT = 60 * 1000;// 超时时间
-    public static final String DOWNLOAD_DIR = "http://download.lyancafe.com/app/apk/";
-    public static String DOWNLOAD_URL = "";
     private boolean isDownloading = false;
     private NotificationManager mNotificationManager;
     private NotificationCompat.Builder mBuilder;
     private File mAPKDir;
     private File  mFile;
-    public  static int mNewestVersionCode = 0;
-    public  static String mNewestVersionName = "";
-    public  static String mApkName  ="";
-    public static String mMD5 = "";
+
     public UpdateService() {
+        super("UpdateService");
     }
 
     @Override
@@ -72,46 +69,34 @@ public class UpdateService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "service  onStartCommand");
-        int type = intent.getIntExtra(UpdateService.KEY_TYPE,UpdateService.DOWNLOADPROPERTIES);
-        if(type==UpdateService.DOWNLOADPROPERTIES){
-            Log.d(TAG, "download properties file ,startId =" + startId);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    File proFile = new File(PropertiesUtil.APK_DIR+File.separator+ PropertiesUtil.PROPERTY_FILE_NAME);
-                    Log.d(TAG,"download pro file");
-                    PropertiesUtil.getInstance().downloadPropertiesFile(proFile);
-                }
-            }).start();
+        return super.onStartCommand(intent, flags, startId);
+    }
 
-        }else if(type == UpdateService.DOWNLOADAPK){
-            Log.d(TAG, "download apk file ,startId =" + startId+",isdownloading = "+isDownloading);
+
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        int type = intent.getIntExtra(UpdateService.KEY_TYPE,UpdateService.DOWNLOADPROPERTIES);
+        if(type == UpdateService.DOWNLOADAPK){
+            Log.d(TAG, "download apk file ,isdownloading = " + isDownloading);
+            ApkInfoBean apkInfoBean = (ApkInfoBean) intent.getSerializableExtra("apk");
             if(!isDownloading){
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (isNewestAPKexist(mNewestVersionCode)) {
+                if (isNewestAPKexist(apkInfoBean)) {
+                    installApk(UpdateService.this, mFile);
+                } else {
+                    if (createFile(mFile)) {
+                        if (downloadUpdateFile(apkInfoBean.getUrl(), mFile)) {
                             installApk(UpdateService.this, mFile);
                         } else {
-                            if (createFile(mFile)) {
-                                if (downloadUpdateFile(DOWNLOAD_URL, mFile)) {
-                                    installApk(UpdateService.this, mFile);
-                                } else {
-                                    return;
-                                }
-                            } else {
-                                return;
-                            }
+                            return;
                         }
+                    } else {
+                        return;
                     }
-                }).start();
+                }
             }
 
         }
-
-        return START_NOT_STICKY;
     }
-
 
     /**
      * 初始化通知栏消息
@@ -191,12 +176,12 @@ public class UpdateService extends Service {
      * 判断该最新apk文件是否已经下载完成，在本地存在
      * newVersionCode 从服务器端获取的最新版本号
      */
-    private boolean isNewestAPKexist(int newVersionCode){
-        mFile = new File(PropertiesUtil.APK_DIR+File.separator+"lyancoffee_"+newVersionCode+".apk");
+    private boolean isNewestAPKexist(ApkInfoBean apkInfoBean){
+        mFile = new File(PropertiesUtil.APK_DIR+File.separator+"lyancoffee_"+apkInfoBean.getAppNo()+".apk");
         if(mFile!=null && mFile.exists()){
             Log.d(TAG,"newestapk file exist!");
             //F6C95DAA257080223CC4211F05744AF8
-            if(getMD5Code(mFile).equalsIgnoreCase(UpdateService.mMD5)){
+            if(getMD5Code(mFile).equalsIgnoreCase(apkInfoBean.getAppMd5())){
                 Log.d(TAG,"MD5 一致");
                 return true;
             }else{

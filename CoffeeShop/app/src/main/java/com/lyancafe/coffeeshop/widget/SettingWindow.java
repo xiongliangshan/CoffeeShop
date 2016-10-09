@@ -93,35 +93,7 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
                     ToastUtil.show(context, context.getResources().getString(R.string.check_internet));
                 } else {
                     SettingWindow.this.dismiss();
-                    if(!PropertiesUtil.isNeedtoUpdate(context)){
-                        Log.d(TAG, "not need to update,return");
-                        ToastUtil.show(context, context.getResources().getString(R.string.is_already_new_version));
-                    }else{
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                        builder.setMessage(context.getResources().getString(R.string.confirm_download, UpdateService.mNewestVersionName));
-                        builder.setTitle(context.getResources().getString(R.string.version_update));
-                        builder.setIcon(R.mipmap.app_icon);
-                        builder.setPositiveButton(context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                //启动Service下载apk文件
-                                Intent intent = new Intent(context, UpdateService.class);
-                                intent.putExtra(UpdateService.KEY_TYPE, UpdateService.DOWNLOADAPK);
-                                context.startService(intent);
-                            }
-                        });
-                        builder.setNegativeButton(context.getResources().getString(R.string.cacel), new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                        builder.create().show();
-                    }
-
+                    new CoffeeShopApplication.CheckUpdateQry(context, MyUtil.getVersionCode(context)).doRequest();
                 }
             }
         });

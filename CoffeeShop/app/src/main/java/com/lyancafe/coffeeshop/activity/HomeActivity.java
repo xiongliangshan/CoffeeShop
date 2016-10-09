@@ -22,13 +22,17 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 
 import com.igexin.sdk.PushManager;
+import com.lyancafe.coffeeshop.CoffeeShopApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.FragmentTabAdapter;
+import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 import com.lyancafe.coffeeshop.fragment.OrderQueryFragment;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.fragment.ShopManagerFragment;
+import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.service.AutoFetchOrdersService;
 import com.lyancafe.coffeeshop.service.UpdateService;
+import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.PropertiesUtil;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
 import com.lyancafe.coffeeshop.widget.SettingWindow;
@@ -42,10 +46,17 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.decode.BaseImageDecoder;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
+import com.xls.http.HttpAsyncTask;
+import com.xls.http.HttpEntity;
+import com.xls.http.HttpUtils;
+import com.xls.http.Jresp;
+import com.xls.http.Qry;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -106,11 +117,6 @@ public class HomeActivity extends BaseActivity {
         bindService(intent, serviceConnection, BIND_AUTO_CREATE);
         Log.d("AutoFetchOrdersService", "bindService");
 
-        //启动Service下载版本配置文件
-        Intent intent_update = new Intent(HomeActivity.this, UpdateService.class);
-        intent.putExtra(UpdateService.KEY_TYPE, UpdateService.DOWNLOADPROPERTIES);
-        startService(intent_update);
-
         File cacheDir = StorageUtils.getCacheDirectory(HomeActivity.this);
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(HomeActivity.this)
                 .memoryCacheExtraOptions(800, 800) // default = device screen dimensions
@@ -136,12 +142,12 @@ public class HomeActivity extends BaseActivity {
         ImageLoader.getInstance().init(config);
 
 
-        checkNewVersion();
+        new CoffeeShopApplication.CheckUpdateQry(context, MyUtil.getVersionCode(context)).doRequest();
     }
 
-    /**
+   /* *//**
      * 检测新版本
-     */
+     *//*
     private void checkNewVersion(){
         if(!PropertiesUtil.isNeedtoUpdate(context)){
             Log.d(TAG, "not need to update,return");
@@ -171,26 +177,10 @@ public class HomeActivity extends BaseActivity {
             builder.create().show();
         }
 
-    }
+    }*/
 
     private void initViews(){
         baristaLogoIV = (ImageView) findViewById(R.id.iv_barista_logo);
-        /*baristaLogoIV.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Log.d("AutoFetchOrdersService", "onLongClick");
-                if (autoFetchOrdersService != null) {
-                    if (!autoFetchOrdersService.auto_flag) {
-                        autoFetchOrdersService.startTimer();
-                        sendNotificationForAutoOrders(true);
-                    } else {
-                        autoFetchOrdersService.stopTimer();
-                        sendNotificationForAutoOrders(false);
-                    }
-                }
-                return false;
-            }
-        });*/
         mRadioGroup = (RadioGroup) findViewById(R.id.group_left);
         settingBtn = (ImageButton) findViewById(R.id.btn_setting);
         settingBtn.setOnClickListener(new View.OnClickListener() {
@@ -253,6 +243,8 @@ public class HomeActivity extends BaseActivity {
 
 
     }
+
+
 
     //发送自动刷单语音提示
     private void sendNotificationForAutoOrders(boolean flag){
