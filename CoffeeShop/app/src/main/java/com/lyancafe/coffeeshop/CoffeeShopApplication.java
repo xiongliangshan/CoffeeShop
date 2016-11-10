@@ -14,7 +14,6 @@ import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.model.LatLng;
 import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
-import com.lyancafe.coffeeshop.helper.ShopHelper;
 import com.lyancafe.coffeeshop.service.UpdateService;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.tencent.bugly.crashreport.CrashReport;
@@ -26,9 +25,9 @@ import com.xls.http.Qry;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+
+import cn.jpush.android.api.JPushInterface;
 
 /**
  * Created by Administrator on 2015/8/21.
@@ -44,6 +43,8 @@ public class CoffeeShopApplication extends Application {
 
     public static int screenWidth = 0;
     public static int screenHeight = 0;
+
+    public static String REG_ID = "";
 
     public CoffeeShopApplication() {
         Log.d(TAG,"CoffeeShopApplication");
@@ -61,6 +62,10 @@ public class CoffeeShopApplication extends Application {
         shopLocation.startLocation();
 
         CrashReport.initCrashReport(getApplicationContext(), "900027459", false);
+
+        //初始化Jpush
+        JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
+        JPushInterface.init(this);     		// 初始化 JPush
     }
 
     public static CoffeeShopApplication getInstance(){

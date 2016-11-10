@@ -1,26 +1,15 @@
 package com.lyancafe.coffeeshop.service;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.igexin.sdk.PushManager;
 import com.lyancafe.coffeeshop.event.CommentCountEvent;
-import com.lyancafe.coffeeshop.helper.LoginHelper;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.xls.http.HttpAsyncTask;
-import com.xls.http.HttpEntity;
-import com.xls.http.HttpUtils;
-import com.xls.http.Jresp;
-import com.xls.http.Qry;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 

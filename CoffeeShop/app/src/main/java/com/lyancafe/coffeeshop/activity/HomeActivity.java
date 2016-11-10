@@ -19,7 +19,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 
-import com.igexin.sdk.PushManager;
 import com.lyancafe.coffeeshop.CoffeeShopApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.FragmentTabAdapter;
@@ -80,8 +79,6 @@ public class HomeActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context  = HomeActivity.this;
-        //初始化个推
-        PushManager.getInstance().initialize(this.getApplicationContext());
 
         setContentView(R.layout.activity_home);
         initViews();
