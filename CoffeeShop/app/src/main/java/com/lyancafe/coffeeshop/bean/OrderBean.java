@@ -29,6 +29,7 @@ public class OrderBean implements Serializable{
     private int groupId;                 //顺风单组的id
     private String orderSn;              //订单编号
     private int shopOrderNo;             //门店单号
+    private boolean newCBUser;         //是否是新用户订单
     private boolean orderVip;            //是否是vip订单
     private boolean wxScan;            //是否是到店扫码的单子
     private boolean isRecipeFittings;  //是否有个性化标签
@@ -134,6 +135,14 @@ public class OrderBean implements Serializable{
 
     public void setShopOrderNo(int shopOrderNo) {
         this.shopOrderNo = shopOrderNo;
+    }
+
+    public boolean isNewCBUser() {
+        return newCBUser;
+    }
+
+    public void setNewCBUser(boolean newCBUser) {
+        this.newCBUser = newCBUser;
     }
 
     public boolean isOrderVip() {

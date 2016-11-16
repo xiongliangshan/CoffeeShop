@@ -16,6 +16,7 @@ import com.lyancafe.coffeeshop.CoffeeShopApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.PushMessageBean;
 import com.lyancafe.coffeeshop.event.CancelOrderEvent;
+import com.lyancafe.coffeeshop.event.NewOderComingEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
@@ -134,7 +135,7 @@ public class MyPushReceiver extends BroadcastReceiver {
         }
         if(pmb.getEventType()==1){  //新订单依靠自动刷单模式，不依靠推送消息
             mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.coffee_box));
-            return;
+            EventBus.getDefault().post(new NewOderComingEvent(0L));
         }else if(pmb.getEventType()==10){   //小哥上报问题
             mBuilder.setDefaults(Notification.DEFAULT_ALL);
         }else if(pmb.getEventType()==11){   //问题已经解决

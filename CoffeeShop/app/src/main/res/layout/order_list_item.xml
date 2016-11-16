@@ -70,10 +70,19 @@
             android:layout_marginRight="4dp"
             >
             <ImageView
+                android:id="@+id/iv_new_user"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/flag_new_user"
+                />
+
+            <ImageView
                 android:id="@+id/iv_label_flag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/iv_new_user"
                 android:src="@mipmap/flag_ding"
+                android:layout_marginLeft="4dp"
                 />
 
             <ImageView

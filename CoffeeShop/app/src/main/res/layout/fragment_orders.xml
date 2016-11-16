@@ -81,7 +81,7 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="740dp"
+            android:layout_width="750dp"
             android:layout_height="match_parent"
             android:orientation="vertical"
             >
@@ -161,10 +161,6 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:layout_marginTop="8dp"
-                    android:horizontalSpacing="16dp"
-                    android:verticalSpacing="16dp"
-                    android:paddingRight="16dp"
-                    android:stretchMode="columnWidth"
                     android:scrollbars="none"
                     />
             </LinearLayout>
@@ -207,6 +203,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:layout_marginLeft="8dp"
                 layout = "@layout/view_order_detail"
                 />
         </LinearLayout>

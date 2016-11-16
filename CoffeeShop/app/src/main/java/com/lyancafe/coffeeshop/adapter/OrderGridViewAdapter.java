@@ -111,6 +111,12 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
         }else{
             holder.logoScanIV.setVisibility(View.GONE);
         }
+        //新用户订单
+        if(order.isNewCBUser()){
+            holder.newUserOderIV.setImageResource(R.mipmap.flag_new_user);
+        }else{
+            holder.newUserOderIV.setImageResource(R.mipmap.flag_placeholder);
+        }
         //定制
         if(order.isRecipeFittings()){
             holder.labelFlagImg.setImageResource(R.mipmap.flag_ding);
@@ -273,6 +279,7 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
 
         public RelativeLayout rootLayout;
         public LinearLayout secondRootLayout;
+        public ImageView newUserOderIV;
         public ImageView giftIV;
         public ImageView labelFlagImg;
         public ImageView logoScanIV;
@@ -296,6 +303,7 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
             super(itemView);
             rootLayout = (RelativeLayout) itemView.findViewById(R.id.root_view);
             secondRootLayout = (LinearLayout) itemView.findViewById(R.id.second_root_view);
+            newUserOderIV = (ImageView) itemView.findViewById(R.id.iv_new_user);
             giftIV = (ImageView) itemView.findViewById(R.id.iv_gift);
             labelFlagImg = (ImageView) itemView.findViewById(R.id.iv_label_flag);
             logoScanIV = (ImageView) itemView.findViewById(R.id.logo_scan);

@@ -53,7 +53,7 @@ public class SFItemListAdapter extends RecyclerView.Adapter<SFItemListAdapter.Vi
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RelativeLayout v = (RelativeLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.order_list_item,parent,false);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(v.getLayoutParams());
-        lp.width = OrderHelper.dip2Px(172, context);
+        lp.width = OrderHelper.dip2Px(180, context);
         lp.rightMargin = OrderHelper.dip2Px(8, context);
         v.setLayoutParams(lp);
         return new ViewHolder(v);
@@ -89,6 +89,13 @@ public class SFItemListAdapter extends RecyclerView.Adapter<SFItemListAdapter.Vi
         }else{
             holder.logoScanIV.setVisibility(View.GONE);
         }
+        //新用户订单
+        if(order.isNewCBUser()){
+            holder.newUserOderIV.setImageResource(R.mipmap.flag_new_user);
+        }else{
+            holder.newUserOderIV.setImageResource(R.mipmap.flag_placeholder);
+        }
+
         //定制
         if(order.isRecipeFittings()){
             holder.labelFlagImg.setImageResource(R.mipmap.flag_ding);
@@ -240,6 +247,7 @@ public class SFItemListAdapter extends RecyclerView.Adapter<SFItemListAdapter.Vi
 
         public RelativeLayout rootLayout;
         public LinearLayout secondRootLayout;
+        public ImageView newUserOderIV;
         public ImageView giftIV;
         public ImageView labelFlagImg;
         public ImageView logoScanIV;
@@ -262,6 +270,7 @@ public class SFItemListAdapter extends RecyclerView.Adapter<SFItemListAdapter.Vi
             super(itemView);
             rootLayout = (RelativeLayout) itemView.findViewById(R.id.root_view);
             secondRootLayout = (LinearLayout) itemView.findViewById(R.id.second_root_view);
+            newUserOderIV = (ImageView) itemView.findViewById(R.id.iv_new_user);
             giftIV = (ImageView) itemView.findViewById(R.id.iv_gift);
             labelFlagImg = (ImageView) itemView.findViewById(R.id.iv_label_flag);
             logoScanIV = (ImageView) itemView.findViewById(R.id.logo_scan);

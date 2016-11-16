@@ -56,6 +56,7 @@ import com.lyancafe.coffeeshop.event.ClickCommentEvent;
 import com.lyancafe.coffeeshop.event.CommentCountEvent;
 import com.lyancafe.coffeeshop.event.CommitIssueOrderEvent;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
+import com.lyancafe.coffeeshop.event.NewOderComingEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
@@ -170,7 +171,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private Button prevBtn;
     private Button nextBtn;
 
-    private OrdersReceiver ordersReceiver;
     private Handler mHandler = new Handler(){
     };
 
@@ -179,22 +179,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         super.onAttach(activity);
         mContext = activity;
         Log.d(TAG, "onAttach");
-        registerReceiver(mContext);
     }
 
-    private void registerReceiver(Context context){
-        ordersReceiver = new OrdersReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(AutoFetchOrdersService.ACTION_REFRESH_ORDERS);
-        context.registerReceiver(ordersReceiver, filter);
-    }
-
-    private void unRegisterReceiver(Context context){
-        if(ordersReceiver!=null){
-            context.unregisterReceiver(ordersReceiver);
-            ordersReceiver = null;
-        }
-    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -227,7 +213,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         ordersGridView.setLayoutManager(mLayoutManager);
         ordersGridView.setHasFixedSize(true);
         ordersGridView.setItemAnimator(new DefaultItemAnimator());
-        ordersGridView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(16, mContext), false));
+        ordersGridView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(8, mContext), false));
 
 
         initTabButtons(contentView);
@@ -964,7 +950,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     public void onDetach() {
         super.onDetach();
         Log.d(TAG, "onDetach");
-        unRegisterReceiver(mContext);
     }
 
     @Override
@@ -1210,6 +1195,14 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     }
 
 
+    //新订单消息触发事件
+    @Subscribe
+    public void onNewOrderComing(NewOderComingEvent event){
+        Log.d(TAG,"新订单消息触发事件");
+        requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true, false);
+    }
+
+
 
 
 
@@ -1269,16 +1262,16 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             if(isSFMode){
                 List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(context, resp);
                 EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_TOPRODUCE, OrderHelper.getGroupTotalCount(sfGroupBeans)));
-                if(sfGroupBeans.size()>sfAdaper.groupList.size() && !isShowProgress){
+                /*if(sfGroupBeans.size()>sfAdaper.groupList.size() && !isShowProgress){
                     sendNotificationForAutoNewOrders(true);
-                }
+                }*/
                 sfAdaper.setData(sfGroupBeans);
             }else{
                 List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
                 EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_TOPRODUCE, orderBeans.size()));
-                if(orderBeans.size()>adapter.cacheToProduceList.size() && !isShowProgress){
+                /*if(orderBeans.size()>adapter.cacheToProduceList.size() && !isShowProgress){
                     sendNotificationForAutoNewOrders(true);
-                }
+                }*/
                 adapter.setData(orderBeans);
                 //检查列表中是否有未完成的合并订单
                 if(!OrderHelper.isContainerBatchOrder(orderBeans)){
@@ -1651,17 +1644,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         badCommentText.setText("差评"+negative);
     }
 
-    //接收自动刷单的广播
-    class OrdersReceiver extends BroadcastReceiver {
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d(TAG,"收自动刷新的广播消息");
-            requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true, false);
-        }
-    }
-
-    //发送自动刷单语音提示
+    /*//发送自动刷单语音提示
     private void sendNotificationForAutoNewOrders(boolean isAuto){
         if(mNotificationManager==null){
             mNotificationManager = (NotificationManager)mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -1689,7 +1673,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 mNotificationManager.cancel(notifyId);
             }
         }, 2*60*1000);
-    }
+    }*/
 
 
     class IndoDetailListener implements View.OnClickListener{

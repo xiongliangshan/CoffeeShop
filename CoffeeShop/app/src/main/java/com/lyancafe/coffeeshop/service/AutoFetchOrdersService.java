@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.lyancafe.coffeeshop.event.CommentCountEvent;
+import com.lyancafe.coffeeshop.event.NewOderComingEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -22,9 +23,8 @@ public class AutoFetchOrdersService extends Service {
     private Timer timer;
     private TimerTask task;
     private MyBinder binder = new MyBinder();
-    public static final String ACTION_REFRESH_ORDERS = "acton_refresh_order";
     public static  boolean auto_flag = false;
-    private static final long PERIOD_TIME = 30*1000;
+    private static final long PERIOD_TIME = 2*60*1000;
     private int n = 0;
 
     //评论数量刷新定时器
@@ -40,7 +40,7 @@ public class AutoFetchOrdersService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG,"onStartCommand");
+        Log.d(TAG, "onStartCommand");
         return Service.START_STICKY;
     }
 
@@ -71,7 +71,7 @@ public class AutoFetchOrdersService extends Service {
             @Override
             public void run() {
                 Log.d(TAG, "请求服务器--" + (n++));
-                sendBroadCastToGetOrders();
+                EventBus.getDefault().post(new NewOderComingEvent(0L));
             }
         };
         timer.schedule(task, 1000, PERIOD_TIME);
@@ -97,11 +97,6 @@ public class AutoFetchOrdersService extends Service {
     }
 
 
-    private void sendBroadCastToGetOrders(){
-        Intent order_intent = new Intent();
-        order_intent.setAction(ACTION_REFRESH_ORDERS);
-        sendBroadcast(order_intent);
-    }
     public class MyBinder extends Binder{
 
         public AutoFetchOrdersService getService(){
