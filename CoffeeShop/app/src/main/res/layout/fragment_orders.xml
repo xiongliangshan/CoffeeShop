@@ -155,14 +155,22 @@
                     android:textSize="@dimen/batch_prompt_text_size"
                     android:visibility="gone"
                     android:text="系统已将5单合并一起，共有10杯咖啡待生产，生产时效为20分钟        建议生产顺序为：美式*3 冰美式*2 拿铁*2 热巧克力*1"/>
-                <android.support.v7.widget.RecyclerView
+                <!--<android.support.v7.widget.RecyclerView
                     android:id="@+id/gv_order_list"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:layout_marginTop="8dp"
                     android:scrollbars="none"
-                    />
+                    />-->
+                <com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
+                   android:id="@+id/gv_order_list"
+                   android:layout_width="match_parent"
+                   android:layout_height="0dp"
+                   android:layout_weight="1"
+                   android:layout_marginTop="8dp"
+                   android:scrollbars="none"
+                   />
             </LinearLayout>
 
         </LinearLayout>

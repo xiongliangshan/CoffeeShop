@@ -1,20 +1,15 @@
 package com.lyancafe.coffeeshop.fragment;
 
 import android.app.Activity;
-import android.app.Notification;
 import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -65,7 +60,6 @@ import com.lyancafe.coffeeshop.event.UpdateTabOrderListCountEvent;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.helper.PrintHelper;
-import com.lyancafe.coffeeshop.service.AutoFetchOrdersService;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
 import com.lyancafe.coffeeshop.widget.DeliverImageDialog;
@@ -74,6 +68,7 @@ import com.lyancafe.coffeeshop.widget.ListTabButton;
 import com.lyancafe.coffeeshop.widget.PromptDialog;
 import com.lyancafe.coffeeshop.widget.ReportWindow;
 import com.lyancafe.coffeeshop.widget.SimpleConfirmDialog;
+import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 import com.xls.http.HttpAsyncTask;
 import com.xls.http.HttpEntity;
 import com.xls.http.HttpUtils;
@@ -87,7 +82,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Created by Administrator on 2015/9/1.
@@ -111,7 +105,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private Spinner sortSpinner;
     private Spinner categorySpinner;
 
-    private RecyclerView ordersGridView;
+    private PullLoadMoreRecyclerView ordersGridView;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.LayoutManager mSFLayoutManager;
     private OrderGridViewAdapter adapter;
@@ -127,6 +121,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
     private int orderBy = 0;
     private int fillterInstant = 0;
+    private long finishedLastOrderId = 0;
 
     private ReportWindow reportWindow;
     NotificationManager mNotificationManager;
@@ -199,7 +194,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     }
 
     private void initViews(View contentView){
-        ordersGridView = (RecyclerView) contentView.findViewById(R.id.gv_order_list);
+        ordersGridView = (PullLoadMoreRecyclerView) contentView.findViewById(R.id.gv_order_list);
         if(LoginHelper.isSFMode()){
             mLayoutManager = new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false);
             sfAdaper = new OrderListViewAdapter(mContext);
@@ -210,10 +205,25 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             ordersGridView.setAdapter(adapter);
         }
 
-        ordersGridView.setLayoutManager(mLayoutManager);
-        ordersGridView.setHasFixedSize(true);
-        ordersGridView.setItemAnimator(new DefaultItemAnimator());
-        ordersGridView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(8, mContext), false));
+        ordersGridView.getRecyclerView().setLayoutManager(mLayoutManager);
+        ordersGridView.getRecyclerView().setHasFixedSize(true);
+        ordersGridView.getRecyclerView().setItemAnimator(new DefaultItemAnimator());
+        ordersGridView.getRecyclerView().addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(8, mContext), false));
+
+        ordersGridView.setPullRefreshEnable(false);
+        ordersGridView.setPushRefreshEnable(false);
+        ordersGridView.setOnPullLoadMoreListener(new PullLoadMoreRecyclerView.PullLoadMoreListener() {
+            @Override
+            public void onRefresh() {
+                Log.d(TAG, "onRefresh");
+            }
+
+            @Override
+            public void onLoadMore() {
+                Log.d(TAG, "onLoadMore");
+                new OrderFinishedLoadMoreQry(mContext,finishedLastOrderId, orderBy, fillterInstant,false,LoginHelper.isSFMode()).doRequest();
+            }
+        });
 
 
         initTabButtons(contentView);
@@ -959,7 +969,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 if(adapter.selected>0){
                     adapter.selected -= 1;
                     EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
-                    ordersGridView.smoothScrollToPosition(adapter.selected);
+                    ordersGridView.getRecyclerView().smoothScrollToPosition(adapter.selected);
 
                 }
                 break;
@@ -967,7 +977,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 if(adapter.selected<adapter.list.size()-1 && adapter.selected!=-1 ){
                     adapter.selected += 1;
                     EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
-                    ordersGridView.smoothScrollToPosition(adapter.selected);
+                    ordersGridView.getRecyclerView().smoothScrollToPosition(adapter.selected);
                 }
                 break;
         }
@@ -1014,6 +1024,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     subTabIndex = TabList.TAB_TOPRODUCE;
                     new OrderToProduceQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true,LoginHelper.isSFMode()).doRequest();
                     resetSpinners();
+                    ordersGridView.setPushRefreshEnable(false);
                     break;
                 case R.id.tab_doing:
                     toDoTab.setClickBg(false);
@@ -1025,6 +1036,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     subTabIndex = TabList.TAB_PRODUCING;
                     new OrderProducingQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true,LoginHelper.isSFMode()).doRequest();
                     resetSpinners();
+                    ordersGridView.setPushRefreshEnable(false);
                     break;
                 case R.id.tab_have_done:
                     toDoTab.setClickBg(false);
@@ -1036,6 +1048,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     subTabIndex = TabList.TAB_PRODUCED;
                     new OrderProducedQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true,LoginHelper.isSFMode()).doRequest();
                     resetSpinners();
+                    ordersGridView.setPushRefreshEnable(false);
                     break;
                 case R.id.tab_delivering:
                     toDoTab.setClickBg(false);
@@ -1047,6 +1060,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     subTabIndex = TabList.TAB_DELIVERING;
                     new OrderDeliveryingQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true,LoginHelper.isSFMode()).doRequest();
                     resetSpinners();
+                    ordersGridView.setPushRefreshEnable(false);
                     break;
                 case R.id.tab_delivery_finished:
                     toDoTab.setClickBg(false);
@@ -1058,6 +1072,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     subTabIndex = TabList.TAB_FINISHED;
                     new OrderFinishedQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true,LoginHelper.isSFMode()).doRequest();
                     resetSpinners();
+                    ordersGridView.setPushRefreshEnable(true);
                     break;
             }
             if(subTabIndex ==  TabList.TAB_FINISHED){
@@ -1493,18 +1508,100 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
             if(isSFMode){
                 List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(context, resp);
-                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_FINISHED,OrderHelper.getGroupTotalCount(sfGroupBeans)));
+                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_FINISHED, OrderHelper.getGroupTotalCount(sfGroupBeans)));
                 updateSFTotalQuantity(sfGroupBeans);
                 sfAdaper.setData(sfGroupBeans);
+                if(sfAdaper.groupList.size()>0){
+                    finishedLastOrderId = sfAdaper.groupList.get(sfAdaper.groupList.size() - 1).getId();
+                }else{
+                    finishedLastOrderId = 0;
+                }
             }else{
                 List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_FINISHED,orderBeans.size()));
+                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_FINISHED, orderBeans.size()));
                 updateTotalQuantity(orderBeans);
                 adapter.setData(orderBeans);
+                if(adapter.list.size()>0){
+                    finishedLastOrderId = adapter.list.get(adapter.list.size()-1).getId();
+                }else {
+                    finishedLastOrderId = 0;
+                }
+
             }
 
         }
     }
+
+    //已完成订单列表，上拉加载更多
+    class OrderFinishedLoadMoreQry implements Qry{
+
+        private Context context;
+        private long orderId;
+        private int orderBy;
+        private int fillterInstant;
+        private boolean isShowProgress;
+        private boolean isSFMode;
+
+        public OrderFinishedLoadMoreQry(Context context, long orderId,int orderBy, int fillterInstant,boolean isShowProgress,boolean isSFMode) {
+            this.context = context;
+            this.orderBy = orderBy;
+            this.fillterInstant = fillterInstant;
+            this.isShowProgress = isShowProgress;
+            this.isSFMode = isSFMode;
+            this.orderId = orderId;
+        }
+
+        @Override
+        public void doRequest() {
+            String token = LoginHelper.getToken(context);
+            int shopId = LoginHelper.getShopId(context);
+            String url = null;
+            if(isSFMode){
+                url = HttpUtils.BASE_URL+shopId+"/orders/today/finished/tailwind?token="+token;
+            }else{
+                url = HttpUtils.BASE_URL+shopId+"/orders/today/finished?token="+token;
+            }
+            Map<String,Object> params = new HashMap<String,Object>();
+            params.put("orderId",orderId);
+            params.put("orderBy",orderBy);
+            params.put("fillterInstant", fillterInstant);
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowProgress);
+        }
+
+        @Override
+        public void showResult(Jresp resp) {
+            Log.d(TAG, "OrderFinishedQry:resp  =" + resp);
+            ordersGridView.setPullLoadMoreCompleted();
+            if(resp==null){
+                ToastUtil.showToast(context,R.string.unknown_error);
+                return;
+            }
+            if(isSFMode){
+                List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(context, resp);
+                sfAdaper.addData(sfGroupBeans);
+                updateSFTotalQuantity(sfAdaper.groupList);
+                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_FINISHED, OrderHelper.getGroupTotalCount(sfAdaper.groupList)));
+                if(sfAdaper.groupList.size()>0){
+                    finishedLastOrderId = sfAdaper.groupList.get(sfAdaper.groupList.size()-1).getId();
+                }else{
+                    finishedLastOrderId = 0;
+                }
+            }else{
+                List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
+                adapter.addData(orderBeans);
+                updateTotalQuantity(adapter.list);
+                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_FINISHED, adapter.list.size()));
+                if(adapter.list.size()>0){
+                    finishedLastOrderId = adapter.list.get(adapter.list.size()-1).getId();
+                }else{
+                    finishedLastOrderId = 0;
+                }
+
+            }
+
+        }
+    }
+
 
 
     //订单收回接口
@@ -1594,7 +1691,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 if(LoginHelper.isSFMode()){
                     sfAdaper.changeAndRemoveOrderFromList(mOrder.getId(),OrderStatus.FINISHED);
                 }else{
-                    adapter.removeOrderFromList(mOrder.getId(), adapter.cacheProducedList);
+                    adapter.removeOrderFromList(mOrder.getId());
                     EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.SCANCODE,1));
                 }
 
@@ -1734,7 +1831,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 if(LoginHelper.isSFMode()){
                     sfAdaper.changeAndRemoveOrderFromList(mOrder.getId(), OrderStatus.PRODUCING);
                 }else{
-                    adapter.removeOrderFromList(mOrder.getId(), adapter.cacheToProduceList);
+                    adapter.removeOrderFromList(mOrder.getId());
                     EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,1));
                 }
             }else{
@@ -1781,7 +1878,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 if(LoginHelper.isSFMode()){
                     sfAdaper.changeAndRemoveOrderFromList(mOrder.getId(),OrderStatus.PRODUCED);
                 }else{
-                    adapter.removeOrderFromList(mOrder.getId(), adapter.cacheProducingList);
+                    adapter.removeOrderFromList(mOrder.getId());
                     EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.FINISHPRODUCE,1));
                 }
 

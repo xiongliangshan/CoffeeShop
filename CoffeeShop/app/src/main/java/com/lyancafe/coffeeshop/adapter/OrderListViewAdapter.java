@@ -109,6 +109,11 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
         notifyDataSetChanged();
     }
 
+    public void addData(List<SFGroupBean> sfGroupList){
+        this.groupList.addAll(sfGroupList);
+        notifyDataSetChanged();
+    }
+
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder{

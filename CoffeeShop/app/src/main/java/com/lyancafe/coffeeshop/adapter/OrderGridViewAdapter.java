@@ -50,10 +50,10 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
     private TimerTask timerTask;
     private OrdersFragment fragment;
     private final static long DELTA_TIME = 30*1000;//单位ms
-    public static  ArrayList<OrderBean> testList =  new ArrayList<OrderBean>();
+//    public static  ArrayList<OrderBean> testList =  new ArrayList<OrderBean>();
     public ArrayList<OrderBean> cacheToProduceList =  new ArrayList<OrderBean>();
     public ArrayList<OrderBean> cacheProducingList = new ArrayList<OrderBean>();
-    public ArrayList<OrderBean> cacheProducedList =  new ArrayList<OrderBean>();
+//    public ArrayList<OrderBean> cacheProducedList =  new ArrayList<OrderBean>();
     public Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -332,7 +332,6 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
             //缓存订单列表
             cacheToProduceList.clear();
             cacheToProduceList.addAll(list);
-            testList = (ArrayList<OrderBean>) cacheToProduceList.clone();
             if(timerTask==null){
                 timerTask = new TimerTask() {
                     @Override
@@ -347,20 +346,35 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
                 timer.schedule(timerTask,DELTA_TIME,DELTA_TIME);
             }
 
-        }else if(OrdersFragment.subTabIndex==TabList.TAB_PRODUCING){
-            //缓存订单列表
-            cacheProducingList.clear();
-            cacheProducingList.addAll(list);
-
-        } else if(OrdersFragment.subTabIndex==TabList.TAB_PRODUCED){
-            cacheProducedList.clear();
-            cacheProducedList.addAll(list);
         }
 
+    }
 
+    public void addData(List<OrderBean> list){
+        this.list.addAll(list);
+        notifyDataSetChanged();
+        if(OrdersFragment.subTabIndex==TabList.TAB_TOPRODUCE){
+            //缓存订单列表
+            cacheToProduceList.clear();
+            cacheToProduceList.addAll(list);
+            if(timerTask==null){
+                timerTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG,"timerTask run ---"+Thread.currentThread().getId());
+                        for(OrderBean order:cacheToProduceList){
+                            order.setProduceEffect(order.getProduceEffect()-DELTA_TIME);
+                        }
+                        handler.sendEmptyMessage(1);
+                    }
+                };
+                timer.schedule(timerTask,DELTA_TIME,DELTA_TIME);
+            }
 
+        }
 
     }
+
 
     private void setFlag(OrderBean orderBean){
 
@@ -377,11 +391,10 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
      * @param orderId
      * @param list
      */
-    public void removeOrderFromList(long orderId,List<OrderBean> list){
-        for(int i = 0;i<list.size();i++){
+    public void removeOrderFromList(long orderId){
+        for(int i=list.size()-1;i>=0;i--){
             if(list.get(i).getId()==orderId){
                 list.remove(i);
-                this.list = list;
                 selected=0;
                 notifyDataSetChanged();
                 break;
