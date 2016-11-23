@@ -133,7 +133,7 @@ public class MyPushReceiver extends BroadcastReceiver {
         }else{
             mBuilder.setContentText("有订单消息，数据解析错误无法显示单号");
         }
-        if(pmb.getEventType()==1){  //新订单依靠自动刷单模式，不依靠推送消息
+        if(pmb.getEventType()==1){  //新订单消息
             mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.coffee_box));
             EventBus.getDefault().post(new NewOderComingEvent(0L));
         }else if(pmb.getEventType()==10){   //小哥上报问题

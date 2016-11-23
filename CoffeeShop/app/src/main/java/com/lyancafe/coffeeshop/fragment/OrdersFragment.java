@@ -90,7 +90,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
     private static final String TAG  ="OrdersFragment";
     private View mContentView;
-    private Activity mContext;
+    private Context mContext;
     public static int subTabIndex = TabList.TAB_TOPRODUCE;
 
     private ListTabButton toDoTab;
@@ -170,11 +170,18 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     };
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+        Log.d(TAG, "onAttach");
+    }
+
+    /*@Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mContext = activity;
         Log.d(TAG, "onAttach");
-    }
+    }*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
