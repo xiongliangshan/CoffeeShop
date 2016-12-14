@@ -64,6 +64,7 @@ public class SFItemListAdapter extends RecyclerView.Adapter<SFItemListAdapter.Vi
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                notifyDataSetChanged();
                 EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
                 OrderListViewAdapter.selectedOrderId = list.get(position).getId();
                 Log.d(TAG, "点击了 " + position);

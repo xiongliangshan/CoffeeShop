@@ -496,10 +496,12 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             csadRemarkTxt.setText("");
             userCommentTagsText.setText("");
             userCommentContentText.setText("");
+            produceAndPrintBtn.setEnabled(false);
             finishProduceBtn.setEnabled(false);
             printOrderBtn.setEnabled(false);
             moreBtn.setEnabled(false);
         }else{
+            produceAndPrintBtn.setEnabled(false);
             finishProduceBtn.setEnabled(true);
             printOrderBtn.setEnabled(true);
             moreBtn.setEnabled(true);
@@ -888,7 +890,11 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     public void OnUpdatePrintStatusEvent(UpdatePrintStatusEvent event){
         Log.d(TAG, "OnUpdatePrintStatusEvent,orderSn = " + event.orderSn);
         //打印界面退出的时候，刷新一下打印按钮文字
-        EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+        if(LoginHelper.isSFMode()){
+            sfAdaper.notifyDataSetChanged();
+        }else{
+            adapter.notifyDataSetChanged();
+        }
     }
 
     /**
@@ -947,10 +953,10 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onDestroyView() {
         EventBus.getDefault().unregister(this);
-        if(adapter!=null && adapter.timer!=null){
+        /*if(adapter!=null && adapter.timer!=null){
             adapter.timer.cancel();
             adapter.timer.purge();
-        }
+        }*/
         super.onDestroyView();
         Log.d(TAG, "onDestroyView");
     }
@@ -971,11 +977,15 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
+        if(LoginHelper.isSFMode()){
+            return;
+        }
         switch (v.getId()){
             case R.id.btn_prev:  //上一单
                 if(adapter.selected>0){
                     adapter.selected -= 1;
-                    EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+                    adapter.notifyDataSetChanged();
+                    EventBus.getDefault().post(new UpdateOrderDetailEvent(adapter.list.get(adapter.selected)));
                     ordersGridView.getRecyclerView().smoothScrollToPosition(adapter.selected);
 
                 }
@@ -983,7 +993,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             case R.id.btn_next:  //下一单
                 if(adapter.selected<adapter.list.size()-1 && adapter.selected!=-1 ){
                     adapter.selected += 1;
-                    EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+                    adapter.notifyDataSetChanged();
+                    EventBus.getDefault().post(new UpdateOrderDetailEvent(adapter.list.get(adapter.selected)));
                     ordersGridView.getRecyclerView().smoothScrollToPosition(adapter.selected);
                 }
                 break;
@@ -1166,10 +1177,12 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         for(int i=0;i<adapter.list.size();i++){
             if(adapter.list.get(i).getId()==orderId){
                 adapter.list.get(i).setIssueOrder(true);
+                adapter.notifyDataSetChanged();
+                EventBus.getDefault().post(new UpdateOrderDetailEvent(adapter.list.get(i)));
                 break;
             }
         }
-        EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+
     }
 
     /**
@@ -1199,7 +1212,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         printOrder(mContext, event.order);
     }
 
-    @Subscribe
+    /*@Subscribe
     public void onUpdateOrderDetailEvent(UpdateOrderDetailEvent event){
         if(LoginHelper.isSFMode()){
             if(sfAdaper!=null){
@@ -1208,11 +1221,28 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         }else{
             if(adapter!=null){
                 adapter.notifyDataSetChanged();
-                if(event.orderBean==null){
+                if(event.orderBean==null && adapter.list.size()>adapter.selected && adapter.selected!=-1){
                     event.orderBean = adapter.list.get(adapter.selected);
                 }
             }
         }
+        updateDetailView(event.orderBean);
+    }*/
+
+    @Subscribe
+    public void onUpdateOrderDetailEvent(UpdateOrderDetailEvent event){
+        /*if(LoginHelper.isSFMode()){
+            if(sfAdaper!=null){
+                sfAdaper.notifyDataSetChanged();
+            }
+        }else{
+            if(adapter!=null){
+                adapter.notifyDataSetChanged();
+                if(event.orderBean==null && adapter.list.size()>adapter.selected && adapter.selected!=-1){
+                    event.orderBean = adapter.list.get(adapter.selected);
+                }
+            }
+        }*/
         updateDetailView(event.orderBean);
     }
 
@@ -1640,7 +1670,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 return;
             }
             if(resp.status==0){
-                ToastUtil.showToast(context,R.string.do_success);
+                ToastUtil.showToast(context, R.string.do_success);
                 if(LoginHelper.isSFMode()){
                     for(SFGroupBean sfGroup:sfAdaper.groupList){
                         if(mOrder.getGroupId()==sfGroup.getId()){
@@ -1650,16 +1680,18 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                             break;
                         }
                     }
+                    sfAdaper.notifyDataSetChanged();
                 }else{
                     for(OrderBean order:adapter.list){
                         if(mOrder.getId() == order.getId()){
                             order.setStatus(OrderStatus.UNASSIGNED);
+                            adapter.notifyDataSetChanged();
+                            EventBus.getDefault().post(new UpdateOrderDetailEvent(order));
                             break;
                         }
                     }
                 }
 
-                EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
             }else{
                 ToastUtil.showToast(context, resp.message);
             }
@@ -1901,27 +1933,27 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     public void startProduceAndPrint(final Context context,final OrderBean order){
         if (order.getInstant() == 0) {
             //预约单
-            if (!OrderHelper.isCanHandle(order)) {
+           /* if (!OrderHelper.isCanHandle(order)) {
                 //预约单，生产时间还没到
                 SimpleConfirmDialog scd = new SimpleConfirmDialog(context, R.style.MyDialog);
                 scd.setContent(R.string.can_not_operate);
                 scd.show();
-            } else {
-                ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
-                    @Override
-                    public void onClickYes() {
-                        Log.d(TAG, "orderId = " + order.getOrderSn());
-                        //请求服务器改变该订单状态，由 待生产--生产中
-                        new startProduceQry(context,order).doRequest();
-                        //打印全部
-                        PrintHelper.getInstance().printOrderInfo(order);
-                        PrintHelper.getInstance().printOrderItems(order);
-                    }
-                });
-                grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 开始生产？");
-                grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
-                grabConfirmDialog.show();
-            }
+            } else {*/
+            ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
+                @Override
+                public void onClickYes() {
+                    Log.d(TAG, "orderId = " + order.getOrderSn());
+                    //请求服务器改变该订单状态，由 待生产--生产中
+                    new startProduceQry(context,order).doRequest();
+                    //打印全部
+                    PrintHelper.getInstance().printOrderInfo(order);
+                    PrintHelper.getInstance().printOrderItems(order);
+                }
+            });
+            grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 开始生产？");
+            grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
+            grabConfirmDialog.show();
+        //    }
 
         } else {
             //及时单
@@ -1946,23 +1978,23 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     public void finishProduce(final Context context,final OrderBean order){
         if (order.getInstant() == 0) {
             //预约单
-            if (!OrderHelper.isCanHandle(order)) {
+           /* if (!OrderHelper.isCanHandle(order)) {
                 //预约单，生产时间还没到
                 SimpleConfirmDialog scd = new SimpleConfirmDialog(context, R.style.MyDialog);
                 scd.setContent(R.string.can_not_operate);
                 scd.show();
-            } else {
-                ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
-                    @Override
-                    public void onClickYes() {
-                        Log.d(TAG, "orderId = " + order.getOrderSn());
-                        new DoFinishProduceQry(context,order).doRequest();
-                    }
-                });
-                grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 生产完成？");
-                grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
-                grabConfirmDialog.show();
-            }
+            } else {*/
+            ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
+                @Override
+                public void onClickYes() {
+                    Log.d(TAG, "orderId = " + order.getOrderSn());
+                    new DoFinishProduceQry(context,order).doRequest();
+                }
+            });
+            grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 生产完成？");
+            grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
+            grabConfirmDialog.show();
+        //    }
 
         } else {
             //及时单
@@ -1984,16 +2016,16 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         //打印按钮
         if (order.getInstant() == 0) {
             //预约单
-            if (!OrderHelper.isCanHandle(order)) {
+            /*if (!OrderHelper.isCanHandle(order)) {
                 //预约单，打印时间还没到
                 SimpleConfirmDialog scd = new SimpleConfirmDialog(context, R.style.MyDialog);
                 scd.setContent(R.string.can_not_operate);
                 scd.show();
-            } else {
+            } else {*/
                 Intent intent = new Intent(context, PrintOrderActivity.class);
                 intent.putExtra("order", order);
                 context.startActivity(intent);
-            }
+        //    }
 
         } else {
             //及时单

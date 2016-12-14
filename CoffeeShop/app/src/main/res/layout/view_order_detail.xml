@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="24sp"
-                android:text="CB2015-0919-01"
+                android:text=""
                 android:textColor="@color/font_black"
                 />
             <TextView
@@ -50,7 +50,7 @@
                 android:layout_alignLeft="@id/contant_order_time"
                 android:textSize="12sp"
                 android:layout_marginTop="-2dp"
-                android:text="2015-09-19 14:20"
+                android:text=""
                 android:textColor="@color/font_gray"
                 />
             <TextView

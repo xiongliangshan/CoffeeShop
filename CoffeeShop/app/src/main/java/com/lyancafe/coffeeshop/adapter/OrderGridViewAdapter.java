@@ -46,15 +46,15 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
     private Context context;
     public List<OrderBean> list = new ArrayList<OrderBean>();
     public int selected = -1;
-    public Timer timer;
-    private TimerTask timerTask;
+//    public Timer timer;
+//    private TimerTask timerTask;
     private OrdersFragment fragment;
     private final static long DELTA_TIME = 30*1000;//单位ms
 //    public static  ArrayList<OrderBean> testList =  new ArrayList<OrderBean>();
-    public ArrayList<OrderBean> cacheToProduceList =  new ArrayList<OrderBean>();
-    public ArrayList<OrderBean> cacheProducingList = new ArrayList<OrderBean>();
+//    public ArrayList<OrderBean> cacheToProduceList =  new ArrayList<OrderBean>();
+//    public ArrayList<OrderBean> cacheProducingList = new ArrayList<OrderBean>();
 //    public ArrayList<OrderBean> cacheProducedList =  new ArrayList<OrderBean>();
-    public Handler handler = new Handler(){
+    /*public Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
@@ -66,11 +66,11 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
             }
 
         }
-    };
+    };*/
 
     public OrderGridViewAdapter(Context context,OrdersFragment fragment) {
         this.context = context;
-        timer =  new Timer(true);
+    //    timer =  new Timer(true);
         this.fragment = fragment;
     }
 
@@ -86,8 +86,9 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
             @Override
             public void onClick(View v) {
                 //通知详情板块内容变更
-                EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
                 selected = position;
+                notifyDataSetChanged();
+                EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
                 Log.d(TAG, "点击了 " + position);
             }
         });
@@ -328,7 +329,11 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
         this.list = list;
     //    selected = 0;
         notifyDataSetChanged();
-        if(OrdersFragment.subTabIndex==TabList.TAB_TOPRODUCE){
+        if(selected>=0 && selected<this.list.size()){
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+        }
+
+       /* if(OrdersFragment.subTabIndex==TabList.TAB_TOPRODUCE){
             //缓存订单列表
             cacheToProduceList.clear();
             cacheToProduceList.addAll(list);
@@ -337,23 +342,26 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
                     @Override
                     public void run() {
                         Log.d(TAG,"timerTask run ---"+Thread.currentThread().getId());
-                        for(OrderBean order:cacheToProduceList){
-                            order.setProduceEffect(order.getProduceEffect()-DELTA_TIME);
-                        }
+                        for(OrderBean order:this.list){
+
+                        }order.setProduceEffect(order.getProduceEffect()-DELTA_TIME);
                         handler.sendEmptyMessage(1);
                     }
                 };
                 timer.schedule(timerTask,DELTA_TIME,DELTA_TIME);
             }
 
-        }
+        }*/
 
     }
 
     public void addData(List<OrderBean> list){
         this.list.addAll(list);
         notifyDataSetChanged();
-        if(OrdersFragment.subTabIndex==TabList.TAB_TOPRODUCE){
+        if(selected>=0 && selected<this.list.size()){
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+        }
+       /* if(OrdersFragment.subTabIndex==TabList.TAB_TOPRODUCE){
             //缓存订单列表
             cacheToProduceList.clear();
             cacheToProduceList.addAll(list);
@@ -371,7 +379,7 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
                 timer.schedule(timerTask,DELTA_TIME,DELTA_TIME);
             }
 
-        }
+        }*/
 
     }
 
@@ -389,17 +397,24 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
     /**
      * 点击开始生产，生产完成，扫码交付时从当前列表移除该订单
      * @param orderId
-     * @param list
      */
     public void removeOrderFromList(long orderId){
         for(int i=list.size()-1;i>=0;i--){
             if(list.get(i).getId()==orderId){
                 list.remove(i);
-                selected=0;
-                notifyDataSetChanged();
                 break;
             }
         }
+        if(list.size()>0){
+            selected=0;
+            notifyDataSetChanged();
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(selected)));
+        }else{
+            selected = -1;
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+        }
+
+
     }
 
 
