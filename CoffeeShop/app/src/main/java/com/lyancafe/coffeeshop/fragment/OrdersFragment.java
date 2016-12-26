@@ -32,7 +32,6 @@ import com.lyancafe.coffeeshop.CoffeeShopApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.activity.AssignOrderActivity;
 import com.lyancafe.coffeeshop.activity.CommentActivity;
-import com.lyancafe.coffeeshop.activity.LocationActivity;
 import com.lyancafe.coffeeshop.activity.PrintOrderActivity;
 import com.lyancafe.coffeeshop.adapter.OrderGridViewAdapter;
 import com.lyancafe.coffeeshop.adapter.OrderListViewAdapter;
@@ -138,7 +137,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private LinearLayout  deliverLayout;
     private TextView deliverNameTxt;
     private TextView deliverPhoneTxt;
-    private TextView deliverLocationInfoTxt;
     private LinearLayout itemsContainerLayout;
     private LinearLayout userRemarkLayout;
     private TextView userRemarkTxt;
@@ -417,7 +415,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         deliverLayout = (LinearLayout) contentView.findViewById(R.id.ll_deliver_layout);
         deliverNameTxt = (TextView) contentView.findViewById(R.id.deliver_name);
         deliverPhoneTxt = (TextView) contentView.findViewById(R.id.deliver_phone);
-        deliverLocationInfoTxt = (TextView) contentView.findViewById(R.id.deliver_location_info);
         itemsContainerLayout = (LinearLayout) contentView.findViewById(R.id.items_container_layout);
         userRemarkLayout = (LinearLayout) contentView.findViewById(R.id.ll_user_remark);
         userRemarkLayout.setOnClickListener(indoDetailListener);
@@ -453,7 +450,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             receiveAddressTxt.setText("");
             deliverNameTxt.setText("");
             deliverPhoneTxt.setText("");
-            deliverLocationInfoTxt.setVisibility(View.GONE);
             fillItemListData(itemsContainerLayout, order);
             userRemarkTxt.setText("");
             csadRemarkTxt.setText("");
@@ -506,15 +502,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             receiveAddressTxt.setText(order.getAddress());
             deliverNameTxt.setText(order.getCourierName());
             deliverPhoneTxt.setText(order.getCourierPhone());
-            deliverLocationInfoTxt.setVisibility(View.VISIBLE);
-            deliverLocationInfoTxt.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //查看小哥位置
-                    Intent intent = new Intent(mContext, LocationActivity.class);
-                    mContext.startActivity(intent);
-                }
-            });
             if(order.getStatus()== OrderStatus.UNASSIGNED){
                 deliverInfoContainerLayout.setVisibility(View.GONE);
             }else {
@@ -529,9 +516,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 }
             });
             fillItemListData(itemsContainerLayout, order);
-//            orderPriceTxt.setText("应付: " + OrderHelper.getMoneyStr(OrderHelper.getTotalPrice(order)));
-//            payWayTxt.setText(order.getPayChannelStr());
-//            moneyTxt.setText(OrderHelper.getMoneyStr(order.getPaid()));
             userRemarkTxt.setText(order.getNotes());
             csadRemarkTxt.setText(order.getCsrNotes());
             userCommentTagsText.setText(OrderHelper.getCommentTagsStr(order.getFeedbackTags()));

@@ -249,19 +249,6 @@
                         android:textColor="@color/blue"
                         />
                 </LinearLayout>
-                <TextView
-                    android:id="@+id/deliver_location_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:padding="5dp"
-                    android:layout_alignBaseline="@id/contant_deliver"
-                    android:layout_toRightOf="@id/ll_deliver_layout"
-                    android:background="@null"
-                    android:text="查看位置"
-                    android:visibility="gone"
-                    android:textColor="@color/blue"
-                    />
             </RelativeLayout>
         </RelativeLayout>
 

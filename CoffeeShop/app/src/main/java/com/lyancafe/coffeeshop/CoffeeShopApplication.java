@@ -10,8 +10,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 
-import com.baidu.mapapi.SDKInitializer;
-import com.baidu.mapapi.model.LatLng;
 import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.service.UpdateService;
@@ -39,8 +37,6 @@ public class CoffeeShopApplication extends Application {
     public static final String LOG_DIR = BASE_DIR+"log"+File.separator;
     private static CoffeeShopApplication application;
 
-    public static LatLng latLng = null;
-
     public static int screenWidth = 0;
     public static int screenHeight = 0;
 
@@ -55,11 +51,7 @@ public class CoffeeShopApplication extends Application {
         super.onCreate();
         Log.d(TAG, "onCreate()");
         application = this;
-        SDKInitializer.initialize(this);
         getDeviceScreenSize();
-        //进行定位
-        ShopLocation shopLocation = new ShopLocation(this);
-        shopLocation.startLocation();
 
         CrashReport.initCrashReport(getApplicationContext(), "900027459", false);
 

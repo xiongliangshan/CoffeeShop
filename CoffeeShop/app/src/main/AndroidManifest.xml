@@ -83,11 +83,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.LocationActivity"
-            android:screenOrientation="landscape"
-            android:launchMode="singleTask" />
-
-
 
         <activity android:name=".activity.PrintOrderActivity"
             android:screenOrientation="landscape"
