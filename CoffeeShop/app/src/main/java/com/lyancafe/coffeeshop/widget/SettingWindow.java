@@ -1,14 +1,11 @@
 package com.lyancafe.coffeeshop.widget;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.PopupWindow;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,14 +17,7 @@ import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.helper.ShopHelper;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.xls.http.HttpAsyncTask;
-import com.xls.http.HttpEntity;
 import com.xls.http.HttpUtils;
-import com.xls.http.Jresp;
-import com.xls.http.Qry;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Administrator on 2015/10/22.
@@ -37,10 +27,10 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
     private static final String TAG = "SettingWindow";
     private Context context;
     private View contentView;
-    private RadioGroup statusSwitch;
-    private RadioButton freeRb;
-    private RadioButton busyRb;
-    private RadioButton stopRb;
+//    private RadioGroup statusSwitch;
+//    private RadioButton freeRb;
+//    private RadioButton busyRb;
+//    private RadioButton stopRb;
     private TextView feedbackTxt;
     private RelativeLayout versionUpdateLayout;
     private TextView currentVerTxt;
@@ -66,7 +56,7 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
         this.setAnimationStyle(R.style.setting_popwin_anim_style);
         //同步本地文件的状态到内存
         current_status = ShopHelper.getShopStatus(context);
-        setBackRadio();
+   //     setBackRadio();
     }
 
 
@@ -89,7 +79,7 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
         loginOutBtn = (Button) contentView.findViewById(R.id.login_out);
         loginOutBtn.setOnClickListener(this);
         currentVerTxt.setText("当前版本:" + MyUtil.getVersion(context));
-        statusSwitch = (RadioGroup)contentView.findViewById(R.id.status_switch);
+        /*statusSwitch = (RadioGroup)contentView.findViewById(R.id.status_switch);
         freeRb = (RadioButton) contentView.findViewById(R.id.radio_free);
         freeRb.setChecked(true);
         busyRb = (RadioButton) contentView.findViewById(R.id.radio_busy);
@@ -111,7 +101,7 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
             public void onClick(View v) {
                 new SwitchShopStatusQry(context, RED).doRequest();
             }
-        });
+        });*/
 
     }
 
@@ -149,7 +139,7 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
     }
 
 
-    // http://api.lyancafe.com/shop/v3/{shopId}/status
+  /*  // http://api.lyancafe.com/shop/v3/{shopId}/status
     class SwitchShopStatusQry implements Qry{
 
         private Context context;
@@ -201,5 +191,5 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
                 stopRb.setChecked(true);
                 break;
         }
-    }
+    }*/
 }
