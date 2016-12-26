@@ -1,14 +1,11 @@
 package com.lyancafe.coffeeshop.fragment;
 
-import android.app.Activity;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -67,7 +64,6 @@ import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
 import com.lyancafe.coffeeshop.widget.ListTabButton;
 import com.lyancafe.coffeeshop.widget.PromptDialog;
 import com.lyancafe.coffeeshop.widget.ReportWindow;
-import com.lyancafe.coffeeshop.widget.SimpleConfirmDialog;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 import com.xls.http.HttpAsyncTask;
 import com.xls.http.HttpEntity;
@@ -107,7 +103,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
     private PullLoadMoreRecyclerView ordersGridView;
     private RecyclerView.LayoutManager mLayoutManager;
-    private RecyclerView.LayoutManager mSFLayoutManager;
     private OrderGridViewAdapter adapter;
     private OrderListViewAdapter sfAdaper;
 
@@ -115,7 +110,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private TextView batchHandleBtn;
     private TextView batchPromptText;
     private TextView totalQuantityTxt;
-    private LinearLayout commentLayout;
     private TextView goodCommentText;
     private TextView badCommentText;
 
@@ -124,7 +118,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private long finishedLastOrderId = 0;
 
     private ReportWindow reportWindow;
-    NotificationManager mNotificationManager;
 
     private IndoDetailListener indoDetailListener;
 
@@ -147,9 +140,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private TextView deliverPhoneTxt;
     private TextView deliverLocationInfoTxt;
     private LinearLayout itemsContainerLayout;
-//    private TextView orderPriceTxt;
-//    private TextView payWayTxt;
-//    private TextView moneyTxt;
     private LinearLayout userRemarkLayout;
     private TextView userRemarkTxt;
     private LinearLayout csadRemarkLayout;
@@ -166,9 +156,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private Button prevBtn;
     private Button nextBtn;
 
-    private Handler mHandler = new Handler(){
-    };
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -176,12 +163,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         Log.d(TAG, "onAttach");
     }
 
-    /*@Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mContext = activity;
-        Log.d(TAG, "onAttach");
-    }*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -228,7 +209,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onLoadMore() {
                 Log.d(TAG, "onLoadMore");
-                new OrderFinishedLoadMoreQry(mContext,finishedLastOrderId, orderBy, fillterInstant,false,LoginHelper.isSFMode()).doRequest();
+                new OrderFinishedLoadMoreQry(mContext, finishedLastOrderId, orderBy, fillterInstant, false, LoginHelper.isSFMode()).doRequest();
             }
         });
 
@@ -312,7 +293,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         });
         totalQuantityTxt = (TextView) contentView.findViewById(R.id.total_quantity);
 
-        commentLayout = (LinearLayout) contentView.findViewById(R.id.ll_comment);
         goodCommentText = (TextView) contentView.findViewById(R.id.tv_good_comment);
         badCommentText = (TextView) contentView.findViewById(R.id.tv_bad_comment);
 
@@ -338,17 +318,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
     }
 
-   /* *//**
-     * 列表数据变更，及时更新详情
-     *//*
-    private void UpdateUI(){
-        if(LoginHelper.isSFMode()){
-            sfAdaper.notifyDataSetChanged();
-        }else{
-            adapter.notifyDataSetChanged();
-        }
-        EventBus.getDefault().post(new UpdateOrderDetailEvent());
-    }*/
 
     //设置RecyclerView item之间的间距
     public class SpaceItemDecoration extends RecyclerView.ItemDecoration{
@@ -450,9 +419,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         deliverPhoneTxt = (TextView) contentView.findViewById(R.id.deliver_phone);
         deliverLocationInfoTxt = (TextView) contentView.findViewById(R.id.deliver_location_info);
         itemsContainerLayout = (LinearLayout) contentView.findViewById(R.id.items_container_layout);
-//        orderPriceTxt = (TextView) contentView.findViewById(R.id.order_price);
-//        payWayTxt = (TextView) contentView.findViewById(R.id.pay_way);
-//        moneyTxt = (TextView) contentView.findViewById(R.id.money);
         userRemarkLayout = (LinearLayout) contentView.findViewById(R.id.ll_user_remark);
         userRemarkLayout.setOnClickListener(indoDetailListener);
         userRemarkTxt = (TextView) contentView.findViewById(R.id.user_remark);
@@ -489,9 +455,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             deliverPhoneTxt.setText("");
             deliverLocationInfoTxt.setVisibility(View.GONE);
             fillItemListData(itemsContainerLayout, order);
-//            orderPriceTxt.setText("");
-//            payWayTxt.setText("");
-//            moneyTxt.setText("");
             userRemarkTxt.setText("");
             csadRemarkTxt.setText("");
             userCommentTagsText.setText("");
@@ -501,7 +464,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             printOrderBtn.setEnabled(false);
             moreBtn.setEnabled(false);
         }else{
-            produceAndPrintBtn.setEnabled(false);
+            produceAndPrintBtn.setEnabled(true);
             finishProduceBtn.setEnabled(true);
             printOrderBtn.setEnabled(true);
             moreBtn.setEnabled(true);
@@ -543,11 +506,11 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             receiveAddressTxt.setText(order.getAddress());
             deliverNameTxt.setText(order.getCourierName());
             deliverPhoneTxt.setText(order.getCourierPhone());
-        //    deliverLocationInfoTxt.setVisibility(View.VISIBLE);
+            deliverLocationInfoTxt.setVisibility(View.VISIBLE);
             deliverLocationInfoTxt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //启动地图Activity
+                    //查看小哥位置
                     Intent intent = new Intent(mContext, LocationActivity.class);
                     mContext.startActivity(intent);
                 }

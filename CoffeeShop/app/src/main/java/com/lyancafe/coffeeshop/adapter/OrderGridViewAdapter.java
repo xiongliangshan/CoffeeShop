@@ -88,7 +88,10 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
                 //通知详情板块内容变更
                 selected = position;
                 notifyDataSetChanged();
-                EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
+                if(position>=0 && position<list.size()){
+                    EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
+                }
+
                 Log.d(TAG, "点击了 " + position);
             }
         });

@@ -1,22 +1,15 @@
 package com.lyancafe.coffeeshop.activity;
 
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RadioGroup;
 
 import com.lyancafe.coffeeshop.CoffeeShopApplication;
@@ -25,7 +18,7 @@ import com.lyancafe.coffeeshop.adapter.FragmentTabAdapter;
 import com.lyancafe.coffeeshop.fragment.OrderQueryFragment;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.fragment.ShopManagerFragment;
-import com.lyancafe.coffeeshop.service.AutoFetchOrdersService;
+import com.lyancafe.coffeeshop.service.TaskService;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
 import com.lyancafe.coffeeshop.widget.SettingWindow;
@@ -43,7 +36,6 @@ import com.nostra13.universalimageloader.utils.StorageUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by Administrator on 2015/9/18.
@@ -59,20 +51,11 @@ public class HomeActivity extends BaseActivity {
     private ShopManagerFragment shopManagerFrag;
     private FragmentTabAdapter tabAdapter;
     private ImageButton settingBtn;
-    private ImageView baristaLogoIV;
     private SettingWindow sw;
-    private AutoFetchOrdersService autoFetchOrdersService;
-    NotificationManager mNotificationManager;
+    private TaskService taskService;
     private ServiceConnection serviceConnection;
 
     private Context context;
-    private Handler mHandler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-        }
-    };
-
 
 
     @Override
@@ -87,19 +70,19 @@ public class HomeActivity extends BaseActivity {
         serviceConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
-                Log.d("AutoFetchOrdersService","onServiceConnected");
-                AutoFetchOrdersService.MyBinder myBinder = (AutoFetchOrdersService.MyBinder)service;
-                autoFetchOrdersService = myBinder.getService();
+                Log.d("TaskService","onServiceConnected");
+                TaskService.MyBinder myBinder = (TaskService.MyBinder)service;
+                taskService = myBinder.getService();
             }
 
             @Override
             public void onServiceDisconnected(ComponentName name) {
-                Log.d("AutoFetchOrdersService","onServiceDisconnected");
+                Log.d("TaskService","onServiceDisconnected");
             }
         };
-        Intent intent=new Intent(HomeActivity.this,AutoFetchOrdersService.class);
+        Intent intent=new Intent(HomeActivity.this,TaskService.class);
         bindService(intent, serviceConnection, BIND_AUTO_CREATE);
-        Log.d("AutoFetchOrdersService", "bindService");
+        Log.d("TaskService", "bindService");
 
         File cacheDir = StorageUtils.getCacheDirectory(HomeActivity.this);
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(HomeActivity.this)
@@ -130,7 +113,6 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void initViews(){
-        baristaLogoIV = (ImageView) findViewById(R.id.iv_barista_logo);
         mRadioGroup = (RadioGroup) findViewById(R.id.group_left);
         settingBtn = (ImageButton) findViewById(R.id.btn_setting);
         settingBtn.setOnClickListener(new View.OnClickListener() {
@@ -189,45 +171,10 @@ public class HomeActivity extends BaseActivity {
         InfoDetailDialog.getInstance(context).dismiss();
         unbindService(serviceConnection);
         super.onDestroy();
-        Log.d("AutoFetchOrdersService", "unbindService");
+        Log.d("TaskService", "unbindService");
 
 
     }
 
-
-
-    //发送自动刷单语音提示
-    private void sendNotificationForAutoOrders(boolean flag){
-        if(mNotificationManager==null){
-            mNotificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
-        }
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.mipmap.app_icon)
-                .setDefaults(Notification.DEFAULT_LIGHTS)
-                .setAutoCancel(true)
-                .setContentTitle("自动刷单模式变更通知");
-
-        if(flag) {
-            mBuilder.setContentText("已开启");
-            mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.auto_order_on));
-        }else {
-            mBuilder.setContentText("已关闭");
-            mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.auto_order_off));
-        }
-
-        Random ran =new Random(System.currentTimeMillis());
-        final int notifyId  = ran.nextInt();
-        Log.d(TAG,"notifyId = "+notifyId);
-        mNotificationManager.notify(notifyId, mBuilder.build());
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (mNotificationManager == null) {
-                    mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                }
-                mNotificationManager.cancel(notifyId);
-            }
-        }, 10*1000);
-    }
 
 }

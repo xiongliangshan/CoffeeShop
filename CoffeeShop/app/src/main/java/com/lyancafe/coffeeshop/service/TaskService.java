@@ -17,9 +17,9 @@ import java.util.TimerTask;
 /**
  * Created by Administrator on 2015/11/9.
  */
-public class AutoFetchOrdersService extends Service {
+public class TaskService extends Service {
 
-    private static final String TAG ="AutoFetchOrdersService";
+    private static final String TAG ="TaskService";
     private Timer timer;
     private TimerTask task;
     private MyBinder binder = new MyBinder();
@@ -76,8 +76,8 @@ public class AutoFetchOrdersService extends Service {
         };
         timer.schedule(task, 1000, PERIOD_TIME);
         auto_flag = true;
-    //    ToastUtil.showToast(AutoFetchOrdersService.this,"已开启自动刷单模式");
-    //    PushManager.getInstance().turnOffPush(AutoFetchOrdersService.this);
+    //    ToastUtil.showToast(TaskService.this,"已开启自动刷单模式");
+    //    PushManager.getInstance().turnOffPush(TaskService.this);
     }
 
     public void stopTimer(){
@@ -86,8 +86,8 @@ public class AutoFetchOrdersService extends Service {
             timer=null;
         }
         auto_flag = false;
-    //    ToastUtil.showToast(AutoFetchOrdersService.this,"已关闭自动刷单模式");
-    //    PushManager.getInstance().turnOnPush(AutoFetchOrdersService.this);
+    //    ToastUtil.showToast(TaskService.this,"已关闭自动刷单模式");
+    //    PushManager.getInstance().turnOnPush(TaskService.this);
     }
 
     @Override
@@ -99,8 +99,8 @@ public class AutoFetchOrdersService extends Service {
 
     public class MyBinder extends Binder{
 
-        public AutoFetchOrdersService getService(){
-            return AutoFetchOrdersService.this;
+        public TaskService getService(){
+            return TaskService.this;
         }
     }
 

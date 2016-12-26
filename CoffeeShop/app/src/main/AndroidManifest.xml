@@ -102,7 +102,7 @@
             android:theme="@style/CommentWindow"
             android:launchMode="singleTask"/>
 
-        <service android:name=".service.AutoFetchOrdersService"/>
+        <service android:name=".service.TaskService"/>
         <service android:name=".service.UpdateService"/>
 
 
