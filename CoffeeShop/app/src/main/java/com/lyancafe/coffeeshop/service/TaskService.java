@@ -76,8 +76,6 @@ public class TaskService extends Service {
         };
         timer.schedule(task, 1000, PERIOD_TIME);
         auto_flag = true;
-    //    ToastUtil.showToast(TaskService.this,"已开启自动刷单模式");
-    //    PushManager.getInstance().turnOffPush(TaskService.this);
     }
 
     public void stopTimer(){
@@ -86,8 +84,6 @@ public class TaskService extends Service {
             timer=null;
         }
         auto_flag = false;
-    //    ToastUtil.showToast(TaskService.this,"已关闭自动刷单模式");
-    //    PushManager.getInstance().turnOnPush(TaskService.this);
     }
 
     @Override
@@ -103,7 +99,6 @@ public class TaskService extends Service {
             return TaskService.this;
         }
     }
-
 
 
 

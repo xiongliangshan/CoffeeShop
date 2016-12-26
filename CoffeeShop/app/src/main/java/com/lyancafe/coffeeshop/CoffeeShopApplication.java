@@ -34,6 +34,7 @@ public class CoffeeShopApplication extends Application {
 
     private static final String TAG  ="CoffeeShopApplication";
     public static final String BASE_DIR = Environment.getExternalStorageDirectory() + File.separator+"coffeeshop"+File.separator;
+    public static final String APK_DIR = BASE_DIR+"apk";
     public static final String LOG_DIR = BASE_DIR+"log"+File.separator;
     private static CoffeeShopApplication application;
 
@@ -56,7 +57,7 @@ public class CoffeeShopApplication extends Application {
         CrashReport.initCrashReport(getApplicationContext(), "900027459", false);
 
         //初始化Jpush
-        JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
+        JPushInterface.setDebugMode(false); 	// 设置开启日志,发布时请关闭日志
         JPushInterface.init(this);     		// 初始化 JPush
     }
 
@@ -150,7 +151,6 @@ public class CoffeeShopApplication extends Application {
                         dialog.dismiss();
                         //启动Service下载apk文件
                         Intent intent = new Intent(context, UpdateService.class);
-                        intent.putExtra(UpdateService.KEY_TYPE, UpdateService.DOWNLOADAPK);
                         intent.putExtra("apk",apkInfoBean);
                         context.startService(intent);
                     }

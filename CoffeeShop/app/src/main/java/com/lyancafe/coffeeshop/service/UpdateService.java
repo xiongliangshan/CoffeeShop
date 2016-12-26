@@ -14,7 +14,6 @@ import android.util.Log;
 import com.lyancafe.coffeeshop.CoffeeShopApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ApkInfoBean;
-import com.lyancafe.coffeeshop.utils.PropertiesUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.io.File;
@@ -33,10 +32,6 @@ import java.security.NoSuchAlgorithmException;
 public class UpdateService extends IntentService {
 
     private static final String TAG = "UpdateService";
-
-    public static final String KEY_TYPE = "type";
-    public static final int DOWNLOADPROPERTIES = 1;
-    public static final int DOWNLOADAPK = 2;
     private static final int DOWNLOADNOTIFICATIONID = 333;
     private static final int TIMEOUT = 60 * 1000;// 超时时间
     private boolean isDownloading = false;
@@ -75,27 +70,25 @@ public class UpdateService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        int type = intent.getIntExtra(UpdateService.KEY_TYPE,UpdateService.DOWNLOADPROPERTIES);
-        if(type == UpdateService.DOWNLOADAPK){
-            Log.d(TAG, "download apk file ,isdownloading = " + isDownloading);
-            ApkInfoBean apkInfoBean = (ApkInfoBean) intent.getSerializableExtra("apk");
-            if(!isDownloading){
-                if (isNewestAPKexist(apkInfoBean)) {
-                    installApk(UpdateService.this, mFile);
-                } else {
-                    if (createFile(mFile)) {
-                        if (downloadUpdateFile(apkInfoBean.getUrl(), mFile)) {
-                            installApk(UpdateService.this, mFile);
-                        } else {
-                            return;
-                        }
+        Log.d(TAG, "download apk file ,isdownloading = " + isDownloading);
+        ApkInfoBean apkInfoBean = (ApkInfoBean) intent.getSerializableExtra("apk");
+        if(!isDownloading){
+            if (isNewestAPKexist(apkInfoBean)) {
+                installApk(UpdateService.this, mFile);
+            } else {
+                if (createFile(mFile)) {
+                    if (downloadUpdateFile(apkInfoBean.getUrl(), mFile)) {
+                        installApk(UpdateService.this, mFile);
                     } else {
                         return;
                     }
+                } else {
+                    return;
                 }
             }
-
         }
+
+
     }
 
     /**
@@ -136,7 +129,7 @@ public class UpdateService extends IntentService {
      */
     public boolean createFile(File file){
         if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
-            mAPKDir =  new File(PropertiesUtil.APK_DIR);
+            mAPKDir =  new File(CoffeeShopApplication.APK_DIR);
             if(!mAPKDir.exists()){
                 mAPKDir.mkdirs();
                 Log.d(TAG,"apkdir = "+mAPKDir.getAbsolutePath());
@@ -177,7 +170,7 @@ public class UpdateService extends IntentService {
      * newVersionCode 从服务器端获取的最新版本号
      */
     private boolean isNewestAPKexist(ApkInfoBean apkInfoBean){
-        mFile = new File(PropertiesUtil.APK_DIR+File.separator+"coffeeshop_"+apkInfoBean.getAppNo()+".apk");
+        mFile = new File(CoffeeShopApplication.APK_DIR+File.separator+"coffeeshop_"+apkInfoBean.getAppNo()+".apk");
         if(mFile!=null && mFile.exists()){
             Log.d(TAG,"newestapk file exist!");
             //F6C95DAA257080223CC4211F05744AF8
