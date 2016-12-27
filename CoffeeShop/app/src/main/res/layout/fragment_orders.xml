@@ -89,6 +89,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
                 >
                 <Spinner
                     android:id="@+id/spinner_sort"
@@ -112,6 +113,40 @@
                     android:textColor="@color/bg_refresh"
                     android:visibility="invisible"
                     />
+                <RadioGroup
+                    android:id="@+id/rg_order_limit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_radiogroup_limit"
+                    android:layout_toLeftOf="@+id/btn_refresh"
+                    android:layout_marginRight="16dp"
+                    android:orientation="horizontal"
+                    >
+                    <RadioButton
+                        android:id="@+id/rb_low"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="48"
+                        android:layout_marginLeft="2dp"
+                        android:checked="true"
+                        />
+                    <RadioButton
+                        android:id="@+id/rb_middle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="72"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginRight="2dp"
+                        />
+                    <RadioButton
+                        android:id="@+id/rb_all"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="全部"
+                        android:layout_marginRight="2dp"
+                        />
+
+                </RadioGroup>
                 <TextView
                     android:id="@+id/btn_refresh"
                     android:layout_width="wrap_content"
@@ -121,7 +156,6 @@
                     android:background="@drawable/bg_refresh"
                     android:padding="8dp"
                     android:gravity="center"
-                    android:layout_centerVertical="true"
                     android:textColor="@color/white_font"
                     android:textSize="14sp"
                     android:text="刷新列表"/>
@@ -133,7 +167,6 @@
                     android:layout_marginRight="16dp"
                     android:background="@color/bg_batch_handle"
                     android:padding="8dp"
-                    android:layout_centerVertical="true"
                     android:textColor="@color/white_font"
                     android:textSize="14sp"
                     android:text="@string/batch_handle"

@@ -414,6 +414,7 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
             EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(selected)));
         }else{
             selected = -1;
+            notifyDataSetChanged();
             EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
         }
 

@@ -74,7 +74,7 @@ public class TaskService extends Service {
                 EventBus.getDefault().post(new NewOderComingEvent(0L));
             }
         };
-        timer.schedule(task, 1000, PERIOD_TIME);
+        timer.schedule(task, PERIOD_TIME, PERIOD_TIME);
         auto_flag = true;
     }
 

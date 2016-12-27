@@ -13,6 +13,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.transition.Explode;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -24,6 +25,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -105,6 +108,10 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private OrderGridViewAdapter adapter;
     private OrderListViewAdapter sfAdaper;
 
+    private RadioGroup radioGroup;
+    private RadioButton lowRb;
+    private RadioButton middleRb;
+    private RadioButton allRb;
     private TextView refreshbtn;
     private TextView batchHandleBtn;
     private TextView batchPromptText;
@@ -115,10 +122,10 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private int orderBy = 0;
     private int fillterInstant = 0;
     private long finishedLastOrderId = 0;
-
     private ReportWindow reportWindow;
 
     private IndoDetailListener indoDetailListener;
+    private RadioButtonClicklistener radioButtonClicklistener;
 
     /**
      * 订单详情页UI组件
@@ -168,6 +175,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         Log.d(TAG, "onCreate");
         ltbListener = new ListTabButtonListener();
         indoDetailListener = new IndoDetailListener();
+        radioButtonClicklistener = new RadioButtonClicklistener();
     }
 
     @Override
@@ -175,9 +183,12 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         Log.d(TAG, "onCreateView");
         mContentView = inflater.inflate(R.layout.fragment_orders,container,false);
         initViews(mContentView);
+        initRadioGroupStatus(mContext);
         EventBus.getDefault().register(this);
         return mContentView;
     }
+
+
 
     private void initViews(View contentView){
         ordersGridView = (PullLoadMoreRecyclerView) contentView.findViewById(R.id.gv_order_list);
@@ -220,6 +231,13 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         shopNameText.setText(LoginHelper.getShopName(mContext));
 
         batchPromptText = (TextView) contentView.findViewById(R.id.tv_batch_prompt);
+        radioGroup = (RadioGroup) contentView.findViewById(R.id.rg_order_limit);
+        lowRb = (RadioButton) contentView.findViewById(R.id.rb_low);
+        middleRb = (RadioButton) contentView.findViewById(R.id.rb_middle);
+        allRb = (RadioButton) contentView.findViewById(R.id.rb_all);
+        lowRb.setOnClickListener(radioButtonClicklistener);
+        middleRb.setOnClickListener(radioButtonClicklistener);
+        allRb.setOnClickListener(radioButtonClicklistener);
         refreshbtn = (TextView) contentView.findViewById(R.id.btn_refresh);
         refreshbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -316,6 +334,20 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
     }
 
+    private void initRadioGroupStatus(Context context){
+        switch (LoginHelper.getLimitLevel(context)){
+            case 1:
+                radioGroup.check(R.id.rb_low);
+                break;
+            case 2:
+                radioGroup.check(R.id.rb_middle);
+                break;
+            case 3:
+                radioGroup.check(R.id.rb_all);
+                break;
+        }
+    }
+
 
     //设置RecyclerView item之间的间距
     public class SpaceItemDecoration extends RecyclerView.ItemDecoration{
@@ -355,7 +387,18 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    //更新总杯量
+
+    /**
+     * 已完成列表总杯量
+     * @param cupsAmount
+     * @param ordersAmount
+     */
+    private void updateTotalAmount(int cupsAmount,int ordersAmount){
+        totalQuantityTxt.setText("总杯量:" + cupsAmount);
+        EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_FINISHED, ordersAmount));
+    }
+
+    /*//更新总杯量
     private void updateTotalQuantity(List<OrderBean> orderList){
         if(orderList==null){
             return;
@@ -375,12 +418,12 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     //更新顺风单总杯量
     private void updateSFTotalQuantity(List<SFGroupBean> sfGroupBeanList){
         totalQuantityTxt.setText("总杯量:" + OrderHelper.getSFOrderTotalQutity(sfGroupBeanList));
-    }
+    }*/
     private void requestData(Context context, int orderBy, int fillterInstant,boolean isRefresh,boolean isShowProgress){
 
         switch (subTabIndex){
             case TabList.TAB_TOPRODUCE:
-                new OrderToProduceQry(context, orderBy, fillterInstant,isShowProgress,LoginHelper.isSFMode()).doRequest();
+                new OrderToProduceQry(context, orderBy, fillterInstant,isShowProgress,LoginHelper.isSFMode(),LoginHelper.getLimitLevel(context)).doRequest();
                 break;
             case TabList.TAB_PRODUCING:
                 new OrderProducingQry(context, orderBy, fillterInstant,isShowProgress,LoginHelper.isSFMode()).doRequest();
@@ -392,6 +435,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 new OrderDeliveryingQry(context, orderBy, fillterInstant,isShowProgress,LoginHelper.isSFMode()).doRequest();
                 break;
             case TabList.TAB_FINISHED:
+                new OrderFinishedTotalAmount(mContext,false).doRequest();
                 new OrderFinishedQry(context, orderBy, fillterInstant,isShowProgress,LoginHelper.isSFMode()).doRequest();
                 break;
         }
@@ -772,7 +816,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         adapter_sort.add(context.getResources().getString(R.string.sort_by_order_time));
         adapter_sort.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sortSpinner.setAdapter(adapter_sort);
-        sortSpinner.setSelection(0, true);
+    //    sortSpinner.setSelection(0, true);
         sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -784,7 +828,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                         orderBy = OrderHelper.ORDER_TIME;
                         break;
                 }
-                requestData(mContext, orderBy, fillterInstant, false, true);
+    //            requestData(mContext, orderBy, fillterInstant, false, true);
             }
 
             @Override
@@ -799,7 +843,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         adapter_category.add(context.getResources().getString(R.string.category_order));
         adapter_category.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner.setAdapter(adapter_category);
-        categorySpinner.setSelection(0, true);
+    //    categorySpinner.setSelection(0, true);
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -814,7 +858,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                         fillterInstant = OrderHelper.APPOINTMENT;
                         break;
                 }
-                requestData(mContext, orderBy, fillterInstant, false,true);
+    //            requestData(mContext, orderBy, fillterInstant, false, true);
             }
 
             @Override
@@ -900,10 +944,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onDestroyView() {
         EventBus.getDefault().unregister(this);
-        /*if(adapter!=null && adapter.timer!=null){
-            adapter.timer.cancel();
-            adapter.timer.purge();
-        }*/
         super.onDestroyView();
         Log.d(TAG, "onDestroyView");
     }
@@ -956,6 +996,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 sortSpinner.setVisibility(View.VISIBLE);
                 categorySpinner.setVisibility(View.VISIBLE);
             }
+            radioGroup.setVisibility(View.VISIBLE);
             refreshbtn.setVisibility(View.VISIBLE);
             batchHandleBtn.setVisibility(View.INVISIBLE);
             if(batchHandleBtn.getText().toString().equals(mContext.getString(R.string.batch_handle))){
@@ -966,6 +1007,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         }else{
             sortSpinner.setVisibility(View.INVISIBLE);
             categorySpinner.setVisibility(View.INVISIBLE);
+            radioGroup.setVisibility(View.INVISIBLE);
             refreshbtn.setVisibility(View.INVISIBLE);
             batchHandleBtn.setVisibility(View.INVISIBLE);
             batchPromptText.setVisibility(View.GONE);
@@ -987,7 +1029,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     deliveryFinishedTab.setClickBg(false);
                     showWidget(true);
                     subTabIndex = TabList.TAB_TOPRODUCE;
-                    new OrderToProduceQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true,LoginHelper.isSFMode()).doRequest();
+                    new OrderToProduceQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true,LoginHelper.isSFMode(),LoginHelper.getLimitLevel(mContext)).doRequest();
                     resetSpinners();
                     ordersGridView.setPushRefreshEnable(false);
                     break;
@@ -1035,6 +1077,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     deliveryFinishedTab.setClickBg(true);
                     showWidget(false);
                     subTabIndex = TabList.TAB_FINISHED;
+                    new OrderFinishedTotalAmount(mContext,false).doRequest();
                     new OrderFinishedQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true,LoginHelper.isSFMode()).doRequest();
                     resetSpinners();
                     ordersGridView.setPushRefreshEnable(true);
@@ -1159,37 +1202,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         printOrder(mContext, event.order);
     }
 
-    /*@Subscribe
-    public void onUpdateOrderDetailEvent(UpdateOrderDetailEvent event){
-        if(LoginHelper.isSFMode()){
-            if(sfAdaper!=null){
-                sfAdaper.notifyDataSetChanged();
-            }
-        }else{
-            if(adapter!=null){
-                adapter.notifyDataSetChanged();
-                if(event.orderBean==null && adapter.list.size()>adapter.selected && adapter.selected!=-1){
-                    event.orderBean = adapter.list.get(adapter.selected);
-                }
-            }
-        }
-        updateDetailView(event.orderBean);
-    }*/
 
     @Subscribe
     public void onUpdateOrderDetailEvent(UpdateOrderDetailEvent event){
-        /*if(LoginHelper.isSFMode()){
-            if(sfAdaper!=null){
-                sfAdaper.notifyDataSetChanged();
-            }
-        }else{
-            if(adapter!=null){
-                adapter.notifyDataSetChanged();
-                if(event.orderBean==null && adapter.list.size()>adapter.selected && adapter.selected!=-1){
-                    event.orderBean = adapter.list.get(adapter.selected);
-                }
-            }
-        }*/
         updateDetailView(event.orderBean);
     }
 
@@ -1198,6 +1213,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     @Subscribe
     public void onNewOrderComing(NewOderComingEvent event){
         Log.d(TAG,"新订单消息触发事件");
+        Log.d(TAG,"requestData ---- onNewOrderComing");
         requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true, false);
     }
 
@@ -1223,13 +1239,15 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         private int fillterInstant;
         private boolean isShowProgress;
         private boolean isSFMode;
+        private int limitLevel;
 
-        public OrderToProduceQry(Context context, int orderBy, int fillterInstant,boolean isShowProgress,boolean isSFMode) {
+        public OrderToProduceQry(Context context, int orderBy, int fillterInstant, boolean isShowProgress, boolean isSFMode, int limitLevel) {
             this.context = context;
             this.orderBy = orderBy;
             this.fillterInstant = fillterInstant;
             this.isShowProgress = isShowProgress;
             this.isSFMode = isSFMode;
+            this.limitLevel = limitLevel;
         }
 
         @Override
@@ -1245,6 +1263,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             Map<String,Object> params = new HashMap<String,Object>();
             params.put("orderBy",orderBy);
             params.put("fillterInstant", fillterInstant);
+            params.put("limitLevel",limitLevel);
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowProgress);
         }
 
@@ -1261,9 +1280,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             if(isSFMode){
                 List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(context, resp);
                 EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_TOPRODUCE, OrderHelper.getGroupTotalCount(sfGroupBeans)));
-                /*if(sfGroupBeans.size()>sfAdaper.groupList.size() && !isShowProgress){
-                    sendNotificationForAutoNewOrders(true);
-                }*/
                 sfAdaper.setData(sfGroupBeans);
             }else{
                 List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
@@ -1492,8 +1508,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
             if(isSFMode){
                 List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(context, resp);
-                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_FINISHED, OrderHelper.getGroupTotalCount(sfGroupBeans)));
-                updateSFTotalQuantity(sfGroupBeans);
                 sfAdaper.setData(sfGroupBeans);
                 if(sfAdaper.groupList.size()>0){
                     finishedLastOrderId = sfAdaper.groupList.get(sfAdaper.groupList.size() - 1).getId();
@@ -1502,8 +1516,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 }
             }else{
                 List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_FINISHED, orderBeans.size()));
-                updateTotalQuantity(orderBeans);
                 adapter.setData(orderBeans);
                 if(adapter.list.size()>0){
                     finishedLastOrderId = adapter.list.get(adapter.list.size()-1).getId();
@@ -1513,6 +1525,40 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
             }
 
+        }
+    }
+
+    //已经完成接口总单量和杯量
+    class OrderFinishedTotalAmount implements Qry{
+
+        private Context context;
+        private boolean isShowProgress;
+
+        public OrderFinishedTotalAmount(Context context, boolean isShowProgress) {
+            this.context = context;
+            this.isShowProgress = isShowProgress;
+        }
+
+        @Override
+        public void doRequest() {
+            String token = LoginHelper.getToken(context);
+            int shopId = LoginHelper.getShopId(context);
+            String url = HttpUtils.BASE_URL+shopId+"/orders/today/finishedTotal?token="+token;
+            Map<String,Object> params = new HashMap<String,Object>();
+            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowProgress);
+        }
+
+        @Override
+        public void showResult(Jresp resp) {
+            Log.d(TAG,"resp = "+resp);
+            if(resp==null){
+                return;
+            }
+            if(resp.status==0){
+                int ordersAmount = resp.data.optInt("totalOrdersAmount");
+                int cupsAmount = resp.data.optInt("totalCupsAmount");
+                updateTotalAmount(cupsAmount,ordersAmount);
+            }
         }
     }
 
@@ -1563,8 +1609,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             if(isSFMode){
                 List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(context, resp);
                 sfAdaper.addData(sfGroupBeans);
-                updateSFTotalQuantity(sfAdaper.groupList);
-                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_FINISHED, OrderHelper.getGroupTotalCount(sfAdaper.groupList)));
                 if(sfAdaper.groupList.size()>0){
                     finishedLastOrderId = sfAdaper.groupList.get(sfAdaper.groupList.size()-1).getId();
                 }else{
@@ -1573,8 +1617,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }else{
                 List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
                 adapter.addData(orderBeans);
-                updateTotalQuantity(adapter.list);
-                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_FINISHED, adapter.list.size()));
                 if(adapter.list.size()>0){
                     finishedLastOrderId = adapter.list.get(adapter.list.size()-1).getId();
                 }else{
@@ -1728,35 +1770,22 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     }
 
 
-    /*//发送自动刷单语音提示
-    private void sendNotificationForAutoNewOrders(boolean isAuto){
-        if(mNotificationManager==null){
-            mNotificationManager = (NotificationManager)mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        }
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
-                .setSmallIcon(R.mipmap.app_icon)
-                .setDefaults(Notification.DEFAULT_LIGHTS)
-                .setAutoCancel(true)
-                .setContentTitle("连咖啡消息通知");
-
-        if(isAuto) {
-            mBuilder.setContentText("自动刷单，有新订单");
-            mBuilder.setSound(Uri.parse("android.resource://" + mContext.getPackageName() + "/" + R.raw.coffee_box));
-        }
-        Random ran =new Random(System.currentTimeMillis());
-        final int notifyId  = ran.nextInt();
-        Log.d(TAG,"notifyId = "+notifyId);
-        mNotificationManager.notify(notifyId, mBuilder.build());
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (mNotificationManager == null) {
-                    mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-                }
-                mNotificationManager.cancel(notifyId);
+    class RadioButtonClicklistener implements View.OnClickListener{
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.rb_low:
+                    LoginHelper.saveLimitLevel(mContext,1);
+                    break;
+                case R.id.rb_middle:
+                    LoginHelper.saveLimitLevel(mContext,2);
+                    break;
+                case R.id.rb_all:
+                    LoginHelper.saveLimitLevel(mContext,3);
+                    break;
             }
-        }, 2*60*1000);
-    }*/
+        }
+    }
 
 
     class IndoDetailListener implements View.OnClickListener{
@@ -1867,9 +1896,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     adapter.removeOrderFromList(mOrder.getId());
                     EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.FINISHPRODUCE,1));
                 }
-
-                //    int leftBatchOrderNum = OrderHelper.removeOrderFromBatchList(orderId);
-                //    orderFragment.updateBatchPromptTextView(leftBatchOrderNum);
             }else{
                 ToastUtil.showToast(context, resp.message);
             }
@@ -1879,13 +1905,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     //点击开始生产并打印
     public void startProduceAndPrint(final Context context,final OrderBean order){
         if (order.getInstant() == 0) {
-            //预约单
-           /* if (!OrderHelper.isCanHandle(order)) {
-                //预约单，生产时间还没到
-                SimpleConfirmDialog scd = new SimpleConfirmDialog(context, R.style.MyDialog);
-                scd.setContent(R.string.can_not_operate);
-                scd.show();
-            } else {*/
             ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
                 @Override
                 public void onClickYes() {
@@ -1900,7 +1919,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 开始生产？");
             grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
             grabConfirmDialog.show();
-        //    }
 
         } else {
             //及时单
@@ -1924,13 +1942,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     //点击生产完成
     public void finishProduce(final Context context,final OrderBean order){
         if (order.getInstant() == 0) {
-            //预约单
-           /* if (!OrderHelper.isCanHandle(order)) {
-                //预约单，生产时间还没到
-                SimpleConfirmDialog scd = new SimpleConfirmDialog(context, R.style.MyDialog);
-                scd.setContent(R.string.can_not_operate);
-                scd.show();
-            } else {*/
             ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
                 @Override
                 public void onClickYes() {
@@ -1941,7 +1952,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 生产完成？");
             grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
             grabConfirmDialog.show();
-        //    }
 
         } else {
             //及时单
@@ -1962,18 +1972,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     public void printOrder(Context context,final OrderBean order){
         //打印按钮
         if (order.getInstant() == 0) {
-            //预约单
-            /*if (!OrderHelper.isCanHandle(order)) {
-                //预约单，打印时间还没到
-                SimpleConfirmDialog scd = new SimpleConfirmDialog(context, R.style.MyDialog);
-                scd.setContent(R.string.can_not_operate);
-                scd.show();
-            } else {*/
-                Intent intent = new Intent(context, PrintOrderActivity.class);
-                intent.putExtra("order", order);
-                context.startActivity(intent);
-        //    }
-
+            Intent intent = new Intent(context, PrintOrderActivity.class);
+            intent.putExtra("order", order);
+            context.startActivity(intent);
         } else {
             //及时单
             Intent intent = new Intent(context, PrintOrderActivity.class);

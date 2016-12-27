@@ -37,9 +37,9 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
     private Button loginOutBtn;
     private static String current_status = "G";
 
-    private static final String GREEN = "G";
-    private static final String YELLOW = "Y";
-    private static final String RED = "R";
+//    private static final String GREEN = "G";
+//    private static final String YELLOW = "Y";
+//    private static final String RED = "R";
 
 
 
