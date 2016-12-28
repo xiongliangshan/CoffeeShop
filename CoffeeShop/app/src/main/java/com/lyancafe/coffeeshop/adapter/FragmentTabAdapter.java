@@ -6,8 +6,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.widget.RadioGroup;
 
-import com.lyancafe.coffeeshop.R;
-
 import java.util.List;
 
 /**

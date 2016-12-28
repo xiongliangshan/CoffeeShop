@@ -13,7 +13,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.transition.Explode;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -61,7 +60,6 @@ import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.helper.PrintHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
-import com.lyancafe.coffeeshop.widget.DeliverImageDialog;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
 import com.lyancafe.coffeeshop.widget.ListTabButton;
 import com.lyancafe.coffeeshop.widget.PromptDialog;
@@ -141,7 +139,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private TextView receivePhoneTxt;
     private TextView receiveAddressTxt;
     private RelativeLayout deliverInfoContainerLayout;
-    private LinearLayout  deliverLayout;
     private TextView deliverNameTxt;
     private TextView deliverPhoneTxt;
     private LinearLayout itemsContainerLayout;
@@ -198,7 +195,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             ordersGridView.setAdapter(sfAdaper);
         }else{
             mLayoutManager = new GridLayoutManager(mContext,4,GridLayoutManager.VERTICAL,false);
-            adapter = new OrderGridViewAdapter(mContext,OrdersFragment.this);
+            adapter = new OrderGridViewAdapter(mContext);
             ordersGridView.setAdapter(adapter);
         }
 
@@ -398,27 +395,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_FINISHED, ordersAmount));
     }
 
-    /*//更新总杯量
-    private void updateTotalQuantity(List<OrderBean> orderList){
-        if(orderList==null){
-            return;
-        }
-        int sum = 0;
-        for(int i=0;i<orderList.size();i++){
-            int item_num = 0;
-            List<ItemContentBean> items = orderList.get(i).getItems();
-            for(int j=0;j<items.size();j++){
-                item_num+=items.get(j).getQuantity();
-            }
-            sum+=item_num;
-        }
-
-        totalQuantityTxt.setText("总杯量:" + sum);
-    }
-    //更新顺风单总杯量
-    private void updateSFTotalQuantity(List<SFGroupBean> sfGroupBeanList){
-        totalQuantityTxt.setText("总杯量:" + OrderHelper.getSFOrderTotalQutity(sfGroupBeanList));
-    }*/
     private void requestData(Context context, int orderBy, int fillterInstant,boolean isRefresh,boolean isShowProgress){
 
         switch (subTabIndex){
@@ -456,7 +432,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         receivePhoneTxt = (TextView) contentView.findViewById(R.id.receiver_phone);
         receiveAddressTxt = (TextView) contentView.findViewById(R.id.receiver_address);
         deliverInfoContainerLayout = (RelativeLayout) contentView.findViewById(R.id.deliver_info_container);
-        deliverLayout = (LinearLayout) contentView.findViewById(R.id.ll_deliver_layout);
         deliverNameTxt = (TextView) contentView.findViewById(R.id.deliver_name);
         deliverPhoneTxt = (TextView) contentView.findViewById(R.id.deliver_phone);
         itemsContainerLayout = (LinearLayout) contentView.findViewById(R.id.items_container_layout);
@@ -551,14 +526,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }else {
                 deliverInfoContainerLayout.setVisibility(View.VISIBLE);
             }
-            deliverLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //弹出对话框显示头像
-                    new DeliverImageDialog(mContext, R.style.PromptDialog, order.getCourierName(), order.getCourierPhone(), order.getCourierImgUrl()).show();
-
-                }
-            });
             fillItemListData(itemsContainerLayout, order);
             userRemarkTxt.setText(order.getNotes());
             csadRemarkTxt.setText(order.getCsrNotes());
@@ -816,7 +783,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         adapter_sort.add(context.getResources().getString(R.string.sort_by_order_time));
         adapter_sort.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sortSpinner.setAdapter(adapter_sort);
-    //    sortSpinner.setSelection(0, true);
         sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -828,7 +794,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                         orderBy = OrderHelper.ORDER_TIME;
                         break;
                 }
-    //            requestData(mContext, orderBy, fillterInstant, false, true);
             }
 
             @Override
@@ -843,7 +808,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         adapter_category.add(context.getResources().getString(R.string.category_order));
         adapter_category.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner.setAdapter(adapter_category);
-    //    categorySpinner.setSelection(0, true);
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -858,7 +822,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                         fillterInstant = OrderHelper.APPOINTMENT;
                         break;
                 }
-    //            requestData(mContext, orderBy, fillterInstant, false, true);
             }
 
             @Override
@@ -1284,9 +1247,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }else{
                 List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
                 EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_TOPRODUCE, orderBeans.size()));
-                /*if(orderBeans.size()>adapter.cacheToProduceList.size() && !isShowProgress){
-                    sendNotificationForAutoNewOrders(true);
-                }*/
                 adapter.setData(orderBeans);
                 //检查列表中是否有未完成的合并订单
                 if(!OrderHelper.isContainerBatchOrder(orderBeans)){

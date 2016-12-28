@@ -2,8 +2,6 @@ package com.lyancafe.coffeeshop.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextPaint;
@@ -34,8 +32,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by Administrator on 2015/9/21.
@@ -46,32 +42,9 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
     private Context context;
     public List<OrderBean> list = new ArrayList<OrderBean>();
     public int selected = -1;
-//    public Timer timer;
-//    private TimerTask timerTask;
-    private OrdersFragment fragment;
-    private final static long DELTA_TIME = 30*1000;//单位ms
-//    public static  ArrayList<OrderBean> testList =  new ArrayList<OrderBean>();
-//    public ArrayList<OrderBean> cacheToProduceList =  new ArrayList<OrderBean>();
-//    public ArrayList<OrderBean> cacheProducingList = new ArrayList<OrderBean>();
-//    public ArrayList<OrderBean> cacheProducedList =  new ArrayList<OrderBean>();
-    /*public Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what){
-                case 1:
-                    if(OrdersFragment.subTabIndex== TabList.TAB_TOPRODUCE){
-                        refreshTimerData(cacheToProduceList);
-                    }
-                    break;
-            }
 
-        }
-    };*/
-
-    public OrderGridViewAdapter(Context context,OrdersFragment fragment) {
+    public OrderGridViewAdapter(Context context) {
         this.context = context;
-    //    timer =  new Timer(true);
-        this.fragment = fragment;
     }
 
     @Override
@@ -330,32 +303,10 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
 
     public void setData(List<OrderBean> list){
         this.list = list;
-    //    selected = 0;
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
             EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
         }
-
-       /* if(OrdersFragment.subTabIndex==TabList.TAB_TOPRODUCE){
-            //缓存订单列表
-            cacheToProduceList.clear();
-            cacheToProduceList.addAll(list);
-            if(timerTask==null){
-                timerTask = new TimerTask() {
-                    @Override
-                    public void run() {
-                        Log.d(TAG,"timerTask run ---"+Thread.currentThread().getId());
-                        for(OrderBean order:this.list){
-
-                        }order.setProduceEffect(order.getProduceEffect()-DELTA_TIME);
-                        handler.sendEmptyMessage(1);
-                    }
-                };
-                timer.schedule(timerTask,DELTA_TIME,DELTA_TIME);
-            }
-
-        }*/
-
     }
 
     public void addData(List<OrderBean> list){
@@ -364,36 +315,6 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
         if(selected>=0 && selected<this.list.size()){
             EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
         }
-       /* if(OrdersFragment.subTabIndex==TabList.TAB_TOPRODUCE){
-            //缓存订单列表
-            cacheToProduceList.clear();
-            cacheToProduceList.addAll(list);
-            if(timerTask==null){
-                timerTask = new TimerTask() {
-                    @Override
-                    public void run() {
-                        Log.d(TAG,"timerTask run ---"+Thread.currentThread().getId());
-                        for(OrderBean order:cacheToProduceList){
-                            order.setProduceEffect(order.getProduceEffect()-DELTA_TIME);
-                        }
-                        handler.sendEmptyMessage(1);
-                    }
-                };
-                timer.schedule(timerTask,DELTA_TIME,DELTA_TIME);
-            }
-
-        }*/
-
-    }
-
-
-    private void setFlag(OrderBean orderBean){
-
-    }
-
-    private void refreshTimerData(List<OrderBean> order_list){
-        this.list = order_list;
-        notifyDataSetChanged();
     }
 
 
@@ -420,17 +341,6 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
 
 
     }
-
-
-    /*@Override
-    public void notifyDataSetChanged() {
-        super.notifyDataSetChanged();
-        //通知详情板块内容变更
-        EventBus.getDefault().post(new UpdateOrderDetailEvent());
-    }*/
-
-
-
 
 
 }
