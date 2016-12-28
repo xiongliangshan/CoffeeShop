@@ -12,6 +12,7 @@ public class PrintOrderBean {
     private long orderId;     //订单号
     private int shopOrderNo;  //门店单号
     private boolean isGiftBox; //是否有礼盒
+    private boolean isHaveRemarks; //是否有备注
     private String orderSn;
     private int instant; //1:及时单,2:预约单
     private int boxAmount;    //盒子数量
@@ -20,8 +21,7 @@ public class PrintOrderBean {
     private String receiverName; //收货人的姓名
     private String receiverPhone;  //收货人的电话号码
     private String address;      //收货人的地址
-    private String deliverName;  //配送员姓名
-    private String deliverPhone; //配送员电话
+    private long expectedTime;   //期望送达时间
     private List<PrintCupBean> coffeeList;
 
     public PrintOrderBean() {
@@ -33,20 +33,20 @@ public class PrintOrderBean {
         this.cupAmount = cupAmount;
     }
 
-    public PrintOrderBean(long orderId, int shopOrderNo, boolean isGiftBox, String orderSn, int instant, int boxNumber, int boxAmount, int cupAmount, String receiverName, String receiverPhone, String address, String deliverName, String deliverPhone, List<PrintCupBean> coffeeList) {
+    public PrintOrderBean(long orderId, int shopOrderNo, boolean isGiftBox, boolean isHaveRemarks, String orderSn, int instant, int boxAmount, int boxNumber, int cupAmount, String receiverName, String receiverPhone, String address, long expectedTime, List<PrintCupBean> coffeeList) {
         this.orderId = orderId;
         this.shopOrderNo = shopOrderNo;
         this.isGiftBox = isGiftBox;
+        this.isHaveRemarks = isHaveRemarks;
         this.orderSn = orderSn;
         this.instant = instant;
-        this.boxNumber = boxNumber;
         this.boxAmount = boxAmount;
+        this.boxNumber = boxNumber;
         this.cupAmount = cupAmount;
         this.receiverName = receiverName;
         this.receiverPhone = receiverPhone;
         this.address = address;
-        this.deliverName = deliverName;
-        this.deliverPhone = deliverPhone;
+        this.expectedTime = expectedTime;
         this.coffeeList = coffeeList;
     }
 
@@ -72,6 +72,14 @@ public class PrintOrderBean {
 
     public void setIsGiftBox(boolean isGiftBox) {
         this.isGiftBox = isGiftBox;
+    }
+
+    public boolean isHaveRemarks() {
+        return isHaveRemarks;
+    }
+
+    public void setIsHaveRemarks(boolean isHaveRemarks) {
+        this.isHaveRemarks = isHaveRemarks;
     }
 
     public int getInstant() {
@@ -138,24 +146,17 @@ public class PrintOrderBean {
         this.address = address;
     }
 
-    public String getDeliverName() {
-        return deliverName;
-    }
-
-    public void setDeliverName(String deliverName) {
-        this.deliverName = deliverName;
-    }
-
-    public String getDeliverPhone() {
-        return deliverPhone;
-    }
-
-    public void setDeliverPhone(String deliverPhone) {
-        this.deliverPhone = deliverPhone;
-    }
 
     public List<PrintCupBean> getCoffeeList() {
         return coffeeList;
+    }
+
+    public long getExpectedTime() {
+        return expectedTime;
+    }
+
+    public void setExpectedTime(long expectedTime) {
+        this.expectedTime = expectedTime;
     }
 
     public void setCoffeeList(List<PrintCupBean> coffeeList) {
@@ -168,16 +169,16 @@ public class PrintOrderBean {
                 "orderId=" + orderId +
                 ", shopOrderNo=" + shopOrderNo +
                 ", isGiftBox=" + isGiftBox +
+                ", isHaveRemarks=" + isHaveRemarks +
                 ", orderSn='" + orderSn + '\'' +
                 ", instant=" + instant +
-                ", boxNumber=" + boxNumber +
                 ", boxAmount=" + boxAmount +
+                ", boxNumber=" + boxNumber +
                 ", cupAmount=" + cupAmount +
                 ", receiverName='" + receiverName + '\'' +
                 ", receiverPhone='" + receiverPhone + '\'' +
                 ", address='" + address + '\'' +
-                ", deliverName='" + deliverName + '\'' +
-                ", deliverPhone='" + deliverPhone + '\'' +
+                ", expectedTime=" + expectedTime +
                 ", coffeeList=" + coffeeList +
                 '}';
     }

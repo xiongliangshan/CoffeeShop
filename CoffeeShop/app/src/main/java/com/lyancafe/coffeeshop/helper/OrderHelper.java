@@ -3,6 +3,7 @@ package com.lyancafe.coffeeshop.helper;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.bean.PrintOrderBean;
 import com.lyancafe.coffeeshop.bean.SFGroupBean;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 
@@ -503,6 +505,21 @@ public class OrderHelper {
         }
         return context.getResources().getString(R.string.batch_sf_prompt,orderCount,cupCount,sb.toString());
         //    return "系统已将"+orderCount+"单合并在一起，共有"+cupCount+"杯咖啡待生产，生产时效为"+cupCount*2+"分钟\n建议生产顺序为 : "+sb.toString();
+    }
+
+
+    //期望送达时间段
+    public static String getPeriodOfExpectedtime(PrintOrderBean pob){
+        if(pob.getInstant()==1){
+            //及时单
+            return "尽快送达";
+        }else{
+            //预约单
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            String start = sdf.format(new Date(pob.getExpectedTime()));
+            String end = sdf.format(new Date(pob.getExpectedTime()+30*60*1000));
+            return start+"~"+end;
+        }
     }
 
 }

@@ -100,66 +100,82 @@ public class PrintHelper {
         int i = 0;      //盒子号
         for(i=0;i<hotCupList.size()/4;i++){
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,i+1,4);
-            bean.setCoffeeList(hotCupList.subList(i*4, i*4+4));
+            bean.setCoffeeList(hotCupList.subList(i * 4, i * 4 + 4));
             bean.setOrderId(orderBean.getId());
             bean.setShopOrderNo(orderBean.getShopOrderNo());
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
             bean.setIsGiftBox(isGiftBox);
+            if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
+                bean.setIsHaveRemarks(false);
+            }else{
+                bean.setIsHaveRemarks(true);
+            }
             bean.setReceiverName(orderBean.getRecipient());
             bean.setReceiverPhone(orderBean.getPhone());
             bean.setAddress(orderBean.getAddress());
-            bean.setDeliverName(orderBean.getCourierName());
-            bean.setDeliverPhone(orderBean.getCourierPhone());
+            bean.setExpectedTime(orderBean.getExpectedTime());
             boxList.add(bean);
         }
         int hot_left_cup = hotCupList.size()%4;
         if(hot_left_cup>0){
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,i+1,hot_left_cup);
-            bean.setCoffeeList(hotCupList.subList(i*4, hotCupList.size()));
+            bean.setCoffeeList(hotCupList.subList(i * 4, hotCupList.size()));
             bean.setOrderId(orderBean.getId());
             bean.setShopOrderNo(orderBean.getShopOrderNo());
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
             bean.setIsGiftBox(isGiftBox);
+            if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
+                bean.setIsHaveRemarks(false);
+            }else{
+                bean.setIsHaveRemarks(true);
+            }
             bean.setReceiverName(orderBean.getRecipient());
             bean.setReceiverPhone(orderBean.getPhone());
             bean.setAddress(orderBean.getAddress());
-            bean.setDeliverName(orderBean.getCourierName());
-            bean.setDeliverPhone(orderBean.getCourierPhone());
+            bean.setExpectedTime(orderBean.getExpectedTime());
             boxList.add(bean);
         }
 
         int j = 0;      //盒子号
         for(j=0;j<coolCupList.size()/4;j++){
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,hotBoxAmount+j+1,4);
-            bean.setCoffeeList(coolCupList.subList(j*4, j*4+4));
+            bean.setCoffeeList(coolCupList.subList(j * 4, j * 4 + 4));
             bean.setOrderId(orderBean.getId());
             bean.setShopOrderNo(orderBean.getShopOrderNo());
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
             bean.setIsGiftBox(isGiftBox);
+            if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
+                bean.setIsHaveRemarks(false);
+            }else{
+                bean.setIsHaveRemarks(true);
+            }
             bean.setReceiverName(orderBean.getRecipient());
             bean.setReceiverPhone(orderBean.getPhone());
             bean.setAddress(orderBean.getAddress());
-            bean.setDeliverName(orderBean.getCourierName());
-            bean.setDeliverPhone(orderBean.getCourierPhone());
+            bean.setExpectedTime(orderBean.getExpectedTime());
             boxList.add(bean);
         }
         int cool_left_cup = coolCupList.size()%4;
         if(cool_left_cup>0){
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,hotBoxAmount+j+1,cool_left_cup);
-            bean.setCoffeeList(coolCupList.subList(j*4, coolCupList.size()));
+            bean.setCoffeeList(coolCupList.subList(j * 4, coolCupList.size()));
             bean.setOrderId(orderBean.getId());
             bean.setShopOrderNo(orderBean.getShopOrderNo());
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
             bean.setIsGiftBox(isGiftBox);
+            if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
+                bean.setIsHaveRemarks(false);
+            }else{
+                bean.setIsHaveRemarks(true);
+            }
             bean.setReceiverName(orderBean.getRecipient());
             bean.setReceiverPhone(orderBean.getPhone());
             bean.setAddress(orderBean.getAddress());
-            bean.setDeliverName(orderBean.getCourierName());
-            bean.setDeliverPhone(orderBean.getCourierPhone());
+            bean.setExpectedTime(orderBean.getExpectedTime());
             boxList.add(bean);
         }
 
@@ -239,6 +255,7 @@ public class PrintHelper {
                 "A340,250,0,200,1,1,N,\""+order2+"\""+"\n"+
                 "A20,280,0,200,1,1,N,\""+order3+"\""+"\n"+
                 "A340,280,0,200,1,1,N,\""+order4+"\""+"\n"+
+                "A10,330,0,200,1,1,N,\""+OrderHelper.getPeriodOfExpectedtime(bean)+"\""+"\n"+
                 "P1"+"\n";
         String text2 =
                 "N"+"\n"+
@@ -257,9 +274,9 @@ public class PrintHelper {
                 "A340,250,0,200,1,1,N,\""+order2+"\""+"\n"+
                 "A20,280,0,200,1,1,N,\""+order3+"\""+"\n"+
                 "A340,280,0,200,1,1,N,\""+order4+"\""+"\n"+
-                "A10,330,0,200,1,1,N,\"配送员："+bean.getDeliverName()+" "+bean.getDeliverPhone()+"\""+"\n"+
+                "A10,330,0,200,1,1,N,\""+OrderHelper.getPeriodOfExpectedtime(bean)+"  备\""+"\n"+
                 "P1"+"\n";
-        if(TextUtils.isEmpty(bean.getDeliverName())){
+        if(!bean.isHaveRemarks()){
             return text1;
         }
         return text2;
