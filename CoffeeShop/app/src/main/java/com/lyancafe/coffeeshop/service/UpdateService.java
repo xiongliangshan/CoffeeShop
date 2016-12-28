@@ -11,7 +11,7 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.lyancafe.coffeeshop.CoffeeShopApplication;
+import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
@@ -129,7 +129,7 @@ public class UpdateService extends IntentService {
      */
     public boolean createFile(File file){
         if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
-            mAPKDir =  new File(CoffeeShopApplication.APK_DIR);
+            mAPKDir =  new File(CSApplication.APK_DIR);
             if(!mAPKDir.exists()){
                 mAPKDir.mkdirs();
                 Log.d(TAG,"apkdir = "+mAPKDir.getAbsolutePath());
@@ -170,7 +170,7 @@ public class UpdateService extends IntentService {
      * newVersionCode 从服务器端获取的最新版本号
      */
     private boolean isNewestAPKexist(ApkInfoBean apkInfoBean){
-        mFile = new File(CoffeeShopApplication.APK_DIR+File.separator+"coffeeshop_"+apkInfoBean.getAppNo()+".apk");
+        mFile = new File(CSApplication.APK_DIR+File.separator+"coffeeshop_"+apkInfoBean.getAppNo()+".apk");
         if(mFile!=null && mFile.exists()){
             Log.d(TAG,"newestapk file exist!");
             //F6C95DAA257080223CC4211F05744AF8
@@ -191,7 +191,7 @@ public class UpdateService extends IntentService {
      */
     public boolean downloadUpdateFile(String down_url, File file){
         Log.d(TAG,"start download, url="+down_url);
-        ToastUtil.showToast(CoffeeShopApplication.getInstance(), getResources().getString(R.string.start_download));
+        ToastUtil.showToast(CSApplication.getInstance(), getResources().getString(R.string.start_download));
         long beginPosition = 0L;//下载的起始位置
         isDownloading = true;
         int down_step = 3;// 提示step
@@ -241,7 +241,7 @@ public class UpdateService extends IntentService {
 //            deleteFile(file);
             Log.d(TAG, "download file failed");
             isDownloading = false;
-            ToastUtil.showToast(CoffeeShopApplication.getInstance(), getResources().getString(R.string.download_fail));
+            ToastUtil.showToast(CSApplication.getInstance(), getResources().getString(R.string.download_fail));
             mNotificationManager.cancel(DOWNLOADNOTIFICATIONID);
             return false;
         }

@@ -9,7 +9,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.lyancafe.coffeeshop.CoffeeShopApplication;
+import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.activity.HomeActivity;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
@@ -69,7 +69,7 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
                     ToastUtil.show(context, context.getResources().getString(R.string.check_internet));
                 } else {
                     SettingWindow.this.dismiss();
-                    new CoffeeShopApplication.CheckUpdateQry(context, MyUtil.getVersionCode(context),true).doRequest();
+                    new CSApplication.CheckUpdateQry(context, MyUtil.getVersionCode(context),true).doRequest();
                 }
             }
         });
@@ -129,7 +129,7 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
                 break;
             case R.id.login_out:
                 //退出登录
-                new CoffeeShopApplication.LoginOutQry(CoffeeShopApplication.getInstance()).doRequest();
+                new CSApplication.LoginOutQry(CSApplication.getInstance()).doRequest();
                 LoginHelper.saveToken(context, "");
                 OrderHelper.batchList.clear();
                 ((HomeActivity)context).finish();

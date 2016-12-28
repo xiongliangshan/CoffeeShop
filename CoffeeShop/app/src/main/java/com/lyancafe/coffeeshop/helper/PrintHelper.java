@@ -3,7 +3,7 @@ package com.lyancafe.coffeeshop.helper;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.lyancafe.coffeeshop.CoffeeShopApplication;
+import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.MaterialBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
@@ -193,7 +193,7 @@ public class PrintHelper {
             DoPrintOrder(printContent);
             Log.d(TAG, "打印盒子清单:" + bean.toString());
         }
-        OrderHelper.addPrintedSet(CoffeeShopApplication.getInstance(), orderBean.getOrderSn());
+        OrderHelper.addPrintedSet(CSApplication.getInstance(), orderBean.getOrderSn());
         EventBus.getDefault().post(new UpdatePrintStatusEvent(orderBean.getOrderSn()));
     }
     //把要打印的盒子小票信息组装成字符串

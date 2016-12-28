@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.lyancafe.coffeeshop.CoffeeShopApplication;
+import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.activity.HomeActivity;
 import com.lyancafe.coffeeshop.bean.UserBean;
@@ -144,7 +144,7 @@ public class RecyclerWorkAdapter extends RecyclerView.Adapter<RecyclerWorkAdapte
                 }
                 if(resp.data.optBoolean("isMaster")){
                     //主咖啡师下班，退出登录
-                    new CoffeeShopApplication.LoginOutQry(context).doRequest();
+                    new CSApplication.LoginOutQry(context).doRequest();
                     LoginHelper.saveToken(context, "");
                     ((HomeActivity)context).finish();
                     ((HomeActivity)context).overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);

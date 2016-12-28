@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.lyancafe.coffeeshop.CoffeeShopApplication;
+import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
@@ -145,10 +145,10 @@ public class LoginActivity extends BaseActivity {
                 mContext.startActivity(intent);
                 overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);
 
-                if(TextUtils.isEmpty(CoffeeShopApplication.REG_ID)){
-                    CoffeeShopApplication.REG_ID = JPushInterface.getRegistrationID(CoffeeShopApplication.getInstance());
+                if(TextUtils.isEmpty(CSApplication.REG_ID)){
+                    CSApplication.REG_ID = JPushInterface.getRegistrationID(CSApplication.getInstance());
                 }
-                new UpLoadDeviceInfoQry(context, CoffeeShopApplication.REG_ID).doRequest();
+                new UpLoadDeviceInfoQry(context, CSApplication.REG_ID).doRequest();
 
                 LoginActivity.this.finish();
             }else if(resp.status==LoginHelper.LOGIN_FAIL){
@@ -177,7 +177,7 @@ public class LoginActivity extends BaseActivity {
             String mType = android.os.Build.MODEL; // 手机型号
             int appCode = MyUtil.getVersionCode(context);
             if(TextUtils.isEmpty(regId)){
-                JPushInterface.init(CoffeeShopApplication.getInstance());
+                JPushInterface.init(CSApplication.getInstance());
                 return;
             }
             if(userId==0){

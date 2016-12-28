@@ -5,12 +5,11 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.lyancafe.coffeeshop.CoffeeShopApplication;
+import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 
@@ -142,6 +141,6 @@ public class LoginHelper {
      * @return
      */
     public static boolean isSFMode(){
-       return getSfFlag(CoffeeShopApplication.getInstance());
+       return getSfFlag(CSApplication.getInstance());
     }
 }

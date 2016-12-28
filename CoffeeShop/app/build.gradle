@@ -51,4 +51,5 @@ dependencies {
     compile 'com.tencent.bugly:crashreport:latest.release'
     testCompile 'junit:junit:4.12'
     compile 'com.wuxiaolong.pullloadmorerecyclerview:library:1.0.5'
+    compile 'com.lzy.net:okgo:2.1.4'
 }

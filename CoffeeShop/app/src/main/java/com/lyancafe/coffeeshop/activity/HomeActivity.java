@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RadioGroup;
 
-import com.lyancafe.coffeeshop.CoffeeShopApplication;
+import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.FragmentTabAdapter;
 import com.lyancafe.coffeeshop.fragment.OrderQueryFragment;
@@ -109,7 +109,7 @@ public class HomeActivity extends BaseActivity {
         ImageLoader.getInstance().init(config);
 
 
-        new CoffeeShopApplication.CheckUpdateQry(context, MyUtil.getVersionCode(context),false).doRequest();
+        new CSApplication.CheckUpdateQry(context, MyUtil.getVersionCode(context),false).doRequest();
     }
 
     private void initViews(){

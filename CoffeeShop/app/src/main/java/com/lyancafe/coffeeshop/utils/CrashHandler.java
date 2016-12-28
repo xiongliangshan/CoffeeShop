@@ -9,7 +9,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.lyancafe.coffeeshop.CoffeeShopApplication;
+import com.lyancafe.coffeeshop.CSApplication;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -180,7 +180,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             String fileName = nameString + "-" + time + "-" + timestamp + ".log";
             if (Environment.getExternalStorageState().equals(
                     Environment.MEDIA_MOUNTED)) {
-                String log_dir = CoffeeShopApplication.LOG_DIR;
+                String log_dir = CSApplication.LOG_DIR;
                 File dir = new File(log_dir);
                 if (!dir.exists()) {
                     dir.mkdirs();

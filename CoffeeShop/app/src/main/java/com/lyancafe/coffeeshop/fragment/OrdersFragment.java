@@ -30,7 +30,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.lyancafe.coffeeshop.CoffeeShopApplication;
+import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.activity.AssignOrderActivity;
 import com.lyancafe.coffeeshop.activity.CommentActivity;
@@ -673,7 +673,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 TextView tv5 = new TextView(mContext);
                 tv5.setId(R.id.item_flag);
                 tv5.setText(dingzhi);
-                Drawable drawable = ContextCompat.getDrawable(CoffeeShopApplication.getInstance(),R.mipmap.flag_ding);
+                Drawable drawable = ContextCompat.getDrawable(CSApplication.getInstance(),R.mipmap.flag_ding);
                 drawable.setBounds(0, 1, OrderHelper.dip2Px(14, mContext), OrderHelper.dip2Px(14, mContext));
                 tv5.setCompoundDrawablePadding(OrderHelper.dip2Px(4, mContext));
                 tv5.setCompoundDrawables(drawable, null, null, null);
