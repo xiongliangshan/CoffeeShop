@@ -416,11 +416,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                             public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
                                 handleToProudceResponse(xlsResponse,call,response);
                             }
-                            @Override
-                            public void onError(Call call, Response response, Exception e) {
-                                super.onError(call, response, e);
-                                handleError(call,response,e);
-                            }
                         });
                 break;
             case TabList.TAB_PRODUCING:
@@ -431,11 +426,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                         handleProudcingResponse(xlsResponse,call,response);
                     }
 
-                    @Override
-                    public void onError(Call call, Response response, Exception e) {
-                        super.onError(call, response, e);
-                        handleError(call,response,e);
-                    }
                 });
                 break;
             case TabList.TAB_PRODUCED:
@@ -446,11 +436,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                         handleProudcedResponse(xlsResponse,call,response);
                     }
 
-                    @Override
-                    public void onError(Call call, Response response, Exception e) {
-                        super.onError(call, response, e);
-                        handleError(call,response,e);
-                    }
                 });
                 break;
             case TabList.TAB_DELIVERING:
@@ -461,11 +446,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                         handleDeliveryingResponse(xlsResponse,call,response);
                     }
 
-                    @Override
-                    public void onError(Call call, Response response, Exception e) {
-                        super.onError(call, response, e);
-                        handleError(call, response, e);
-                    }
                 });
                 break;
             case TabList.TAB_FINISHED:
@@ -482,12 +462,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     @Override
                     public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
                         handleFinishedResponse(xlsResponse,call,response);
-                    }
-
-                    @Override
-                    public void onError(Call call, Response response, Exception e) {
-                        super.onError(call, response, e);
-                        handleError(call, response, e);
                     }
                 });
                 break;

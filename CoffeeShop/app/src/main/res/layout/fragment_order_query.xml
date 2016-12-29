@@ -55,15 +55,15 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_order_list"
-            android:layout_width="740dp"
+            android:layout_width="750dp"
             android:layout_height="match_parent"
-            android:paddingRight="16dp"
             />
 
         <include
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:layout_marginLeft="8dp"
             android:background="#ff0000"
             layout = "@layout/view_order_detail"
             />

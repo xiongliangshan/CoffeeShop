@@ -1,12 +1,15 @@
 package com.lyancafe.coffeeshop.callback;
 
 import com.alibaba.fastjson.JSON;
+import com.lyancafe.coffeeshop.CSApplication;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lzy.okgo.callback.AbsCallback;
 import com.lzy.okgo.request.BaseRequest;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+import okhttp3.Call;
 import okhttp3.Response;
 
 /**
@@ -53,6 +56,16 @@ public abstract class JsonCallback<T> extends AbsCallback<T> {
         response.close();
         return data;
     }
+
+
+    @Override
+    public void onError(Call call, Response response, Exception e) {
+        super.onError(call, response, e);
+        if(e!=null){
+            ToastUtil.show(CSApplication.getInstance(), e.getMessage());
+        }
+    }
+
 
 
 }

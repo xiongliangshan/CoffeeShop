@@ -36,7 +36,10 @@ import com.lyancafe.coffeeshop.adapter.QueryListRecyclerAdapter;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.bean.XlsResponse;
+import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
+import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
@@ -53,6 +56,9 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Response;
 
 /**
  * Created by Administrator on 2015/9/1.
@@ -127,7 +133,7 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(16, mContext), false));
+        recyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(8, mContext), false));
         ArrayList<OrderBean> orderList = new ArrayList<OrderBean>();
         recyclerAdapter = new QueryListRecyclerAdapter(orderList,mContext,OrderQueryFragment.this);
         recyclerView.setAdapter(recyclerAdapter);
@@ -144,8 +150,13 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
                         ToastUtil.showToast(mContext,"订单号不能为空");
                         return false;
                     }
-                    new OrderBySnQry(mContext,orderSn,true).doRequest();
-
+                //    new OrderBySnQry(mContext,orderSn,true).doRequest();
+                    HttpHelper.getInstance().reqSearchOrdersByOrderSn(orderSn, new DialogCallback<XlsResponse>(getActivity()) {
+                        @Override
+                        public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                            handleSearchOrdersResponse(xlsResponse,call,response);
+                        }
+                    });
                     return true;
                 }
                 return false;
@@ -161,7 +172,13 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
                     ToastUtil.showToast(mContext,"订单号不能为空");
                     return;
                 }
-                new OrderBySnQry(mContext,orderSn,true).doRequest();
+        //        new OrderBySnQry(mContext,orderSn,true).doRequest();
+                HttpHelper.getInstance().reqSearchOrdersByOrderSn(orderSn, new DialogCallback<XlsResponse>(getActivity()) {
+                    @Override
+                    public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                        handleSearchOrdersResponse(xlsResponse,call,response);
+                    }
+                });
             }
         });
         initDetailView(contentView);
@@ -192,7 +209,13 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
                 if (position > 0) {
                     //请求服务器
                     Log.d(TAG, "请求服务器，上传日期：" + date_str);
-                    new OrderByDateQry(mContext,date_str,true).doRequest();
+                //    new OrderByDateQry(mContext,date_str,true).doRequest();
+                    HttpHelper.getInstance().reqSearchOrdersByDate(date_str, new DialogCallback<XlsResponse>(getActivity()) {
+                        @Override
+                        public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                            handleSearchOrdersResponse(xlsResponse, call, response);
+                        }
+                    });
                 }
             }
 
@@ -621,7 +644,19 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    //按日期查询订单接口
+    //处理按日期查询的结果
+    private void handleSearchOrdersResponse(XlsResponse xlsResponse,Call call,Response response){
+        List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
+        Log.d(TAG, "orderBeans  =" + orderBeans);
+        recyclerAdapter.setData(orderBeans);
+        if(orderBeans.size()>0){
+            updateDetailView(orderBeans.get(0));
+        }else{
+            updateDetailView(null);
+        }
+    }
+
+   /* //按日期查询订单接口
     class OrderByDateQry implements Qry {
 
         private Context context;
@@ -660,9 +695,9 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
                 updateDetailView(null);
             }
         }
-    }
+    }*/
 
-    //按订单号查询订单接口
+    /*//按订单号查询订单接口
     class OrderBySnQry implements Qry {
         //{shopId}/orders/search/id/{orderSn}
         private Context context;
@@ -701,5 +736,5 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
                 updateDetailView(null);
             }
         }
-    }
+    }*/
 }

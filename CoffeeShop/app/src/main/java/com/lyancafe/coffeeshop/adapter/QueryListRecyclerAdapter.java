@@ -79,6 +79,13 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
             holder.logoScanIV.setVisibility(View.GONE);
         }
 
+        //新用户订单
+        if(false){
+            holder.newUserOderIV.setImageResource(R.mipmap.flag_new_user);
+        }else{
+            holder.newUserOderIV.setImageResource(R.mipmap.flag_placeholder);
+        }
+
         //定制
         if(order.isRecipeFittings()){
             holder.labelFlagImg.setImageResource(R.mipmap.flag_ding);
@@ -245,6 +252,7 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public RelativeLayout rootLayout;
         public ImageView logoScanIV;
+        public ImageView newUserOderIV;
         public ImageView giftIV;
         public ImageView labelFlagImg;
         public ImageView issueFlagIV;
@@ -262,6 +270,7 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
         public ViewHolder(View itemView) {
             super(itemView);
             rootLayout = (RelativeLayout) itemView.findViewById(R.id.root_view);
+            newUserOderIV = (ImageView) itemView.findViewById(R.id.iv_new_user);
             logoScanIV = (ImageView) itemView.findViewById(R.id.logo_scan);
             giftIV = (ImageView) itemView.findViewById(R.id.iv_gift);
             labelFlagImg = (ImageView) itemView.findViewById(R.id.iv_label_flag);

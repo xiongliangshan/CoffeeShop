@@ -163,8 +163,44 @@ public class HttpHelper {
 
     }
 
+    /**
+     * 请求已完成界面总单量和总杯量
+     * @param callback
+     */
     public void reqFinishedTotalAmountData(JsonCallback<XlsResponse> callback){
         String url=Urls.BASE_URL+shopId + "/orders/today/finishedTotal?token="+token;
+        OkGo.get(url)
+                .tag(this)
+                .execute(callback);
+    }
+
+    /**
+     * 按日期查询当天所有订单
+     * @param date
+     * @param callback
+     */
+    public void reqSearchOrdersByDate(String date,JsonCallback<XlsResponse> callback){
+        String url = Urls.BASE_URL+shopId+"/orders/search/day/"+date+"?token="+token;
+        OkGo.post(url)
+                .tag(this)
+                .execute(callback);
+    }
+
+    /**
+     * 按单号查询某个订单
+     * @param orderSn
+     * @param callback
+     */
+    public void reqSearchOrdersByOrderSn(String orderSn,JsonCallback<XlsResponse> callback){
+        String url = Urls.BASE_URL+shopId+"/orders/search/id/"+orderSn+"?token="+token;
+        OkGo.post(url)
+                .tag(this)
+                .execute(callback);
+    }
+
+
+    public void reqMaterialList(JsonCallback<XlsResponse> callback){
+        String url = Urls.BASE_URL+shopId+"/supplies?token="+token;
         OkGo.get(url)
                 .tag(this)
                 .execute(callback);

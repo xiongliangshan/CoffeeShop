@@ -1,15 +1,12 @@
 package com.lyancafe.coffeeshop.bean;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.xls.http.Jresp;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,13 +53,13 @@ public class MaterialBean {
 
 
     //解析数据
-    public  static List<MaterialBean> parseJsonMaterials(Context context,Jresp resp){
+    public  static List<MaterialBean> parseJsonMaterials(Context context,XlsResponse resp){
         List<MaterialBean> materialBeans = new ArrayList<MaterialBean>();
         if(resp==null || resp.data==null){
             return materialBeans;
         }
         try{
-            JSONArray ordersArray= resp.data.optJSONArray("supplies");
+            JSONArray ordersArray= resp.data.getJSONArray("supplies");
             materialBeans = JSON.parseArray(ordersArray.toString(), MaterialBean.class);
         }catch (JSONException e){
             ToastUtil.showToast(context, R.string.parse_json_fail);

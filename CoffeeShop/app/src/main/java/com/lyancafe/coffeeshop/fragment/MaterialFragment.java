@@ -19,7 +19,10 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.MaterialAdatapter;
 import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.bean.MaterialBean;
+import com.lyancafe.coffeeshop.bean.XlsResponse;
+import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.event.MaterialSelectEvent;
+import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.PrintHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
@@ -36,6 +39,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Response;
 
 /**
  * Created by Administrator on 2016/4/9.
@@ -80,7 +86,21 @@ public class MaterialFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated");
-        new MaterialListQry(mContext).doRequest();
+        HttpHelper.getInstance().reqMaterialList(new JsonCallback<XlsResponse>() {
+            @Override
+            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                handleMaterialListResponse(xlsResponse, call, response);
+            }
+        });
+    }
+
+    private void handleMaterialListResponse(XlsResponse xlsResponse, Call call, Response response) {
+        if(xlsResponse.status==0){
+            List<MaterialBean> materialList = MaterialBean.parseJsonMaterials(mContext,xlsResponse);
+            materialAdatapter.setData(materialList);
+        }else{
+            ToastUtil.showToast(mContext,xlsResponse.message);
+        }
     }
 
     private void initView(){
@@ -161,41 +181,4 @@ public class MaterialFragment extends Fragment {
         super.onDetach();
     }
 
-
-    //物料列表接口
-    class MaterialListQry implements Qry {
-
-        private Context context;
-
-        public MaterialListQry(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        public void doRequest() {
-            clpBar.show();
-            LoginBean loginBean = LoginHelper.getLoginBean(context);
-            String token = loginBean.getToken();
-            int shopId = loginBean.getShopId();
-            String url = Urls.BASE_URL+shopId+"/supplies?token="+token;
-            Map<String,Object> params = new HashMap<String,Object>();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.GET, url, params), context, this, false);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            clpBar.hide();
-            if(resp==null){
-                Log.e(TAG, "MaterialListQry:resp  =" + resp);
-                return;
-            }
-            Log.d(TAG, "BaristasListQry:resp  =" + resp);
-            if(resp.status==0){
-                List<MaterialBean> materialList = MaterialBean.parseJsonMaterials(mContext,resp);
-                materialAdatapter.setData(materialList);
-            }else{
-                ToastUtil.showToast(mContext,resp.message);
-            }
-        }
-    }
 }
