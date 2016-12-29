@@ -14,6 +14,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.event.CommitIssueOrderEvent;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
@@ -203,9 +204,9 @@ public class ReportWindow extends PopupWindow implements View.OnClickListener{
 
         @Override
         public void doRequest() {
-
-            String token = LoginHelper.getToken(context);
-            int shopId = LoginHelper.getShopId(context);
+            LoginBean loginBean = LoginHelper.getLoginBean(context);
+            String token = loginBean.getToken();
+            int shopId = loginBean.getShopId();
             String url = HttpUtils.BASE_URL+shopId+"/order/"+orderId+"/raiseissue?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             params.put("questionType",questionType);

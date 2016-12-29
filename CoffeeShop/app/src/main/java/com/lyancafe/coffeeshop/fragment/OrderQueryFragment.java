@@ -34,6 +34,7 @@ import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.QueryListRecyclerAdapter;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
+import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
@@ -635,8 +636,9 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
 
         @Override
         public void doRequest() {
-            String token = LoginHelper.getToken(context);
-            int shopId = LoginHelper.getShopId(context);
+            LoginBean loginBean = LoginHelper.getLoginBean(context);
+            String token = loginBean.getToken();
+            int shopId = loginBean.getShopId();
             String url = HttpUtils.BASE_URL+shopId+"/orders/search/day/"+date+"?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, isShowProgress);
@@ -675,8 +677,9 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
 
         @Override
         public void doRequest() {
-            String token = LoginHelper.getToken(context);
-            int shopId = LoginHelper.getShopId(context);
+            LoginBean loginBean = LoginHelper.getLoginBean(context);
+            String token = loginBean.getToken();
+            int shopId = loginBean.getShopId();
             String url = HttpUtils.BASE_URL+shopId+"/orders/search/id/"+orderSn+"?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, isShowProgress);

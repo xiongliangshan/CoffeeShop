@@ -1,6 +1,7 @@
 package com.lyancafe.coffeeshop.helper;
 
 import com.lyancafe.coffeeshop.CSApplication;
+import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.utils.Urls;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheMode;
@@ -26,8 +27,9 @@ public class HttpHelper {
 
 
     public void reqToProduceData(boolean isSFMode){
-        String token = LoginHelper.getToken(CSApplication.getInstance());
-        int shopId = LoginHelper.getShopId(CSApplication.getInstance());
+        LoginBean loginBean = LoginHelper.getLoginBean(CSApplication.getInstance());
+        String token = loginBean.getToken();
+        int shopId = loginBean.getShopId();
         String url = null;
         if(isSFMode){
             url = Urls.BASE_URL+shopId+"/orders/today/toproduce/tailwind?token="+token;

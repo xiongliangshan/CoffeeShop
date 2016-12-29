@@ -12,6 +12,7 @@ import android.widget.Spinner;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.CourierListAdapter;
 import com.lyancafe.coffeeshop.bean.CourierBean;
+import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.xls.http.HttpAsyncTask;
@@ -97,8 +98,9 @@ public class AssignOrderActivity extends Activity  {
 
         @Override
         public void doRequest() {
-            String token = LoginHelper.getToken(mContext);
-            int shopId = LoginHelper.getShopId(mContext);
+            LoginBean loginBean = LoginHelper.getLoginBean(mContext);
+            String token = loginBean.getToken();
+            int shopId = loginBean.getShopId();
             String url = HttpUtils.BASE_URL+shopId+"/couriersforassign?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.GET, url, params), mContext, this, true);
@@ -132,8 +134,9 @@ public class AssignOrderActivity extends Activity  {
 
         @Override
         public void doRequest() {
-            String token = LoginHelper.getToken(mContext);
-            int shopId = LoginHelper.getShopId(mContext);
+            LoginBean loginBean = LoginHelper.getLoginBean(mContext);
+            String token = loginBean.getToken();
+            int shopId = loginBean.getShopId();
             String url = HttpUtils.BASE_URL+shopId+"/order/"+orderId+"/assigntocourier?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             params.put("courierId",courierId);

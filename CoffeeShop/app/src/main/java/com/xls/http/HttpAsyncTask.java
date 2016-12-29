@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.activity.HomeActivity;
 import com.lyancafe.coffeeshop.activity.LoginActivity;
+import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.dialog.ProgressHUD;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.utils.MyUtil;
@@ -49,7 +50,9 @@ public class HttpAsyncTask {
                         if(qry!=null && resp!=null){
                             if(resp.status == MyUtil.STATUS_INVALID_TOKEN){
                                 ToastUtil.showToast(context, resp.message);
-                                LoginHelper.saveToken(context, "");
+                                LoginBean loginBean = LoginHelper.getLoginBean(context);
+                                loginBean.setToken("");
+                                LoginHelper.saveLoginBean(context,loginBean);
                                 Intent intent = new Intent(context, LoginActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 context.startActivity(intent);

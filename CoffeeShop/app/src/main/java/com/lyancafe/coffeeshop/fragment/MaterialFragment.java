@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.MaterialAdatapter;
+import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.bean.MaterialBean;
 import com.lyancafe.coffeeshop.event.MaterialSelectEvent;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
@@ -173,8 +174,9 @@ public class MaterialFragment extends Fragment {
         @Override
         public void doRequest() {
             clpBar.show();
-            String token = LoginHelper.getToken(context);
-            int shopId = LoginHelper.getShopId(context);
+            LoginBean loginBean = LoginHelper.getLoginBean(context);
+            String token = loginBean.getToken();
+            int shopId = loginBean.getShopId();
             String url = HttpUtils.BASE_URL+shopId+"/supplies?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.GET, url, params), context, this, false);

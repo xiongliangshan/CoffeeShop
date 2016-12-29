@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.CommentAdapter;
+import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
@@ -128,8 +129,9 @@ public class CommentActivity extends BaseActivity {
         @Override
         public void doRequest() {
             progressBar.setVisibility(View.VISIBLE);
-            String token = LoginHelper.getToken(context);
-            int shopId = LoginHelper.getShopId(context);
+            LoginBean loginBean = LoginHelper.getLoginBean(context);
+            String token = loginBean.getToken();
+            int shopId = loginBean.getShopId();
             String url = HttpUtils.BASE_URL+shopId+"/orders/feedback/"+commentType+"?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, isShowProgress);

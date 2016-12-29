@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.activity.HomeActivity;
+import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.helper.ShopHelper;
@@ -130,7 +131,9 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
             case R.id.login_out:
                 //退出登录
                 new CSApplication.LoginOutQry(CSApplication.getInstance()).doRequest();
-                LoginHelper.saveToken(context, "");
+                LoginBean loginBean = LoginHelper.getLoginBean(context);
+                loginBean.setToken("");
+                LoginHelper.saveLoginBean(context,loginBean);
                 OrderHelper.batchList.clear();
                 ((HomeActivity)context).finish();
                 ((HomeActivity)context).overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);

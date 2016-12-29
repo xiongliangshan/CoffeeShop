@@ -88,7 +88,7 @@ public class SFItemListAdapter extends RecyclerView.Adapter<SFItemListAdapter.Vi
             holder.logoScanIV.setVisibility(View.GONE);
         }
         //新用户订单
-        if(order.isNewCBUser()){
+        if(false){
             holder.newUserOderIV.setImageResource(R.mipmap.flag_new_user);
         }else{
             holder.newUserOderIV.setImageResource(R.mipmap.flag_placeholder);

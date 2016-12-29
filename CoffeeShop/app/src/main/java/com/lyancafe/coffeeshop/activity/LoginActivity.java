@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.MyUtil;
@@ -43,7 +44,7 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         mContext = this;
         //如果已经登录过了，并且没有点退出，可以直接进入主界面
-        if(!TextUtils.isEmpty(LoginHelper.getToken(mContext))){
+        if(!TextUtils.isEmpty(LoginHelper.getLoginBean(mContext).getToken())){
             Intent intent = new Intent(mContext, HomeActivity.class);
             mContext.startActivity(intent);
             LoginActivity.this.finish();
@@ -131,12 +132,8 @@ public class LoginActivity extends BaseActivity {
                 return;
             }
             if(resp.status==LoginHelper.LOGIN_SUCCESS){
-                int shopId = resp.data.optInt("shopId");
-                int userId = resp.data.optInt("userId");
-                String shopName = resp.data.optString("shopName");
-                String token = resp.data.optString("token");
-                boolean isSFMode = resp.data.optBoolean("isSFMode");
-                LoginHelper.saveUserInfo(mContext,userId,shopId,shopName,isSFMode,token);
+                LoginBean login = LoginBean.parseJsonLoginBean(mContext,resp);
+                LoginHelper.saveLoginBean(mContext, login);
                 //如果是当天第一次登陆，就清空本地缓存的订单打印记录
                 if(LoginHelper.isCurrentDayFirstLogin(mContext)){
                     OrderHelper.clearPrintedSet(mContext);
@@ -170,9 +167,10 @@ public class LoginActivity extends BaseActivity {
 
         @Override
         public void doRequest() {
-            String token = LoginHelper.getToken(context);
-            int shopId = LoginHelper.getShopId(context);
-            int userId = LoginHelper.getUserId(context);
+            LoginBean loginBean = LoginHelper.getLoginBean(context);
+            String token = loginBean.getToken();
+            int shopId = loginBean.getShopId();
+            int userId = loginBean.getUserId();
             String deviceId = "";
             String mType = android.os.Build.MODEL; // 手机型号
             int appCode = MyUtil.getVersionCode(context);

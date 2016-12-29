@@ -5,8 +5,10 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.alibaba.fastjson.JSON;
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.text.SimpleDateFormat;
@@ -36,7 +38,24 @@ public class LoginHelper {
         return true;
     }
 
-    public static void saveToken(Context context,String token){
+    public static void saveLoginBean(Context context,LoginBean loginBean){
+        SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
+        sp.edit().putString("login", JSON.toJSONString(loginBean)).commit();
+    }
+
+    public static LoginBean getLoginBean(Context context){
+        SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
+        String strLogin = sp.getString("login", "");
+        if(TextUtils.isEmpty(strLogin)){
+            Log.e("xls","getUser,userJsonStr is Empty");
+            return new LoginBean();
+        }else{
+            return JSON.parseObject(strLogin,LoginBean.class);
+        }
+
+    }
+
+   /* public static void saveToken(Context context,String token){
         SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
         sp.edit().putString("token",token).commit();
     }
@@ -72,7 +91,7 @@ public class LoginHelper {
     public static String getShopName(Context context){
         SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
         return sp.getString("shop_name","");
-    }
+    }*/
 
     //保存当前模式， 是否是顺风单模式
     public static void saveSfFlag(Context context ,boolean isSF){
@@ -127,13 +146,13 @@ public class LoginHelper {
         }
     }
 
-    public static void  saveUserInfo(Context context,int userId,int shopId,String shopName,boolean isSFMode,String token){
+   /* public static void  saveUserInfo(Context context,LoginBean loginBean){
         saveUserId(context,userId);
         saveShopId(context,shopId);
         saveShopName(context,shopName);
         saveSfFlag(context,isSFMode);
         saveToken(context,token);
-    }
+    }*/
 
 
     /**

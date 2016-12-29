@@ -38,6 +38,7 @@ import com.lyancafe.coffeeshop.activity.PrintOrderActivity;
 import com.lyancafe.coffeeshop.adapter.OrderGridViewAdapter;
 import com.lyancafe.coffeeshop.adapter.OrderListViewAdapter;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
+import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.SFGroupBean;
 import com.lyancafe.coffeeshop.constant.OrderAction;
@@ -225,7 +226,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         initSpinner(contentView, mContext);
 
         shopNameText = (TextView) contentView.findViewById(R.id.tv_shop_name);
-        shopNameText.setText(LoginHelper.getShopName(mContext));
+        shopNameText.setText(LoginHelper.getLoginBean(mContext).getShopName());
 
         batchPromptText = (TextView) contentView.findViewById(R.id.tv_batch_prompt);
         radioGroup = (RadioGroup) contentView.findViewById(R.id.rg_order_limit);
@@ -1215,8 +1216,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
         @Override
         public void doRequest() {
-            String token = LoginHelper.getToken(context);
-            int shopId = LoginHelper.getShopId(context);
+            LoginBean loginBean = LoginHelper.getLoginBean(context);
+            String token = loginBean.getToken();
+            int shopId = loginBean.getShopId();
             String url = null;
             if(isSFMode){
                 url = HttpUtils.BASE_URL+shopId+"/orders/today/toproduce/tailwind?token="+token;
@@ -1278,8 +1280,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
         @Override
         public void doRequest() {
-            String token = LoginHelper.getToken(context);
-            int shopId = LoginHelper.getShopId(context);
+            LoginBean loginBean = LoginHelper.getLoginBean(context);
+            String token = loginBean.getToken();
+            int shopId = loginBean.getShopId();
             String url = null;
             if(isSFMode){
                 url = HttpUtils.BASE_URL+shopId+"/orders/today/producing/tailwind?token="+token;
@@ -1338,8 +1341,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
         @Override
         public void doRequest() {
-            String token = LoginHelper.getToken(context);
-            int shopId = LoginHelper.getShopId(context);
+            LoginBean loginBean = LoginHelper.getLoginBean(context);
+            String token = loginBean.getToken();
+            int shopId = loginBean.getShopId();
             String url = null;
             if(isSFMode){
                 url = HttpUtils.BASE_URL+shopId+"/orders/today/produced/tailwind?token="+token;
@@ -1391,8 +1395,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
         @Override
         public void doRequest() {
-            String token = LoginHelper.getToken(context);
-            int shopId = LoginHelper.getShopId(context);
+            LoginBean loginBean = LoginHelper.getLoginBean(context);
+            String token = loginBean.getToken();
+            int shopId = loginBean.getShopId();
             String url = null;
             if(isSFMode){
                 url = HttpUtils.BASE_URL+shopId+"/orders/today/delivering/tailwind?token="+token;
@@ -1445,8 +1450,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
         @Override
         public void doRequest() {
-            String token = LoginHelper.getToken(context);
-            int shopId = LoginHelper.getShopId(context);
+            LoginBean loginBean = LoginHelper.getLoginBean(context);
+            String token = loginBean.getToken();
+            int shopId = loginBean.getShopId();
             String url = null;
             if(isSFMode){
                 url = HttpUtils.BASE_URL+shopId+"/orders/today/finished/tailwind?token="+token;
@@ -1501,8 +1507,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
         @Override
         public void doRequest() {
-            String token = LoginHelper.getToken(context);
-            int shopId = LoginHelper.getShopId(context);
+            LoginBean loginBean = LoginHelper.getLoginBean(context);
+            String token = loginBean.getToken();
+            int shopId = loginBean.getShopId();
             String url = HttpUtils.BASE_URL+shopId+"/orders/today/finishedTotal?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowProgress);
@@ -1543,8 +1550,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
         @Override
         public void doRequest() {
-            String token = LoginHelper.getToken(context);
-            int shopId = LoginHelper.getShopId(context);
+            LoginBean loginBean = LoginHelper.getLoginBean(context);
+            String token = loginBean.getToken();
+            int shopId = loginBean.getShopId();
             String url = null;
             if(isSFMode){
                 url = HttpUtils.BASE_URL+shopId+"/orders/today/finished/tailwind?token="+token;
@@ -1603,9 +1611,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
         @Override
         public void doRequest() {
-
-            String token = LoginHelper.getToken(context);
-            int shopId = LoginHelper.getShopId(context);
+            LoginBean loginBean = LoginHelper.getLoginBean(context);
+            String token = loginBean.getToken();
+            int shopId = loginBean.getShopId();
             String url = HttpUtils.BASE_URL+shopId+"/order/"+mOrder.getId()+"/recall?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
@@ -1659,9 +1667,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
         @Override
         public void doRequest() {
-
-            String token = LoginHelper.getToken(context);
-            int shopId = LoginHelper.getShopId(context);
+            LoginBean loginBean = LoginHelper.getLoginBean(context);
+            String token = loginBean.getToken();
+            int shopId = loginBean.getShopId();
             String url = HttpUtils.BASE_URL+shopId+"/order/"+mOrder.getId()+"/deliver?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
@@ -1698,8 +1706,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
         @Override
         public void doRequest() {
-            String token = LoginHelper.getToken(context);
-            int shopId = LoginHelper.getShopId(context);
+            LoginBean loginBean = LoginHelper.getLoginBean(context);
+            String token = loginBean.getToken();
+            int shopId = loginBean.getShopId();
             String url = HttpUtils.BASE_URL+shopId+"/orders/feedback/count?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, false);
@@ -1787,8 +1796,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
         @Override
         public void doRequest() {
-            int shopId = LoginHelper.getShopId(context);
-            String token = LoginHelper.getToken(context);
+            LoginBean loginBean = LoginHelper.getLoginBean(context);
+            int shopId = loginBean.getShopId();
+            String token = loginBean.getToken();
             String url = HttpUtils.BASE_URL+shopId+"/order/"+mOrder.getId()+"/beginproduce?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowDlg);
@@ -1834,8 +1844,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
         @Override
         public void doRequest() {
-            int shopId = LoginHelper.getShopId(context);
-            String token = LoginHelper.getToken(context);
+            LoginBean loginBean = LoginHelper.getLoginBean(context);
+            int shopId = loginBean.getShopId();
+            String token = loginBean.getToken();
             String url = HttpUtils.BASE_URL+shopId+"/order/"+mOrder.getId()+"/produce?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowDlg);

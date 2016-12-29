@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.SFGroupBean;
 import com.lyancafe.coffeeshop.constant.OrderAction;
@@ -205,8 +206,9 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
 
         @Override
         public void doRequest() {
-            int shopId = LoginHelper.getShopId(context);
-            String token = LoginHelper.getToken(context);
+            LoginBean loginBean = LoginHelper.getLoginBean(context);
+            int shopId = loginBean.getShopId();
+            String token = loginBean.getToken();
             String url = HttpUtils.BASE_URL+shopId+"/order/"+groupId+"/beginproducebatch?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, isShowDlg);
@@ -247,8 +249,9 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
 
         @Override
         public void doRequest() {
-            int shopId = LoginHelper.getShopId(context);
-            String token = LoginHelper.getToken(context);
+            LoginBean loginBean = LoginHelper.getLoginBean(context);
+            int shopId = loginBean.getShopId();
+            String token = loginBean.getToken();
             String url = HttpUtils.BASE_URL+shopId+"/order/"+groupId+"/producebatch?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowDlg);

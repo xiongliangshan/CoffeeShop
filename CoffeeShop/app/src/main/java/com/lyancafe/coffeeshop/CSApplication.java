@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.WindowManager;
 
 import com.lyancafe.coffeeshop.bean.ApkInfoBean;
+import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.service.UpdateService;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
@@ -132,8 +133,8 @@ public class CSApplication extends Application {
 
         @Override
         public void doRequest() {
-            String token = LoginHelper.getToken(context);
-            int shopId = LoginHelper.getShopId(context);
+            LoginBean loginBean = LoginHelper.getLoginBean(context);
+            String token = loginBean.getToken();
             String url = HttpUtils.BASE_URL+"/token/delete?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.GET, url, params), context, this, false);
@@ -161,7 +162,7 @@ public class CSApplication extends Application {
 
         @Override
         public void doRequest() {
-            String token = LoginHelper.getToken(context);
+            String token = LoginHelper.getLoginBean(context).getToken();
             String url = HttpUtils.BASE_URL + "/token/"+curVersion+"/isUpdateApp?token="+token;
             Map<String,Object> params = new HashMap<>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, isShowToast);

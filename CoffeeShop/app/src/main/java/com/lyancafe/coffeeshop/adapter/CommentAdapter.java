@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.event.ClickCommentEvent;
 
 import org.greenrobot.eventbus.EventBus;

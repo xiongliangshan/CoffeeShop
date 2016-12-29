@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.MaterialBean;
-import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.event.MaterialSelectEvent;
 
 import org.greenrobot.eventbus.EventBus;
