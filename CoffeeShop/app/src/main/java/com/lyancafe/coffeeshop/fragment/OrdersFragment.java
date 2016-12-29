@@ -41,6 +41,9 @@ import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.SFGroupBean;
+import com.lyancafe.coffeeshop.bean.XlsResponse;
+import com.lyancafe.coffeeshop.callback.DialogCallback;
+import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.constant.TabList;
@@ -56,10 +59,12 @@ import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.event.UpdatePrintStatusEvent;
 import com.lyancafe.coffeeshop.event.UpdateTabOrderListCountEvent;
+import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.helper.PrintHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
+import com.lyancafe.coffeeshop.utils.Urls;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
 import com.lyancafe.coffeeshop.widget.ListTabButton;
@@ -68,7 +73,6 @@ import com.lyancafe.coffeeshop.widget.ReportWindow;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 import com.xls.http.HttpAsyncTask;
 import com.xls.http.HttpEntity;
-import com.xls.http.HttpUtils;
 import com.xls.http.Jresp;
 import com.xls.http.Qry;
 
@@ -79,6 +83,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Response;
 
 /**
  * Created by Administrator on 2015/9/1.
@@ -158,6 +165,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private Button moreBtn;
     private Button prevBtn;
     private Button nextBtn;
+
 
     @Override
     public void onAttach(Context context) {
@@ -400,20 +408,88 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
         switch (subTabIndex){
             case TabList.TAB_TOPRODUCE:
-                new OrderToProduceQry(context, orderBy, fillterInstant,isShowProgress,LoginHelper.isSFMode(),LoginHelper.getLimitLevel(context)).doRequest();
+            //    new OrderToProduceQry(context, orderBy, fillterInstant,isShowProgress,LoginHelper.isSFMode(),LoginHelper.getLimitLevel(context)).doRequest();
+                HttpHelper.getInstance().reqToProduceData(orderBy, fillterInstant,
+                        LoginHelper.getLimitLevel(mContext),
+                        new DialogCallback<XlsResponse>(getActivity()) {
+                            @Override
+                            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                                handleToProudceResponse(xlsResponse,call,response);
+                            }
+                            @Override
+                            public void onError(Call call, Response response, Exception e) {
+                                super.onError(call, response, e);
+                                handleError(call,response,e);
+                            }
+                        });
                 break;
             case TabList.TAB_PRODUCING:
-                new OrderProducingQry(context, orderBy, fillterInstant,isShowProgress,LoginHelper.isSFMode()).doRequest();
+            //    new OrderProducingQry(context, orderBy, fillterInstant,isShowProgress,LoginHelper.isSFMode()).doRequest();
+                HttpHelper.getInstance().reqProducingData(orderBy, fillterInstant, new DialogCallback<XlsResponse>(getActivity()) {
+                    @Override
+                    public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                        handleProudcingResponse(xlsResponse,call,response);
+                    }
+
+                    @Override
+                    public void onError(Call call, Response response, Exception e) {
+                        super.onError(call, response, e);
+                        handleError(call,response,e);
+                    }
+                });
                 break;
             case TabList.TAB_PRODUCED:
-                new OrderProducedQry(context, orderBy, fillterInstant,isShowProgress,LoginHelper.isSFMode()).doRequest();
+            //    new OrderProducedQry(context, orderBy, fillterInstant,isShowProgress,LoginHelper.isSFMode()).doRequest();
+                HttpHelper.getInstance().reqProducedData(orderBy, fillterInstant, new DialogCallback<XlsResponse>(getActivity()) {
+                    @Override
+                    public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                        handleProudcedResponse(xlsResponse,call,response);
+                    }
+
+                    @Override
+                    public void onError(Call call, Response response, Exception e) {
+                        super.onError(call, response, e);
+                        handleError(call,response,e);
+                    }
+                });
                 break;
             case TabList.TAB_DELIVERING:
-                new OrderDeliveryingQry(context, orderBy, fillterInstant,isShowProgress,LoginHelper.isSFMode()).doRequest();
+            //    new OrderDeliveryingQry(context, orderBy, fillterInstant,isShowProgress,LoginHelper.isSFMode()).doRequest();
+                HttpHelper.getInstance().reqDeliveryingData(orderBy, fillterInstant, new DialogCallback<XlsResponse>(getActivity()) {
+                    @Override
+                    public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                        handleDeliveryingResponse(xlsResponse,call,response);
+                    }
+
+                    @Override
+                    public void onError(Call call, Response response, Exception e) {
+                        super.onError(call, response, e);
+                        handleError(call, response, e);
+                    }
+                });
                 break;
             case TabList.TAB_FINISHED:
-                new OrderFinishedTotalAmount(mContext,false).doRequest();
-                new OrderFinishedQry(context, orderBy, fillterInstant,isShowProgress,LoginHelper.isSFMode()).doRequest();
+                HttpHelper.getInstance().reqFinishedTotalAmountData(new JsonCallback<XlsResponse>() {
+                    @Override
+                    public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                        handleFinishedTotalAmountResponse(xlsResponse,call,response);
+                    }
+
+                });
+        //        new OrderFinishedTotalAmount(mContext,false).doRequest();
+        //        new OrderFinishedQry(context, orderBy, fillterInstant,isShowProgress,LoginHelper.isSFMode()).doRequest();
+                HttpHelper.getInstance().reqFinishedData(orderBy, fillterInstant, new DialogCallback<XlsResponse>(getActivity()) {
+                    @Override
+                    public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                        handleFinishedResponse(xlsResponse,call,response);
+                    }
+
+                    @Override
+                    public void onError(Call call, Response response, Exception e) {
+                        super.onError(call, response, e);
+                        handleError(call, response, e);
+                    }
+                });
                 break;
         }
 
@@ -993,7 +1069,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     deliveryFinishedTab.setClickBg(false);
                     showWidget(true);
                     subTabIndex = TabList.TAB_TOPRODUCE;
-                    new OrderToProduceQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true,LoginHelper.isSFMode(),LoginHelper.getLimitLevel(mContext)).doRequest();
+                    requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true, true);
+            //        new OrderToProduceQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true,LoginHelper.isSFMode(),LoginHelper.getLimitLevel(mContext)).doRequest();
                     resetSpinners();
                     ordersGridView.setPushRefreshEnable(false);
                     break;
@@ -1005,7 +1082,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     deliveryFinishedTab.setClickBg(false);
                     showWidget(true);
                     subTabIndex = TabList.TAB_PRODUCING;
-                    new OrderProducingQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true,LoginHelper.isSFMode()).doRequest();
+                    requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true, true);
+                //    new OrderProducingQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true,LoginHelper.isSFMode()).doRequest();
                     resetSpinners();
                     ordersGridView.setPushRefreshEnable(false);
                     break;
@@ -1017,7 +1095,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     deliveryFinishedTab.setClickBg(false);
                     showWidget(false);
                     subTabIndex = TabList.TAB_PRODUCED;
-                    new OrderProducedQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true,LoginHelper.isSFMode()).doRequest();
+                    requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true, true);
+                //    new OrderProducedQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true,LoginHelper.isSFMode()).doRequest();
                     resetSpinners();
                     ordersGridView.setPushRefreshEnable(false);
                     break;
@@ -1029,7 +1108,8 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     deliveryFinishedTab.setClickBg(false);
                     showWidget(false);
                     subTabIndex = TabList.TAB_DELIVERING;
-                    new OrderDeliveryingQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true,LoginHelper.isSFMode()).doRequest();
+                    requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true, true);
+                //    new OrderDeliveryingQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true,LoginHelper.isSFMode()).doRequest();
                     resetSpinners();
                     ordersGridView.setPushRefreshEnable(false);
                     break;
@@ -1041,8 +1121,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     deliveryFinishedTab.setClickBg(true);
                     showWidget(false);
                     subTabIndex = TabList.TAB_FINISHED;
-                    new OrderFinishedTotalAmount(mContext,false).doRequest();
-                    new OrderFinishedQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true,LoginHelper.isSFMode()).doRequest();
+                //    new OrderFinishedTotalAmount(mContext,false).doRequest();
+                    requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true, true);
+                //    new OrderFinishedQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true,LoginHelper.isSFMode()).doRequest();
                     resetSpinners();
                     ordersGridView.setPushRefreshEnable(true);
                     break;
@@ -1194,8 +1275,110 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             batchPromptText.setVisibility(View.VISIBLE);
         }
     }
+    //处理接口请求失败的结果
+    private void handleError(Call call,Response response,Exception e){
+        if(e!=null){
+            ToastUtil.show(mContext, e.getMessage());
+        }
 
-    //待生产订单列表接口
+    }
+
+    //处理待生产列表服务器返回结果
+    private void handleToProudceResponse(XlsResponse xlsResponse,Call call,Response response){
+        if(subTabIndex!=TabList.TAB_TOPRODUCE){
+            return;
+        }
+        if(LoginHelper.isSFMode()){
+            List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(getActivity(), xlsResponse);
+            EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_TOPRODUCE, OrderHelper.getGroupTotalCount(sfGroupBeans)));
+            sfAdaper.setData(sfGroupBeans);
+        }else{
+            List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
+            EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_TOPRODUCE, orderBeans.size()));
+            adapter.setData(orderBeans);
+            //检查列表中是否有未完成的合并订单
+            if(!OrderHelper.isContainerBatchOrder(orderBeans)){
+                OrderHelper.batchList.clear();
+                updateBatchPromptTextView(0);
+            }
+        }
+    }
+
+    //处理生产中服务器列表返回结果
+    private void handleProudcingResponse(XlsResponse xlsResponse,Call call,Response response){
+        if(LoginHelper.isSFMode()){
+            List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(getActivity(), xlsResponse);
+            EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_PRODUCING,OrderHelper.getGroupTotalCount(sfGroupBeans)));
+            sfAdaper.setData(sfGroupBeans);
+        }else{
+            List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
+            EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_PRODUCING,orderBeans.size()));
+            adapter.setData(orderBeans);
+            //检查列表中是否有未完成的合并订单
+            if(!OrderHelper.isContainerBatchOrder(orderBeans)){
+                OrderHelper.batchList.clear();
+                updateBatchPromptTextView(0);
+            }
+        }
+    }
+
+    //处理已生产服务器列表返回结果
+    private void handleProudcedResponse(XlsResponse xlsResponse,Call call,Response response){
+        if(LoginHelper.isSFMode()){
+            List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(getActivity(),xlsResponse);
+            EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_PRODUCED,OrderHelper.getGroupTotalCount(sfGroupBeans)));
+            sfAdaper.setData(sfGroupBeans);
+        }else{
+            List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
+            EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_PRODUCED,orderBeans.size()));
+            adapter.setData(orderBeans);
+        }
+    }
+
+    //处理配送中服务器列表返回结果
+    private void handleDeliveryingResponse(XlsResponse xlsResponse,Call call,Response response){
+        if(LoginHelper.isSFMode()){
+            List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(getActivity(),xlsResponse);
+            EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_DELIVERING,OrderHelper.getGroupTotalCount(sfGroupBeans)));
+            sfAdaper.setData(sfGroupBeans);
+        }else{
+            List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
+            EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_DELIVERING,orderBeans.size()));
+            adapter.setData(orderBeans);
+        }
+    }
+
+    //处理服务器返回的已完成列表数据
+    private void handleFinishedResponse(XlsResponse xlsResponse,Call call,Response response){
+        if(LoginHelper.isSFMode()){
+            List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(getActivity(), xlsResponse);
+            sfAdaper.setData(sfGroupBeans);
+            if(sfAdaper.groupList.size()>0){
+                finishedLastOrderId = sfAdaper.groupList.get(sfAdaper.groupList.size() - 1).getId();
+            }else{
+                finishedLastOrderId = 0;
+            }
+        }else{
+            List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
+            adapter.setData(orderBeans);
+            if(adapter.list.size()>0){
+                finishedLastOrderId = adapter.list.get(adapter.list.size()-1).getId();
+            }else {
+                finishedLastOrderId = 0;
+            }
+
+        }
+    }
+
+    //处理服务器返回的已完成订单总单量和杯量
+    private void handleFinishedTotalAmountResponse(XlsResponse xlsResponse,Call call,Response response){
+        if(xlsResponse.status==0){
+            int ordersAmount = xlsResponse.data.getIntValue("totalOrdersAmount");
+            int cupsAmount = xlsResponse.data.getIntValue("totalCupsAmount");
+            updateTotalAmount(cupsAmount,ordersAmount);
+        }
+    }
+    /*//待生产订单列表接口
     class OrderToProduceQry implements Qry{
 
         private Context context;
@@ -1259,9 +1442,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
 
         }
-    }
+    }*/
 
-    //生产中列表接口
+    /*//生产中列表接口
     class OrderProducingQry implements Qry{
 
         private Context context;
@@ -1320,9 +1503,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
         }
     }
+*/
 
-
-    //已生产订单列表接口
+   /* //已生产订单列表接口
     class OrderProducedQry implements Qry{
 
         private Context context;
@@ -1374,9 +1557,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
 
         }
-    }
+    }*/
 
-    //配送中订单列表接口
+   /* //配送中订单列表接口
     class OrderDeliveryingQry implements Qry{
 
         private Context context;
@@ -1429,9 +1612,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
 
         }
-    }
+    }*/
 
-    //已完成订单列表接口
+    /*//已完成订单列表接口
     class OrderFinishedQry implements Qry{
 
         private Context context;
@@ -1493,7 +1676,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
         }
     }
-
+*/
     //已经完成接口总单量和杯量
     class OrderFinishedTotalAmount implements Qry{
 
@@ -1510,7 +1693,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             LoginBean loginBean = LoginHelper.getLoginBean(context);
             String token = loginBean.getToken();
             int shopId = loginBean.getShopId();
-            String url = HttpUtils.BASE_URL+shopId+"/orders/today/finishedTotal?token="+token;
+            String url = Urls.BASE_URL+shopId+"/orders/today/finishedTotal?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowProgress);
         }
@@ -1555,9 +1738,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             int shopId = loginBean.getShopId();
             String url = null;
             if(isSFMode){
-                url = HttpUtils.BASE_URL+shopId+"/orders/today/finished/tailwind?token="+token;
+                url = Urls.BASE_URL+shopId+"/orders/today/finished/tailwind?token="+token;
             }else{
-                url = HttpUtils.BASE_URL+shopId+"/orders/today/finished?token="+token;
+                url = Urls.BASE_URL+shopId+"/orders/today/finished?token="+token;
             }
             Map<String,Object> params = new HashMap<String,Object>();
             params.put("orderId",orderId);
@@ -1614,7 +1797,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             LoginBean loginBean = LoginHelper.getLoginBean(context);
             String token = loginBean.getToken();
             int shopId = loginBean.getShopId();
-            String url = HttpUtils.BASE_URL+shopId+"/order/"+mOrder.getId()+"/recall?token="+token;
+            String url = Urls.BASE_URL+shopId+"/order/"+mOrder.getId()+"/recall?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
         }
@@ -1670,7 +1853,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             LoginBean loginBean = LoginHelper.getLoginBean(context);
             String token = loginBean.getToken();
             int shopId = loginBean.getShopId();
-            String url = HttpUtils.BASE_URL+shopId+"/order/"+mOrder.getId()+"/deliver?token="+token;
+            String url = Urls.BASE_URL+shopId+"/order/"+mOrder.getId()+"/deliver?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
         }
@@ -1709,7 +1892,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             LoginBean loginBean = LoginHelper.getLoginBean(context);
             String token = loginBean.getToken();
             int shopId = loginBean.getShopId();
-            String url = HttpUtils.BASE_URL+shopId+"/orders/feedback/count?token="+token;
+            String url = Urls.BASE_URL+shopId+"/orders/feedback/count?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, false);
         }
@@ -1799,7 +1982,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             LoginBean loginBean = LoginHelper.getLoginBean(context);
             int shopId = loginBean.getShopId();
             String token = loginBean.getToken();
-            String url = HttpUtils.BASE_URL+shopId+"/order/"+mOrder.getId()+"/beginproduce?token="+token;
+            String url = Urls.BASE_URL+shopId+"/order/"+mOrder.getId()+"/beginproduce?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowDlg);
         }
@@ -1847,7 +2030,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             LoginBean loginBean = LoginHelper.getLoginBean(context);
             int shopId = loginBean.getShopId();
             String token = loginBean.getToken();
-            String url = HttpUtils.BASE_URL+shopId+"/order/"+mOrder.getId()+"/produce?token="+token;
+            String url = Urls.BASE_URL+shopId+"/order/"+mOrder.getId()+"/produce?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowDlg);
         }

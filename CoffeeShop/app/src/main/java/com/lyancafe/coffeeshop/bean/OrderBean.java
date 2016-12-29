@@ -307,6 +307,22 @@ public class OrderBean implements Serializable{
         return orderBeans;
     }
 
+    //解析数据
+    public  static List<OrderBean> parseJsonOrders(Context context,XlsResponse resp){
+        List<OrderBean> orderBeans = new ArrayList<OrderBean>();
+        if(resp==null || resp.data==null){
+            return orderBeans;
+        }
+        try{
+            com.alibaba.fastjson.JSONArray ordersArray= resp.data.getJSONArray("orders");
+            orderBeans = JSON.parseArray(ordersArray.toString(), OrderBean.class);
+        }catch (JSONException e){
+            Log.e(TAG,e.getMessage());
+            ToastUtil.showToast(context, R.string.parse_json_fail);
+        }
+        return orderBeans;
+    }
+
     @Override
     public String toString() {
         return "OrderBean{" +

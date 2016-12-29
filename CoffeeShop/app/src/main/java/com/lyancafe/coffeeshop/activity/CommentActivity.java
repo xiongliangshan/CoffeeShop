@@ -25,6 +25,7 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
+import com.lyancafe.coffeeshop.utils.Urls;
 import com.xls.http.HttpAsyncTask;
 import com.xls.http.HttpEntity;
 import com.xls.http.HttpUtils;
@@ -132,7 +133,7 @@ public class CommentActivity extends BaseActivity {
             LoginBean loginBean = LoginHelper.getLoginBean(context);
             String token = loginBean.getToken();
             int shopId = loginBean.getShopId();
-            String url = HttpUtils.BASE_URL+shopId+"/orders/feedback/"+commentType+"?token="+token;
+            String url = Urls.BASE_URL+shopId+"/orders/feedback/"+commentType+"?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, isShowProgress);
         }

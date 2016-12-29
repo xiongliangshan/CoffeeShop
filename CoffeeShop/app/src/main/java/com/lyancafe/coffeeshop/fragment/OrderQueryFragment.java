@@ -40,10 +40,10 @@ import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
+import com.lyancafe.coffeeshop.utils.Urls;
 import com.lyancafe.coffeeshop.widget.ReportWindow;
 import com.xls.http.HttpAsyncTask;
 import com.xls.http.HttpEntity;
-import com.xls.http.HttpUtils;
 import com.xls.http.Jresp;
 import com.xls.http.Qry;
 
@@ -639,7 +639,7 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
             LoginBean loginBean = LoginHelper.getLoginBean(context);
             String token = loginBean.getToken();
             int shopId = loginBean.getShopId();
-            String url = HttpUtils.BASE_URL+shopId+"/orders/search/day/"+date+"?token="+token;
+            String url = Urls.BASE_URL+shopId+"/orders/search/day/"+date+"?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, isShowProgress);
         }
@@ -680,7 +680,7 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
             LoginBean loginBean = LoginHelper.getLoginBean(context);
             String token = loginBean.getToken();
             int shopId = loginBean.getShopId();
-            String url = HttpUtils.BASE_URL+shopId+"/orders/search/id/"+orderSn+"?token="+token;
+            String url = Urls.BASE_URL+shopId+"/orders/search/id/"+orderSn+"?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, isShowProgress);
         }

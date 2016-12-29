@@ -24,9 +24,9 @@ import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.helper.PrintHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
+import com.lyancafe.coffeeshop.utils.Urls;
 import com.xls.http.HttpAsyncTask;
 import com.xls.http.HttpEntity;
-import com.xls.http.HttpUtils;
 import com.xls.http.Jresp;
 import com.xls.http.Qry;
 
@@ -209,7 +209,7 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
             LoginBean loginBean = LoginHelper.getLoginBean(context);
             int shopId = loginBean.getShopId();
             String token = loginBean.getToken();
-            String url = HttpUtils.BASE_URL+shopId+"/order/"+groupId+"/beginproducebatch?token="+token;
+            String url = Urls.BASE_URL+shopId+"/order/"+groupId+"/beginproducebatch?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, isShowDlg);
         }
@@ -252,7 +252,7 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
             LoginBean loginBean = LoginHelper.getLoginBean(context);
             int shopId = loginBean.getShopId();
             String token = loginBean.getToken();
-            String url = HttpUtils.BASE_URL+shopId+"/order/"+groupId+"/producebatch?token="+token;
+            String url = Urls.BASE_URL+shopId+"/order/"+groupId+"/producebatch?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowDlg);
         }

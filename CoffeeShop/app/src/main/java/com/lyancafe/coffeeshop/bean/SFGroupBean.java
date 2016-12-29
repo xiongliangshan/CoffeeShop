@@ -67,4 +67,21 @@ public class SFGroupBean {
         return sfGroupBeans;
     }
 
+
+    //解析数据
+    public  static List<SFGroupBean> parseJsonGroups(Context context,XlsResponse resp){
+        List<SFGroupBean> sfGroupBeans = new ArrayList<SFGroupBean>();
+        if(resp==null || resp.data==null){
+            return sfGroupBeans;
+        }
+        try{
+            com.alibaba.fastjson.JSONArray ordersArray = resp.data.getJSONArray("groupList");
+            sfGroupBeans = JSON.parseArray(ordersArray.toString(), SFGroupBean.class);
+        }catch (JSONException e){
+            Log.e("json", e.getMessage());
+            ToastUtil.showToast(context, R.string.parse_json_fail);
+        }
+        return sfGroupBeans;
+    }
+
 }

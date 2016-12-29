@@ -20,9 +20,9 @@ import com.lyancafe.coffeeshop.event.CommitIssueOrderEvent;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
+import com.lyancafe.coffeeshop.utils.Urls;
 import com.xls.http.HttpAsyncTask;
 import com.xls.http.HttpEntity;
-import com.xls.http.HttpUtils;
 import com.xls.http.Jresp;
 import com.xls.http.Qry;
 
@@ -207,7 +207,7 @@ public class ReportWindow extends PopupWindow implements View.OnClickListener{
             LoginBean loginBean = LoginHelper.getLoginBean(context);
             String token = loginBean.getToken();
             int shopId = loginBean.getShopId();
-            String url = HttpUtils.BASE_URL+shopId+"/order/"+orderId+"/raiseissue?token="+token;
+            String url = Urls.BASE_URL+shopId+"/order/"+orderId+"/raiseissue?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             params.put("questionType",questionType);
             params.put("handleType",questionIdea);

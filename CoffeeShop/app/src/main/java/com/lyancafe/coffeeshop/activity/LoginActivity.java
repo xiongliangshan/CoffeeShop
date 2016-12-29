@@ -17,9 +17,9 @@ import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.RsaEncryptor;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
+import com.lyancafe.coffeeshop.utils.Urls;
 import com.xls.http.HttpAsyncTask;
 import com.xls.http.HttpEntity;
-import com.xls.http.HttpUtils;
 import com.xls.http.Jresp;
 import com.xls.http.Qry;
 import com.xls.http.md5.MD5;
@@ -107,7 +107,7 @@ public class LoginActivity extends BaseActivity {
 
         @Override
         public void doRequest() {
-            String url = HttpUtils.BASE_URL+"token";
+            String url = Urls.BASE_URL+"token";
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("loginName",userName);
             MD5 md5 = new MD5();
@@ -181,7 +181,7 @@ public class LoginActivity extends BaseActivity {
             if(userId==0){
                 return;
             }
-            String url = HttpUtils.BASE_URL+shopId+"/barista/"+userId+"/device?token="+token;
+            String url = Urls.BASE_URL+shopId+"/barista/"+userId+"/device?token="+token;
             Map<String,Object> params = new HashMap<String,Object>();
             params.put("deviceId",deviceId);
             params.put("mType",mType);
