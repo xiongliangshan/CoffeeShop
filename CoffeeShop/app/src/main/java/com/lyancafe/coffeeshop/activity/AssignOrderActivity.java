@@ -12,19 +12,15 @@ import android.widget.Spinner;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.CourierListAdapter;
 import com.lyancafe.coffeeshop.bean.CourierBean;
-import com.lyancafe.coffeeshop.bean.LoginBean;
-import com.lyancafe.coffeeshop.helper.LoginHelper;
+import com.lyancafe.coffeeshop.bean.XlsResponse;
+import com.lyancafe.coffeeshop.callback.JsonCallback;
+import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.lyancafe.coffeeshop.utils.Urls;
-import com.xls.http.HttpAsyncTask;
-import com.xls.http.HttpEntity;
-import com.xls.http.HttpUtils;
-import com.xls.http.Jresp;
-import com.xls.http.Qry;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Response;
 
 /**
  * Created by Administrator on 2016/7/19.
@@ -57,8 +53,15 @@ public class AssignOrderActivity extends Activity  {
     @Override
     protected void onStart() {
         super.onStart();
-        new CourierListQry().doRequest();
+        HttpHelper.getInstance().reqDeliverList(new JsonCallback<XlsResponse>() {
+            @Override
+            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                handleDeliverListResponse(xlsResponse, call, response);
+            }
+        });
     }
+
+
 
     private void initViews(){
         courierSpinner = (Spinner) findViewById(R.id.spinner_courier);
@@ -80,8 +83,13 @@ public class AssignOrderActivity extends Activity  {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "点击指派按钮");
-                if(mCourier!=null&&mOrderId!=0){
-                    new AssignQry(mOrderId,mCourier.getUserId()).doRequest();
+                if (mCourier != null && mOrderId != 0) {
+                    HttpHelper.getInstance().reqAssignOrder(mOrderId, mCourier.getUserId(), new JsonCallback<XlsResponse>() {
+                        @Override
+                        public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                            handleAssignOrderResponse(xlsResponse,call,response);
+                        }
+                    });
                 }
 
             }
@@ -91,72 +99,29 @@ public class AssignOrderActivity extends Activity  {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d(TAG,"onDestroy");
+        Log.d(TAG, "onDestroy");
     }
 
 
-    class CourierListQry implements Qry{
-
-        @Override
-        public void doRequest() {
-            LoginBean loginBean = LoginHelper.getLoginBean(mContext);
-            String token = loginBean.getToken();
-            int shopId = loginBean.getShopId();
-            String url = Urls.BASE_URL+shopId+"/couriersforassign?token="+token;
-            Map<String,Object> params = new HashMap<String,Object>();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.GET, url, params), mContext, this, true);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            Log.d(TAG,"CourierListQry:resp ="+resp);
-            if(resp==null){
-                Log.e(TAG,"CourierListQry:resp ="+resp);
-                return;
-            }
-            if(resp.status==0){
-                List<CourierBean> courierBeanList = CourierBean.parseJsonToCouriers(resp);
-                mAdapter.setData(courierBeanList);
-            }else{
-                ToastUtil.show(mContext,resp.message);
-            }
+    //处理服务器返回数据---小哥列表
+    private void handleDeliverListResponse(XlsResponse xlsResponse, Call call, Response response) {
+        if(xlsResponse.status==0){
+            List<CourierBean> courierBeanList = CourierBean.parseJsonToCouriers(xlsResponse);
+            mAdapter.setData(courierBeanList);
+        }else{
+            ToastUtil.show(this,xlsResponse.message);
         }
     }
 
-    class AssignQry implements Qry{
 
-        private long orderId;
-        private long courierId;
-
-        public AssignQry(long orderId, long courierId) {
-            this.orderId = orderId;
-            this.courierId = courierId;
-        }
-
-        @Override
-        public void doRequest() {
-            LoginBean loginBean = LoginHelper.getLoginBean(mContext);
-            String token = loginBean.getToken();
-            int shopId = loginBean.getShopId();
-            String url = Urls.BASE_URL+shopId+"/order/"+orderId+"/assigntocourier?token="+token;
-            Map<String,Object> params = new HashMap<String,Object>();
-            params.put("courierId",courierId);
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), mContext, this, true);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            Log.d(TAG,"AssignQry:resp = "+resp);
-            if(resp==null){
-                ToastUtil.show(mContext,"请求服务器失败");
-                return;
-            }
-            if(resp.status==0){
-                ToastUtil.show(mContext,"指派成功");
-                AssignOrderActivity.this.finish();
-            }else{
-                ToastUtil.show(mContext,resp.message);
-            }
+    //处理服务器返回数据---指派
+    private void handleAssignOrderResponse(XlsResponse xlsResponse,Call call,Response response){
+        if(xlsResponse.status==0){
+            ToastUtil.show(mContext,"指派成功");
+            AssignOrderActivity.this.finish();
+        }else{
+            ToastUtil.show(mContext,xlsResponse.message);
         }
     }
+
 }

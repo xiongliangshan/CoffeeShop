@@ -1,6 +1,5 @@
 package com.lyancafe.coffeeshop.fragment;
 
-import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -662,7 +661,13 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                         public boolean onMenuItemClick(MenuItem item) {
                             switch (item.getItemId()) {
                                 case R.id.menu_undo_order:
-                                    new RecallQry(mContext, order).doRequest();
+                                    HttpHelper.getInstance().reqRecallOrder(order.getId(), new DialogCallback<XlsResponse>(getActivity()) {
+
+                                        @Override
+                                        public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                                            handleRecallOrderResponse(xlsResponse,call,response);
+                                        }
+                                    });
                                     break;
                                 case R.id.menu_scan_code:
                                     new ScanCodeQry(mContext, order).doRequest();
@@ -1351,6 +1356,37 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             int ordersAmount = xlsResponse.data.getIntValue("totalOrdersAmount");
             int cupsAmount = xlsResponse.data.getIntValue("totalCupsAmount");
             updateTotalAmount(cupsAmount,ordersAmount);
+        }
+    }
+
+    //处理服务器返回数据---订单收回
+    private void handleRecallOrderResponse(XlsResponse xlsResponse,Call call,Response response){
+        if(xlsResponse.status==0){
+            ToastUtil.showToast(getActivity(), R.string.do_success);
+            int id  = xlsResponse.data.getIntValue("id");
+            if(LoginHelper.isSFMode()){
+                for(SFGroupBean sfGroup:sfAdaper.groupList){
+                    if(id==sfGroup.getId()){
+                        for(OrderBean orderBean:sfGroup.getItemGroup()){
+                            orderBean.setStatus(OrderStatus.UNASSIGNED);
+                        }
+                        break;
+                    }
+                }
+                sfAdaper.notifyDataSetChanged();
+            }else{
+                for(OrderBean order:adapter.list){
+                    if(id == order.getId()){
+                        order.setStatus(OrderStatus.UNASSIGNED);
+                        adapter.notifyDataSetChanged();
+                        EventBus.getDefault().post(new UpdateOrderDetailEvent(order));
+                        break;
+                    }
+                }
+            }
+
+        }else{
+            ToastUtil.showToast(getActivity(), xlsResponse.message);
         }
     }
 

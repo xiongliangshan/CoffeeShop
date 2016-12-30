@@ -3,6 +3,7 @@ package com.lyancafe.coffeeshop.helper;
 import com.alibaba.fastjson.JSONObject;
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.bean.LoginBean;
+import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.utils.Urls;
@@ -159,7 +160,7 @@ public class HttpHelper {
         }
         OkGo.post(url)
                 .tag(this)
-                .headers("isLoadMore",orderId==0?"no":"yes")
+                .headers("isLoadMore", orderId == 0 ? "no" : "yes")
                 .upJson(jsonObject.toString())
                 .execute(callback);
 
@@ -200,11 +201,54 @@ public class HttpHelper {
                 .execute(callback);
     }
 
-
+    /**
+     * 物料列表
+     * @param callback
+     */
     public void reqMaterialList(JsonCallback<XlsResponse> callback){
         String url = Urls.BASE_URL+shopId+"/supplies?token="+token;
         OkGo.get(url)
                 .tag(this)
+                .execute(callback);
+    }
+
+    /**
+     * 咖啡师收回从小哥手里收回订单
+     * @param orderId
+     * @param callback
+     */
+    public void reqRecallOrder(long orderId,JsonCallback<XlsResponse> callback){
+        String url = Urls.BASE_URL+shopId+"/order/"+orderId+"/recall?token="+token;
+        OkGo.get(url)
+                .tag(this)
+                .execute(callback);
+    }
+
+    /**
+     * 请求小哥列表数据
+     * @param callback
+     */
+    public void reqDeliverList(JsonCallback<XlsResponse> callback){
+        String url = Urls.BASE_URL+shopId+"/couriersforassign?token="+token;
+        OkGo.get(url)
+                .tag(this)
+                .execute(callback);
+    }
+
+    /**
+     * 咖啡师指派订单
+     * @param orderId
+     * @param deliverId
+     * @param callback
+     */
+    public void reqAssignOrder(long orderId,long deliverId,JsonCallback<XlsResponse> callback){
+        String url = Urls.BASE_URL+shopId+"/order/"+orderId+"/assigntocourier?token="+token;
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("courierId",deliverId);
+        JSONObject jsonObject = new JSONObject(params);
+        OkGo.post(url)
+                .tag(this)
+                .upJson(jsonObject.toString())
                 .execute(callback);
     }
 }

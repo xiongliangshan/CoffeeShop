@@ -1,13 +1,10 @@
 package com.lyancafe.coffeeshop.bean;
 
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
-import com.xls.http.Jresp;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,13 +94,13 @@ public class CourierBean {
     }
 
 
-    public static List<CourierBean> parseJsonToCouriers(Jresp resp){
+    public static List<CourierBean> parseJsonToCouriers(XlsResponse resp){
         List<CourierBean> list = new ArrayList<>();
         if(resp==null || resp.data==null){
             return list;
         }
         try {
-            JSONArray jsonArray = resp.data.optJSONArray("couriers");
+            JSONArray jsonArray = resp.data.getJSONArray("couriers");
             list = JSON.parseArray(jsonArray.toString(),CourierBean.class);
         }catch (JSONException e){
             Log.e("json","parseJsonToCouriers ,解析失败");
