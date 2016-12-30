@@ -1,5 +1,6 @@
 package com.lyancafe.coffeeshop.fragment;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -85,6 +86,7 @@ import java.util.List;
 import java.util.Map;
 
 import okhttp3.Call;
+import okhttp3.Request;
 import okhttp3.Response;
 
 /**
@@ -224,7 +226,13 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onLoadMore() {
                 Log.d(TAG, "onLoadMore");
-                new OrderFinishedLoadMoreQry(mContext, finishedLastOrderId, orderBy, fillterInstant, false, LoginHelper.isSFMode()).doRequest();
+                HttpHelper.getInstance().reqFinishedListData(orderBy, fillterInstant, finishedLastOrderId, new JsonCallback<XlsResponse>() {
+                    @Override
+                    public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                        ordersGridView.setPullLoadMoreCompleted();
+                        handleFinishedResponse(xlsResponse,call,response);
+                    }
+                });
             }
         });
 
@@ -408,7 +416,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
         switch (subTabIndex){
             case TabList.TAB_TOPRODUCE:
-            //    new OrderToProduceQry(context, orderBy, fillterInstant,isShowProgress,LoginHelper.isSFMode(),LoginHelper.getLimitLevel(context)).doRequest();
                 HttpHelper.getInstance().reqToProduceData(orderBy, fillterInstant,
                         LoginHelper.getLimitLevel(mContext),
                         new DialogCallback<XlsResponse>(getActivity()) {
@@ -419,7 +426,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                         });
                 break;
             case TabList.TAB_PRODUCING:
-            //    new OrderProducingQry(context, orderBy, fillterInstant,isShowProgress,LoginHelper.isSFMode()).doRequest();
                 HttpHelper.getInstance().reqProducingData(orderBy, fillterInstant, new DialogCallback<XlsResponse>(getActivity()) {
                     @Override
                     public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
@@ -429,7 +435,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 });
                 break;
             case TabList.TAB_PRODUCED:
-            //    new OrderProducedQry(context, orderBy, fillterInstant,isShowProgress,LoginHelper.isSFMode()).doRequest();
                 HttpHelper.getInstance().reqProducedData(orderBy, fillterInstant, new DialogCallback<XlsResponse>(getActivity()) {
                     @Override
                     public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
@@ -439,7 +444,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 });
                 break;
             case TabList.TAB_DELIVERING:
-            //    new OrderDeliveryingQry(context, orderBy, fillterInstant,isShowProgress,LoginHelper.isSFMode()).doRequest();
                 HttpHelper.getInstance().reqDeliveryingData(orderBy, fillterInstant, new DialogCallback<XlsResponse>(getActivity()) {
                     @Override
                     public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
@@ -456,12 +460,10 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     }
 
                 });
-        //        new OrderFinishedTotalAmount(mContext,false).doRequest();
-        //        new OrderFinishedQry(context, orderBy, fillterInstant,isShowProgress,LoginHelper.isSFMode()).doRequest();
-                HttpHelper.getInstance().reqFinishedData(orderBy, fillterInstant, new DialogCallback<XlsResponse>(getActivity()) {
+                HttpHelper.getInstance().reqFinishedListData(orderBy, fillterInstant, 0, new DialogCallback<XlsResponse>(getActivity()) {
                     @Override
                     public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                        handleFinishedResponse(xlsResponse,call,response);
+                        handleFinishedResponse(xlsResponse, call, response);
                     }
                 });
                 break;
@@ -1044,7 +1046,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     showWidget(true);
                     subTabIndex = TabList.TAB_TOPRODUCE;
                     requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true, true);
-            //        new OrderToProduceQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true,LoginHelper.isSFMode(),LoginHelper.getLimitLevel(mContext)).doRequest();
                     resetSpinners();
                     ordersGridView.setPushRefreshEnable(false);
                     break;
@@ -1057,7 +1058,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     showWidget(true);
                     subTabIndex = TabList.TAB_PRODUCING;
                     requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true, true);
-                //    new OrderProducingQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true,LoginHelper.isSFMode()).doRequest();
                     resetSpinners();
                     ordersGridView.setPushRefreshEnable(false);
                     break;
@@ -1070,7 +1070,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     showWidget(false);
                     subTabIndex = TabList.TAB_PRODUCED;
                     requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true, true);
-                //    new OrderProducedQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true,LoginHelper.isSFMode()).doRequest();
                     resetSpinners();
                     ordersGridView.setPushRefreshEnable(false);
                     break;
@@ -1083,7 +1082,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     showWidget(false);
                     subTabIndex = TabList.TAB_DELIVERING;
                     requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true, true);
-                //    new OrderDeliveryingQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true,LoginHelper.isSFMode()).doRequest();
                     resetSpinners();
                     ordersGridView.setPushRefreshEnable(false);
                     break;
@@ -1095,9 +1093,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     deliveryFinishedTab.setClickBg(true);
                     showWidget(false);
                     subTabIndex = TabList.TAB_FINISHED;
-                //    new OrderFinishedTotalAmount(mContext,false).doRequest();
                     requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true, true);
-                //    new OrderFinishedQry(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL,true,LoginHelper.isSFMode()).doRequest();
                     resetSpinners();
                     ordersGridView.setPushRefreshEnable(true);
                     break;
@@ -1249,15 +1245,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             batchPromptText.setVisibility(View.VISIBLE);
         }
     }
-    //处理接口请求失败的结果
-    private void handleError(Call call,Response response,Exception e){
-        if(e!=null){
-            ToastUtil.show(mContext, e.getMessage());
-        }
 
-    }
 
-    //处理待生产列表服务器返回结果
+    //处理服务器返回数据---待生产
     private void handleToProudceResponse(XlsResponse xlsResponse,Call call,Response response){
         if(subTabIndex!=TabList.TAB_TOPRODUCE){
             return;
@@ -1278,7 +1268,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    //处理生产中服务器列表返回结果
+    //处理服务器返回数据---生产中
     private void handleProudcingResponse(XlsResponse xlsResponse,Call call,Response response){
         if(LoginHelper.isSFMode()){
             List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(getActivity(), xlsResponse);
@@ -1296,7 +1286,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    //处理已生产服务器列表返回结果
+    //处理服务器返回数据---已生产
     private void handleProudcedResponse(XlsResponse xlsResponse,Call call,Response response){
         if(LoginHelper.isSFMode()){
             List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(getActivity(),xlsResponse);
@@ -1309,7 +1299,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    //处理配送中服务器列表返回结果
+    //处理服务器返回数据---配送中
     private void handleDeliveryingResponse(XlsResponse xlsResponse,Call call,Response response){
         if(LoginHelper.isSFMode()){
             List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(getActivity(),xlsResponse);
@@ -1322,11 +1312,17 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    //处理服务器返回的已完成列表数据
+    //处理服务器返回数据---已完成
     private void handleFinishedResponse(XlsResponse xlsResponse,Call call,Response response){
+        Request request = call.request();
+        String isLoadMore = request.header("isLoadMore");
         if(LoginHelper.isSFMode()){
             List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(getActivity(), xlsResponse);
-            sfAdaper.setData(sfGroupBeans);
+            if("yes".equalsIgnoreCase(isLoadMore)){
+                sfAdaper.addData(sfGroupBeans);
+            }else{
+                sfAdaper.setData(sfGroupBeans);
+            }
             if(sfAdaper.groupList.size()>0){
                 finishedLastOrderId = sfAdaper.groupList.get(sfAdaper.groupList.size() - 1).getId();
             }else{
@@ -1334,7 +1330,12 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
         }else{
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
-            adapter.setData(orderBeans);
+            if("yes".equalsIgnoreCase(isLoadMore)){
+                adapter.addData(orderBeans);
+            }else{
+                adapter.setData(orderBeans);
+            }
+
             if(adapter.list.size()>0){
                 finishedLastOrderId = adapter.list.get(adapter.list.size()-1).getId();
             }else {
@@ -1352,406 +1353,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             updateTotalAmount(cupsAmount,ordersAmount);
         }
     }
-    /*//待生产订单列表接口
-    class OrderToProduceQry implements Qry{
 
-        private Context context;
-        private int orderBy;
-        private int fillterInstant;
-        private boolean isShowProgress;
-        private boolean isSFMode;
-        private int limitLevel;
-
-        public OrderToProduceQry(Context context, int orderBy, int fillterInstant, boolean isShowProgress, boolean isSFMode, int limitLevel) {
-            this.context = context;
-            this.orderBy = orderBy;
-            this.fillterInstant = fillterInstant;
-            this.isShowProgress = isShowProgress;
-            this.isSFMode = isSFMode;
-            this.limitLevel = limitLevel;
-        }
-
-        @Override
-        public void doRequest() {
-            LoginBean loginBean = LoginHelper.getLoginBean(context);
-            String token = loginBean.getToken();
-            int shopId = loginBean.getShopId();
-            String url = null;
-            if(isSFMode){
-                url = HttpUtils.BASE_URL+shopId+"/orders/today/toproduce/tailwind?token="+token;
-            }else{
-                url = HttpUtils.BASE_URL+shopId+"/orders/today/toproduce?token="+token;
-            }
-            Map<String,Object> params = new HashMap<String,Object>();
-            params.put("orderBy",orderBy);
-            params.put("fillterInstant", fillterInstant);
-            params.put("limitLevel",limitLevel);
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowProgress);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            Log.d(TAG, "OrderToProduceQry:resp  =" + resp);
-            if(resp==null){
-                ToastUtil.showToast(context, R.string.unknown_error);
-                return;
-            }
-            if(subTabIndex!=TabList.TAB_TOPRODUCE){
-                return;
-            }
-            if(isSFMode){
-                List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(context, resp);
-                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_TOPRODUCE, OrderHelper.getGroupTotalCount(sfGroupBeans)));
-                sfAdaper.setData(sfGroupBeans);
-            }else{
-                List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_TOPRODUCE, orderBeans.size()));
-                adapter.setData(orderBeans);
-                //检查列表中是否有未完成的合并订单
-                if(!OrderHelper.isContainerBatchOrder(orderBeans)){
-                    OrderHelper.batchList.clear();
-                    updateBatchPromptTextView(0);
-                }
-            }
-
-
-        }
-    }*/
-
-    /*//生产中列表接口
-    class OrderProducingQry implements Qry{
-
-        private Context context;
-        private int orderBy;
-        private int fillterInstant;
-        private boolean isShowProgress;
-        private boolean isSFMode;
-
-        public OrderProducingQry(Context context, int orderBy, int fillterInstant,boolean isShowProgress,boolean isSFMode) {
-            this.context = context;
-            this.orderBy = orderBy;
-            this.fillterInstant = fillterInstant;
-            this.isShowProgress = isShowProgress;
-            this.isSFMode = isSFMode;
-        }
-
-        @Override
-        public void doRequest() {
-            LoginBean loginBean = LoginHelper.getLoginBean(context);
-            String token = loginBean.getToken();
-            int shopId = loginBean.getShopId();
-            String url = null;
-            if(isSFMode){
-                url = HttpUtils.BASE_URL+shopId+"/orders/today/producing/tailwind?token="+token;
-            }else{
-                url = HttpUtils.BASE_URL+shopId+"/orders/today/producing?token="+token;
-            }
-            Map<String,Object> params = new HashMap<String,Object>();
-            params.put("orderBy",orderBy);
-            params.put("fillterInstant", fillterInstant);
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowProgress);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            Log.d(TAG, "OrderProducingQry:resp  =" + resp);
-            if(resp==null){
-                ToastUtil.showToast(context,R.string.unknown_error);
-                return;
-            }
-            if(isSFMode){
-                List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(context, resp);
-                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_PRODUCING,OrderHelper.getGroupTotalCount(sfGroupBeans)));
-                sfAdaper.setData(sfGroupBeans);
-            }else{
-                List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_PRODUCING,orderBeans.size()));
-                adapter.setData(orderBeans);
-                //检查列表中是否有未完成的合并订单
-                if(!OrderHelper.isContainerBatchOrder(orderBeans)){
-                    OrderHelper.batchList.clear();
-                    updateBatchPromptTextView(0);
-                }
-            }
-
-
-        }
-    }
-*/
-
-   /* //已生产订单列表接口
-    class OrderProducedQry implements Qry{
-
-        private Context context;
-        private int orderBy;
-        private int fillterInstant;
-        private boolean isShowProgress;
-        private boolean isSFMode;
-
-        public OrderProducedQry(Context context, int orderBy, int fillterInstant,boolean isShowProgress,boolean isSFMode) {
-            this.context = context;
-            this.orderBy = orderBy;
-            this.fillterInstant = fillterInstant;
-            this.isShowProgress = isShowProgress;
-            this.isSFMode = isSFMode;
-        }
-
-        @Override
-        public void doRequest() {
-            LoginBean loginBean = LoginHelper.getLoginBean(context);
-            String token = loginBean.getToken();
-            int shopId = loginBean.getShopId();
-            String url = null;
-            if(isSFMode){
-                url = HttpUtils.BASE_URL+shopId+"/orders/today/produced/tailwind?token="+token;
-            }else{
-                url = HttpUtils.BASE_URL+shopId+"/orders/today/produced?token="+token;
-            }
-            Map<String,Object> params = new HashMap<String,Object>();
-            params.put("orderBy",orderBy);
-            params.put("fillterInstant", fillterInstant);
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowProgress);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            Log.d(TAG, "OrderProducedQry:resp  =" + resp);
-            if(resp==null){
-                ToastUtil.showToast(context,R.string.unknown_error);
-                return;
-            }
-            if(isSFMode){
-                List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(context,resp);
-                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_PRODUCED,OrderHelper.getGroupTotalCount(sfGroupBeans)));
-                sfAdaper.setData(sfGroupBeans);
-            }else{
-                List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_PRODUCED,orderBeans.size()));
-                adapter.setData(orderBeans);
-            }
-
-        }
-    }*/
-
-   /* //配送中订单列表接口
-    class OrderDeliveryingQry implements Qry{
-
-        private Context context;
-        private int orderBy;
-        private int fillterInstant;
-        private boolean isShowProgress;
-        private boolean isSFMode;
-
-        public OrderDeliveryingQry(Context context, int orderBy, int fillterInstant,boolean isShowProgress,boolean isSFMode) {
-            this.context = context;
-            this.orderBy = orderBy;
-            this.fillterInstant = fillterInstant;
-            this.isShowProgress = isShowProgress;
-            this.isSFMode = isSFMode;
-        }
-
-        @Override
-        public void doRequest() {
-            LoginBean loginBean = LoginHelper.getLoginBean(context);
-            String token = loginBean.getToken();
-            int shopId = loginBean.getShopId();
-            String url = null;
-            if(isSFMode){
-                url = HttpUtils.BASE_URL+shopId+"/orders/today/delivering/tailwind?token="+token;
-            }else{
-                url = HttpUtils.BASE_URL+shopId+"/orders/today/delivering?token="+token;
-            }
-
-            Map<String,Object> params = new HashMap<String,Object>();
-            params.put("orderBy",orderBy);
-            params.put("fillterInstant", fillterInstant);
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowProgress);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            Log.d(TAG, "OrderDeliveryingQry:resp  =" + resp);
-            if(resp==null){
-                ToastUtil.showToast(context,R.string.unknown_error);
-                return;
-            }
-            if(isSFMode){
-                List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(context,resp);
-                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_DELIVERING,OrderHelper.getGroupTotalCount(sfGroupBeans)));
-                sfAdaper.setData(sfGroupBeans);
-            }else{
-                List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_DELIVERING,orderBeans.size()));
-                adapter.setData(orderBeans);
-            }
-
-        }
-    }*/
-
-    /*//已完成订单列表接口
-    class OrderFinishedQry implements Qry{
-
-        private Context context;
-        private int orderBy;
-        private int fillterInstant;
-        private boolean isShowProgress;
-        private boolean isSFMode;
-
-        public OrderFinishedQry(Context context, int orderBy, int fillterInstant,boolean isShowProgress,boolean isSFMode) {
-            this.context = context;
-            this.orderBy = orderBy;
-            this.fillterInstant = fillterInstant;
-            this.isShowProgress = isShowProgress;
-            this.isSFMode = isSFMode;
-        }
-
-        @Override
-        public void doRequest() {
-            LoginBean loginBean = LoginHelper.getLoginBean(context);
-            String token = loginBean.getToken();
-            int shopId = loginBean.getShopId();
-            String url = null;
-            if(isSFMode){
-                url = HttpUtils.BASE_URL+shopId+"/orders/today/finished/tailwind?token="+token;
-            }else{
-                url = HttpUtils.BASE_URL+shopId+"/orders/today/finished?token="+token;
-            }
-            Map<String,Object> params = new HashMap<String,Object>();
-            params.put("orderBy",orderBy);
-            params.put("fillterInstant", fillterInstant);
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowProgress);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            Log.d(TAG, "OrderFinishedQry:resp  =" + resp);
-            if(resp==null){
-                ToastUtil.showToast(context,R.string.unknown_error);
-                return;
-            }
-            if(isSFMode){
-                List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(context, resp);
-                sfAdaper.setData(sfGroupBeans);
-                if(sfAdaper.groupList.size()>0){
-                    finishedLastOrderId = sfAdaper.groupList.get(sfAdaper.groupList.size() - 1).getId();
-                }else{
-                    finishedLastOrderId = 0;
-                }
-            }else{
-                List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-                adapter.setData(orderBeans);
-                if(adapter.list.size()>0){
-                    finishedLastOrderId = adapter.list.get(adapter.list.size()-1).getId();
-                }else {
-                    finishedLastOrderId = 0;
-                }
-
-            }
-
-        }
-    }
-*/
-    //已经完成接口总单量和杯量
-    class OrderFinishedTotalAmount implements Qry{
-
-        private Context context;
-        private boolean isShowProgress;
-
-        public OrderFinishedTotalAmount(Context context, boolean isShowProgress) {
-            this.context = context;
-            this.isShowProgress = isShowProgress;
-        }
-
-        @Override
-        public void doRequest() {
-            LoginBean loginBean = LoginHelper.getLoginBean(context);
-            String token = loginBean.getToken();
-            int shopId = loginBean.getShopId();
-            String url = Urls.BASE_URL+shopId+"/orders/today/finishedTotal?token="+token;
-            Map<String,Object> params = new HashMap<String,Object>();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowProgress);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            Log.d(TAG,"resp = "+resp);
-            if(resp==null){
-                return;
-            }
-            if(resp.status==0){
-                int ordersAmount = resp.data.optInt("totalOrdersAmount");
-                int cupsAmount = resp.data.optInt("totalCupsAmount");
-                updateTotalAmount(cupsAmount,ordersAmount);
-            }
-        }
-    }
-
-    //已完成订单列表，上拉加载更多
-    class OrderFinishedLoadMoreQry implements Qry{
-
-        private Context context;
-        private long orderId;
-        private int orderBy;
-        private int fillterInstant;
-        private boolean isShowProgress;
-        private boolean isSFMode;
-
-        public OrderFinishedLoadMoreQry(Context context, long orderId,int orderBy, int fillterInstant,boolean isShowProgress,boolean isSFMode) {
-            this.context = context;
-            this.orderBy = orderBy;
-            this.fillterInstant = fillterInstant;
-            this.isShowProgress = isShowProgress;
-            this.isSFMode = isSFMode;
-            this.orderId = orderId;
-        }
-
-        @Override
-        public void doRequest() {
-            LoginBean loginBean = LoginHelper.getLoginBean(context);
-            String token = loginBean.getToken();
-            int shopId = loginBean.getShopId();
-            String url = null;
-            if(isSFMode){
-                url = Urls.BASE_URL+shopId+"/orders/today/finished/tailwind?token="+token;
-            }else{
-                url = Urls.BASE_URL+shopId+"/orders/today/finished?token="+token;
-            }
-            Map<String,Object> params = new HashMap<String,Object>();
-            params.put("orderId",orderId);
-            params.put("orderBy",orderBy);
-            params.put("fillterInstant", fillterInstant);
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowProgress);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            Log.d(TAG, "OrderFinishedQry:resp  =" + resp);
-            ordersGridView.setPullLoadMoreCompleted();
-            if(resp==null){
-                ToastUtil.showToast(context,R.string.unknown_error);
-                return;
-            }
-            if(isSFMode){
-                List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(context, resp);
-                sfAdaper.addData(sfGroupBeans);
-                if(sfAdaper.groupList.size()>0){
-                    finishedLastOrderId = sfAdaper.groupList.get(sfAdaper.groupList.size()-1).getId();
-                }else{
-                    finishedLastOrderId = 0;
-                }
-            }else{
-                List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-                adapter.addData(orderBeans);
-                if(adapter.list.size()>0){
-                    finishedLastOrderId = adapter.list.get(adapter.list.size()-1).getId();
-                }else{
-                    finishedLastOrderId = 0;
-                }
-
-            }
-
-        }
-    }
 
 
 

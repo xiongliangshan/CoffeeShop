@@ -144,8 +144,9 @@ public class HttpHelper {
      * @param fillterInstant
      * @param callback
      */
-    public void reqFinishedData(int orderBy, int fillterInstant,JsonCallback<XlsResponse> callback){
+    public void reqFinishedListData(int orderBy, int fillterInstant, long orderId, JsonCallback<XlsResponse> callback){
         HashMap<String, Object> params = new HashMap<>();
+        params.put("orderId",orderId); //区分是刷新还是加载更多
         params.put("orderBy", orderBy);
         params.put("fillterInstant", fillterInstant);
         JSONObject jsonObject = new JSONObject(params);
@@ -158,6 +159,7 @@ public class HttpHelper {
         }
         OkGo.post(url)
                 .tag(this)
+                .headers("isLoadMore",orderId==0?"no":"yes")
                 .upJson(jsonObject.toString())
                 .execute(callback);
 
