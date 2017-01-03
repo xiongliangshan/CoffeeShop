@@ -1,7 +1,9 @@
 package com.lyancafe.coffeeshop.activity;
 
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -15,11 +17,17 @@ import android.widget.RadioGroup;
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.FragmentTabAdapter;
+import com.lyancafe.coffeeshop.bean.ApkInfoBean;
+import com.lyancafe.coffeeshop.bean.XlsResponse;
+import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.fragment.OrderQueryFragment;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.fragment.ShopManagerFragment;
+import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.service.TaskService;
+import com.lyancafe.coffeeshop.service.UpdateService;
 import com.lyancafe.coffeeshop.utils.MyUtil;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
 import com.lyancafe.coffeeshop.widget.SettingWindow;
 import com.lzy.okgo.OkGo;
@@ -37,6 +45,9 @@ import com.nostra13.universalimageloader.utils.StorageUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Response;
 
 /**
  * Created by Administrator on 2015/9/18.
@@ -63,7 +74,6 @@ public class HomeActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context  = HomeActivity.this;
-
         setContentView(R.layout.activity_home);
         initViews();
         initFragments();
@@ -85,7 +95,7 @@ public class HomeActivity extends BaseActivity {
         bindService(intent, serviceConnection, BIND_AUTO_CREATE);
         Log.d("TaskService", "bindService");
 
-        File cacheDir = StorageUtils.getCacheDirectory(HomeActivity.this);
+        final File cacheDir = StorageUtils.getCacheDirectory(HomeActivity.this);
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(HomeActivity.this)
                 .memoryCacheExtraOptions(800, 800) // default = device screen dimensions
                 .diskCacheExtraOptions(800, 800, null)
@@ -110,7 +120,12 @@ public class HomeActivity extends BaseActivity {
         ImageLoader.getInstance().init(config);
 
 
-        new CSApplication.CheckUpdateQry(context, MyUtil.getVersionCode(context),false).doRequest();
+        HttpHelper.getInstance().reqCheckUpdate(new JsonCallback<XlsResponse>() {
+            @Override
+            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                handleCheckUpdateResponse(xlsResponse,call,response);
+            }
+        });
     }
 
     private void initViews(){
@@ -175,6 +190,42 @@ public class HomeActivity extends BaseActivity {
         Log.d("TaskService", "unbindService");
 
 
+    }
+
+
+    /**
+     * 处理检测更新接口
+     * @param xlsResponse
+     * @param call
+     * @param response
+     */
+    private void handleCheckUpdateResponse(XlsResponse xlsResponse,Call call,Response response){
+        if(xlsResponse.status==0){
+            final ApkInfoBean apkInfoBean = ApkInfoBean.parseJsonToBean(xlsResponse.data.toString());
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setMessage(context.getResources().getString(R.string.confirm_download, apkInfoBean.getAppName()));
+            builder.setTitle(context.getResources().getString(R.string.version_update));
+            builder.setIcon(R.mipmap.ic_launcher);
+            builder.setPositiveButton(context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    //启动Service下载apk文件
+                    Intent intent = new Intent(context, UpdateService.class);
+                    intent.putExtra("apk",apkInfoBean);
+                    context.startService(intent);
+                }
+            });
+            builder.setNegativeButton(context.getResources().getString(R.string.cacel), new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.create().show();
+        }
     }
 
 

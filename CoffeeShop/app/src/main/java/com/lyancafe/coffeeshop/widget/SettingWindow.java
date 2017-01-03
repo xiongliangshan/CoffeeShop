@@ -1,6 +1,10 @@
 package com.lyancafe.coffeeshop.widget;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,16 +13,23 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.activity.HomeActivity;
+import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 import com.lyancafe.coffeeshop.bean.LoginBean;
+import com.lyancafe.coffeeshop.bean.XlsResponse;
+import com.lyancafe.coffeeshop.callback.DialogCallback;
+import com.lyancafe.coffeeshop.callback.JsonCallback;
+import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
-import com.lyancafe.coffeeshop.helper.ShopHelper;
+import com.lyancafe.coffeeshop.service.UpdateService;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.xls.http.HttpUtils;
+
+import okhttp3.Call;
+import okhttp3.Response;
 
 /**
  * Created by Administrator on 2015/10/22.
@@ -26,27 +37,17 @@ import com.xls.http.HttpUtils;
 public class SettingWindow extends PopupWindow implements View.OnClickListener{
 
     private static final String TAG = "SettingWindow";
-    private Context context;
+    private Activity mContext;
     private View contentView;
-//    private RadioGroup statusSwitch;
-//    private RadioButton freeRb;
-//    private RadioButton busyRb;
-//    private RadioButton stopRb;
     private TextView feedbackTxt;
     private RelativeLayout versionUpdateLayout;
     private TextView currentVerTxt;
     private Button loginOutBtn;
-    private static String current_status = "G";
-
-//    private static final String GREEN = "G";
-//    private static final String YELLOW = "Y";
-//    private static final String RED = "R";
 
 
-
-    public SettingWindow(Context context) {
+    public SettingWindow(Activity context) {
         super(context);
-        this.context = context;
+        this.mContext = context;
         contentView = LayoutInflater.from(context).inflate(R.layout.window_popup_setting,null);
         this.setContentView(contentView);
         initView(contentView, context);
@@ -55,9 +56,7 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
         this.setFocusable(true);
         this.setOutsideTouchable(false);
         this.setAnimationStyle(R.style.setting_popwin_anim_style);
-        //同步本地文件的状态到内存
-        current_status = ShopHelper.getShopStatus(context);
-   //     setBackRadio();
+
     }
 
 
@@ -70,7 +69,12 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
                     ToastUtil.show(context, context.getResources().getString(R.string.check_internet));
                 } else {
                     SettingWindow.this.dismiss();
-                    new CSApplication.CheckUpdateQry(context, MyUtil.getVersionCode(context),true).doRequest();
+                    HttpHelper.getInstance().reqCheckUpdate(new DialogCallback<XlsResponse>(mContext) {
+                        @Override
+                        public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                            handleCheckUpdateResponse(xlsResponse, call, response);
+                        }
+                    });
                 }
             }
         });
@@ -80,29 +84,6 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
         loginOutBtn = (Button) contentView.findViewById(R.id.login_out);
         loginOutBtn.setOnClickListener(this);
         currentVerTxt.setText("当前版本:" + MyUtil.getVersion(context));
-        /*statusSwitch = (RadioGroup)contentView.findViewById(R.id.status_switch);
-        freeRb = (RadioButton) contentView.findViewById(R.id.radio_free);
-        freeRb.setChecked(true);
-        busyRb = (RadioButton) contentView.findViewById(R.id.radio_busy);
-        stopRb = (RadioButton) contentView.findViewById(R.id.radio_stop);
-        freeRb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new SwitchShopStatusQry(context, GREEN).doRequest();
-            }
-        });
-        busyRb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new SwitchShopStatusQry(context, YELLOW).doRequest();
-            }
-        });
-        stopRb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new SwitchShopStatusQry(context, RED).doRequest();
-            }
-        });*/
 
     }
 
@@ -125,74 +106,74 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
         switch (v.getId()){
             case R.id.feedback:
                 //意见反馈
-                FeedBackDialog fd = new FeedBackDialog(context,R.style.MyDialog);
+                FeedBackDialog fd = new FeedBackDialog(mContext,R.style.MyDialog);
                 fd.show();
                 break;
             case R.id.login_out:
                 //退出登录
-                new CSApplication.LoginOutQry(CSApplication.getInstance()).doRequest();
-                LoginBean loginBean = LoginHelper.getLoginBean(context);
+                HttpHelper.getInstance().reqLoginOut(new JsonCallback<XlsResponse>() {
+                    @Override
+                    public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                        handleLoginOutResponse(xlsResponse,call,response);
+                    }
+                });
+                LoginBean loginBean = LoginHelper.getLoginBean(mContext);
                 loginBean.setToken("");
-                LoginHelper.saveLoginBean(context,loginBean);
+                LoginHelper.saveLoginBean(mContext,loginBean);
                 OrderHelper.batchList.clear();
-                ((HomeActivity)context).finish();
-                ((HomeActivity)context).overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);
+                ((HomeActivity)mContext).finish();
+                ((HomeActivity)mContext).overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);
                 break;
         }
     }
 
+    /**
+     * 处理退出登录
+     * @param xlsResponse
+     * @param call
+     * @param response
+     */
+    private void handleLoginOutResponse(XlsResponse xlsResponse, Call call, Response response) {
+        Intent intent_update = new Intent(mContext, UpdateService.class);
+        mContext.stopService(intent_update);
+    }
 
-  /*  // http://api.lyancafe.com/shop/v3/{shopId}/status
-    class SwitchShopStatusQry implements Qry{
 
-        private Context context;
-        private String isBusy;
+    /**
+     * 处理检测更新接口
+     * @param xlsResponse
+     * @param call
+     * @param response
+     */
+    private void handleCheckUpdateResponse(XlsResponse xlsResponse,Call call,Response response){
+        if(xlsResponse.status==0){
+            final ApkInfoBean apkInfoBean = ApkInfoBean.parseJsonToBean(xlsResponse.data.toString());
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setMessage(mContext.getResources().getString(R.string.confirm_download, apkInfoBean.getAppName()));
+            builder.setTitle(mContext.getResources().getString(R.string.version_update));
+            builder.setIcon(R.mipmap.ic_launcher);
+            builder.setPositiveButton(mContext.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 
-        public SwitchShopStatusQry(Context context, String isBusy) {
-            this.context = context;
-            this.isBusy = isBusy;
-        }
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    //启动Service下载apk文件
+                    Intent intent = new Intent(mContext, UpdateService.class);
+                    intent.putExtra("apk",apkInfoBean);
+                    mContext.startService(intent);
+                }
+            });
+            builder.setNegativeButton(mContext.getResources().getString(R.string.cacel), new DialogInterface.OnClickListener() {
 
-        @Override
-        public void doRequest() {
-            setBackRadio();
-            String token = LoginHelper.getToken(context);
-            int shopId = LoginHelper.getShopId(context);
-            String url = HttpUtils.BASE_URL+shopId+"/status?token="+token;
-            Map<String,Object> params = new HashMap<String,Object>();
-            params.put("light", isBusy);
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            Log.d(TAG, "SwitchShopStatusQry:resp =" + resp);
-            if(resp == null){
-                ToastUtil.showToast(context, R.string.unknown_error);
-                return;
-            }
-            if(resp.status==0){
-                ToastUtil.showToast(context, "切换状态成功");
-                current_status = isBusy;
-                ShopHelper.saveShopStatus(context,isBusy);
-                setBackRadio();
-            }else{
-                ToastUtil.showToast(context, "切换状态失败:"+resp.message);
-            }
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.create().show();
+        }else{
+            ToastUtil.show(mContext, xlsResponse.message);
         }
     }
 
-    private void setBackRadio(){
-        switch (current_status){
-            case "G":
-                freeRb.setChecked(true);
-                break;
-            case "Y":
-                busyRb.setChecked(true);
-                break;
-            case "R":
-                stopRb.setChecked(true);
-                break;
-        }
-    }*/
 }

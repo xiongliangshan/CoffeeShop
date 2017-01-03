@@ -204,7 +204,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         ordersGridView = (PullLoadMoreRecyclerView) contentView.findViewById(R.id.gv_order_list);
         if(LoginHelper.isSFMode()){
             mLayoutManager = new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false);
-            sfAdaper = new OrderListViewAdapter(mContext);
+            sfAdaper = new OrderListViewAdapter(getActivity());
             ordersGridView.setAdapter(sfAdaper);
         }else{
             mLayoutManager = new GridLayoutManager(mContext,4,GridLayoutManager.VERTICAL,false);

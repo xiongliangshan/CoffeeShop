@@ -1,34 +1,18 @@
 package com.lyancafe.coffeeshop;
 
-import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 
-import com.lyancafe.coffeeshop.bean.ApkInfoBean;
-import com.lyancafe.coffeeshop.bean.LoginBean;
-import com.lyancafe.coffeeshop.helper.LoginHelper;
-import com.lyancafe.coffeeshop.service.UpdateService;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.lyancafe.coffeeshop.utils.Urls;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.cookie.store.PersistentCookieStore;
 import com.tencent.bugly.crashreport.CrashReport;
-import com.xls.http.HttpAsyncTask;
-import com.xls.http.HttpEntity;
-import com.xls.http.HttpUtils;
-import com.xls.http.Jresp;
-import com.xls.http.Qry;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 
 import cn.jpush.android.api.JPushInterface;
@@ -123,90 +107,4 @@ public class CSApplication extends Application {
     }
 
 
-    //退出登录接口
-    public static class LoginOutQry implements Qry{
-
-        private Context context;
-
-        public LoginOutQry(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        public void doRequest() {
-            LoginBean loginBean = LoginHelper.getLoginBean(context);
-            String token = loginBean.getToken();
-            String url = Urls.BASE_URL+"/token/delete?token="+token;
-            Map<String,Object> params = new HashMap<String,Object>();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.GET, url, params), context, this, false);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            Log.d(TAG, "LoginOutQry:" + resp);
-            Intent intent_update = new Intent(context, UpdateService.class);
-            context.stopService(intent_update);
-        }
-    }
-
-    public static class CheckUpdateQry implements Qry {
-
-        private Context context;
-        private int curVersion;
-        private boolean isShowToast;
-
-        public CheckUpdateQry(Context context, int curVersion, boolean isShowToast) {
-            this.context = context;
-            this.curVersion = curVersion;
-            this.isShowToast = isShowToast;
-        }
-
-        @Override
-        public void doRequest() {
-            String token = LoginHelper.getLoginBean(context).getToken();
-            String url = Urls.BASE_URL + "/token/"+curVersion+"/isUpdateApp?token="+token;
-            Map<String,Object> params = new HashMap<>();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, isShowToast);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            if(resp==null){
-                Log.e(TAG, "resp = " + resp);
-                return;
-            }
-            Log.d(TAG, "resp = " + resp);
-            if(resp.status==0){
-                final ApkInfoBean apkInfoBean = ApkInfoBean.parseJsonToBean(resp.data.toString());
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setMessage(context.getResources().getString(R.string.confirm_download, apkInfoBean.getAppName()));
-                builder.setTitle(context.getResources().getString(R.string.version_update));
-                builder.setIcon(R.mipmap.ic_launcher);
-                builder.setPositiveButton(context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        //启动Service下载apk文件
-                        Intent intent = new Intent(context, UpdateService.class);
-                        intent.putExtra("apk",apkInfoBean);
-                        context.startService(intent);
-                    }
-                });
-                builder.setNegativeButton(context.getResources().getString(R.string.cacel), new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                builder.create().show();
-            }else {
-                if(isShowToast){
-                    ToastUtil.show(context, resp.message);
-                }
-            }
-
-        }
-    }
 }

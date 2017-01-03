@@ -1,5 +1,6 @@
 package com.lyancafe.coffeeshop.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,11 +16,14 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.SFGroupBean;
+import com.lyancafe.coffeeshop.bean.XlsResponse;
+import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.constant.TabList;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
+import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.helper.PrintHelper;
@@ -37,6 +41,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.Call;
+import okhttp3.Response;
+
 /**
  * Created by Administrator on 2016/9/5.
  */
@@ -45,10 +52,10 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
 
     private static final String TAG  ="OrderListViewAdapter";
     public List<SFGroupBean> groupList = new ArrayList<>();
-    private Context mContext;
+    private Activity mContext;
     public static long selectedOrderId = 0;
 
-    public OrderListViewAdapter(Context mContext) {
+    public OrderListViewAdapter(Activity mContext) {
         this.mContext = mContext;
     }
 
@@ -79,6 +86,12 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
             public void onClick(View v) {
                 if(mContext.getString(R.string.sf_batch_start).equals(holder.batchHandlerBtn.getText())){
                     new startBatchProduceQry(mContext,sfGroupBean.getId()).doRequest();
+                   /* HttpHelper.getInstance().reqStartBatchProduce(sfGroupBean.getId(), new DialogCallback<XlsResponse>(mContext) {
+                        @Override
+                        public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                            handleStartBatchProduceResponse(xlsResponse,call,response);
+                        }
+                    });*/
                     //筛选出未打印的组内订单集合
                     List<OrderBean> unPrintList = OrderHelper.selectUnPrintList(mContext,sfGroupBean.getItemGroup());
                     //打印
@@ -186,6 +199,20 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
     }
 
 
+    /**
+     * 处理开始批量生产
+     * @param xlsResponse
+     * @param call
+     * @param response
+     */
+    private void handleStartBatchProduceResponse(XlsResponse xlsResponse,Call call,Response response){
+       /* if(xlsResponse.status == 0){
+            ToastUtil.showToast(mContext, R.string.do_success);
+            removeGroupFromList(groupId, OrderStatus.PRODUCING);
+        }else{
+            ToastUtil.showToast(mContext, xlsResponse.message);
+        }*/
+    }
 
     //顺风单组批量开始生产接口
     public class startBatchProduceQry implements Qry {

@@ -2,7 +2,6 @@ package com.lyancafe.coffeeshop.callback;
 
 import com.alibaba.fastjson.JSON;
 import com.lyancafe.coffeeshop.CSApplication;
-import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lzy.okgo.callback.AbsCallback;
 import com.lzy.okgo.request.BaseRequest;

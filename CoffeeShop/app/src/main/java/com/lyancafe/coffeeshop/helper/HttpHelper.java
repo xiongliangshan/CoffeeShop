@@ -13,7 +13,6 @@ import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.RsaEncryptor;
 import com.lyancafe.coffeeshop.utils.Urls;
 import com.lzy.okgo.OkGo;
-import com.xls.http.md5.MD5;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -352,6 +351,43 @@ public class HttpHelper {
      */
     public void reqCommentCount(JsonCallback<XlsResponse> callback){
         String url = Urls.BASE_URL+shopId+"/orders/feedback/count?token="+token;
+        OkGo.get(url)
+                .tag(this)
+                .execute(callback);
+    }
+
+
+    /**
+     * 顺风单组批量开始生产
+     * @param groupId
+     * @param callback
+     */
+    public void reqStartBatchProduce(int groupId,JsonCallback<XlsResponse> callback){
+        String url = Urls.BASE_URL+shopId+"/order/"+groupId+"/beginproducebatch?token="+token;
+        OkGo.post(url)
+                .tag(this)
+                .execute(callback);
+    }
+
+
+    /**
+     * 检测版本更新
+     * @param callback
+     */
+    public void reqCheckUpdate(JsonCallback<XlsResponse> callback){
+        int curVersion = MyUtil.getVersionCode(CSApplication.getInstance());
+        String url = Urls.BASE_URL + "/token/"+curVersion+"/isUpdateApp?token="+token;
+        OkGo.post(url)
+                .tag(this)
+                .execute(callback);
+    }
+
+    /**
+     * 退出登录接口
+     * @param callback
+     */
+    public void reqLoginOut(JsonCallback<XlsResponse> callback){
+        String url = Urls.BASE_URL+"/token/delete?token="+token;
         OkGo.get(url)
                 .tag(this)
                 .execute(callback);
