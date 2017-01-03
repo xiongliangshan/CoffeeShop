@@ -1,7 +1,7 @@
 package com.lyancafe.coffeeshop.widget;
 
+import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,22 +14,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.bean.XlsResponse;
+import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.event.CommitIssueOrderEvent;
-import com.lyancafe.coffeeshop.helper.LoginHelper;
+import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.lyancafe.coffeeshop.utils.Urls;
-import com.xls.http.HttpAsyncTask;
-import com.xls.http.HttpEntity;
-import com.xls.http.Jresp;
-import com.xls.http.Qry;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.HashMap;
-import java.util.Map;
+import okhttp3.Call;
+import okhttp3.Response;
 
 /**
  * Created by Administrator on 2015/10/20.
@@ -46,13 +42,13 @@ public class ReportWindow extends PopupWindow implements View.OnClickListener{
     private Button okBtn;
     private Button cacelBtn;
     private OrderBean orderBean;
-    private Context mContext;
+    private Activity mContext;
     private static int  QUESTION_TYPE = 17; //14.产线繁忙 15.无法生产 16.定位错误，应属其他区域 17.其他
     private static int  QUESTION_IDEA = 1; //1.取消订单 2.改约时间
     private static String QUESTION_DESCRIPTION ="";
 
 
-    public ReportWindow(Context context) {
+    public ReportWindow(Activity context) {
         super(context);
         mContext = context;
         contentView = LayoutInflater.from(context).inflate(R.layout.window_popup_report,null);
@@ -177,7 +173,12 @@ public class ReportWindow extends PopupWindow implements View.OnClickListener{
         switch (v.getId()){
             case R.id.report_ok:
                 QUESTION_DESCRIPTION = descriptionEdt.getText().toString();
-                new ReportOrderQry(mContext,orderBean.getId(),QUESTION_TYPE,QUESTION_IDEA,QUESTION_DESCRIPTION).doRequest();
+                HttpHelper.getInstance().reqReportIssueOrder(orderBean.getId(), QUESTION_TYPE, QUESTION_IDEA, QUESTION_DESCRIPTION, new DialogCallback<XlsResponse>(mContext) {
+                    @Override
+                    public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                        handleReportIssueOrderResponse(xlsResponse,call,response);
+                    }
+                });
                 break;
             case R.id.report_cancel:
                 this.dismiss();
@@ -185,54 +186,22 @@ public class ReportWindow extends PopupWindow implements View.OnClickListener{
         }
     }
 
-    //报告问题订单接口
-    class ReportOrderQry implements Qry {
-
-        private Context context;
-        private long orderId;
-        private int questionType;
-        private int questionIdea;
-        private String questionDesc;
-
-        public ReportOrderQry(Context context, long orderId, int questionType, int questionIdea, String questionDesc) {
-            this.context = context;
-            this.orderId = orderId;
-            this.questionType = questionType;
-            this.questionIdea = questionIdea;
-            this.questionDesc = questionDesc;
+    /**
+     * 处理报告问题订单结果
+     * @param xlsResponse
+     * @param call
+     * @param response
+     */
+    private void handleReportIssueOrderResponse(XlsResponse xlsResponse, Call call, Response response) {
+        if(xlsResponse.status==0){
+            ToastUtil.showToast(mContext, R.string.do_success);
+            int id  = xlsResponse.data.getIntValue("id");
+            EventBus.getDefault().post(new CommitIssueOrderEvent(id));
+        }else{
+            ToastUtil.showToast(mContext, xlsResponse.message);
         }
-
-        @Override
-        public void doRequest() {
-            LoginBean loginBean = LoginHelper.getLoginBean(context);
-            String token = loginBean.getToken();
-            int shopId = loginBean.getShopId();
-            String url = Urls.BASE_URL+shopId+"/order/"+orderId+"/raiseissue?token="+token;
-            Map<String,Object> params = new HashMap<String,Object>();
-            params.put("questionType",questionType);
-            params.put("handleType",questionIdea);
-            params.put("remark", questionDesc);
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            Log.d(TAG, "ReportOrderQry:resp =" + resp);
-            if(resp == null){
-                ToastUtil.showToast(context, R.string.unknown_error);
-                ReportWindow.this.dismiss();
-                return;
-            }
-            if(resp.status==0){
-                ToastUtil.showToast(context, R.string.do_success);
-                EventBus.getDefault().post(new CommitIssueOrderEvent(orderId));
-            }else{
-                ToastUtil.showToast(context, resp.message);
-            }
-            ReportWindow.this.dismiss();
-        }
-
-
+        ReportWindow.this.dismiss();
     }
+
 
 }

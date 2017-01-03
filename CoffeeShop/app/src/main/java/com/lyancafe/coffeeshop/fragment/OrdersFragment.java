@@ -552,7 +552,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 @Override
                 public void onClick(View v) {
                     if (reportWindow == null) {
-                        reportWindow = new ReportWindow(mContext);
+                        reportWindow = new ReportWindow(getActivity());
                         reportWindow.setOrder(order);
                         reportWindow.showReportWindow(detailRootView);
                     } else {

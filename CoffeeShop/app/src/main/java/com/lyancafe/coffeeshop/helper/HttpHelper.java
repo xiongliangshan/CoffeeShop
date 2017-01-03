@@ -392,4 +392,18 @@ public class HttpHelper {
                 .tag(this)
                 .execute(callback);
     }
+
+
+    public void reqReportIssueOrder(long orderId, int questionType, int questionIdea, String questionDesc,JsonCallback<XlsResponse> callback){
+        String url = Urls.BASE_URL+shopId+"/order/"+orderId+"/raiseissue?token="+token;
+        Map<String,Object> params = new HashMap<String,Object>();
+        params.put("questionType",questionType);
+        params.put("handleType",questionIdea);
+        params.put("remark", questionDesc);
+        JSONObject jsonObject = new JSONObject(params);
+        OkGo.post(url)
+                .tag(this)
+                .upJson(jsonObject.toString())
+                .execute(callback);
+    }
 }
