@@ -1,15 +1,24 @@
 package com.lyancafe.coffeeshop.helper;
 
+import android.text.TextUtils;
+import android.util.Log;
+
 import com.alibaba.fastjson.JSONObject;
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.bean.LoginBean;
-import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
+import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
+import com.lyancafe.coffeeshop.utils.MyUtil;
+import com.lyancafe.coffeeshop.utils.RsaEncryptor;
 import com.lyancafe.coffeeshop.utils.Urls;
 import com.lzy.okgo.OkGo;
+import com.xls.http.md5.MD5;
 
 import java.util.HashMap;
+import java.util.Map;
+
+import cn.jpush.android.api.JPushInterface;
 
 /**
  * Created by Administrator on 2016/12/28.
@@ -18,10 +27,12 @@ import java.util.HashMap;
 public class HttpHelper {
     private static HttpHelper http;
     private int shopId;
+    private int userId;
     private String token;
 
-    public HttpHelper(int shopId, String token) {
+    public HttpHelper(int shopId, int userId, String token) {
         this.shopId = shopId;
+        this.userId = userId;
         this.token = token;
     }
 
@@ -29,10 +40,68 @@ public class HttpHelper {
         if(http==null){
             LoginBean loginBean = LoginHelper.getLoginBean(CSApplication.getInstance());
             int shopId = loginBean.getShopId();
+            int userId = loginBean.getUserId();
             String token = loginBean.getToken();
-            return new HttpHelper(shopId,token);
+            return new HttpHelper(shopId,userId,token);
         }
         return http;
+    }
+
+
+    /**
+     * 登录接口
+     * @param userName
+     * @param password
+     * @param callback
+     */
+    public void reqLogin(String userName,String password,JsonCallback<XlsResponse> callback){
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("loginName",userName);
+        RsaEncryptor rsa = null;
+        String enc_pwd = "";
+        try {
+            rsa = new RsaEncryptor(CSApplication.getInstance(), "public.key");
+            enc_pwd = rsa.encrypt(password);
+        } catch (Exception e) {
+            Log.d("login", e.getMessage());
+        }
+        params.put("password", enc_pwd);
+        JSONObject jsonObject = new JSONObject(params);
+        String url = Urls.BASE_URL+"token";
+        OkGo.post(url)
+                .tag(this)
+                .upJson(jsonObject.toString())
+                .execute(callback);
+    }
+
+    /**
+     * 上传设备信息，主要是推送的registrationId。
+     * @param regId
+     * @param callback
+     */
+    public void reqUploadDeviceInfo(String regId,JsonCallback<XlsResponse> callback){
+        String deviceId = "";
+        String mType = android.os.Build.MODEL; // 手机型号
+        int appCode = MyUtil.getVersionCode(CSApplication.getInstance());
+        if(TextUtils.isEmpty(regId)){
+            JPushInterface.init(CSApplication.getInstance());
+            return;
+        }
+        if(userId==0){
+            return;
+        }
+        String url = Urls.BASE_URL+shopId+"/barista/"+userId+"/device?token="+token;
+        Map<String,Object> params = new HashMap<String,Object>();
+        params.put("deviceId",deviceId);
+        params.put("mType",mType);
+        params.put("appCode",appCode);
+        params.put("regId", regId);
+        JSONObject jsonObject = new JSONObject(params);
+        OkGo.post(url)
+                .tag(this)
+                .upJson(jsonObject.toString())
+                .execute(callback);
+        Log.d("upload", "upload device info:" + deviceId + "|" + mType + "|" + appCode + "|" + regId);
     }
 
 
@@ -249,6 +318,42 @@ public class HttpHelper {
         OkGo.post(url)
                 .tag(this)
                 .upJson(jsonObject.toString())
+                .execute(callback);
+    }
+
+    /**
+     * 开始生产
+     * @param orderId
+     * @param callback
+     */
+    public void reqStartProduce(long orderId, DialogCallback<XlsResponse> callback){
+        String url = Urls.BASE_URL+shopId+"/order/"+orderId+"/beginproduce?token="+token;
+        OkGo.get(url)
+                .tag(this)
+                .execute(callback);
+    }
+
+
+    /**
+     * 生产完成
+     * @param orderId
+     * @param callback
+     */
+    public void reqFinishedProduce(long orderId,JsonCallback<XlsResponse> callback){
+        String url = Urls.BASE_URL+shopId+"/order/"+orderId+"/produce?token="+token;
+        OkGo.get(url)
+                .tag(this)
+                .execute(callback);
+    }
+
+    /**
+     * 评论数量接口
+     * @param callback
+     */
+    public void reqCommentCount(JsonCallback<XlsResponse> callback){
+        String url = Urls.BASE_URL+shopId+"/orders/feedback/count?token="+token;
+        OkGo.get(url)
+                .tag(this)
                 .execute(callback);
     }
 }

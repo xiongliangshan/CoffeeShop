@@ -55,43 +55,6 @@ public class LoginHelper {
 
     }
 
-   /* public static void saveToken(Context context,String token){
-        SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
-        sp.edit().putString("token",token).commit();
-    }
-
-    public static String getToken(Context context){
-        SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
-        return sp.getString("token","");
-    }
-
-    public static void saveUserId(Context context,int userId){
-        SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
-        sp.edit().putInt("user_id", userId).commit();
-    }
-    public static int getUserId(Context context){
-        SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
-        return sp.getInt("user_id",0);
-    }
-
-    public static void saveShopId(Context context,int shopId){
-        SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
-        sp.edit().putInt("shop_id", shopId).commit();
-    }
-    public static int getShopId(Context context){
-        SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
-        return sp.getInt("shop_id",0);
-    }
-
-    public static void saveShopName(Context context,String shopName){
-        SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
-        sp.edit().putString("shop_name",shopName).commit();
-    }
-
-    public static String getShopName(Context context){
-        SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
-        return sp.getString("shop_name","");
-    }*/
 
     //保存当前模式， 是否是顺风单模式
     public static void saveSfFlag(Context context ,boolean isSF){
@@ -146,13 +109,6 @@ public class LoginHelper {
         }
     }
 
-   /* public static void  saveUserInfo(Context context,LoginBean loginBean){
-        saveUserId(context,userId);
-        saveShopId(context,shopId);
-        saveShopName(context,shopName);
-        saveSfFlag(context,isSFMode);
-        saveToken(context,token);
-    }*/
 
 
     /**

@@ -2,6 +2,7 @@ package com.lyancafe.coffeeshop.callback;
 
 import com.alibaba.fastjson.JSON;
 import com.lyancafe.coffeeshop.CSApplication;
+import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lzy.okgo.callback.AbsCallback;
 import com.lzy.okgo.request.BaseRequest;
@@ -52,9 +53,9 @@ public abstract class JsonCallback<T> extends AbsCallback<T> {
         Type genType = getClass().getGenericSuperclass();
         Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
         Type type = params[0];
-        T data = JSON.parseObject(response.body().string(),type);
+        T bean = JSON.parseObject(response.body().string(),type);
         response.close();
-        return data;
+        return bean;
     }
 
 

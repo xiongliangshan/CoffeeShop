@@ -1,18 +1,6 @@
 package com.lyancafe.coffeeshop.bean;
 
 import android.content.Context;
-import android.util.Log;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONException;
-import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.xls.http.Jresp;
-
-import org.json.JSONArray;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Administrator on 2015/10/21.
@@ -77,12 +65,12 @@ public class LoginBean {
     }
 
     //解析数据
-    public static LoginBean parseJsonLoginBean(Context context,Jresp resp){
-        int shopId = resp.data.optInt("shopId");
-        int userId = resp.data.optInt("userId");
-        String shopName = resp.data.optString("shopName");
-        String token = resp.data.optString("token");
-        boolean isSFMode = resp.data.optBoolean("isSFMode");
+    public static LoginBean parseJsonLoginBean(Context context,XlsResponse resp){
+        int shopId = resp.data.getIntValue("shopId");
+        int userId = resp.data.getIntValue("userId");
+        String shopName = resp.data.getString("shopName");
+        String token = resp.data.getString("token");
+        boolean isSFMode = resp.data.getBoolean("isSFMode");
         LoginBean loginBean = new LoginBean(userId,shopId,shopName,isSFMode,token);
         return loginBean;
     }

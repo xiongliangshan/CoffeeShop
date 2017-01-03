@@ -12,22 +12,17 @@ import android.widget.ImageButton;
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.LoginBean;
+import com.lyancafe.coffeeshop.bean.XlsResponse;
+import com.lyancafe.coffeeshop.callback.DialogCallback;
+import com.lyancafe.coffeeshop.callback.JsonCallback;
+import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
-import com.lyancafe.coffeeshop.utils.MyUtil;
-import com.lyancafe.coffeeshop.utils.RsaEncryptor;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.lyancafe.coffeeshop.utils.Urls;
-import com.xls.http.HttpAsyncTask;
-import com.xls.http.HttpEntity;
-import com.xls.http.Jresp;
-import com.xls.http.Qry;
-import com.xls.http.md5.MD5;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import cn.jpush.android.api.JPushInterface;
+import okhttp3.Call;
+import okhttp3.Response;
 
 /**
  * Created by Administrator on 2015/9/1.
@@ -59,11 +54,54 @@ public class LoginActivity extends BaseActivity {
                 String userName = userNameEdit.getText().toString();
                 String password = passwordEdit.getText().toString();
                 if(LoginHelper.verifyLoginParams(mContext,userName,password)){
-                    new LoginQry(mContext,userName,password).doRequest();
+                    HttpHelper.getInstance().reqLogin(userName, password, new DialogCallback<XlsResponse>(LoginActivity.this) {
+                        @Override
+                        public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                            handleLoginResponse(xlsResponse,call,response);
+                        }
+                    });
                 }
 
             }
         });
+    }
+
+    //处理登录返回的结果
+    private void handleLoginResponse(XlsResponse xlsResponse, Call call, Response response) {
+        if(xlsResponse.status==LoginHelper.LOGIN_SUCCESS){
+            LoginBean login = LoginBean.parseJsonLoginBean(mContext,xlsResponse);
+            LoginHelper.saveLoginBean(mContext, login);
+            //如果是当天第一次登陆，就清空本地缓存的订单打印记录
+            if(LoginHelper.isCurrentDayFirstLogin(mContext)){
+                OrderHelper.clearPrintedSet(mContext);
+            }
+            Intent intent = new Intent(mContext, HomeActivity.class);
+            mContext.startActivity(intent);
+            overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);
+
+            if(TextUtils.isEmpty(CSApplication.REG_ID)){
+                CSApplication.REG_ID = JPushInterface.getRegistrationID(CSApplication.getInstance());
+            }
+            HttpHelper.getInstance().reqUploadDeviceInfo(CSApplication.REG_ID, new JsonCallback<XlsResponse>() {
+                @Override
+                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                    handleUploadDeviceInfoResponse(xlsResponse,call,response);
+                }
+            });
+
+            LoginActivity.this.finish();
+        }else if(xlsResponse.status==LoginHelper.LOGIN_FAIL){
+            ToastUtil.showToast(mContext,xlsResponse.message);
+        }
+    }
+
+    //处理上传设备信息返回的结果
+    private void handleUploadDeviceInfoResponse(XlsResponse xlsResponse,Call call, Response response) {
+        if(xlsResponse.status==0){
+            Log.d(TAG,"上传RegId成功");
+        }else{
+            Log.e(TAG,xlsResponse.message);
+        }
     }
 
     @Override
@@ -93,116 +131,5 @@ public class LoginActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    class LoginQry implements Qry{
 
-        private Context context;
-        private String userName;
-        private String password;
-
-        public LoginQry(Context context,String userName, String password) {
-            this.userName = userName;
-            this.password = password;
-            this.context = context;
-        }
-
-        @Override
-        public void doRequest() {
-            String url = Urls.BASE_URL+"token";
-            Map<String, Object> params = new HashMap<String, Object>();
-            params.put("loginName",userName);
-            MD5 md5 = new MD5();
-            RsaEncryptor rsa = null;
-            String enc_pwd = "";
-            try {
-                rsa = new RsaEncryptor(context, "public.key");
-                enc_pwd = rsa.encrypt(password);
-            } catch (Exception e) {
-                Log.d(TAG,e.getMessage());
-            }
-            params.put("password", enc_pwd);
-
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
-        }
-
-        @Override
-           public void showResult(Jresp resp) {
-            Log.d(TAG,"loginQry:resp = "+resp);
-            if(resp==null){
-                ToastUtil.showToast(mContext,R.string.unknown_error);
-                return;
-            }
-            if(resp.status==LoginHelper.LOGIN_SUCCESS){
-                LoginBean login = LoginBean.parseJsonLoginBean(mContext,resp);
-                LoginHelper.saveLoginBean(mContext, login);
-                //如果是当天第一次登陆，就清空本地缓存的订单打印记录
-                if(LoginHelper.isCurrentDayFirstLogin(mContext)){
-                    OrderHelper.clearPrintedSet(mContext);
-                }
-                Intent intent = new Intent(mContext, HomeActivity.class);
-                mContext.startActivity(intent);
-                overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);
-
-                if(TextUtils.isEmpty(CSApplication.REG_ID)){
-                    CSApplication.REG_ID = JPushInterface.getRegistrationID(CSApplication.getInstance());
-                }
-                new UpLoadDeviceInfoQry(context, CSApplication.REG_ID).doRequest();
-
-                LoginActivity.this.finish();
-            }else if(resp.status==LoginHelper.LOGIN_FAIL){
-                ToastUtil.showToast(mContext,resp.message);
-            }
-        }
-    }
-
-    //上报设备信息接口
-    class UpLoadDeviceInfoQry implements Qry{
-
-        private Context context;
-        private String regId;
-
-        public UpLoadDeviceInfoQry(Context context, String regId) {
-            this.context = context;
-            this.regId = regId;
-        }
-
-        @Override
-        public void doRequest() {
-            LoginBean loginBean = LoginHelper.getLoginBean(context);
-            String token = loginBean.getToken();
-            int shopId = loginBean.getShopId();
-            int userId = loginBean.getUserId();
-            String deviceId = "";
-            String mType = android.os.Build.MODEL; // 手机型号
-            int appCode = MyUtil.getVersionCode(context);
-            if(TextUtils.isEmpty(regId)){
-                JPushInterface.init(CSApplication.getInstance());
-                return;
-            }
-            if(userId==0){
-                return;
-            }
-            String url = Urls.BASE_URL+shopId+"/barista/"+userId+"/device?token="+token;
-            Map<String,Object> params = new HashMap<String,Object>();
-            params.put("deviceId",deviceId);
-            params.put("mType",mType);
-            params.put("appCode",appCode);
-            params.put("regId", regId);
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, false);
-            Log.d(TAG, "upload device info:" + deviceId + "|" + mType + "|" + appCode + "|" + regId);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            if(resp==null){
-                Log.e(TAG,"UpLoadDeviceInfoQry :resp = "+resp);
-                return;
-            }
-            Log.d(TAG,"UpLoadDeviceInfoQry :resp = "+resp);
-            if(resp.status==0){
-                Log.d(TAG,"上传RegId成功");
-            }else{
-                Log.e(TAG,resp.message);
-            }
-        }
-    }
 }

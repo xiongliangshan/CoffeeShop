@@ -1,5 +1,6 @@
 package com.lyancafe.coffeeshop.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -34,6 +35,8 @@ import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.activity.AssignOrderActivity;
 import com.lyancafe.coffeeshop.activity.CommentActivity;
+import com.lyancafe.coffeeshop.activity.HomeActivity;
+import com.lyancafe.coffeeshop.activity.LoginActivity;
 import com.lyancafe.coffeeshop.activity.PrintOrderActivity;
 import com.lyancafe.coffeeshop.adapter.OrderGridViewAdapter;
 import com.lyancafe.coffeeshop.adapter.OrderListViewAdapter;
@@ -307,7 +310,12 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                             batchHandleBtn.setText(R.string.batch_handle);
                             //开始循环请求
                             for (int i = 0; i < OrderHelper.batchList.size(); i++) {
-                                new DoFinishProduceQry(mContext,OrderHelper.batchList.get(i), false).doRequest();
+                                HttpHelper.getInstance().reqFinishedProduce(OrderHelper.batchList.get(i).getId(), new JsonCallback<XlsResponse>() {
+                                    @Override
+                                    public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                                        handleFinishedProduceResponse(xlsResponse,call,response);
+                                    }
+                                });
                             }
                         }
                     });
@@ -925,7 +933,12 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCommentCountEvent(CommentCountEvent event){
-        new CommentCountQry(mContext).doRequest();
+        HttpHelper.getInstance().reqCommentCount(new JsonCallback<XlsResponse>() {
+            @Override
+            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                handleCommentCountResponse(xlsResponse,call,response);
+            }
+        });
     }
 
 
@@ -1257,20 +1270,37 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         if(subTabIndex!=TabList.TAB_TOPRODUCE){
             return;
         }
-        if(LoginHelper.isSFMode()){
-            List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(getActivity(), xlsResponse);
-            EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_TOPRODUCE, OrderHelper.getGroupTotalCount(sfGroupBeans)));
-            sfAdaper.setData(sfGroupBeans);
-        }else{
-            List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
-            EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_TOPRODUCE, orderBeans.size()));
-            adapter.setData(orderBeans);
-            //检查列表中是否有未完成的合并订单
-            if(!OrderHelper.isContainerBatchOrder(orderBeans)){
-                OrderHelper.batchList.clear();
-                updateBatchPromptTextView(0);
+        if(xlsResponse.status==0){
+            if(LoginHelper.isSFMode()){
+                List<SFGroupBean> sfGroupBeans = SFGroupBean.parseJsonGroups(getActivity(), xlsResponse);
+                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_TOPRODUCE, OrderHelper.getGroupTotalCount(sfGroupBeans)));
+                sfAdaper.setData(sfGroupBeans);
+            }else{
+                List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
+                EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_TOPRODUCE, orderBeans.size()));
+                adapter.setData(orderBeans);
+                //检查列表中是否有未完成的合并订单
+                if(!OrderHelper.isContainerBatchOrder(orderBeans)){
+                    OrderHelper.batchList.clear();
+                    updateBatchPromptTextView(0);
+                }
             }
+        }else if(xlsResponse.status==103){
+            //token 无效
+            ToastUtil.showToast(mContext, xlsResponse.message);
+            LoginBean loginBean = LoginHelper.getLoginBean(mContext);
+            loginBean.setToken("");
+            LoginHelper.saveLoginBean(mContext, loginBean);
+            Intent intent = new Intent(mContext, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(intent);
+            Activity activity = getActivity();
+            if(activity!=null){
+                activity.finish();
+            }
+
         }
+
     }
 
     //处理服务器返回数据---生产中
@@ -1390,65 +1420,63 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-
-
-
-    //订单收回接口
-    class RecallQry implements Qry{
-        ///{shopid}/order/{orderid}/recall
-        private Context context;
-        private OrderBean mOrder;
-
-        public RecallQry(Context context, OrderBean mOrder) {
-            this.context = context;
-            this.mOrder = mOrder;
-        }
-
-        @Override
-        public void doRequest() {
-            LoginBean loginBean = LoginHelper.getLoginBean(context);
-            String token = loginBean.getToken();
-            int shopId = loginBean.getShopId();
-            String url = Urls.BASE_URL+shopId+"/order/"+mOrder.getId()+"/recall?token="+token;
-            Map<String,Object> params = new HashMap<String,Object>();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            Log.d(TAG, "RecallQry:resp =" + resp);
-            if(resp == null){
-                ToastUtil.showToast(context,R.string.unknown_error);
-                return;
-            }
-            if(resp.status==0){
-                ToastUtil.showToast(context, R.string.do_success);
-                if(LoginHelper.isSFMode()){
-                    for(SFGroupBean sfGroup:sfAdaper.groupList){
-                        if(mOrder.getGroupId()==sfGroup.getId()){
-                            for(OrderBean orderBean:sfGroup.getItemGroup()){
-                                orderBean.setStatus(OrderStatus.UNASSIGNED);
-                            }
-                            break;
-                        }
-                    }
-                    sfAdaper.notifyDataSetChanged();
-                }else{
-                    for(OrderBean order:adapter.list){
-                        if(mOrder.getId() == order.getId()){
-                            order.setStatus(OrderStatus.UNASSIGNED);
-                            adapter.notifyDataSetChanged();
-                            EventBus.getDefault().post(new UpdateOrderDetailEvent(order));
-                            break;
-                        }
-                    }
-                }
-
+    /**
+     * 处理开始生产结果
+     * @param xlsResponse
+     * @param call
+     * @param response
+     */
+    private void handleStartProduceResponse(XlsResponse xlsResponse,Call call,Response response){
+        if(xlsResponse.status == 0){
+            ToastUtil.showToast(getActivity(), R.string.do_success);
+            int id  = xlsResponse.data.getIntValue("id");
+            if(LoginHelper.isSFMode()){
+                sfAdaper.changeAndRemoveOrderFromList(id, OrderStatus.PRODUCING);
             }else{
-                ToastUtil.showToast(context, resp.message);
+                adapter.removeOrderFromList(id);
+                EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,1));
             }
+        }else{
+            ToastUtil.showToast(getActivity(), xlsResponse.message);
         }
     }
+
+    /**
+     * 处理生产完成动作返回的结果
+     * @param xlsResponse
+     * @param call
+     * @param response
+     */
+    private void handleFinishedProduceResponse(XlsResponse xlsResponse,Call call,Response response){
+        if(xlsResponse.status == 0){
+            ToastUtil.showToast(getActivity(), R.string.do_success);
+            int id  = xlsResponse.data.getIntValue("id");
+            if(LoginHelper.isSFMode()){
+                sfAdaper.changeAndRemoveOrderFromList(id,OrderStatus.PRODUCED);
+            }else{
+                adapter.removeOrderFromList(id);
+                EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.FINISHPRODUCE,1));
+            }
+        }else{
+            ToastUtil.showToast(getActivity(), xlsResponse.message);
+        }
+    }
+
+    /**
+     * 处理评论数量接口返回的数据
+     */
+    private void handleCommentCountResponse(XlsResponse xlsResponse,Call call,Response response){
+        if(xlsResponse.status==0){
+            int positive = xlsResponse.data.getIntValue("positive");
+            int negative = xlsResponse.data.getIntValue("negative");
+            updateCommentCount(positive,negative);
+        }
+    }
+
+
+
+
+
 
     //扫码交付接口
     class ScanCodeQry implements Qry{
@@ -1490,43 +1518,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    //评论数量接口
-    class CommentCountQry implements Qry{
-
-        private Context context;
-
-        public CommentCountQry(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        public void doRequest() {
-            LoginBean loginBean = LoginHelper.getLoginBean(context);
-            String token = loginBean.getToken();
-            int shopId = loginBean.getShopId();
-            String url = Urls.BASE_URL+shopId+"/orders/feedback/count?token="+token;
-            Map<String,Object> params = new HashMap<String,Object>();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, false);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            Log.d(TAG, "CommentCountQry:resp = " + resp);
-            if(resp==null){
-                return;
-            }
-
-            if(resp.status==0){
-               int positive = resp.data.optInt("positive");
-               int negative = resp.data.optInt("negative");
-                updateCommentCount(positive,negative);
-            }else{
-
-            }
-
-
-        }
-    }
 
     private void updateCommentCount(int positive,int negative){
         goodCommentText.setText("好评"+positive);
@@ -1572,166 +1563,48 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    //开始生产接口
-    public class startProduceQry implements Qry{
-        private Context context;
-        private OrderBean mOrder;
-        private boolean isShowDlg = true;
-
-        public startProduceQry(Context context, OrderBean mOrder) {
-            this.context = context;
-            this.mOrder = mOrder;
-        }
-
-        public startProduceQry(Context context, OrderBean mOrder, boolean isShowDlg) {
-            this.context = context;
-            this.mOrder = mOrder;
-            this.isShowDlg = isShowDlg;
-        }
-
-        @Override
-        public void doRequest() {
-            LoginBean loginBean = LoginHelper.getLoginBean(context);
-            int shopId = loginBean.getShopId();
-            String token = loginBean.getToken();
-            String url = Urls.BASE_URL+shopId+"/order/"+mOrder.getId()+"/beginproduce?token="+token;
-            Map<String,Object> params = new HashMap<String,Object>();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowDlg);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            Log.d(TAG,"startProduceQry:resp = "+resp);
-            if(resp==null){
-                ToastUtil.showToast(context, R.string.unknown_error);
-                return;
-            }
-            if(resp.status == 0){
-                ToastUtil.showToast(context, R.string.do_success);
-                if(LoginHelper.isSFMode()){
-                    sfAdaper.changeAndRemoveOrderFromList(mOrder.getId(), OrderStatus.PRODUCING);
-                }else{
-                    adapter.removeOrderFromList(mOrder.getId());
-                    EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,1));
-                }
-            }else{
-                ToastUtil.showToast(context, resp.message);
-            }
-        }
-    }
-
-    //生产完成操作接口
-    public class DoFinishProduceQry implements Qry{
-        private Context context;
-        private OrderBean mOrder;
-        private boolean isShowDlg = true;
-
-        public DoFinishProduceQry(Context context, OrderBean mOrder) {
-            this.context = context;
-            this.mOrder = mOrder;
-        }
-
-        public DoFinishProduceQry(Context context, OrderBean mOrder, boolean isShowDlg) {
-            this.context = context;
-            this.mOrder = mOrder;
-            this.isShowDlg = isShowDlg;
-        }
-
-        @Override
-        public void doRequest() {
-            LoginBean loginBean = LoginHelper.getLoginBean(context);
-            int shopId = loginBean.getShopId();
-            String token = loginBean.getToken();
-            String url = Urls.BASE_URL+shopId+"/order/"+mOrder.getId()+"/produce?token="+token;
-            Map<String,Object> params = new HashMap<String,Object>();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,isShowDlg);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            Log.d(TAG,"DoFinishProduceQry:resp = "+resp);
-            if(resp==null){
-                ToastUtil.showToast(context, R.string.unknown_error);
-                return;
-            }
-            if(resp.status == 0){
-                ToastUtil.showToast(context, R.string.do_success);
-                if(LoginHelper.isSFMode()){
-                    sfAdaper.changeAndRemoveOrderFromList(mOrder.getId(),OrderStatus.PRODUCED);
-                }else{
-                    adapter.removeOrderFromList(mOrder.getId());
-                    EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.FINISHPRODUCE,1));
-                }
-            }else{
-                ToastUtil.showToast(context, resp.message);
-            }
-        }
-    }
 
     //点击开始生产并打印
     public void startProduceAndPrint(final Context context,final OrderBean order){
-        if (order.getInstant() == 0) {
-            ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
-                @Override
-                public void onClickYes() {
-                    Log.d(TAG, "orderId = " + order.getOrderSn());
-                    //请求服务器改变该订单状态，由 待生产--生产中
-                    new startProduceQry(context,order).doRequest();
-                    //打印全部
-                    PrintHelper.getInstance().printOrderInfo(order);
-                    PrintHelper.getInstance().printOrderItems(order);
-                }
-            });
-            grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 开始生产？");
-            grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
-            grabConfirmDialog.show();
+        ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
+            @Override
+            public void onClickYes() {
+                Log.d(TAG, "orderId = " + order.getOrderSn());
+                //请求服务器改变该订单状态，由 待生产--生产中
+                HttpHelper.getInstance().reqStartProduce(order.getId(), new DialogCallback<XlsResponse>(getActivity()) {
+                    @Override
+                    public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                        handleStartProduceResponse(xlsResponse,call,response);
+                    }
+                });
+                //打印全部
+                PrintHelper.getInstance().printOrderInfo(order);
+                PrintHelper.getInstance().printOrderItems(order);
+            }
+        });
+        grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 开始生产？");
+        grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
+        grabConfirmDialog.show();
 
-        } else {
-            //及时单
-            ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
-                @Override
-                public void onClickYes() {
-                    Log.d(TAG, "orderId = " + order.getOrderSn());
-                    //请求服务器改变该订单状态，由 待生产--生产中
-                    new startProduceQry(context,order).doRequest();
-                    //打印全部
-                    PrintHelper.getInstance().printOrderInfo(order);
-                    PrintHelper.getInstance().printOrderItems(order);
-                }
-            });
-            grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 开始生产？");
-            grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
-            grabConfirmDialog.show();
-        }
     }
 
     //点击生产完成
     public void finishProduce(final Context context,final OrderBean order){
-        if (order.getInstant() == 0) {
-            ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
-                @Override
-                public void onClickYes() {
-                    Log.d(TAG, "orderId = " + order.getOrderSn());
-                    new DoFinishProduceQry(context,order).doRequest();
-                }
-            });
-            grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 生产完成？");
-            grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
+        ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
+            @Override
+            public void onClickYes() {
+                Log.d(TAG, "orderId = " + order.getOrderSn());
+                HttpHelper.getInstance().reqFinishedProduce(order.getId(), new DialogCallback<XlsResponse>(getActivity()) {
+                    @Override
+                    public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                        handleFinishedProduceResponse(xlsResponse,call,response);
+                    }
+                });
+            }
+        });
+        grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 生产完成？");
+        grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
             grabConfirmDialog.show();
-
-        } else {
-            //及时单
-            ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
-                @Override
-                public void onClickYes() {
-                    Log.d(TAG, "orderId = " + order.getOrderSn());
-                    new DoFinishProduceQry(context,order).doRequest();
-                }
-            });
-            grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 生产完成？");
-            grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
-            grabConfirmDialog.show();
-        }
     }
 
     //点击打印
