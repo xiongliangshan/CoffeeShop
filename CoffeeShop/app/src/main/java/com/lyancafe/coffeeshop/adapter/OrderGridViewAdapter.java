@@ -306,7 +306,10 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
             EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+        }else{
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
         }
+
     }
 
     public void addData(List<OrderBean> list){
@@ -314,6 +317,8 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
             EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+        }else{
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
         }
     }
 

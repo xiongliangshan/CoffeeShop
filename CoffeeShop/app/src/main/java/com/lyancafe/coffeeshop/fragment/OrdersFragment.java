@@ -521,11 +521,11 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             receiveAddressTxt.setText("");
             deliverNameTxt.setText("");
             deliverPhoneTxt.setText("");
-            fillItemListData(itemsContainerLayout, order);
             userRemarkTxt.setText("");
             csadRemarkTxt.setText("");
             userCommentTagsText.setText("");
             userCommentContentText.setText("");
+            itemsContainerLayout.removeAllViews();
             produceAndPrintBtn.setEnabled(false);
             finishProduceBtn.setEnabled(false);
             printOrderBtn.setEnabled(false);
