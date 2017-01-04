@@ -39,6 +39,7 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         mContext = this;
         //如果已经登录过了，并且没有点退出，可以直接进入主界面
+        Log.d("xls","LoginActivity onCreate call getLoginBean ");
         if(!TextUtils.isEmpty(LoginHelper.getLoginBean(mContext).getToken())){
             Intent intent = new Intent(mContext, HomeActivity.class);
             mContext.startActivity(intent);
@@ -71,6 +72,7 @@ public class LoginActivity extends BaseActivity {
         if(xlsResponse.status==LoginHelper.LOGIN_SUCCESS){
             LoginBean login = LoginBean.parseJsonLoginBean(mContext,xlsResponse);
             LoginHelper.saveLoginBean(mContext, login);
+            LoginHelper.saveSfFlag(mContext,login.isSFMode());
             //如果是当天第一次登陆，就清空本地缓存的订单打印记录
             if(LoginHelper.isCurrentDayFirstLogin(mContext)){
                 OrderHelper.clearPrintedSet(mContext);
@@ -85,7 +87,7 @@ public class LoginActivity extends BaseActivity {
             HttpHelper.getInstance().reqUploadDeviceInfo(CSApplication.REG_ID, new JsonCallback<XlsResponse>() {
                 @Override
                 public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                    handleUploadDeviceInfoResponse(xlsResponse,call,response);
+                    handleUploadDeviceInfoResponse(xlsResponse, call, response);
                 }
             });
 

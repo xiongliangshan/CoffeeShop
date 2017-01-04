@@ -85,20 +85,26 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
             @Override
             public void onClick(View v) {
                 if(mContext.getString(R.string.sf_batch_start).equals(holder.batchHandlerBtn.getText())){
-                    new startBatchProduceQry(mContext,sfGroupBean.getId()).doRequest();
-                   /* HttpHelper.getInstance().reqStartBatchProduce(sfGroupBean.getId(), new DialogCallback<XlsResponse>(mContext) {
+                //    new startBatchProduceQry(mContext,sfGroupBean.getId()).doRequest();
+                    HttpHelper.getInstance().reqStartBatchProduce(sfGroupBean.getId(), new DialogCallback<XlsResponse>(mContext) {
                         @Override
                         public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
                             handleStartBatchProduceResponse(xlsResponse,call,response);
                         }
-                    });*/
+                    });
                     //筛选出未打印的组内订单集合
                     List<OrderBean> unPrintList = OrderHelper.selectUnPrintList(mContext,sfGroupBean.getItemGroup());
                     //打印
                     PrintHelper.getInstance().printBatchCups(unPrintList);
                     PrintHelper.getInstance().printBatchBoxes(unPrintList);
                 }else if(mContext.getString(R.string.sf_batch_produced).equals(holder.batchHandlerBtn.getText())){
-                    new DoFinishBatchProduceQry(mContext,sfGroupBean.getId()).doRequest();
+                //    new DoFinishBatchProduceQry(mContext,sfGroupBean.getId()).doRequest();
+                    HttpHelper.getInstance().reqFinishBatchProduce(sfGroupBean.getId(), new DialogCallback<XlsResponse>(mContext) {
+                        @Override
+                        public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                            handleFinishBatchProduceResponse(xlsResponse,call,response);
+                        }
+                    });
                 }else{
                     //打印
                     PrintHelper.getInstance().printBatchCups(sfGroupBean.getItemGroup());
@@ -108,6 +114,7 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
             }
         });
     }
+
 
 
 
@@ -206,15 +213,33 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
      * @param response
      */
     private void handleStartBatchProduceResponse(XlsResponse xlsResponse,Call call,Response response){
-       /* if(xlsResponse.status == 0){
+        if(xlsResponse.status == 0){
             ToastUtil.showToast(mContext, R.string.do_success);
-            removeGroupFromList(groupId, OrderStatus.PRODUCING);
+            int id  = xlsResponse.data.getIntValue("id");
+            removeGroupFromList(id, OrderStatus.PRODUCING);
         }else{
             ToastUtil.showToast(mContext, xlsResponse.message);
-        }*/
+        }
     }
 
-    //顺风单组批量开始生产接口
+
+    /**
+     * 处理批量生产完成
+     * @param xlsResponse
+     * @param call
+     * @param response
+     */
+    private void handleFinishBatchProduceResponse(XlsResponse xlsResponse, Call call, Response response) {
+        if(xlsResponse.status == 0){
+            ToastUtil.showToast(mContext, R.string.do_success);
+            int id  = xlsResponse.data.getIntValue("id");
+            removeGroupFromList(id, OrderStatus.PRODUCED);
+        }else{
+            ToastUtil.showToast(mContext, xlsResponse.message);
+        }
+    }
+
+    /*//顺风单组批量开始生产接口
     public class startBatchProduceQry implements Qry {
         private Context context;
         private int groupId;
@@ -255,9 +280,9 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
                 ToastUtil.showToast(context, resp.message);
             }
         }
-    }
+    }*/
 
-    //顺风单组批量完成操作接口
+    /*//顺风单组批量完成操作接口
     public class DoFinishBatchProduceQry implements Qry{
         private Context context;
         private int groupId;
@@ -298,7 +323,7 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
                 ToastUtil.showToast(context, resp.message);
             }
         }
-    }
+    }*/
 
 
 

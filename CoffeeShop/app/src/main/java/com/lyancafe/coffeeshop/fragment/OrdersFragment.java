@@ -35,7 +35,6 @@ import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.activity.AssignOrderActivity;
 import com.lyancafe.coffeeshop.activity.CommentActivity;
-import com.lyancafe.coffeeshop.activity.HomeActivity;
 import com.lyancafe.coffeeshop.activity.LoginActivity;
 import com.lyancafe.coffeeshop.activity.PrintOrderActivity;
 import com.lyancafe.coffeeshop.adapter.OrderGridViewAdapter;
@@ -67,25 +66,18 @@ import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.helper.PrintHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.lyancafe.coffeeshop.utils.Urls;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
 import com.lyancafe.coffeeshop.widget.ListTabButton;
 import com.lyancafe.coffeeshop.widget.PromptDialog;
 import com.lyancafe.coffeeshop.widget.ReportWindow;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
-import com.xls.http.HttpAsyncTask;
-import com.xls.http.HttpEntity;
-import com.xls.http.Jresp;
-import com.xls.http.Qry;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Request;
@@ -678,7 +670,12 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                                     });
                                     break;
                                 case R.id.menu_scan_code:
-                                    new ScanCodeQry(mContext, order).doRequest();
+                                    HttpHelper.getInstance().reqScanCode(order.getId(), new DialogCallback<XlsResponse>(getActivity()) {
+                                        @Override
+                                        public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                                            handleScanCodeResponse(xlsResponse,call,response);
+                                        }
+                                    });
                                     break;
                                 case R.id.menu_assign_order:
                                     Intent intent = new Intent(mContext, AssignOrderActivity.class);
@@ -1469,16 +1466,35 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         if(xlsResponse.status==0){
             int positive = xlsResponse.data.getIntValue("positive");
             int negative = xlsResponse.data.getIntValue("negative");
-            updateCommentCount(positive,negative);
+            updateCommentCount(positive, negative);
+        }
+    }
+
+
+    /**
+     * 处理扫码交付的结果
+     * @param xlsResponse
+     * @param call
+     * @param response
+     */
+    private void handleScanCodeResponse(XlsResponse xlsResponse,Call call,Response response){
+        if(xlsResponse.status==0){
+            ToastUtil.showToast(mContext, R.string.do_success);
+            int id  = xlsResponse.data.getIntValue("id");
+            if(LoginHelper.isSFMode()){
+                sfAdaper.changeAndRemoveOrderFromList(id,OrderStatus.FINISHED);
+            }else{
+                adapter.removeOrderFromList(id);
+                EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.SCANCODE,1));
+            }
+
         }
     }
 
 
 
 
-
-
-    //扫码交付接口
+   /* //扫码交付接口
     class ScanCodeQry implements Qry{
         private Context context;
         private OrderBean mOrder;
@@ -1517,7 +1533,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             }
         }
     }
-
+*/
 
     private void updateCommentCount(int positive,int negative){
         goodCommentText.setText("好评"+positive);

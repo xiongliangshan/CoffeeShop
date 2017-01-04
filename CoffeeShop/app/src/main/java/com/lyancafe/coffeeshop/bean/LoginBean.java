@@ -1,11 +1,14 @@
 package com.lyancafe.coffeeshop.bean;
 
 import android.content.Context;
+import android.util.Log;
+
+import java.io.Serializable;
 
 /**
  * Created by Administrator on 2015/10/21.
  */
-public class LoginBean {
+public class LoginBean implements Serializable{
 
     private int userId;
     private int shopId;

@@ -369,6 +369,18 @@ public class HttpHelper {
                 .execute(callback);
     }
 
+    /**
+     * 顺风单批量生产完成
+     * @param groupId
+     * @param callback
+     */
+    public void reqFinishBatchProduce(int groupId,JsonCallback<XlsResponse> callback){
+        String url = Urls.BASE_URL+shopId+"/order/"+groupId+"/producebatch?token="+token;
+        OkGo.post(url)
+                .tag(this)
+                .execute(callback);
+    }
+
 
     /**
      * 检测版本更新
@@ -394,6 +406,14 @@ public class HttpHelper {
     }
 
 
+    /**
+     * 上报问题订单
+     * @param orderId
+     * @param questionType
+     * @param questionIdea
+     * @param questionDesc
+     * @param callback
+     */
     public void reqReportIssueOrder(long orderId, int questionType, int questionIdea, String questionDesc,JsonCallback<XlsResponse> callback){
         String url = Urls.BASE_URL+shopId+"/order/"+orderId+"/raiseissue?token="+token;
         Map<String,Object> params = new HashMap<String,Object>();
@@ -404,6 +424,30 @@ public class HttpHelper {
         OkGo.post(url)
                 .tag(this)
                 .upJson(jsonObject.toString())
+                .execute(callback);
+    }
+
+    /**
+     * 扫码交付
+     * @param orderId
+     * @param callback
+     */
+    public void reqScanCode(long orderId,JsonCallback<XlsResponse> callback){
+        String url = Urls.BASE_URL+shopId+"/order/"+orderId+"/deliver?token="+token;
+        OkGo.post(url)
+                .tag(this)
+                .execute(callback);
+    }
+
+    /**
+     * 评论列表
+     * @param commentType
+     * @param callback
+     */
+    public void reqCommentList(int commentType,JsonCallback<XlsResponse> callback){
+        String url = Urls.BASE_URL+shopId+"/orders/feedback/"+commentType+"?token="+token;
+        OkGo.post(url)
+                .tag(this)
                 .execute(callback);
     }
 }

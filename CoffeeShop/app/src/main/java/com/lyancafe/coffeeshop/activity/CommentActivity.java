@@ -2,13 +2,11 @@ package com.lyancafe.coffeeshop.activity;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -17,24 +15,18 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.CommentAdapter;
-import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.helper.LoginHelper;
+import com.lyancafe.coffeeshop.bean.XlsResponse;
+import com.lyancafe.coffeeshop.callback.JsonCallback;
+import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.lyancafe.coffeeshop.utils.Urls;
-import com.xls.http.HttpAsyncTask;
-import com.xls.http.HttpEntity;
-import com.xls.http.HttpUtils;
-import com.xls.http.Jresp;
-import com.xls.http.Qry;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Response;
 
 /**
  * Created by Administrator on 2016/4/13.
@@ -49,6 +41,7 @@ public class CommentActivity extends BaseActivity {
     private RecyclerView commentsListView;
     private RecyclerView.LayoutManager layoutManager;
     private CommentAdapter mAdapter;
+    private int mCommentType = -1;
 
 
     @Override
@@ -63,10 +56,30 @@ public class CommentActivity extends BaseActivity {
         getWindow().setAttributes(lp);
         int type = getIntent().getIntExtra("coment_type",4);
         initView();
-        updateTitle(type,-1);
-        new CommentListQry(mContext,type,false).doRequest();
+        updateTitle(type, -1);
+        mCommentType = type;
+        HttpHelper.getInstance().reqCommentList(type, new JsonCallback<XlsResponse>() {
+            @Override
+            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                handleCommentListResponse(xlsResponse,call,response);
+            }
+        });
 
 
+    }
+
+    /**
+     * 处理评论列表返回结果
+     * @param xlsResponse
+     * @param call
+     * @param response
+     */
+    private void handleCommentListResponse(XlsResponse xlsResponse, Call call, Response response) {
+        if(xlsResponse.status==0){
+            List<OrderBean> orderBeans = OrderBean.parseJsonOrders(this, xlsResponse);
+            updateTitle(mCommentType,orderBeans.size());
+            mAdapter.setData(orderBeans);
+        }
     }
 
     private void initView(){
@@ -114,46 +127,6 @@ public class CommentActivity extends BaseActivity {
         }
     }
 
-    //已完成订单列表接口
-    class CommentListQry implements Qry {
-
-        private Context context;
-        private int commentType;
-        private boolean isShowProgress;
-
-        public CommentListQry(Context context, int commentType, boolean isShowProgress) {
-            this.context = context;
-            this.commentType = commentType;
-            this.isShowProgress = isShowProgress;
-        }
-
-        @Override
-        public void doRequest() {
-            progressBar.setVisibility(View.VISIBLE);
-            LoginBean loginBean = LoginHelper.getLoginBean(context);
-            String token = loginBean.getToken();
-            int shopId = loginBean.getShopId();
-            String url = Urls.BASE_URL+shopId+"/orders/feedback/"+commentType+"?token="+token;
-            Map<String,Object> params = new HashMap<String,Object>();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, isShowProgress);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            progressBar.setVisibility(View.GONE);
-            Log.d(TAG,"CommentListQry: resp = "+commentType+resp);
-            if(resp==null){
-                ToastUtil.showToast(context, R.string.unknown_error);
-                return;
-            }
-            if(resp.status==0){
-                List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-                updateTitle(commentType,orderBeans.size());
-                mAdapter.setData(orderBeans);
-            }
-
-        }
-    }
 
     class  MyItemDecoration extends RecyclerView.ItemDecoration{
 
