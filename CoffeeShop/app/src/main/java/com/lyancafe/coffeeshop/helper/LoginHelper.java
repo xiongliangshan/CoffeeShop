@@ -39,13 +39,11 @@ public class LoginHelper {
     }
 
     public static void saveLoginBean(Context context,LoginBean loginBean){
-        Log.d("xls", "saveLoginBean");
         SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
         sp.edit().putString("login", JSON.toJSONString(loginBean)).commit();
     }
 
     public static LoginBean getLoginBean(Context context){
-        Log.d("xls","getLoginBean");
         SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
         String strLogin = sp.getString("login", "");
         if(TextUtils.isEmpty(strLogin)){
