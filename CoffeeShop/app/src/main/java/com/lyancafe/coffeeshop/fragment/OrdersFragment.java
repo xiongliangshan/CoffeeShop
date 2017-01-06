@@ -46,6 +46,7 @@ import com.lyancafe.coffeeshop.bean.SFGroupBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
+import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.constant.TabList;
@@ -637,60 +638,64 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                 });
             }
 
-
-            moreBtn.setEnabled(true);
-            moreBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final PopupMenu popup = new PopupMenu(mContext, v);
-                    popup.inflate(R.menu.menu_order_detail_more);
-                    if (order.isWxScan() && OrderStatus.PRODUCED == order.getProduceStatus()) {
-                        popup.getMenu().findItem(R.id.menu_scan_code).setVisible(true);
-                    } else {
-                        popup.getMenu().findItem(R.id.menu_scan_code).setVisible(false);
-                    }
-
-                    if (order.getStatus() != OrderStatus.ASSIGNED) {
-                        popup.getMenu().findItem(R.id.menu_undo_order).setVisible(false);
-                    }
-                    if (order.getStatus() != OrderStatus.UNASSIGNED) {
-                        popup.getMenu().findItem(R.id.menu_assign_order).setVisible(false);
-                    }
-                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            switch (item.getItemId()) {
-                                case R.id.menu_undo_order:
-                                    HttpHelper.getInstance().reqRecallOrder(order.getId(), new DialogCallback<XlsResponse>(getActivity()) {
-
-                                        @Override
-                                        public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                                            handleRecallOrderResponse(xlsResponse,call,response);
-                                        }
-                                    });
-                                    break;
-                                case R.id.menu_scan_code:
-                                    HttpHelper.getInstance().reqScanCode(order.getId(), new DialogCallback<XlsResponse>(getActivity()) {
-                                        @Override
-                                        public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                                            handleScanCodeResponse(xlsResponse,call,response);
-                                        }
-                                    });
-                                    break;
-                                case R.id.menu_assign_order:
-                                    Intent intent = new Intent(mContext, AssignOrderActivity.class);
-                                    intent.putExtra("orderId", order.getId());
-                                    mContext.startActivity(intent);
-                                    break;
-                            }
-                            popup.dismiss();
-                            return false;
+            if(order.getDeliveryTeam()== DeliveryTeam.MEITUAN){
+               moreBtn.setEnabled(false);
+            }else{
+                moreBtn.setEnabled(true);
+                moreBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final PopupMenu popup = new PopupMenu(mContext, v);
+                        popup.inflate(R.menu.menu_order_detail_more);
+                        if (order.isWxScan() && OrderStatus.PRODUCED == order.getProduceStatus()) {
+                            popup.getMenu().findItem(R.id.menu_scan_code).setVisible(true);
+                        } else {
+                            popup.getMenu().findItem(R.id.menu_scan_code).setVisible(false);
                         }
-                    });
 
-                    popup.show();
-                }
-            });
+                        if (order.getStatus() != OrderStatus.ASSIGNED) {
+                            popup.getMenu().findItem(R.id.menu_undo_order).setVisible(false);
+                        }
+                        if (order.getStatus() != OrderStatus.UNASSIGNED) {
+                            popup.getMenu().findItem(R.id.menu_assign_order).setVisible(false);
+                        }
+                        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                switch (item.getItemId()) {
+                                    case R.id.menu_undo_order:
+                                        HttpHelper.getInstance().reqRecallOrder(order.getId(), new DialogCallback<XlsResponse>(getActivity()) {
+
+                                            @Override
+                                            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                                                handleRecallOrderResponse(xlsResponse,call,response);
+                                            }
+                                        });
+                                        break;
+                                    case R.id.menu_scan_code:
+                                        HttpHelper.getInstance().reqScanCode(order.getId(), new DialogCallback<XlsResponse>(getActivity()) {
+                                            @Override
+                                            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                                                handleScanCodeResponse(xlsResponse,call,response);
+                                            }
+                                        });
+                                        break;
+                                    case R.id.menu_assign_order:
+                                        Intent intent = new Intent(mContext, AssignOrderActivity.class);
+                                        intent.putExtra("orderId", order.getId());
+                                        mContext.startActivity(intent);
+                                        break;
+                                }
+                                popup.dismiss();
+                                return false;
+                            }
+                        });
+
+                        popup.show();
+                    }
+                });
+            }
+
         }
 
     }

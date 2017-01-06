@@ -19,6 +19,7 @@ import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.constant.TabList;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
@@ -81,6 +82,12 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
         }else{
             holder.secondRootLayout.setBackgroundResource(R.drawable.bg_order);
             holder.itemContainerll.setBackgroundResource(R.mipmap.bg_normal_dot);
+        }
+        if(order.getDeliveryTeam()== DeliveryTeam.MEITUAN){
+            //美团订单
+            holder.firstRowLayout.setBackgroundColor(context.getResources().getColor(R.color.yellow));
+        }else{
+            holder.firstRowLayout.setBackground(null);
         }
         holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order.getInstant(),order.getShopOrderNo()));
         if(order.isWxScan()){
@@ -256,6 +263,7 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
 
         public RelativeLayout rootLayout;
         public LinearLayout secondRootLayout;
+        public LinearLayout firstRowLayout;
         public ImageView newUserOderIV;
         public ImageView giftIV;
         public ImageView labelFlagImg;
@@ -280,6 +288,7 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
             super(itemView);
             rootLayout = (RelativeLayout) itemView.findViewById(R.id.root_view);
             secondRootLayout = (LinearLayout) itemView.findViewById(R.id.second_root_view);
+            firstRowLayout = (LinearLayout) itemView.findViewById(R.id.ll_first_row);
             newUserOderIV = (ImageView) itemView.findViewById(R.id.iv_new_user);
             giftIV = (ImageView) itemView.findViewById(R.id.iv_gift);
             labelFlagImg = (ImageView) itemView.findViewById(R.id.iv_label_flag);

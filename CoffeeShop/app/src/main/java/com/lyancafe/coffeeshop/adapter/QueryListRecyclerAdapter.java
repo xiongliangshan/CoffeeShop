@@ -20,6 +20,7 @@ import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.constant.TabList;
 import com.lyancafe.coffeeshop.fragment.OrderQueryFragment;
@@ -73,6 +74,14 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
             holder.rootLayout.setBackgroundResource(R.drawable.bg_order);
         }
         final OrderBean order = itemList.get(position);
+
+        if(order.getDeliveryTeam()== DeliveryTeam.MEITUAN){
+            //美团订单
+            holder.firstRowLayout.setBackgroundColor(context.getResources().getColor(R.color.yellow));
+        }else{
+            holder.firstRowLayout.setBackground(null);
+        }
+
         if(order.isWxScan()){
             holder.logoScanIV.setVisibility(View.VISIBLE);
         }else{
@@ -252,6 +261,7 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public RelativeLayout rootLayout;
         public ImageView logoScanIV;
+        public LinearLayout firstRowLayout;
         public ImageView newUserOderIV;
         public ImageView giftIV;
         public ImageView labelFlagImg;
@@ -270,6 +280,7 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
         public ViewHolder(View itemView) {
             super(itemView);
             rootLayout = (RelativeLayout) itemView.findViewById(R.id.root_view);
+            firstRowLayout = (LinearLayout) itemView.findViewById(R.id.ll_first_row);
             newUserOderIV = (ImageView) itemView.findViewById(R.id.iv_new_user);
             logoScanIV = (ImageView) itemView.findViewById(R.id.logo_scan);
             giftIV = (ImageView) itemView.findViewById(R.id.iv_gift);

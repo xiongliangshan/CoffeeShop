@@ -39,7 +39,6 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         mContext = this;
         //如果已经登录过了，并且没有点退出，可以直接进入主界面
-        Log.d("xls","LoginActivity onCreate call getLoginBean ");
         if(!TextUtils.isEmpty(LoginHelper.getLoginBean(mContext).getToken())){
             Intent intent = new Intent(mContext, HomeActivity.class);
             mContext.startActivity(intent);

@@ -22,26 +22,31 @@
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
             >
-            <ImageView
-                android:id="@+id/logo_scan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/pay_shop"
-                android:layout_marginRight="2dp"
-                android:visibility="gone"
-                />
-            <TextView
-                android:id="@+id/item_order_id"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:text="003约"
-                />
             <LinearLayout
+                android:id="@+id/ll_first_row"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="right|center_vertical">
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/logo_scan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2dp"
+                    android:src="@mipmap/pay_shop"
+                    android:visibility="gone"
+                    />
+
+                <TextView
+                    android:id="@+id/item_order_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:text="003约"
+                    />
+
                 <TextView
                     android:id="@+id/item_contant_produce_effect"
                     android:layout_width="wrap_content"
