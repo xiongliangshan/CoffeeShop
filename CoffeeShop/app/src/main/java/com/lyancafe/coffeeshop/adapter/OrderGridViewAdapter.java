@@ -89,7 +89,7 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
         }else{
             holder.firstRowLayout.setBackground(null);
         }
-        holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order.getInstant(),order.getShopOrderNo()));
+        holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
         if(order.isWxScan()){
             holder.logoScanIV.setVisibility(View.VISIBLE);
         }else{

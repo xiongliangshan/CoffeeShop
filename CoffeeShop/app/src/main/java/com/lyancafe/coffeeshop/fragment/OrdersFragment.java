@@ -537,7 +537,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             printOrderBtn.setEnabled(true);
             moreBtn.setEnabled(true);
 
-            orderIdTxt.setText(OrderHelper.getShopOrderSn(order.getInstant(), order.getShopOrderNo()));
+            orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
             wholeOrderText.setText(order.getOrderSn());
             orderTimeTxt.setText(OrderHelper.getDateToString(order.getOrderTime()));
             orderReportTxt.setEnabled(true);
@@ -647,11 +647,11 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     public void onClick(View v) {
                         final PopupMenu popup = new PopupMenu(mContext, v);
                         popup.inflate(R.menu.menu_order_detail_more);
-                        if (order.isWxScan() && OrderStatus.PRODUCED == order.getProduceStatus()) {
+                       /* if (order.isWxScan() && OrderStatus.PRODUCED == order.getProduceStatus()) {
                             popup.getMenu().findItem(R.id.menu_scan_code).setVisible(true);
                         } else {
                             popup.getMenu().findItem(R.id.menu_scan_code).setVisible(false);
-                        }
+                        }*/
 
                         if (order.getStatus() != OrderStatus.ASSIGNED) {
                             popup.getMenu().findItem(R.id.menu_undo_order).setVisible(false);
@@ -672,14 +672,14 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                                             }
                                         });
                                         break;
-                                    case R.id.menu_scan_code:
+                                    /*case R.id.menu_scan_code:
                                         HttpHelper.getInstance().reqScanCode(order.getId(), new DialogCallback<XlsResponse>(getActivity()) {
                                             @Override
                                             public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
                                                 handleScanCodeResponse(xlsResponse,call,response);
                                             }
                                         });
-                                        break;
+                                        break;*/
                                     case R.id.menu_assign_order:
                                         Intent intent = new Intent(mContext, AssignOrderActivity.class);
                                         intent.putExtra("orderId", order.getId());
@@ -1248,8 +1248,15 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     @Subscribe
     public void onNewOrderComing(NewOderComingEvent event){
         Log.d(TAG,"新订单消息触发事件");
-        Log.d(TAG,"requestData ---- onNewOrderComing");
-        requestData(mContext, OrderHelper.PRODUCE_TIME, OrderHelper.ALL, true, false);
+        Log.d(TAG, "requestData ---- onNewOrderComing");
+        HttpHelper.getInstance().reqToProduceData(orderBy, fillterInstant,
+                LoginHelper.getLimitLevel(mContext),
+                new JsonCallback<XlsResponse>() {
+                    @Override
+                    public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                        handleToProudceResponse(xlsResponse,call,response);
+                    }
+                });
     }
 
 
@@ -1497,48 +1504,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     }
 
 
-
-
-   /* //扫码交付接口
-    class ScanCodeQry implements Qry{
-        private Context context;
-        private OrderBean mOrder;
-
-        public ScanCodeQry(Context context, OrderBean mOrder) {
-            this.context = context;
-            this.mOrder = mOrder;
-        }
-
-        @Override
-        public void doRequest() {
-            LoginBean loginBean = LoginHelper.getLoginBean(context);
-            String token = loginBean.getToken();
-            int shopId = loginBean.getShopId();
-            String url = Urls.BASE_URL+shopId+"/order/"+mOrder.getId()+"/deliver?token="+token;
-            Map<String,Object> params = new HashMap<String,Object>();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this,true);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            Log.d(TAG,"ScanCodeQry:resp ="+resp);
-            if(resp == null){
-                ToastUtil.showToast(context,R.string.unknown_error);
-                return;
-            }
-            if(resp.status==0){
-                ToastUtil.showToast(context, R.string.do_success);
-                if(LoginHelper.isSFMode()){
-                    sfAdaper.changeAndRemoveOrderFromList(mOrder.getId(),OrderStatus.FINISHED);
-                }else{
-                    adapter.removeOrderFromList(mOrder.getId());
-                    EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.SCANCODE,1));
-                }
-
-            }
-        }
-    }
-*/
 
     private void updateCommentCount(int positive,int negative){
         goodCommentText.setText("好评"+positive);

@@ -81,7 +81,7 @@ public class SFItemListAdapter extends RecyclerView.Adapter<SFItemListAdapter.Vi
             holder.secondRootLayout.setBackgroundResource(R.drawable.bg_order);
             holder.itemContainerll.setBackgroundResource(R.mipmap.bg_normal_dot);
         }
-        holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order.getInstant(),order.getShopOrderNo()));
+        holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
         if(order.isWxScan()){
             holder.logoScanIV.setVisibility(View.VISIBLE);
         }else{

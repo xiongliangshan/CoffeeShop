@@ -8,7 +8,7 @@ import java.util.List;
 public class PrintCupBean {
 
     private long orderId;  //此杯咖啡所属的订单id
-    private int shopOrderNo;  //门店单号
+    private String shopOrderNo;  //门店单号
     private int instant; //1:及时单,2:预约单
     private int boxAmount; //盒子数量
     private int boxNumber; //盒号
@@ -40,11 +40,11 @@ public class PrintCupBean {
         this.orderId = orderId;
     }
 
-    public int getShopOrderNo() {
+    public String getShopOrderNo() {
         return shopOrderNo;
     }
 
-    public void setShopOrderNo(int shopOrderNo) {
+    public void setShopOrderNo(String shopOrderNo) {
         this.shopOrderNo = shopOrderNo;
     }
 

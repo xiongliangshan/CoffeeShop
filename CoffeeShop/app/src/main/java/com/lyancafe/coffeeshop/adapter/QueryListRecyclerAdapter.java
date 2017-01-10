@@ -137,7 +137,7 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
             holder.vipFlagIV.setImageResource(R.mipmap.flag_placeholder);
         }
 
-        holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order.getInstant(), order.getShopOrderNo()));
+        holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
         final long mms = order.getProduceEffect();
         Log.d(TAG, "mms = " + mms);
 

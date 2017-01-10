@@ -83,6 +83,7 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
      */
     private LinearLayout detailRootView;
     private TextView orderIdTxt;
+    private TextView wholeOrderText;
     private TextView orderTimeTxt;
     private TextView orderReportTxt;
     private TextView reachTimeTxt;
@@ -229,6 +230,7 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
     private void initDetailView(View contentView){
         detailRootView = (LinearLayout) contentView.findViewById(R.id.detail_root_view);
         orderIdTxt = (TextView) contentView.findViewById(R.id.order_id);
+        wholeOrderText = (TextView) contentView.findViewById(R.id.tv_whole_order_sn);
         orderTimeTxt = (TextView) contentView.findViewById(R.id.order_time);
         orderReportTxt = (TextView) contentView.findViewById(R.id.order_report);
         reachTimeTxt = (TextView) contentView.findViewById(R.id.reach_time);
@@ -256,6 +258,7 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
     public void updateDetailView(final OrderBean order){
         if(order==null){
             orderIdTxt.setText("");
+            wholeOrderText.setText("");
             orderTimeTxt.setText("");
             orderReportTxt.setEnabled(false);
             reachTimeTxt.setText("");
@@ -274,7 +277,8 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
             printOrderBtn.setEnabled(false);
             moreBtn.setEnabled(false);
         }else{
-            orderIdTxt.setText(order.getOrderSn());
+            orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
+            wholeOrderText.setText(order.getOrderSn());
             orderTimeTxt.setText(OrderHelper.getDateToString(order.getOrderTime()));
             orderReportTxt.setEnabled(true);
             /*orderReportTxt.setOnClickListener(new View.OnClickListener() {

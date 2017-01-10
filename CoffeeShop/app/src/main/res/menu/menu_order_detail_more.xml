@@ -7,6 +7,4 @@
     <item android:id="@+id/menu_undo_order"
         android:title="@string/menu_undo_order" />
 
-    <item android:id="@+id/menu_scan_code"
-        android:title="@string/menu_scan_code" />
 </menu>

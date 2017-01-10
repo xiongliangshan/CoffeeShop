@@ -3,7 +3,6 @@ package com.lyancafe.coffeeshop.helper;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
@@ -13,6 +12,7 @@ import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
 import com.lyancafe.coffeeshop.bean.SFGroupBean;
+import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 
 import java.text.DecimalFormat;
@@ -366,17 +366,20 @@ public class OrderHelper {
         return sb.toString();
     }
 
-    //拼接门店单号
-    public static String getShopOrderSn(int instant,int shopOrderNo){
-        String shopOrderSn = "";
-        if(shopOrderNo<10){
-            shopOrderSn = "00"+shopOrderNo;
-        }else if(shopOrderNo>=10&&shopOrderNo<100){
-            shopOrderSn = "0"+shopOrderNo;
-        }else{
-            shopOrderSn = ""+shopOrderNo;
+
+    public static String getShopOrderSn(OrderBean orderBean){
+        if(orderBean.getDeliveryTeam()== DeliveryTeam.MEITUAN){
+            return "美"+orderBean.getMtShopOrderNo();
         }
-        if(instant==1){//及时单
+        String shopOrderSn = "";
+        if(orderBean.getShopOrderNo()<10){
+            shopOrderSn = "00"+orderBean.getShopOrderNo();
+        }else if(orderBean.getShopOrderNo()>=10&&orderBean.getShopOrderNo()<100){
+            shopOrderSn = "0"+orderBean.getShopOrderNo();
+        }else{
+            shopOrderSn = ""+orderBean.getShopOrderNo();
+        }
+        if(orderBean.getInstant()==1){//及时单
             return shopOrderSn;
         }else{
             return shopOrderSn+"约";
@@ -412,7 +415,11 @@ public class OrderHelper {
 
 
     //手机号码隐藏中间四位
-    public static String getHidePhone(String phone){
+    public static String getHidePhone(OrderBean orderBean){
+        if(orderBean.getDeliveryTeam()==DeliveryTeam.MEITUAN){
+            return "";
+        }
+        String phone = orderBean.getPhone();
         if(TextUtils.isEmpty(phone) || phone.length()<11){
             return phone;
         }

@@ -10,7 +10,7 @@ import java.util.List;
 public class PrintOrderBean {
 
     private long orderId;     //订单号
-    private int shopOrderNo;  //门店单号
+    private String shopOrderNo;  //门店单号
     private boolean isGiftBox; //是否有礼盒
     private boolean isHaveRemarks; //是否有备注
     private String orderSn;
@@ -22,6 +22,7 @@ public class PrintOrderBean {
     private String receiverPhone;  //收货人的电话号码
     private String address;      //收货人的地址
     private long expectedTime;   //期望送达时间
+    private String deliverName;  //配送员姓名
     private List<PrintCupBean> coffeeList;
 
     public PrintOrderBean() {
@@ -33,22 +34,6 @@ public class PrintOrderBean {
         this.cupAmount = cupAmount;
     }
 
-    public PrintOrderBean(long orderId, int shopOrderNo, boolean isGiftBox, boolean isHaveRemarks, String orderSn, int instant, int boxAmount, int boxNumber, int cupAmount, String receiverName, String receiverPhone, String address, long expectedTime, List<PrintCupBean> coffeeList) {
-        this.orderId = orderId;
-        this.shopOrderNo = shopOrderNo;
-        this.isGiftBox = isGiftBox;
-        this.isHaveRemarks = isHaveRemarks;
-        this.orderSn = orderSn;
-        this.instant = instant;
-        this.boxAmount = boxAmount;
-        this.boxNumber = boxNumber;
-        this.cupAmount = cupAmount;
-        this.receiverName = receiverName;
-        this.receiverPhone = receiverPhone;
-        this.address = address;
-        this.expectedTime = expectedTime;
-        this.coffeeList = coffeeList;
-    }
 
     public long getOrderId() {
         return orderId;
@@ -58,11 +43,11 @@ public class PrintOrderBean {
         this.orderId = orderId;
     }
 
-    public int getShopOrderNo() {
+    public String getShopOrderNo() {
         return shopOrderNo;
     }
 
-    public void setShopOrderNo(int shopOrderNo) {
+    public void setShopOrderNo(String shopOrderNo) {
         this.shopOrderNo = shopOrderNo;
     }
 
@@ -159,6 +144,14 @@ public class PrintOrderBean {
         this.expectedTime = expectedTime;
     }
 
+    public String getDeliverName() {
+        return deliverName;
+    }
+
+    public void setDeliverName(String deliverName) {
+        this.deliverName = deliverName;
+    }
+
     public void setCoffeeList(List<PrintCupBean> coffeeList) {
         this.coffeeList = coffeeList;
     }
@@ -167,7 +160,7 @@ public class PrintOrderBean {
     public String toString() {
         return "PrintOrderBean{" +
                 "orderId=" + orderId +
-                ", shopOrderNo=" + shopOrderNo +
+                ", shopOrderNo='" + shopOrderNo + '\'' +
                 ", isGiftBox=" + isGiftBox +
                 ", isHaveRemarks=" + isHaveRemarks +
                 ", orderSn='" + orderSn + '\'' +
@@ -179,6 +172,7 @@ public class PrintOrderBean {
                 ", receiverPhone='" + receiverPhone + '\'' +
                 ", address='" + address + '\'' +
                 ", expectedTime=" + expectedTime +
+                ", deliverName='" + deliverName + '\'' +
                 ", coffeeList=" + coffeeList +
                 '}';
     }
