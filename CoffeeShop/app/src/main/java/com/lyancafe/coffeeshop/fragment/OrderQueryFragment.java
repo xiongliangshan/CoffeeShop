@@ -34,28 +34,19 @@ import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.QueryListRecyclerAdapter;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
-import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
-import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.lyancafe.coffeeshop.utils.Urls;
 import com.lyancafe.coffeeshop.widget.ReportWindow;
-import com.xls.http.HttpAsyncTask;
-import com.xls.http.HttpEntity;
-import com.xls.http.Jresp;
-import com.xls.http.Qry;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Response;

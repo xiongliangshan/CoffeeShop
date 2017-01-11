@@ -26,7 +26,6 @@ import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.service.UpdateService;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.xls.http.HttpUtils;
 
 import okhttp3.Call;
 import okhttp3.Response;
@@ -65,7 +64,7 @@ public class SettingWindow extends PopupWindow implements View.OnClickListener{
         versionUpdateLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!HttpUtils.isOnline(context)) {
+                if (!MyUtil.isOnline(context)) {
                     ToastUtil.show(context, context.getResources().getString(R.string.check_internet));
                 } else {
                     SettingWindow.this.dismiss();

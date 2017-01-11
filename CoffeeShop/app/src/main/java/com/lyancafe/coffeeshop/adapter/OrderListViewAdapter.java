@@ -1,11 +1,9 @@
 package com.lyancafe.coffeeshop.adapter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.SFGroupBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
@@ -24,22 +21,14 @@ import com.lyancafe.coffeeshop.constant.TabList;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
-import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.helper.PrintHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.lyancafe.coffeeshop.utils.Urls;
-import com.xls.http.HttpAsyncTask;
-import com.xls.http.HttpEntity;
-import com.xls.http.Jresp;
-import com.xls.http.Qry;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Response;

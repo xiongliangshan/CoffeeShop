@@ -3,6 +3,8 @@ package com.lyancafe.coffeeshop.utils;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 /**
  * Created by Administrator on 2015/10/26.
@@ -39,5 +41,21 @@ public class MyUtil {
             e.printStackTrace();
             return 0;
         }
+    }
+
+    /**
+     * 判断是否联网
+     */
+    public static boolean isOnline(Context context) {
+        try {
+            ConnectivityManager connMgr = (ConnectivityManager) context
+                    .getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+            return (networkInfo != null && networkInfo.isConnected());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return true;
+        }
+
     }
 }

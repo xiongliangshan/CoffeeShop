@@ -7,9 +7,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.xls.http.Jresp;
-
-import org.json.JSONArray;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -319,21 +316,7 @@ public class OrderBean implements Serializable{
     }
 
 
-    //解析数据
-    public  static List<OrderBean> parseJsonOrders(Context context,Jresp resp){
-        List<OrderBean> orderBeans = new ArrayList<OrderBean>();
-        if(resp==null || resp.data==null){
-            return orderBeans;
-        }
-        try{
-            JSONArray ordersArray= resp.data.optJSONArray("orders");
-            orderBeans = JSON.parseArray(ordersArray.toString(), OrderBean.class);
-        }catch (JSONException e){
-            Log.e(TAG,e.getMessage());
-            ToastUtil.showToast(context, R.string.parse_json_fail);
-        }
-        return orderBeans;
-    }
+
 
     //解析数据
     public  static List<OrderBean> parseJsonOrders(Context context,XlsResponse resp){

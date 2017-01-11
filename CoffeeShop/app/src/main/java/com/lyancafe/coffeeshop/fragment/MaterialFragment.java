@@ -17,28 +17,19 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.MaterialAdatapter;
-import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.bean.MaterialBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.event.MaterialSelectEvent;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
-import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.PrintHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.lyancafe.coffeeshop.utils.Urls;
-import com.xls.http.HttpAsyncTask;
-import com.xls.http.HttpEntity;
-import com.xls.http.Jresp;
-import com.xls.http.Qry;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Response;
