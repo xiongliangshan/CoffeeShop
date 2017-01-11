@@ -13,6 +13,7 @@ public class PrintOrderBean {
     private String shopOrderNo;  //门店单号
     private boolean isGiftBox; //是否有礼盒
     private boolean isHaveRemarks; //是否有备注
+    private int deliveryTeam; //配送团队
     private String orderSn;
     private int instant; //1:及时单,2:预约单
     private int boxAmount;    //盒子数量
@@ -65,6 +66,14 @@ public class PrintOrderBean {
 
     public void setIsHaveRemarks(boolean isHaveRemarks) {
         this.isHaveRemarks = isHaveRemarks;
+    }
+
+    public int getDeliveryTeam() {
+        return deliveryTeam;
+    }
+
+    public void setDeliveryTeam(int deliveryTeam) {
+        this.deliveryTeam = deliveryTeam;
     }
 
     public int getInstant() {

@@ -90,16 +90,18 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
             holder.firstRowLayout.setBackground(null);
         }
         holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
-        if(order.isWxScan()){
-            holder.logoScanIV.setVisibility(View.VISIBLE);
-        }else{
-            holder.logoScanIV.setVisibility(View.GONE);
-        }
+
         //新用户订单
         if(false){
             holder.newUserOderIV.setImageResource(R.mipmap.flag_new_user);
         }else{
             holder.newUserOderIV.setImageResource(R.mipmap.flag_placeholder);
+        }
+        //扫码下单
+        if(order.isWxScan()){
+            holder.saoImg.setImageResource(R.mipmap.flag_sao);
+        }else {
+            holder.saoImg.setImageResource(R.mipmap.flag_placeholder);
         }
         //定制
         if(order.isRecipeFittings()){
@@ -124,13 +126,7 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
         if(TextUtils.isEmpty(order.getNotes()) && TextUtils.isEmpty(order.getCsrNotes())){
             holder.remarkFlagIV.setImageResource(R.mipmap.flag_placeholder);
         }else {
-            holder.remarkFlagIV.setImageResource(R.mipmap.flag_zhu);
-        }
-        //问题
-        if(order.issueOrder()){
-            holder.issueFlagIV.setImageResource(R.mipmap.flag_issue);
-        }else{
-            holder.issueFlagIV.setImageResource(R.mipmap.flag_placeholder);
+            holder.remarkFlagIV.setImageResource(R.mipmap.flag_bei);
         }
         //vip订单
         if(order.isOrderVip()){
@@ -265,13 +261,12 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
         public LinearLayout secondRootLayout;
         public LinearLayout firstRowLayout;
         public ImageView newUserOderIV;
+        public ImageView saoImg;
         public ImageView giftIV;
         public ImageView labelFlagImg;
-        public ImageView logoScanIV;
         public TextView orderIdTxt;
         public TextView contantEffectTimeTxt;
         public TextView effectTimeTxt;
-        public ImageView issueFlagIV;
         public ImageView vipFlagIV;
         public ImageView grabFlagIV;
         public ImageView remarkFlagIV;
@@ -290,13 +285,12 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
             secondRootLayout = (LinearLayout) itemView.findViewById(R.id.second_root_view);
             firstRowLayout = (LinearLayout) itemView.findViewById(R.id.ll_first_row);
             newUserOderIV = (ImageView) itemView.findViewById(R.id.iv_new_user);
+            saoImg = (ImageView) itemView.findViewById(R.id.iv_sao_flag);
             giftIV = (ImageView) itemView.findViewById(R.id.iv_gift);
             labelFlagImg = (ImageView) itemView.findViewById(R.id.iv_label_flag);
-            logoScanIV = (ImageView) itemView.findViewById(R.id.logo_scan);
             orderIdTxt = (TextView) itemView.findViewById(R.id.item_order_id);
             contantEffectTimeTxt = (TextView) itemView.findViewById(R.id.item_contant_produce_effect);
             effectTimeTxt = (TextView) itemView.findViewById(R.id.item_produce_effect);
-            issueFlagIV = (ImageView) itemView.findViewById(R.id.item_issue_flag);
             vipFlagIV = (ImageView) itemView.findViewById(R.id.item_vip_flag);
             grabFlagIV = (ImageView) itemView.findViewById(R.id.item_grab_flag);
             remarkFlagIV = (ImageView) itemView.findViewById(R.id.item_remark_flag);

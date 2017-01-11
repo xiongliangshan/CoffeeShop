@@ -111,11 +111,12 @@ public class PrintHelper {
             }else{
                 bean.setIsHaveRemarks(true);
             }
+            bean.setDeliveryTeam(orderBean.getDeliveryTeam());
             bean.setReceiverName(orderBean.getRecipient());
             bean.setReceiverPhone(OrderHelper.getHidePhone(orderBean));
             bean.setAddress(orderBean.getAddress());
             bean.setExpectedTime(orderBean.getExpectedTime());
-            bean.setDeliverName(orderBean.getCourierName());
+            bean.setDeliverName(orderBean.getCourierName()==null?"":orderBean.getCourierName());
             boxList.add(bean);
         }
         int hot_left_cup = hotCupList.size()%4;
@@ -132,11 +133,12 @@ public class PrintHelper {
             }else{
                 bean.setIsHaveRemarks(true);
             }
+            bean.setDeliveryTeam(orderBean.getDeliveryTeam());
             bean.setReceiverName(orderBean.getRecipient());
             bean.setReceiverPhone(OrderHelper.getHidePhone(orderBean));
             bean.setAddress(orderBean.getAddress());
             bean.setExpectedTime(orderBean.getExpectedTime());
-            bean.setDeliverName(orderBean.getCourierName());
+            bean.setDeliverName(orderBean.getCourierName()==null?"":orderBean.getCourierName());
             boxList.add(bean);
         }
 
@@ -154,11 +156,12 @@ public class PrintHelper {
             }else{
                 bean.setIsHaveRemarks(true);
             }
+            bean.setDeliveryTeam(orderBean.getDeliveryTeam());
             bean.setReceiverName(orderBean.getRecipient());
             bean.setReceiverPhone(OrderHelper.getHidePhone(orderBean));
             bean.setAddress(orderBean.getAddress());
             bean.setExpectedTime(orderBean.getExpectedTime());
-            bean.setDeliverName(orderBean.getCourierName());
+            bean.setDeliverName(orderBean.getCourierName()==null?"":orderBean.getCourierName());
             boxList.add(bean);
         }
         int cool_left_cup = coolCupList.size()%4;
@@ -175,11 +178,12 @@ public class PrintHelper {
             }else{
                 bean.setIsHaveRemarks(true);
             }
+            bean.setDeliveryTeam(orderBean.getDeliveryTeam());
             bean.setReceiverName(orderBean.getRecipient());
             bean.setReceiverPhone(OrderHelper.getHidePhone(orderBean));
             bean.setAddress(orderBean.getAddress());
             bean.setExpectedTime(orderBean.getExpectedTime());
-            bean.setDeliverName(orderBean.getCourierName());
+            bean.setDeliverName(orderBean.getCourierName()==null?"":orderBean.getCourierName());
             boxList.add(bean);
         }
 

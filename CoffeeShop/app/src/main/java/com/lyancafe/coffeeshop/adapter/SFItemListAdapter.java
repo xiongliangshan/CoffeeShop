@@ -82,16 +82,19 @@ public class SFItemListAdapter extends RecyclerView.Adapter<SFItemListAdapter.Vi
             holder.itemContainerll.setBackgroundResource(R.mipmap.bg_normal_dot);
         }
         holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
-        if(order.isWxScan()){
-            holder.logoScanIV.setVisibility(View.VISIBLE);
-        }else{
-            holder.logoScanIV.setVisibility(View.GONE);
-        }
+
         //新用户订单
         if(false){
             holder.newUserOderIV.setImageResource(R.mipmap.flag_new_user);
         }else{
             holder.newUserOderIV.setImageResource(R.mipmap.flag_placeholder);
+        }
+
+        //扫码下单
+        if(order.isWxScan()){
+            holder.saoImg.setImageResource(R.mipmap.flag_sao);
+        }else {
+            holder.saoImg.setImageResource(R.mipmap.flag_placeholder);
         }
 
         //定制
@@ -113,18 +116,14 @@ public class SFItemListAdapter extends RecyclerView.Adapter<SFItemListAdapter.Vi
         }else{
             holder.grabFlagIV.setImageResource(R.mipmap.flag_qiang);
         }
+
         //备注
         if(TextUtils.isEmpty(order.getNotes()) && TextUtils.isEmpty(order.getCsrNotes())){
             holder.remarkFlagIV.setImageResource(R.mipmap.flag_placeholder);
         }else {
-            holder.remarkFlagIV.setImageResource(R.mipmap.flag_zhu);
+            holder.remarkFlagIV.setImageResource(R.mipmap.flag_bei);
         }
-        //问题
-        if(order.issueOrder()){
-            holder.issueFlagIV.setImageResource(R.mipmap.flag_issue);
-        }else{
-            holder.issueFlagIV.setImageResource(R.mipmap.flag_placeholder);
-        }
+
         //vip订单
         if(order.isOrderVip()){
             holder.vipFlagIV.setImageResource(R.mipmap.flag_vip);
@@ -246,13 +245,12 @@ public class SFItemListAdapter extends RecyclerView.Adapter<SFItemListAdapter.Vi
         public RelativeLayout rootLayout;
         public LinearLayout secondRootLayout;
         public ImageView newUserOderIV;
+        public ImageView saoImg;
         public ImageView giftIV;
         public ImageView labelFlagImg;
-        public ImageView logoScanIV;
         public TextView orderIdTxt;
         public TextView contantEffectTimeTxt;
         public TextView effectTimeTxt;
-        public ImageView issueFlagIV;
         public ImageView vipFlagIV;
         public ImageView grabFlagIV;
         public ImageView remarkFlagIV;
@@ -269,13 +267,12 @@ public class SFItemListAdapter extends RecyclerView.Adapter<SFItemListAdapter.Vi
             rootLayout = (RelativeLayout) itemView.findViewById(R.id.root_view);
             secondRootLayout = (LinearLayout) itemView.findViewById(R.id.second_root_view);
             newUserOderIV = (ImageView) itemView.findViewById(R.id.iv_new_user);
+            saoImg = (ImageView) itemView.findViewById(R.id.iv_sao_flag);
             giftIV = (ImageView) itemView.findViewById(R.id.iv_gift);
             labelFlagImg = (ImageView) itemView.findViewById(R.id.iv_label_flag);
-            logoScanIV = (ImageView) itemView.findViewById(R.id.logo_scan);
             orderIdTxt = (TextView) itemView.findViewById(R.id.item_order_id);
             contantEffectTimeTxt = (TextView) itemView.findViewById(R.id.item_contant_produce_effect);
             effectTimeTxt = (TextView) itemView.findViewById(R.id.item_produce_effect);
-            issueFlagIV = (ImageView) itemView.findViewById(R.id.item_issue_flag);
             vipFlagIV = (ImageView) itemView.findViewById(R.id.item_vip_flag);
             grabFlagIV = (ImageView) itemView.findViewById(R.id.item_grab_flag);
             remarkFlagIV = (ImageView) itemView.findViewById(R.id.item_remark_flag);

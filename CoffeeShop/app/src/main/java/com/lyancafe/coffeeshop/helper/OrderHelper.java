@@ -516,16 +516,30 @@ public class OrderHelper {
 
     //期望送达时间段
     public static String getPeriodOfExpectedtime(PrintOrderBean pob){
-        if(pob.getInstant()==1){
-            //及时单
-            return "尽快送达";
+        if(DeliveryTeam.MEITUAN==pob.getDeliveryTeam()){
+            //美团订单
+            if(pob.getInstant()==1){
+                //及时单
+                return "立即送出";
+            }else{
+                //预约单
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                String start = sdf.format(new Date(pob.getExpectedTime()));
+                return start;
+            }
         }else{
-            //预约单
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-            String start = sdf.format(new Date(pob.getExpectedTime()));
-            String end = sdf.format(new Date(pob.getExpectedTime()+30*60*1000));
-            return start+"~"+end;
+            if(pob.getInstant()==1){
+                //及时单
+                return "尽快送达";
+            }else{
+                //预约单
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                String start = sdf.format(new Date(pob.getExpectedTime()));
+                String end = sdf.format(new Date(pob.getExpectedTime()+30*60*1000));
+                return start+"~"+end;
+            }
         }
+
     }
 
 }

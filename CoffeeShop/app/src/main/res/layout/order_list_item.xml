@@ -29,15 +29,6 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
 
-                <ImageView
-                    android:id="@+id/logo_scan"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="2dp"
-                    android:src="@mipmap/pay_shop"
-                    android:visibility="gone"
-                    />
-
                 <TextView
                     android:id="@+id/item_order_id"
                     android:layout_width="wrap_content"
@@ -82,23 +73,47 @@
                 />
 
             <ImageView
-                android:id="@+id/iv_label_flag"
+                android:id="@+id/iv_sao_flag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/iv_new_user"
+                android:layout_marginLeft="4dp"
+                android:src="@mipmap/flag_sao"/>
+
+            <ImageView
+                android:id="@+id/iv_label_flag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/iv_sao_flag"
                 android:src="@mipmap/flag_ding"
                 android:layout_marginLeft="4dp"
                 />
+
+            <ImageView
+                android:id="@+id/item_remark_flag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:src="@mipmap/flag_bei"
+                android:layout_toRightOf="@id/iv_label_flag"
+                />
+
+            <ImageView
+                android:id="@+id/item_vip_flag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/item_remark_flag"
+                android:src="@mipmap/flag_vip"
+                android:layout_marginLeft="4dp"/>
 
             <ImageView
                 android:id="@+id/iv_gift"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/flag_li"
-                android:layout_toRightOf="@id/iv_label_flag"
+                android:layout_toRightOf="@id/item_vip_flag"
                 android:layout_marginLeft="4dp"
                 />
-
 
             <ImageView
                 android:id="@+id/item_grab_flag"
@@ -108,30 +123,8 @@
                 android:src="@mipmap/flag_qiang"
                 android:layout_marginLeft="4dp"/>
 
-            <ImageView
-                android:id="@+id/item_remark_flag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
-                android:src="@mipmap/flag_zhu"
-                android:layout_toRightOf="@id/item_grab_flag"
-                />
 
-            <ImageView
-                android:id="@+id/item_issue_flag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/item_remark_flag"
-                android:src="@mipmap/flag_issue"
-                android:layout_marginLeft="4dp"/>
 
-            <ImageView
-                android:id="@+id/item_vip_flag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/item_issue_flag"
-                android:src="@mipmap/flag_vip"
-                android:layout_marginLeft="4dp"/>
         </RelativeLayout>
 
         <RelativeLayout

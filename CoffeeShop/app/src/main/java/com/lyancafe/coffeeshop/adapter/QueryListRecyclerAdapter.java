@@ -82,17 +82,18 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
             holder.firstRowLayout.setBackground(null);
         }
 
-        if(order.isWxScan()){
-            holder.logoScanIV.setVisibility(View.VISIBLE);
-        }else{
-            holder.logoScanIV.setVisibility(View.GONE);
-        }
-
         //新用户订单
         if(false){
             holder.newUserOderIV.setImageResource(R.mipmap.flag_new_user);
         }else{
             holder.newUserOderIV.setImageResource(R.mipmap.flag_placeholder);
+        }
+
+        //扫码下单
+        if(order.isWxScan()){
+            holder.saoImg.setImageResource(R.mipmap.flag_sao);
+        }else {
+            holder.saoImg.setImageResource(R.mipmap.flag_placeholder);
         }
 
         //定制
@@ -120,15 +121,9 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
         if(TextUtils.isEmpty(order.getNotes()) && TextUtils.isEmpty(order.getCsrNotes())){
             holder.remarkFlagIV.setImageResource(R.mipmap.flag_placeholder);
         }else {
-            holder.remarkFlagIV.setImageResource(R.mipmap.flag_zhu);
+            holder.remarkFlagIV.setImageResource(R.mipmap.flag_bei);
         }
 
-        //问题
-        if(order.issueOrder()){
-            holder.issueFlagIV.setImageResource(R.mipmap.flag_issue);
-        }else{
-            holder.issueFlagIV.setImageResource(R.mipmap.flag_placeholder);
-        }
 
         //vip订单
         if(order.isOrderVip()){
@@ -260,12 +255,11 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public RelativeLayout rootLayout;
-        public ImageView logoScanIV;
         public LinearLayout firstRowLayout;
         public ImageView newUserOderIV;
+        public ImageView saoImg;
         public ImageView giftIV;
         public ImageView labelFlagImg;
-        public ImageView issueFlagIV;
         public ImageView vipFlagIV;
         public ImageView grabFlagIV;
         public ImageView remarkFlagIV;
@@ -282,13 +276,12 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
             rootLayout = (RelativeLayout) itemView.findViewById(R.id.root_view);
             firstRowLayout = (LinearLayout) itemView.findViewById(R.id.ll_first_row);
             newUserOderIV = (ImageView) itemView.findViewById(R.id.iv_new_user);
-            logoScanIV = (ImageView) itemView.findViewById(R.id.logo_scan);
+            saoImg = (ImageView) itemView.findViewById(R.id.iv_sao_flag);
             giftIV = (ImageView) itemView.findViewById(R.id.iv_gift);
             labelFlagImg = (ImageView) itemView.findViewById(R.id.iv_label_flag);
             orderIdTxt = (TextView) itemView.findViewById(R.id.item_order_id);
             contantEffectTimeTxt = (TextView) itemView.findViewById(R.id.item_contant_produce_effect);
             effectTimeTxt = (TextView) itemView.findViewById(R.id.item_produce_effect);
-            issueFlagIV = (ImageView) itemView.findViewById(R.id.item_issue_flag);
             vipFlagIV = (ImageView) itemView.findViewById(R.id.item_vip_flag);
             grabFlagIV = (ImageView) itemView.findViewById(R.id.item_grab_flag);
             remarkFlagIV = (ImageView) itemView.findViewById(R.id.item_remark_flag);
