@@ -18,14 +18,18 @@ public class LeftRadioButton extends RadioButton {
 
     public LeftRadioButton(final Context context, AttributeSet attrs) {
         super(context, attrs);
+        if(isChecked()){
+            LeftRadioButton.this.setBackgroundColor(context.getResources().getColor(R.color.yellow));
+            invalidate();
+        }
         this.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    LeftRadioButton.this.setTextColor(context.getResources().getColor(R.color.radiobutton_text_press));
+                    LeftRadioButton.this.setBackgroundColor(context.getResources().getColor(R.color.yellow));
                     invalidate();
                 } else {
-                    LeftRadioButton.this.setTextColor(context.getResources().getColor(R.color.radiobutton_text_normal));
+                    LeftRadioButton.this.setBackground(null);
                     invalidate();
                 }
             }

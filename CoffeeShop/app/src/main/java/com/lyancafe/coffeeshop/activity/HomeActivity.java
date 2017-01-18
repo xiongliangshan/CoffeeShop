@@ -6,31 +6,33 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.RadioGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.adapter.FragmentTabAdapter;
 import com.lyancafe.coffeeshop.bean.ApkInfoBean;
+import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
+import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.fragment.OrderQueryFragment;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.fragment.ShopManagerFragment;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
+import com.lyancafe.coffeeshop.helper.LoginHelper;
+import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.service.TaskService;
 import com.lyancafe.coffeeshop.service.UpdateService;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
-import com.lyancafe.coffeeshop.widget.SettingWindow;
-import com.lzy.okgo.OkGo;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
@@ -52,22 +54,27 @@ import okhttp3.Response;
 /**
  * Created by Administrator on 2015/9/18.
  */
-public class HomeActivity extends BaseActivity {
+public class HomeActivity extends BaseActivity implements View.OnClickListener{
 
     private static final String TAG ="HomeActivity";
-    public static int currIndex = 0;
-    private static RadioGroup mRadioGroup;
-    public List<Fragment> fragments_list = new ArrayList<Fragment>();
+    public List<Fragment> fragmentsList = new ArrayList<Fragment>();
     private OrdersFragment orderFrag;
     private OrderQueryFragment orderQueryFrag;
     private ShopManagerFragment shopManagerFrag;
-    private FragmentTabAdapter tabAdapter;
-    private ImageButton settingBtn;
-    private SettingWindow sw;
     private TaskService taskService;
     private ServiceConnection serviceConnection;
-
     private Context context;
+
+    private LinearLayout tabProduceLayout;
+    private LinearLayout tabDeliverlayout;
+    private LinearLayout tabShopLayout;
+
+    private int mSelectedIndex = 0;
+    private List<LinearLayout> tabList;
+
+    private TextView curVerText;
+    private TextView checkUpdateText;
+    private TextView loginOutText;
 
 
     @Override
@@ -77,6 +84,7 @@ public class HomeActivity extends BaseActivity {
         setContentView(R.layout.activity_home);
         initViews();
         initFragments();
+        updateTab(mSelectedIndex);
         //启动service
         serviceConnection = new ServiceConnection() {
             @Override
@@ -129,38 +137,45 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void initViews(){
-        mRadioGroup = (RadioGroup) findViewById(R.id.group_left);
-        settingBtn = (ImageButton) findViewById(R.id.btn_setting);
-        settingBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //左下角的设置
-                if (sw != null) {
-                    sw.showSettingWindow(v);
-                } else {
-                    SettingWindow sw = new SettingWindow(HomeActivity.this);
-                    sw.showSettingWindow(v);
-                }
+        tabProduceLayout = (LinearLayout) findViewById(R.id.ll_produce_tab);
+        tabDeliverlayout = (LinearLayout) findViewById(R.id.ll_deliver_tab);
+        tabShopLayout = (LinearLayout) findViewById(R.id.ll_shop_tab);
+        curVerText = (TextView) findViewById(R.id.tv_current_version);
+        checkUpdateText = (TextView) findViewById(R.id.tv_check_update);
+        loginOutText = (TextView) findViewById(R.id.tv_login_out);
 
-            }
-        });
+        checkUpdateText.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        checkUpdateText.getPaint().setAntiAlias(true);
+
+        loginOutText.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        loginOutText.getPaint().setAntiAlias(true);
+
+
+        tabProduceLayout.setOnClickListener(this);
+        tabDeliverlayout.setOnClickListener(this);
+        tabShopLayout.setOnClickListener(this);
+        curVerText.setOnClickListener(this);
+        checkUpdateText.setOnClickListener(this);
+        loginOutText.setOnClickListener(this);
+
+        curVerText.setText("当前版本:" + MyUtil.getVersion(context));
+
+        tabList = new ArrayList<>();
+        tabList.add(tabProduceLayout);
+        tabList.add(tabDeliverlayout);
+        tabList.add(tabShopLayout);
+
+
+
     }
     private void initFragments(){
         orderFrag =  new OrdersFragment();
         orderQueryFrag = new OrderQueryFragment();
         shopManagerFrag = new ShopManagerFragment();
-        fragments_list.add(orderFrag);
-        fragments_list.add(orderQueryFrag);
-        fragments_list.add(shopManagerFrag);
+        fragmentsList.add(orderFrag);
+        fragmentsList.add(orderQueryFrag);
+        fragmentsList.add(shopManagerFrag);
 
-
-        tabAdapter = new FragmentTabAdapter(HomeActivity.this, fragments_list, R.id.tab_content, mRadioGroup);
-        tabAdapter.setOnRgsExtraCheckedChangedListener(new FragmentTabAdapter.OnRgsExtraCheckedChangedListener() {
-            @Override
-            public void OnRgsExtraCheckedChanged(RadioGroup radioGroup, int checkedId, int index) {
-                currIndex = index;
-            }
-        });
     }
     @Override
     protected void onStart() {
@@ -225,8 +240,99 @@ public class HomeActivity extends BaseActivity {
                 }
             });
             builder.create().show();
+        }else {
+            ToastUtil.show(context,xlsResponse.message);
         }
     }
 
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.ll_produce_tab:
+                mSelectedIndex = 0;
+                updateTab(mSelectedIndex);
+                break;
+            case R.id.ll_deliver_tab:
+                mSelectedIndex = 1;
+                updateTab(mSelectedIndex);
+                break;
+            case R.id.ll_shop_tab:
+                mSelectedIndex = 2;
+                updateTab(mSelectedIndex);
+                break;
+            case R.id.tv_check_update:
+                //系统更新
+                if (!MyUtil.isOnline(context)) {
+                    ToastUtil.show(context, context.getResources().getString(R.string.check_internet));
+                } else {
+                    HttpHelper.getInstance().reqCheckUpdate(new DialogCallback<XlsResponse>(HomeActivity.this) {
+                        @Override
+                        public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                            handleCheckUpdateResponse(xlsResponse, call, response);
+                        }
+                    });
+                }
+                break;
+            case R.id.tv_login_out:
+                //退出登录
+                HttpHelper.getInstance().reqLoginOut(new JsonCallback<XlsResponse>() {
+                    @Override
+                    public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                        handleLoginOutResponse(xlsResponse,call,response);
+                    }
+                });
+                LoginBean loginBean = LoginHelper.getLoginBean(context);
+                loginBean.setToken("");
+                LoginHelper.saveLoginBean(context,loginBean);
+                OrderHelper.batchList.clear();
+                HomeActivity.this.finish();
+                HomeActivity.this.overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);
+                break;
+        }
+
+    }
+
+    private void updateTab(int selectedIndex){
+        tabProduceLayout.setBackground(null);
+        tabDeliverlayout.setBackground(null);
+        tabShopLayout.setBackground(null);
+        if(tabList!=null){
+            tabList.get(selectedIndex).setBackgroundColor(context.getResources().getColor(R.color.tab_orange));
+        }
+        switchFragment(selectedIndex);
+    }
+
+    private void switchFragment(int selectedIndex){
+        Fragment fragment = fragmentsList.get(selectedIndex);
+        if(!fragment.isAdded()){
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.add(R.id.tab_content,fragment);
+            ft.commitAllowingStateLoss();
+        }
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        if(fragment instanceof OrdersFragment){
+            ft.hide(orderQueryFrag).hide(shopManagerFrag).show(orderFrag);
+        }else if(fragment instanceof OrderQueryFragment){
+            ft.hide(orderFrag).hide(shopManagerFrag).show(orderQueryFrag);
+        }else{
+            ft.hide(orderFrag).hide(orderQueryFrag).show(shopManagerFrag);
+        }
+        ft.commitAllowingStateLoss();
+
+    }
+
+    /**
+     * 处理退出登录
+     * @param xlsResponse
+     * @param call
+     * @param response
+     */
+    private void handleLoginOutResponse(XlsResponse xlsResponse, Call call, Response response) {
+        Intent intent_update = new Intent(context, UpdateService.class);
+        context.stopService(intent_update);
+    }
 
 }

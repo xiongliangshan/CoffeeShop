@@ -24,12 +24,9 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:layout_marginTop">12dp</item>
-        <item name="android:layout_marginBottom">12dp</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">22sp</item>
         <item name="android:button">@null</item>
-        <!--<item name="android:background">@drawable/selecter_index_btn_bg</item>-->
-
+        <item name="android:ems">1</item>
     </style>
 
     <style name="MyWidget.pager.tab.btn" parent="@android:style/Theme">

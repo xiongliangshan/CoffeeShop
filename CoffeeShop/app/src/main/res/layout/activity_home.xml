@@ -1,74 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bg_all"
-    >
+    android:layout_height="match_parent">
 
     <RelativeLayout
-        android:layout_width="65dp"
-        android:layout_height="match_parent"
-        android:paddingRight="0dp"
-        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingRight="16dp"
+        android:paddingLeft="16dp"
         >
-            <ImageView
-                android:id="@+id/iv_barista_logo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/logo_system"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="30dp"
-                />
-            <RadioGroup
-                android:id="@+id/group_left"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:paddingRight="20dp"
-                android:orientation="vertical">
 
-                <com.lyancafe.coffeeshop.widget.LeftRadioButton
-                    android:id="@+id/rb_orders"
-                    style="@style/MyWidget.home.left_tab.btn"
-                    android:checked="true"
-                    android:drawableRight="@drawable/bg_left_tab_order"
-                    />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/cb_logo"
+            android:scaleType="centerInside"/>
 
-                <com.lyancafe.coffeeshop.widget.LeftRadioButton
-                    android:id="@+id/rb_order_query"
-                    style="@style/MyWidget.home.left_tab.btn"
-                    android:drawableRight="@drawable/bg_left_tab_search"
-                    />
+        <TextView
+            android:id="@+id/tv_current_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/tv_check_update"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:text="当前版本:"/>
 
-                <com.lyancafe.coffeeshop.widget.LeftRadioButton
-                    android:id="@+id/rb_shop_manager"
-                    style="@style/MyWidget.home.left_tab.btn"
-                    android:drawableRight="@drawable/bg_left_tab_shop"
+        <TextView
+            android:id="@+id/tv_check_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/tv_login_out"
+            android:layout_marginRight="16dp"
+            android:layout_centerVertical="true"
+            android:textColor="@color/bg_blue"
+            android:textSize="16sp"
+            android:text="系统更新"/>
 
-                     />
+        <TextView
+            android:id="@+id/tv_login_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:textColor="@color/bg_blue"
+            android:textSize="16sp"
+            android:text="退出登录"/>
 
-            </RadioGroup>
-
-        <ImageButton
-            android:id="@+id/btn_setting"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@null"
-            android:src="@mipmap/icon_setting"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="40dp"
-            />
     </RelativeLayout>
 
-
-    <FrameLayout
-        android:id="@+id/tab_content"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        />
+        android:layout_height="2dp"
+        android:background="@android:color/black"/>
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="14"
+        android:background="@drawable/bg_all">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/ll_produce_tab"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="生产"
+                    android:ems="1"
+                    android:textSize="24dp"
+                    android:textColor="@android:color/black"/>
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/black"/>
+            <LinearLayout
+                android:id="@+id/ll_deliver_tab"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="配送"
+                    android:ems="1"
+                    android:textSize="24dp"
+                    android:textColor="@android:color/black"
+                    />
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/black"/>
+            <LinearLayout
+                android:id="@+id/ll_shop_tab"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="门店"
+                    android:ems="1"
+                    android:textSize="24dp"
+                    android:textColor="@android:color/black"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+          <!--  <ImageButton
+                android:id="@+id/btn_setting"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@null"
+                android:src="@mipmap/icon_setting"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="40dp"
+                android:visibility="gone"
+                />-->
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/black"/>
+
+        <FrameLayout
+            android:id="@+id/tab_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="14"
+            />
+
+    </LinearLayout>
 </LinearLayout>

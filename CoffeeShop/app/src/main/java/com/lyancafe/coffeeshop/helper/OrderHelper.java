@@ -3,6 +3,7 @@ package com.lyancafe.coffeeshop.helper;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
