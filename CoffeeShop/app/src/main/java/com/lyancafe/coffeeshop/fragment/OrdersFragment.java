@@ -87,7 +87,7 @@ import okhttp3.Response;
 /**
  * Created by Administrator on 2015/9/1.
  */
-public class OrdersFragment extends Fragment implements View.OnClickListener{
+public class OrdersFragment extends Fragment {
 
     private static final String TAG  ="OrdersFragment";
     private View mContentView;
@@ -100,7 +100,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private ListTabButton deliveringTab;
     private ListTabButton deliveryFinishedTab;
 
-    private TextView shopNameText;
     private ListTabButtonListener ltbListener;
 
     private Spinner sortSpinner;
@@ -125,7 +124,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private int orderBy = 0;
     private int fillterInstant = 0;
     private long finishedLastOrderId = 0;
-    private ReportWindow reportWindow;
 
     private IndoDetailListener indoDetailListener;
     private RadioButtonClicklistener radioButtonClicklistener;
@@ -133,11 +131,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     /**
      * 订单详情页UI组件
      */
-    private LinearLayout detailRootView;
     private TextView orderIdTxt;
     private TextView wholeOrderText;
     private TextView orderTimeTxt;
-    private TextView orderReportTxt;
     private TextView reachTimeTxt;
     private TextView produceEffectTxt;
     private TextView receiveNameTxt;
@@ -160,9 +156,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
     private Button finishProduceBtn;
     private Button printOrderBtn;
     private Button moreBtn;
-    private Button prevBtn;
-    private Button nextBtn;
-
 
     @Override
     public void onAttach(Context context) {
@@ -235,9 +228,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         initTabButtons(contentView);
         initDetailView(contentView);
         initSpinner(contentView, mContext);
-
-        shopNameText = (TextView) contentView.findViewById(R.id.tv_shop_name);
-        shopNameText.setText(LoginHelper.getLoginBean(mContext).getShopName());
 
         batchPromptText = (TextView) contentView.findViewById(R.id.tv_batch_prompt);
         radioGroup = (RadioGroup) contentView.findViewById(R.id.rg_order_limit);
@@ -474,11 +464,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         }
     }
     private void initDetailView(View contentView){
-        detailRootView = (LinearLayout) contentView.findViewById(R.id.detail_root_view);
         orderIdTxt = (TextView) contentView.findViewById(R.id.order_id);
         wholeOrderText = (TextView) contentView.findViewById(R.id.tv_whole_order_sn);
         orderTimeTxt = (TextView) contentView.findViewById(R.id.order_time);
-        orderReportTxt = (TextView) contentView.findViewById(R.id.order_report);
         reachTimeTxt = (TextView) contentView.findViewById(R.id.reach_time);
         produceEffectTxt = (TextView) contentView.findViewById(R.id.produce_effect);
         receiveNameTxt  = (TextView) contentView.findViewById(R.id.receiver_name);
@@ -504,17 +492,12 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         finishProduceBtn = (Button) contentView.findViewById(R.id.btn_finish_produce);
         printOrderBtn = (Button) contentView.findViewById(R.id.btn_print_order);
         moreBtn  = (Button) contentView.findViewById(R.id.btn_more);
-        prevBtn = (Button) contentView.findViewById(R.id.btn_prev);
-        prevBtn.setOnClickListener(this);
-        nextBtn = (Button) contentView.findViewById(R.id.btn_next);
-        nextBtn.setOnClickListener(this);
     }
     private void updateDetailView(final OrderBean order){
         if(order==null){
             orderIdTxt.setText("");
             wholeOrderText.setText("");
             orderTimeTxt.setText("");
-            orderReportTxt.setEnabled(false);
             reachTimeTxt.setText("");
             produceEffectTxt.setText("");
             receiveNameTxt.setText("");
@@ -540,22 +523,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
             orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
             wholeOrderText.setText(order.getOrderSn());
             orderTimeTxt.setText(OrderHelper.getDateToString(order.getOrderTime()));
-            orderReportTxt.setEnabled(true);
-            orderReportTxt.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (reportWindow == null) {
-                        reportWindow = new ReportWindow(getActivity());
-                        reportWindow.setOrder(order);
-                        reportWindow.showReportWindow(detailRootView);
-                    } else {
-                        reportWindow.setOrder(order);
-                        reportWindow.showReportWindow(detailRootView);
-                    }
 
-
-                }
-            });
             reachTimeTxt.setText(order.getInstant() == 1 ? "尽快送达" : OrderHelper.getDateToMonthDay(order.getExpectedTime()));
 
             if(order.getProduceStatus()==OrderStatus.UNPRODUCED){
@@ -647,12 +615,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                     public void onClick(View v) {
                         final PopupMenu popup = new PopupMenu(mContext, v);
                         popup.inflate(R.menu.menu_order_detail_more);
-                       /* if (order.isWxScan() && OrderStatus.PRODUCED == order.getProduceStatus()) {
-                            popup.getMenu().findItem(R.id.menu_scan_code).setVisible(true);
-                        } else {
-                            popup.getMenu().findItem(R.id.menu_scan_code).setVisible(false);
-                        }*/
-
                         if (order.getStatus() != OrderStatus.ASSIGNED) {
                             popup.getMenu().findItem(R.id.menu_undo_order).setVisible(false);
                         }
@@ -672,14 +634,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
                                             }
                                         });
                                         break;
-                                    /*case R.id.menu_scan_code:
-                                        HttpHelper.getInstance().reqScanCode(order.getId(), new DialogCallback<XlsResponse>(getActivity()) {
-                                            @Override
-                                            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                                                handleScanCodeResponse(xlsResponse,call,response);
-                                            }
-                                        });
-                                        break;*/
                                     case R.id.menu_assign_order:
                                         Intent intent = new Intent(mContext, AssignOrderActivity.class);
                                         intent.putExtra("orderId", order.getId());
@@ -998,32 +952,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener{
         Log.d(TAG, "onDetach");
     }
 
-    @Override
-    public void onClick(View v) {
-        if(LoginHelper.isSFMode()){
-            return;
-        }
-        switch (v.getId()){
-            case R.id.btn_prev:  //上一单
-                if(adapter.selected>0){
-                    adapter.selected -= 1;
-                    adapter.notifyDataSetChanged();
-                    EventBus.getDefault().post(new UpdateOrderDetailEvent(adapter.list.get(adapter.selected)));
-                    ordersGridView.getRecyclerView().smoothScrollToPosition(adapter.selected);
-
-                }
-                break;
-            case R.id.btn_next:  //下一单
-                if(adapter.selected<adapter.list.size()-1 && adapter.selected!=-1 ){
-                    adapter.selected += 1;
-                    adapter.notifyDataSetChanged();
-                    EventBus.getDefault().post(new UpdateOrderDetailEvent(adapter.list.get(adapter.selected)));
-                    ordersGridView.getRecyclerView().smoothScrollToPosition(adapter.selected);
-                }
-                break;
-        }
-
-    }
 
     //隐藏spinner和刷新按钮
     private void showWidget(boolean isShow){

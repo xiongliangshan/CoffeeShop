@@ -72,6 +72,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener{
     private int mSelectedIndex = 0;
     private List<LinearLayout> tabList;
 
+    private TextView shopNameText;
     private TextView curVerText;
     private TextView checkUpdateText;
     private TextView loginOutText;
@@ -140,6 +141,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener{
         tabProduceLayout = (LinearLayout) findViewById(R.id.ll_produce_tab);
         tabDeliverlayout = (LinearLayout) findViewById(R.id.ll_deliver_tab);
         tabShopLayout = (LinearLayout) findViewById(R.id.ll_shop_tab);
+        shopNameText = (TextView) findViewById(R.id.tv_shop_name);
         curVerText = (TextView) findViewById(R.id.tv_current_version);
         checkUpdateText = (TextView) findViewById(R.id.tv_check_update);
         loginOutText = (TextView) findViewById(R.id.tv_login_out);
@@ -158,6 +160,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener{
         checkUpdateText.setOnClickListener(this);
         loginOutText.setOnClickListener(this);
 
+        shopNameText.setText(LoginHelper.getLoginBean(context).getShopName());
         curVerText.setText("当前版本:" + MyUtil.getVersion(context));
 
         tabList = new ArrayList<>();
@@ -240,8 +243,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener{
                 }
             });
             builder.create().show();
-        }else {
-            ToastUtil.show(context,xlsResponse.message);
         }
     }
 

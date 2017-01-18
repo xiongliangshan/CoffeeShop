@@ -54,7 +54,7 @@ import okhttp3.Response;
 /**
  * Created by Administrator on 2015/9/1.
  */
-public class OrderQueryFragment extends Fragment implements View.OnClickListener{
+public class OrderQueryFragment extends Fragment{
 
     private static final String TAG  ="OrderQueryFragment";
     private View mContentView;
@@ -76,7 +76,6 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
     private TextView orderIdTxt;
     private TextView wholeOrderText;
     private TextView orderTimeTxt;
-    private TextView orderReportTxt;
     private TextView reachTimeTxt;
     private TextView produceEffectTxt;
     private TextView receiveNameTxt;
@@ -86,15 +85,11 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
     private TextView deliverNameTxt;
     private TextView deliverPhoneTxt;
     private LinearLayout itemsContainerLayout;
-//    private TextView payWayTxt;
-//    private TextView moneyTxt;
     private TextView userRemarkTxt;
     private TextView csadRemarkTxt;
     private Button finishProduceBtn;
     private Button printOrderBtn;
     private Button moreBtn;
-    private Button prevBtn;
-    private Button nextBtn;
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -142,7 +137,6 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
                         ToastUtil.showToast(mContext,"订单号不能为空");
                         return false;
                     }
-                //    new OrderBySnQry(mContext,orderSn,true).doRequest();
                     HttpHelper.getInstance().reqSearchOrdersByOrderSn(orderSn, new DialogCallback<XlsResponse>(getActivity()) {
                         @Override
                         public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
@@ -164,7 +158,6 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
                     ToastUtil.showToast(mContext,"订单号不能为空");
                     return;
                 }
-        //        new OrderBySnQry(mContext,orderSn,true).doRequest();
                 HttpHelper.getInstance().reqSearchOrdersByOrderSn(orderSn, new DialogCallback<XlsResponse>(getActivity()) {
                     @Override
                     public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
@@ -201,7 +194,6 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
                 if (position > 0) {
                     //请求服务器
                     Log.d(TAG, "请求服务器，上传日期：" + date_str);
-                //    new OrderByDateQry(mContext,date_str,true).doRequest();
                     HttpHelper.getInstance().reqSearchOrdersByDate(date_str, new DialogCallback<XlsResponse>(getActivity()) {
                         @Override
                         public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
@@ -223,7 +215,6 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
         orderIdTxt = (TextView) contentView.findViewById(R.id.order_id);
         wholeOrderText = (TextView) contentView.findViewById(R.id.tv_whole_order_sn);
         orderTimeTxt = (TextView) contentView.findViewById(R.id.order_time);
-        orderReportTxt = (TextView) contentView.findViewById(R.id.order_report);
         reachTimeTxt = (TextView) contentView.findViewById(R.id.reach_time);
         produceEffectTxt = (TextView) contentView.findViewById(R.id.produce_effect);
         receiveNameTxt  = (TextView) contentView.findViewById(R.id.receiver_name);
@@ -233,17 +224,11 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
         deliverNameTxt = (TextView) contentView.findViewById(R.id.deliver_name);
         deliverPhoneTxt = (TextView) contentView.findViewById(R.id.deliver_phone);
         itemsContainerLayout = (LinearLayout) contentView.findViewById(R.id.items_container_layout);
-//        payWayTxt = (TextView) contentView.findViewById(R.id.pay_way);
-//        moneyTxt = (TextView) contentView.findViewById(R.id.money);
         userRemarkTxt = (TextView) contentView.findViewById(R.id.user_remark);
         csadRemarkTxt = (TextView) contentView.findViewById(R.id.csad_remark);
         finishProduceBtn = (Button) contentView.findViewById(R.id.btn_finish_produce);
         printOrderBtn = (Button) contentView.findViewById(R.id.btn_print_order);
         moreBtn  = (Button) contentView.findViewById(R.id.btn_more);
-        prevBtn = (Button) contentView.findViewById(R.id.btn_prev);
-        prevBtn.setOnClickListener(this);
-        nextBtn = (Button) contentView.findViewById(R.id.btn_next);
-        nextBtn.setOnClickListener(this);
     }
 
     public void updateDetailView(final OrderBean order){
@@ -251,7 +236,6 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
             orderIdTxt.setText("");
             wholeOrderText.setText("");
             orderTimeTxt.setText("");
-            orderReportTxt.setEnabled(false);
             reachTimeTxt.setText("");
             produceEffectTxt.setText("");
             receiveNameTxt.setText("");
@@ -260,8 +244,6 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
             deliverNameTxt.setText("");
             deliverPhoneTxt.setText("");
             fillItemListData(itemsContainerLayout,order);
-//            payWayTxt.setText("");
-//            moneyTxt.setText("");
             userRemarkTxt.setText("");
             csadRemarkTxt.setText("");
             finishProduceBtn.setEnabled(false);
@@ -271,23 +253,6 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
             orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
             wholeOrderText.setText(order.getOrderSn());
             orderTimeTxt.setText(OrderHelper.getDateToString(order.getOrderTime()));
-            orderReportTxt.setEnabled(true);
-            /*orderReportTxt.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(reportWindow==null){
-                        reportWindow = new ReportWindow(mContext,null);
-                        reportWindow.setOrder(order);
-                        reportWindow.showReportWindow(detailRootView);
-                    }else{
-                        reportWindow.setOrder(order);
-                        reportWindow.showReportWindow(detailRootView);
-                    }
-
-
-
-                }
-            });*/
             reachTimeTxt.setText(order.getInstant()==1?"尽快送达":OrderHelper.getDateToMonthDay(order.getExpectedTime()));
             final long mms = order.getProduceEffect();
 
@@ -318,8 +283,6 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
             }
 
             fillItemListData(itemsContainerLayout,order);
-//            payWayTxt.setText(order.getPayChannelStr());
-//            moneyTxt.setText(OrderHelper.getMoneyStr(order.getPaid()));
             userRemarkTxt.setText(order.getNotes());
             csadRemarkTxt.setText(order.getCsrNotes());
             finishProduceBtn.setEnabled(true);
@@ -541,7 +504,6 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume");
-    //    recyclerAdapter.setData(OrderGridViewAdapter.testList);
     }
 
 
@@ -574,31 +536,6 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
     public void onDetach() {
         super.onDetach();
         Log.d(TAG, "onDetach");
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.btn_prev:  //上一单
-                if(recyclerAdapter.selected>0){
-                    recyclerAdapter.selected -= 1;
-                    updateDetailView(recyclerAdapter.itemList.get(recyclerAdapter.selected));
-                    recyclerAdapter.notifyDataSetChanged();
-                    recyclerView.smoothScrollToPosition(recyclerAdapter.selected);
-
-
-                }
-                break;
-            case R.id.btn_next:  //下一单
-                if(recyclerAdapter.selected<recyclerAdapter.itemList.size()-1 && recyclerAdapter.selected!=-1 ){
-                    recyclerAdapter.selected += 1;
-                    updateDetailView(recyclerAdapter.itemList.get(recyclerAdapter.selected));
-                    recyclerAdapter.notifyDataSetChanged();
-                    recyclerView.smoothScrollToPosition(recyclerAdapter.selected);
-                }
-                break;
-        }
-
     }
 
     //设置RecyclerView item之间的间距
@@ -651,85 +588,4 @@ public class OrderQueryFragment extends Fragment implements View.OnClickListener
         }
     }
 
-   /* //按日期查询订单接口
-    class OrderByDateQry implements Qry {
-
-        private Context context;
-        private String date;
-        private boolean isShowProgress;
-
-        public OrderByDateQry(Context context,String date,boolean isShowProgress) {
-            this.context = context;
-            this.date = date;
-            this.isShowProgress = isShowProgress;
-        }
-
-        @Override
-        public void doRequest() {
-            LoginBean loginBean = LoginHelper.getLoginBean(context);
-            String token = loginBean.getToken();
-            int shopId = loginBean.getShopId();
-            String url = Urls.BASE_URL+shopId+"/orders/search/day/"+date+"?token="+token;
-            Map<String,Object> params = new HashMap<String,Object>();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, isShowProgress);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            Log.d(TAG, "OrderQrybyDate:resp  =" + resp);
-            if(resp==null){
-                ToastUtil.showToast(context, R.string.unknown_error);
-                return;
-            }
-            List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-            Log.d(TAG, "orderBeans  =" + orderBeans);
-            recyclerAdapter.setData(orderBeans);
-            if(orderBeans.size()>0){
-                updateDetailView(orderBeans.get(0));
-            }else{
-                updateDetailView(null);
-            }
-        }
-    }*/
-
-    /*//按订单号查询订单接口
-    class OrderBySnQry implements Qry {
-        //{shopId}/orders/search/id/{orderSn}
-        private Context context;
-        private String orderSn;
-        private boolean isShowProgress;
-
-        public OrderBySnQry(Context context, String orderSn, boolean isShowProgress) {
-            this.context = context;
-            this.orderSn = orderSn;
-            this.isShowProgress = isShowProgress;
-        }
-
-        @Override
-        public void doRequest() {
-            LoginBean loginBean = LoginHelper.getLoginBean(context);
-            String token = loginBean.getToken();
-            int shopId = loginBean.getShopId();
-            String url = Urls.BASE_URL+shopId+"/orders/search/id/"+orderSn+"?token="+token;
-            Map<String,Object> params = new HashMap<String,Object>();
-            HttpAsyncTask.request(new HttpEntity(HttpEntity.POST, url, params), context, this, isShowProgress);
-        }
-
-        @Override
-        public void showResult(Jresp resp) {
-            Log.d(TAG, "OrderQrybyId:resp  =" + resp);
-            if(resp==null){
-                ToastUtil.showToast(context, R.string.unknown_error);
-                return;
-            }
-            List<OrderBean> orderBeans = OrderBean.parseJsonOrders(context, resp);
-            Log.d(TAG, "orderBeans  =" + orderBeans);
-            recyclerAdapter.setData(orderBeans);
-            if(orderBeans.size()>0){
-                updateDetailView(orderBeans.get(0));
-            }else{
-                updateDetailView(null);
-            }
-        }
-    }*/
 }

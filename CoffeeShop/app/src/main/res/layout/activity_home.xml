@@ -21,6 +21,14 @@
             android:scaleType="centerInside"/>
 
         <TextView
+            android:id="@+id/tv_shop_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"/>
+
+        <TextView
             android:id="@+id/tv_current_version"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -128,17 +136,6 @@
 
         </LinearLayout>
 
-          <!--  <ImageButton
-                android:id="@+id/btn_setting"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@null"
-                android:src="@mipmap/icon_setting"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="40dp"
-                android:visibility="gone"
-                />-->
-
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
@@ -148,7 +145,7 @@
             android:id="@+id/tab_content"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="14"
+            android:layout_weight="19"
             />
 
     </LinearLayout>

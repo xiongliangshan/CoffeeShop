@@ -11,9 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="left"
-        android:paddingTop="10dp"
-
-        >
+        android:paddingTop="10dp">
 
         <com.lyancafe.coffeeshop.widget.ListTabButton
             android:id="@+id/tab_to_do"
@@ -23,14 +21,6 @@
             android:padding="5dp"
             android:layout_marginRight="10dp"
             />
-       <!-- <com.lyancafe.coffeeshop.widget.ListTabButton
-            android:id="@+id/tab_sf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            ltb:ltb_text = "顺风"
-            android:padding="5dp"
-            android:layout_marginRight="10dp"
-            />-->
         <com.lyancafe.coffeeshop.widget.ListTabButton
             android:id="@+id/tab_doing"
             android:layout_width="wrap_content"
@@ -64,16 +54,6 @@
             android:layout_marginRight="10dp"
             />
 
-        <TextView
-            android:id="@+id/tv_shop_name"
-            android:layout_width="wrap_content"
-            android:layout_marginLeft="50dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="18sp"
-            android:padding="8dp"
-            android:textColor="@color/blue"
-            />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -188,14 +168,6 @@
                     android:textSize="@dimen/batch_prompt_text_size"
                     android:visibility="gone"
                     android:text="系统已将5单合并一起，共有10杯咖啡待生产，生产时效为20分钟        建议生产顺序为：美式*3 冰美式*2 拿铁*2 热巧克力*1"/>
-                <!--<android.support.v7.widget.RecyclerView
-                    android:id="@+id/gv_order_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:layout_marginTop="8dp"
-                    android:scrollbars="none"
-                    />-->
                 <com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
                    android:id="@+id/gv_order_list"
                    android:layout_width="match_parent"
