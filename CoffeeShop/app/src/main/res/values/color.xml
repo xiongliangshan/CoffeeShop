@@ -8,7 +8,6 @@
 	<color name="blue">#0000FF</color>
 	<color name="grey">#a0a0a0</color>
 
-	<color name="black_transparent">#f0000000</color>
 
 	<color name="white_font">#ffffff</color>
 
@@ -27,7 +26,6 @@
 	<color name="bg_menu_selected">#282828</color>
 	<color name="font_menu_selected">#FFFFFF</color>
 	<color name="font_munu_normal">#1D1D1D</color>
-	<color name="bg_circle_black">#555555</color>
 
 	<color name="font_black">#333333</color>
 	<color name="font_red">#DD6A6A</color>

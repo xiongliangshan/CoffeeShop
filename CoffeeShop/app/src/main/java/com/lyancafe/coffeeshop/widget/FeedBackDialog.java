@@ -3,14 +3,10 @@ package com.lyancafe.coffeeshop.widget;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.helper.OrderHelper;
 
 /**
  * Created by Administrator on 2015/10/26.

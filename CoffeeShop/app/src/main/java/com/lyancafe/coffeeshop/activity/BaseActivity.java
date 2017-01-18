@@ -1,16 +1,8 @@
 package com.lyancafe.coffeeshop.activity;
 
-import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.AttributeSet;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-
-import com.lyancafe.coffeeshop.R;
 
 public class BaseActivity extends FragmentActivity {
 

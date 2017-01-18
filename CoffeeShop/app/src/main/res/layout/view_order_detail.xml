@@ -10,7 +10,7 @@
         android:id="@+id/detail_root_view"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:paddingLeft="16dp"
@@ -256,6 +256,7 @@
             android:layout_height="0dp"
             android:layout_marginTop="10dp"
             android:layout_weight="1"
+            android:baselineAligned="false"
             >
 
             <LinearLayout
@@ -268,7 +269,7 @@
                 <ScrollView
                     android:id="@+id/scrollView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="0dp"
                     android:layout_weight="1"
                     android:layout_marginRight="5dp"
                     android:scrollbars="none"

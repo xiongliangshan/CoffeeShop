@@ -1,7 +1,6 @@
 package com.lyancafe.coffeeshop.bean;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.io.Serializable;
 

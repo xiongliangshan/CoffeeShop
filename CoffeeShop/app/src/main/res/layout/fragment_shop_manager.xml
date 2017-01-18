@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/bg_shop"
+    android:baselineAligned="false"
     android:padding="16dp">
 
     <LinearLayout
@@ -21,7 +22,6 @@
             android:gravity="center"
             android:textSize="24sp"
             android:text = "门店管理"
-            android:layout_centerHorizontal="true"
             />
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
@@ -79,7 +79,6 @@
             android:gravity="center"
             android:textSize="24sp"
             android:text = ""
-            android:layout_centerHorizontal="true"
             />
         <android.support.v7.widget.CardView
             android:id="@+id/fragment_container"

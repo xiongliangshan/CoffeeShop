@@ -71,7 +71,6 @@ import com.lyancafe.coffeeshop.widget.ConfirmDialog;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
 import com.lyancafe.coffeeshop.widget.ListTabButton;
 import com.lyancafe.coffeeshop.widget.PromptDialog;
-import com.lyancafe.coffeeshop.widget.ReportWindow;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
 import org.greenrobot.eventbus.EventBus;

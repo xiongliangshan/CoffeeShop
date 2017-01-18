@@ -2,9 +2,7 @@ package com.lyancafe.coffeeshop.widget;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -13,7 +11,6 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
-import com.lyancafe.coffeeshop.utils.MyUtil;
 
 /**
  * Created by Administrator on 2016/2/1.

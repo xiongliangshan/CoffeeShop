@@ -34,7 +34,7 @@ public class MyPushReceiver extends BroadcastReceiver {
 
     private static final String TAG = "MyPushReceiver";
     NotificationManager mNotificationManager;
-    private Handler handler = new Handler(){
+    private static Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
 
