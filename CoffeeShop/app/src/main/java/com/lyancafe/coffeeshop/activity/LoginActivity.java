@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
@@ -32,7 +32,7 @@ public class LoginActivity extends BaseActivity {
     private static final String TAG = "LoginActivity";
     private EditText userNameEdit;
     private EditText passwordEdit;
-    private ImageButton loginBtn;
+    private Button loginBtn;
     private Context mContext;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,7 @@ public class LoginActivity extends BaseActivity {
         setContentView(R.layout.activity_login);
         userNameEdit = (EditText) findViewById(R.id.username);
         passwordEdit = (EditText) findViewById(R.id.password);
-        loginBtn = (ImageButton) findViewById(R.id.login_btn);
+        loginBtn = (Button) findViewById(R.id.login_btn);
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
