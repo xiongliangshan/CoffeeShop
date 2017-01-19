@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
@@ -22,6 +23,8 @@ import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
+import com.lyancafe.coffeeshop.event.RefreshToFetchDataEvent;
+import com.lyancafe.coffeeshop.fragment.DeliverFragment;
 import com.lyancafe.coffeeshop.fragment.OrderQueryFragment;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.fragment.ShopManagerFragment;
@@ -44,6 +47,8 @@ import com.nostra13.universalimageloader.core.decode.BaseImageDecoder;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,12 +59,13 @@ import okhttp3.Response;
 /**
  * Created by Administrator on 2015/9/18.
  */
-public class HomeActivity extends BaseActivity implements View.OnClickListener{
+public class HomeActivity extends BaseActivity implements View.OnClickListener,DeliverFragment.OnFragmentInteractionListener{
 
     private static final String TAG ="HomeActivity";
     public List<Fragment> fragmentsList = new ArrayList<Fragment>();
     private OrdersFragment orderFrag;
-    private OrderQueryFragment orderQueryFrag;
+//    private OrderQueryFragment orderQueryFrag;
+    private DeliverFragment deliverFragment;
     private ShopManagerFragment shopManagerFrag;
     private TaskService taskService;
     private ServiceConnection serviceConnection;
@@ -173,10 +179,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener{
     }
     private void initFragments(){
         orderFrag =  new OrdersFragment();
-        orderQueryFrag = new OrderQueryFragment();
+//        orderQueryFrag = new OrderQueryFragment();
+        deliverFragment = DeliverFragment.newInstance("","");
         shopManagerFrag = new ShopManagerFragment();
         fragmentsList.add(orderFrag);
-        fragmentsList.add(orderQueryFrag);
+    //    fragmentsList.add(orderQueryFrag);
+        fragmentsList.add(deliverFragment);
         fragmentsList.add(shopManagerFrag);
 
     }
@@ -315,13 +323,24 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener{
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         if(fragment instanceof OrdersFragment){
-            ft.hide(orderQueryFrag).hide(shopManagerFrag).show(orderFrag);
-        }else if(fragment instanceof OrderQueryFragment){
-            ft.hide(orderFrag).hide(shopManagerFrag).show(orderQueryFrag);
+//            ft.hide(orderQueryFrag).hide(shopManagerFrag).show(orderFrag);
+            ft.hide(deliverFragment).hide(shopManagerFrag).show(orderFrag);
+        }else if(fragment instanceof DeliverFragment){
+//            ft.hide(orderFrag).hide(shopManagerFrag).show(orderQueryFrag);
+            ft.hide(orderFrag).hide(shopManagerFrag).show(deliverFragment);
         }else{
-            ft.hide(orderFrag).hide(orderQueryFrag).show(shopManagerFrag);
+//            ft.hide(orderFrag).hide(orderQueryFrag).show(shopManagerFrag);
+            ft.hide(orderFrag).hide(deliverFragment).show(shopManagerFrag);
         }
         ft.commitAllowingStateLoss();
+        for(int i = 0;i<fragmentsList.size();i++){
+            if(i==selectedIndex){
+                fragmentsList.get(i).setUserVisibleHint(true);
+            }else{
+                fragmentsList.get(i).setUserVisibleHint(false);
+            }
+        }
+
 
     }
 
@@ -336,4 +355,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener{
         context.stopService(intent_update);
     }
 
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 }

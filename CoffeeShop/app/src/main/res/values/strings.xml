@@ -25,11 +25,11 @@
     <string name="tab_order_have_finished">已完成</string>
 
     <string name="empty_no_orders">暂无订单</string>
-    
+
     <string name="sort_by_order_time">按下单时间排序</string>
     <string name="sort_by_delivery_effect">按配送时效排序</string>
     <string name="sort_by_produce_effect">按生产时效排序</string>
-    
+
     <string name="category_order">预约单</string>
     <string name="category_now">尽快送达单</string>
     <string name="category_all">全部订单</string>
@@ -58,7 +58,7 @@
     <string name="question_idea">处理建议</string>
     <string name="cancel_order">取消订单</string>
     <string name="modify_order_time">改约时间</string>
-    
+
     <string name="print">打印</string>
     <string name="print_again">已打印</string>
 
@@ -81,10 +81,10 @@
     <string name="batch_finish">批量完成</string>
 
     <string name="batch_coffee_prompt">系统已将<xliff:g id="order_num">%d</xliff:g>单合并在一起，共有<xliff:g id="cup_num">%d</xliff:g>杯咖啡待生产，生成时效为<xliff:g id="time_effect">%d</xliff:g>分钟\n
-                 建议生产顺序为 : <xliff:g id = "sort">%s</xliff:g></string>
+                 建议生产顺序为 : <xliff:g id="sort">%s</xliff:g></string>
 
     <string name="batch_sf_prompt">本组有<xliff:g id="order_num">%d</xliff:g>单顺风单，共有<xliff:g id="cup_num">%d</xliff:g>杯咖啡待生产
-                \n建议生产顺序为 : <xliff:g id = "sort">%s</xliff:g></string>
+                \n建议生产顺序为 : <xliff:g id="sort">%s</xliff:g></string>
 
     <string name="print_paster">打印\n贴纸</string>
     <string name="print_material">打印\n物料</string>
@@ -94,4 +94,7 @@
     <string name="sf_batch_start">批量开始</string>
     <string name="sf_batch_produced">批量完成</string>
     <string name="sf_batch_print">批量打印</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

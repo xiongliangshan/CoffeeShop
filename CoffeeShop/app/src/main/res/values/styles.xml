@@ -90,4 +90,9 @@
         <item name="android:windowCloseOnTouchOutside">false</item>
     </style>
 
+
+    <style name="MyTab" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textSize">@dimen/tab_text</item>
+    </style>
+
 </resources>

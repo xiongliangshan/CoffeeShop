@@ -16,9 +16,9 @@ android {
         }
 
         manifestPlaceholders = [
-                JPUSH_PKGNAME : "com.lyancafe.coffeeshop",
+                JPUSH_PKGNAME: "com.lyancafe.coffeeshop",
                 JPUSH_APPKEY : "1baa62e47b3d916278c45526", //JPush上注册的包名对应的appkey.
-                JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+                JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
         ]
     }
     buildTypes {
@@ -43,13 +43,15 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:23.3.0'
-    compile 'com.android.support:recyclerview-v7:23.3.0'
-    compile 'com.android.support:cardview-v7:23.3.0'
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:recyclerview-v7:23.4.0'
+    compile 'com.android.support:cardview-v7:23.4.0'
+    compile 'com.android.support:design:23.4.0'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile 'com.tencent.bugly:crashreport:latest.release'
-    testCompile 'junit:junit:4.12'
     compile 'com.wuxiaolong.pullloadmorerecyclerview:library:1.0.5'
     compile 'com.lzy.net:okgo:2.1.4'
+    compile 'com.android.support:support-v4:23.4.0'
+    testCompile 'junit:junit:4.12'
 }
