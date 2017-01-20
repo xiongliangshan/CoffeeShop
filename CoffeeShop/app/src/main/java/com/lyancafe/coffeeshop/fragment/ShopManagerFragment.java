@@ -19,7 +19,7 @@ import com.lyancafe.coffeeshop.adapter.FragmentTabAdapter;
 /**
  * Created by Administrator on 2015/9/1.
  */
-public class ShopManagerFragment extends Fragment implements View.OnClickListener{
+public class ShopManagerFragment extends BaseFragment implements View.OnClickListener{
 
     private static final String TAG ="ShopManagerFragment";
     private View mContentView;
@@ -139,5 +139,15 @@ public class ShopManagerFragment extends Fragment implements View.OnClickListene
     }
 
 
+
+    @Override
+    protected void onVisible() {
+//        Log.d("xls","ShopManagerFragment is onVisible");
+    }
+
+    @Override
+    protected void onInVisible() {
+//        Log.d("xls","ShopManagerFragment is onInVisible");
+    }
 
 }

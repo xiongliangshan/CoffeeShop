@@ -25,6 +25,7 @@ import com.lyancafe.coffeeshop.constant.TabList;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
+import com.lyancafe.coffeeshop.event.UpdateDeliverOrderDetailEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
@@ -63,7 +64,7 @@ public class DeliveringRvAdapter extends RecyclerView.Adapter<DeliveringRvAdapte
                 selected = position;
                 notifyDataSetChanged();
                 if(position>=0 && position<list.size()){
-                    EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
+                    EventBus.getDefault().post(new UpdateDeliverOrderDetailEvent(list.get(position)));
                 }
 
                 Log.d(TAG, "点击了 " + position);
@@ -308,9 +309,9 @@ public class DeliveringRvAdapter extends RecyclerView.Adapter<DeliveringRvAdapte
         this.list = list;
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+            EventBus.getDefault().post(new UpdateDeliverOrderDetailEvent(this.list.get(selected)));
         }else{
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+            EventBus.getDefault().post(new UpdateDeliverOrderDetailEvent(null));
         }
 
     }

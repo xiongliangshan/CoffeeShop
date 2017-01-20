@@ -86,7 +86,7 @@ import okhttp3.Response;
 /**
  * Created by Administrator on 2015/9/1.
  */
-public class OrdersFragment extends Fragment {
+public class OrdersFragment extends BaseFragment {
 
     private static final String TAG  ="OrdersFragment";
     private View mContentView;
@@ -1537,4 +1537,13 @@ public class OrdersFragment extends Fragment {
     }
 
 
+    @Override
+    protected void onVisible() {
+ //      Log.d("xls","OrdersFragment is onVisible");
+    }
+
+    @Override
+    protected void onInVisible() {
+ //       Log.d("xls","OrdersFragment is onInVisible");
+    }
 }

@@ -12,18 +12,11 @@ import android.view.ViewGroup;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.DeliveringRvAdapter;
-import com.lyancafe.coffeeshop.adapter.ToFetchRvAdapter;
 import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.bean.SFGroupBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
-import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
-import com.lyancafe.coffeeshop.constant.TabList;
-import com.lyancafe.coffeeshop.event.RefreshDeliveringDataEvent;
-import com.lyancafe.coffeeshop.event.UpdateTabOrderListCountEvent;
+import com.lyancafe.coffeeshop.event.UpdateDeliverFragmentTabOrderCount;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
-import com.lyancafe.coffeeshop.helper.LoginHelper;
-import com.lyancafe.coffeeshop.helper.OrderHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -38,7 +31,7 @@ import okhttp3.Response;
  * Use the {@link DeliveringFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DeliveringFragment extends Fragment {
+public class DeliveringFragment extends BaseFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -78,7 +71,7 @@ public class DeliveringFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("xls","DeliveringFragment-onCreate");
+//        Log.d("xls","DeliveringFragment-onCreate");
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -88,7 +81,6 @@ public class DeliveringFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        EventBus.getDefault().register(this);
         View contentView = inflater.inflate(R.layout.fragment_delivering, container, false);
         initViews(contentView);
         return contentView;
@@ -104,6 +96,15 @@ public class DeliveringFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if(DeliverFragment.tabIndex==1){
+            HttpHelper.getInstance().reqDeliveryingData(2, 99, new JsonCallback<XlsResponse>() {
+                @Override
+                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                    handleDeliveryingResponse(xlsResponse,call,response);
+                }
+
+            });
+        }
         Log.d("xls","DeliveringFragment-onResume");
     }
 
@@ -115,13 +116,29 @@ public class DeliveringFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        EventBus.getDefault().unregister(this);
         super.onDestroyView();
     }
 
-    @Subscribe
-    public void onRefreshDeliveringDataEvent(RefreshDeliveringDataEvent event){
-        //请求配送中列表
+
+
+
+    //处理服务器返回数据---配送中
+    private void handleDeliveryingResponse(XlsResponse xlsResponse,Call call,Response response){
+        List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
+//        EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_DELIVERING,orderBeans.size()));
+        EventBus.getDefault().post(new UpdateDeliverFragmentTabOrderCount(1,orderBeans.size()));
+        mAdapter.setData(orderBeans);
+        Log.d("xls","请求--配送中");
+
+    }
+
+
+    @Override
+    protected void onVisible() {
+        Log.d("xls","Delivering onVisible");
+        if(!isResumed()){
+            return;
+        }
         HttpHelper.getInstance().reqDeliveryingData(2, 99, new JsonCallback<XlsResponse>() {
             @Override
             public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
@@ -131,15 +148,8 @@ public class DeliveringFragment extends Fragment {
         });
     }
 
-
-
-    //处理服务器返回数据---配送中
-    private void handleDeliveryingResponse(XlsResponse xlsResponse,Call call,Response response){
-        List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
-//        EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_DELIVERING,orderBeans.size()));
-        mAdapter.setData(orderBeans);
-
+    @Override
+    protected void onInVisible() {
+        Log.d("xls","Delivering onInVisible");
     }
-
-
 }

@@ -1,13 +1,10 @@
 package com.lyancafe.coffeeshop.adapter;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.Log;
 
-import com.lyancafe.coffeeshop.fragment.DeliverFragment;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,11 +13,13 @@ import java.util.List;
 
 public class DeliverFragmentPagerAdapter extends FragmentPagerAdapter {
 
-    private String[] titles = new String[]{"待取货","配送中"};
+    public String[] titles = new String[]{"待取货","配送中"};
     private List<Fragment> fragments;
+    private Context mContext;
 
-    public DeliverFragmentPagerAdapter(FragmentManager fm,List<Fragment> fragments) {
+    public DeliverFragmentPagerAdapter(FragmentManager fm,Context mContext,List<Fragment> fragments) {
         super(fm);
+        this.mContext = mContext;
         this.fragments = fragments;
     }
 
@@ -38,6 +37,7 @@ public class DeliverFragmentPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         return titles[position];
     }
+
 
 
 }

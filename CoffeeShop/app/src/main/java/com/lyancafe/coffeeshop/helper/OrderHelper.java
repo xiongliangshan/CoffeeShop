@@ -3,6 +3,7 @@ package com.lyancafe.coffeeshop.helper;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
@@ -540,6 +541,36 @@ public class OrderHelper {
             }
         }
 
+    }
+
+    //计算订单的服务时效
+    public static String getTimeToService(OrderBean orderBean){
+        SimpleDateFormat sdf  = new SimpleDateFormat("HH:mm");
+        String result = "";
+        if(orderBean.getInstant()==1){  //及时单
+            long orderTime = orderBean.getOrderTime();
+            long nowTime = System.currentTimeMillis();
+            long deltaTime = nowTime - orderTime;
+            if(deltaTime<30*60*1000){
+                result = "截止"+sdf.format(new Date(orderTime+30*60*1000))+"送达 良好";
+            }else if(deltaTime>=30*60*1000 && deltaTime<60*60*1000){
+                result = "截止"+sdf.format(new Date(orderTime+60*60*1000))+"送达 合格";
+            }else if(deltaTime>=60*60*1000){
+                result = "已超时";
+            }
+        }else{
+            long bookTime = orderBean.getExpectedTime();
+            long T2 = bookTime+30*60*1000;
+            long nowTime = System.currentTimeMillis();
+            if(nowTime<T2){
+                result = "截止"+sdf.format(new Date(T2))+"送达 良好";
+            }else if(nowTime>=T2 && nowTime<=T2+5*60*1000){
+                result = "截止"+sdf.format(new Date(T2+5*60*1000))+"送达 合格";
+            }else if(nowTime>T2+5*60*1000){
+                result = "已超时";
+            }
+        }
+        return result;
     }
 
 }

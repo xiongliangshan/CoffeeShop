@@ -54,7 +54,7 @@ import okhttp3.Response;
 /**
  * Created by Administrator on 2015/9/1.
  */
-public class OrderQueryFragment extends Fragment{
+public class OrderQueryFragment extends BaseFragment{
 
     private static final String TAG  ="OrderQueryFragment";
     private View mContentView;

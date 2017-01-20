@@ -23,9 +23,7 @@ import com.lyancafe.coffeeshop.bean.LoginBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
-import com.lyancafe.coffeeshop.event.RefreshToFetchDataEvent;
 import com.lyancafe.coffeeshop.fragment.DeliverFragment;
-import com.lyancafe.coffeeshop.fragment.OrderQueryFragment;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.fragment.ShopManagerFragment;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
@@ -46,8 +44,6 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.decode.BaseImageDecoder;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;

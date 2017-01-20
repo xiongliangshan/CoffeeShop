@@ -14,10 +14,13 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.ToFetchRvAdapter;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
-import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
-import com.lyancafe.coffeeshop.event.RefreshToFetchDataEvent;
+import com.lyancafe.coffeeshop.constant.OrderStatus;
+import com.lyancafe.coffeeshop.event.RecallOrderEvent;
+import com.lyancafe.coffeeshop.event.UpdateDeliverFragmentTabOrderCount;
+import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -32,7 +35,7 @@ import okhttp3.Response;
  * Use the {@link ToFetchFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ToFetchFragment extends Fragment{
+public class ToFetchFragment extends BaseFragment{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -71,7 +74,7 @@ public class ToFetchFragment extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("xls","ToFetchFragment-onCreate");
+//        Log.d("xls","ToFetchFragment-onCreate");
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -82,12 +85,15 @@ public class ToFetchFragment extends Fragment{
     public void onResume() {
         super.onResume();
         Log.d("xls","ToFetchFragment-onResume");
-        HttpHelper.getInstance().reqProducedData(2, 99, new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleProudcedResponse(xlsResponse,call,response);
-            }
-        });
+        if(DeliverFragment.tabIndex==0){
+            HttpHelper.getInstance().reqProducedData(2, 99, new JsonCallback<XlsResponse>() {
+                @Override
+                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                    handleProudcedResponse(xlsResponse,call,response);
+                }
+            });
+        }
+
     }
 
     @Override
@@ -105,6 +111,7 @@ public class ToFetchFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d("xls","ToFetchFragment-onCreateView");
         EventBus.getDefault().register(this);
         View contentView =  inflater.inflate(R.layout.fragment_to_fetch, container, false);
         initViews(contentView);
@@ -124,26 +131,64 @@ public class ToFetchFragment extends Fragment{
         super.onDestroyView();
     }
 
+    /**
+     * 咖啡师从小哥手里撤回订单
+     * @param event
+     */
     @Subscribe
-    public void onRefreshToFetchDataEvent(RefreshToFetchDataEvent event){
-
-        //请求待取货列表
-        HttpHelper.getInstance().reqProducedData(2, 99, new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleProudcedResponse(xlsResponse,call,response);
-            }
-        });
-
+    public  void onRecallOrderEvent(RecallOrderEvent event){
+        handleRecallOrderResponse(event.xlsResponse,event.call,event.response);
     }
+
 
 
     //处理服务器返回数据---已生产
     private void handleProudcedResponse(XlsResponse xlsResponse,Call call,Response response){
         List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
  //       EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_PRODUCED,orderBeans.size()));
+        EventBus.getDefault().post(new UpdateDeliverFragmentTabOrderCount(0,orderBeans.size()));
         mAdapter.setData(orderBeans);
+        Log.d("xls","请求--待取货");
     }
 
 
+    //处理服务器返回数据---订单收回
+    private void handleRecallOrderResponse(XlsResponse xlsResponse,Call call,Response response){
+        if(xlsResponse.status==0){
+            ToastUtil.showToast(getActivity(), R.string.do_success);
+            int id  = xlsResponse.data.getIntValue("id");
+            for(OrderBean order:mAdapter.list){
+                if(id == order.getId()){
+                    order.setStatus(OrderStatus.UNASSIGNED);
+                    mAdapter.notifyDataSetChanged();
+                    EventBus.getDefault().post(new UpdateOrderDetailEvent(order));
+                    break;
+                }
+            }
+
+
+        }else{
+            ToastUtil.showToast(getActivity(), xlsResponse.message);
+        }
+    }
+
+
+    @Override
+    protected void onVisible() {
+        Log.d("xls","ToFetchFragment onVisible");
+        if(!isResumed()){
+            return;
+        }
+        HttpHelper.getInstance().reqProducedData(2, 99, new JsonCallback<XlsResponse>() {
+            @Override
+            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                handleProudcedResponse(xlsResponse,call,response);
+            }
+        });
+    }
+
+    @Override
+    protected void onInVisible() {
+        Log.d("xls","ToFetchFragment onInVisible");
+    }
 }
