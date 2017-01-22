@@ -88,7 +88,7 @@ public class ToFetchFragment extends BaseFragment{
         super.onResume();
         Log.d("xls","ToFetchFragment-onResume");
         if(DeliverFragment.tabIndex==0){
-            HttpHelper.getInstance().reqProducedData(2, 99, new JsonCallback<XlsResponse>() {
+            HttpHelper.getInstance().reqProducedData(new JsonCallback<XlsResponse>() {
                 @Override
                 public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
                     handleProudcedResponse(xlsResponse,call,response);
@@ -181,7 +181,7 @@ public class ToFetchFragment extends BaseFragment{
         if(!isResumed()){
             return;
         }
-        HttpHelper.getInstance().reqProducedData(2, 99, new JsonCallback<XlsResponse>() {
+        HttpHelper.getInstance().reqProducedData(new JsonCallback<XlsResponse>() {
             @Override
             public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
                 handleProudcedResponse(xlsResponse,call,response);

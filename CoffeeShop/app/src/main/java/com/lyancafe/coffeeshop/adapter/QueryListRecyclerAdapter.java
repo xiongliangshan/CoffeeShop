@@ -136,7 +136,7 @@ public class QueryListRecyclerAdapter extends RecyclerView.Adapter<QueryListRecy
         final long mms = order.getProduceEffect();
         Log.d(TAG, "mms = " + mms);
 
-        if(OrdersFragment.subTabIndex== TabList.TAB_TOPRODUCE){
+        if(OrdersFragment.tabIndex== TabList.TAB_TOPRODUCE){
             holder.produceBtn.setEnabled(true);
 
             if(mms<=0){

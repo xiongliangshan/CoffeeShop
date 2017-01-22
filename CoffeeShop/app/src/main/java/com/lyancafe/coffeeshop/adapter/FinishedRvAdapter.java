@@ -137,16 +137,8 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Vi
             holder.vipFlagIV.setImageResource(R.mipmap.flag_placeholder);
         }
 
-        if(OrdersFragment.subTabIndex==TabList.TAB_TOPRODUCE){
-            if(order.getInstant()==0){
-                holder.produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
-            }else{
-                holder.produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn);
-            }
-            OrderHelper.showEffectOnly(order,holder.effectTimeTxt);
-        }else{
-            OrderHelper.showEffect(order, holder.produceBtn, holder.effectTimeTxt);
-        }
+        OrderHelper.showEffect(order, holder.produceBtn, holder.effectTimeTxt);
+
         if(OrderHelper.isPrinted(context, order.getOrderSn())){
             holder.printBtn.setText(R.string.print_again);
             holder.printBtn.setTextColor(context.getResources().getColor(R.color.text_red));

@@ -136,16 +136,9 @@ public class ToFetchRvAdapter extends RecyclerView.Adapter<ToFetchRvAdapter.View
             holder.vipFlagIV.setImageResource(R.mipmap.flag_placeholder);
         }
 
-        if(OrdersFragment.subTabIndex==TabList.TAB_TOPRODUCE){
-            if(order.getInstant()==0){
-                holder.produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
-            }else{
-                holder.produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn);
-            }
-            OrderHelper.showEffectOnly(order,holder.effectTimeTxt);
-        }else{
-            OrderHelper.showEffect(order, holder.produceBtn, holder.effectTimeTxt);
-        }
+
+        OrderHelper.showEffect(order, holder.produceBtn, holder.effectTimeTxt);
+
         if(OrderHelper.isPrinted(context, order.getOrderSn())){
             holder.printBtn.setText(R.string.print_again);
             holder.printBtn.setTextColor(context.getResources().getColor(R.color.text_red));
@@ -331,11 +324,11 @@ public class ToFetchRvAdapter extends RecyclerView.Adapter<ToFetchRvAdapter.View
         if(list.size()>0){
             selected=0;
             notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(selected)));
+            EventBus.getDefault().post(new UpdateDeliverOrderDetailEvent(list.get(selected)));
         }else{
             selected = -1;
             notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+            EventBus.getDefault().post(new UpdateDeliverOrderDetailEvent(null));
         }
 
 

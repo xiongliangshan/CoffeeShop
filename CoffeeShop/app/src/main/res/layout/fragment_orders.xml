@@ -1,227 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ltb="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     >
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="left"
-        android:paddingTop="10dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <com.lyancafe.coffeeshop.widget.ListTabButton
-            android:id="@+id/tab_to_do"
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            ltb:ltb_text = "待生产"
-            android:padding="5dp"
-            android:layout_marginRight="10dp"
-            />
-        <com.lyancafe.coffeeshop.widget.ListTabButton
-            android:id="@+id/tab_doing"
+            android:layout_centerVertical="true"
+            app:tabTextAppearance="@style/MyTab"
+            app:tabMode="scrollable"
+            app:tabIndicatorColor="@color/tab_orange"
+            app:tabSelectedTextColor="@color/tab_orange"
+            >
+
+            <android.support.design.widget.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="待生产"/>
+
+            <android.support.design.widget.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="生产中"/>
+
+        </android.support.design.widget.TabLayout>
+
+        <TextView
+            android:id="@+id/tv_constant_order_select"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            ltb:ltb_text = "生产中"
-            android:padding="5dp"
-            android:layout_marginRight="10dp"
-            />
-        <com.lyancafe.coffeeshop.widget.ListTabButton
-            android:id="@+id/tab_have_done"
-            android:layout_width="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:textSize="@dimen/tab_text"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/tabLayout"
+            android:text="订单筛选"/>
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/spinner_category"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            ltb:ltb_text = "已生产"
-            android:padding="5dp"
-            android:layout_marginRight="10dp"
-            />
-        <com.lyancafe.coffeeshop.widget.ListTabButton
-            android:id="@+id/tab_delivering"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            ltb:ltb_text = "配送中"
-            android:padding="5dp"
-            android:layout_marginRight="10dp"
-            />
-        <com.lyancafe.coffeeshop.widget.ListTabButton
-            android:id="@+id/tab_delivery_finished"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            ltb:ltb_text = "已完成"
-            android:padding="5dp"
-            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="4dp"
+            android:gravity="center"
+            android:layout_toRightOf="@id/tv_constant_order_select"
+            android:entries="@array/platforms"
             />
 
-    </LinearLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="4dp"
+            android:text="订单查找"
+            android:textSize="@dimen/tab_text"
+            android:layout_toLeftOf="@+id/rg_search_type"/>
+
+        <RadioGroup
+            android:id="@id/rg_search_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal"
+            android:layout_toLeftOf="@+id/et_key_content">
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/tab_text"
+                android:checked="true"
+                android:text="按小哥"/>
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/tab_text"
+                android:text="按单号"/>
+        </RadioGroup>
+
+        <EditText
+            android:id="@id/et_key_content"
+            android:layout_width="100dp"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/tab_text"
+            android:layout_toLeftOf="@+id/btn_search"/>
+        <Button
+            android:id="@id/btn_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:textSize="@dimen/tab_text"
+            android:text="查找"/>
+    </RelativeLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:baselineAligned="false">
+        android:padding="8dp">
 
-        <LinearLayout
-            android:layout_width="750dp"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            >
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:gravity="center_vertical"
-                >
-                <Spinner
-                    android:id="@+id/spinner_sort"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    />
-
-                <Spinner
-                    android:id="@+id/spinner_category"
-                    android:layout_toRightOf="@id/spinner_sort"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:id="@+id/total_quantity"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="总杯量:"
-                    android:textSize="20sp"
-                    android:textColor="@color/bg_refresh"
-                    android:visibility="invisible"
-                    />
-                <RadioGroup
-                    android:id="@+id/rg_order_limit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_radiogroup_limit"
-                    android:layout_toLeftOf="@+id/btn_refresh"
-                    android:layout_marginRight="16dp"
-                    android:orientation="horizontal"
-                    >
-                    <RadioButton
-                        android:id="@+id/rb_low"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="48"
-                        android:layout_marginLeft="2dp"
-                        android:checked="true"
-                        />
-                    <RadioButton
-                        android:id="@+id/rb_middle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="72"
-                        android:layout_marginLeft="2dp"
-                        android:layout_marginRight="2dp"
-                        />
-                    <RadioButton
-                        android:id="@+id/rb_all"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="全部"
-                        android:layout_marginRight="2dp"
-                        />
-
-                </RadioGroup>
-                <TextView
-                    android:id="@+id/btn_refresh"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toLeftOf="@+id/btn_batch_handle"
-                    android:layout_marginRight="16dp"
-                    android:background="@drawable/bg_refresh"
-                    android:padding="8dp"
-                    android:gravity="center"
-                    android:textColor="@color/white_font"
-                    android:textSize="14sp"
-                    android:text="刷新列表"/>
-                <TextView
-                    android:id="@+id/btn_batch_handle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="16dp"
-                    android:background="@color/bg_batch_handle"
-                    android:padding="8dp"
-                    android:textColor="@color/white_font"
-                    android:textSize="14sp"
-                    android:text="@string/batch_handle"
-                    android:visibility="invisible"/>
-            </RelativeLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                >
-                <TextView
-                    android:id="@+id/tv_batch_prompt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@color/bg_batch_prompt"
-                    android:padding="10dp"
-                    android:textSize="@dimen/batch_prompt_text_size"
-                    android:visibility="gone"
-                    android:text="系统已将5单合并一起，共有10杯咖啡待生产，生产时效为20分钟        建议生产顺序为：美式*3 冰美式*2 拿铁*2 热巧克力*1"/>
-                <com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
-                   android:id="@+id/gv_order_list"
-                   android:layout_width="match_parent"
-                   android:layout_height="0dp"
-                   android:layout_weight="1"
-                   android:layout_marginTop="8dp"
-                   android:scrollbars="none"
-                   />
-            </LinearLayout>
-
-        </LinearLayout>
-        <LinearLayout
+        <android.support.v4.view.ViewPager
+            android:id="@+id/vp_container"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="1">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="right"
-                android:padding="10dp"
-                android:layout_marginRight="16dp">
+            android:layout_weight="5" />
 
-                <TextView
-                    android:id="@+id/tv_good_comment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="4dp"
-                    android:drawableLeft="@mipmap/smile"
-                    android:text="好评"
-                    android:textColor="@color/font_red"/>
-
-                <TextView
-                    android:id="@+id/tv_bad_comment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="4dp"
-                    android:layout_marginLeft="16dp"
-                    android:drawableLeft="@mipmap/sad"
-                    android:text="差评"/>
-            </LinearLayout>
-
-            <include
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:layout_marginLeft="8dp"
-                layout = "@layout/view_order_detail"
-                />
-        </LinearLayout>
+        <include
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            layout = "@layout/view_order_detail"
+            />
 
     </LinearLayout>
-
 
 </LinearLayout>

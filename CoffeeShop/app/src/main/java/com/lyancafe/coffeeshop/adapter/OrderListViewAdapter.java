@@ -63,9 +63,9 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
         holder.horizontalListView.setItemAnimator(new DefaultItemAnimator());
         SFItemListAdapter adapter = new SFItemListAdapter(mContext,sfGroupBean.getItemGroup());
         holder.horizontalListView.setAdapter(adapter);
-        if(OrdersFragment.subTabIndex== TabList.TAB_TOPRODUCE){
+        if(OrdersFragment.tabIndex== TabList.TAB_TOPRODUCE){
             holder.batchHandlerBtn.setText(R.string.sf_batch_start);
-        }else if(OrdersFragment.subTabIndex== TabList.TAB_PRODUCING){
+        }else if(OrdersFragment.tabIndex== TabList.TAB_PRODUCING){
             holder.batchHandlerBtn.setText(R.string.sf_batch_produced);
         }else{
             holder.batchHandlerBtn.setText(R.string.sf_batch_print);

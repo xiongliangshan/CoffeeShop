@@ -25,6 +25,7 @@ import com.lyancafe.coffeeshop.constant.TabList;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
+import com.lyancafe.coffeeshop.event.UpdateDeliverOrderDetailEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
@@ -37,14 +38,14 @@ import java.util.List;
 /**
  * Created by Administrator on 2015/9/21.
  */
-public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdapter.ViewHolder>{
+public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.ViewHolder>{
 
     private static final String TAG  ="OrderGridViewAdapter";
     private Context context;
     public List<OrderBean> list = new ArrayList<OrderBean>();
     public int selected = -1;
 
-    public OrderGridViewAdapter(Context context) {
+    public ToProduceRvAdapter(Context context) {
         this.context = context;
     }
 
@@ -135,16 +136,14 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
             holder.vipFlagIV.setImageResource(R.mipmap.flag_placeholder);
         }
 
-        if(OrdersFragment.tabIndex==TabList.TAB_TOPRODUCE){
-            if(order.getInstant()==0){
-                holder.produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
-            }else{
-                holder.produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn);
-            }
-            OrderHelper.showEffectOnly(order,holder.effectTimeTxt);
+
+        if(order.getInstant()==0){
+            holder.produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
         }else{
-            OrderHelper.showEffect(order, holder.produceBtn, holder.effectTimeTxt);
+            holder.produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn);
         }
+        OrderHelper.showEffectOnly(order,holder.effectTimeTxt);
+
         if(OrderHelper.isPrinted(context, order.getOrderSn())){
             holder.printBtn.setText(R.string.print_again);
             holder.printBtn.setTextColor(context.getResources().getColor(R.color.text_red));
@@ -313,16 +312,6 @@ public class OrderGridViewAdapter extends RecyclerView.Adapter<OrderGridViewAdap
             EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
         }
 
-    }
-
-    public void addData(List<OrderBean> list){
-        this.list.addAll(list);
-        notifyDataSetChanged();
-        if(selected>=0 && selected<this.list.size()){
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
-        }else{
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
-        }
     }
 
 

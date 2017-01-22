@@ -471,7 +471,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
             }
 
         });
-        HttpHelper.getInstance().reqFinishedListData(2, 99, 0, new JsonCallback<XlsResponse>() {
+        HttpHelper.getInstance().reqFinishedListData(0, new JsonCallback<XlsResponse>() {
             @Override
             public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
                 handleFinishedResponse(xlsResponse, call, response);
@@ -510,7 +510,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
     @Override
     public void onLoadMore() {
-        HttpHelper.getInstance().reqFinishedListData(2, 99, finishedLastOrderId, new JsonCallback<XlsResponse>() {
+        HttpHelper.getInstance().reqFinishedListData(finishedLastOrderId, new JsonCallback<XlsResponse>() {
             @Override
             public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
                 pullLoadMoreRecyclerView.setPullLoadMoreCompleted();
@@ -567,7 +567,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
             }
 
         });
-        HttpHelper.getInstance().reqFinishedListData(2, 99, 0, new JsonCallback<XlsResponse>() {
+        HttpHelper.getInstance().reqFinishedListData(0, new JsonCallback<XlsResponse>() {
             @Override
             public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
                 handleFinishedResponse(xlsResponse, call, response);

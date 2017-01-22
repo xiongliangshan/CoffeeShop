@@ -99,7 +99,7 @@ public class DeliveringFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         if(DeliverFragment.tabIndex==1){
-            HttpHelper.getInstance().reqDeliveryingData(2, 99, new JsonCallback<XlsResponse>() {
+            HttpHelper.getInstance().reqDeliveryingData(new JsonCallback<XlsResponse>() {
                 @Override
                 public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
                     handleDeliveryingResponse(xlsResponse,call,response);
@@ -140,7 +140,7 @@ public class DeliveringFragment extends BaseFragment {
         if(!isResumed()){
             return;
         }
-        HttpHelper.getInstance().reqDeliveryingData(2, 99, new JsonCallback<XlsResponse>() {
+        HttpHelper.getInstance().reqDeliveryingData(new JsonCallback<XlsResponse>() {
             @Override
             public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
                 handleDeliveryingResponse(xlsResponse,call,response);

@@ -111,10 +111,8 @@ public class HttpHelper {
      * @param limitLevel
      * @param callback
      */
-    public void reqToProduceData(int orderBy, int fillterInstant,int limitLevel,JsonCallback<XlsResponse> callback){
+    public void reqToProduceData(int limitLevel,JsonCallback<XlsResponse> callback){
         HashMap<String, Object> params = new HashMap<>();
-        params.put("orderBy", orderBy);
-        params.put("fillterInstant", fillterInstant);
         params.put("limitLevel", limitLevel);
         JSONObject jsonObject = new JSONObject(params);
 
@@ -133,14 +131,12 @@ public class HttpHelper {
 
     /**
      * 请求生产中列表数据
-     * @param orderBy
-     * @param fillterInstant
      * @param callback
      */
-    public void reqProducingData(int orderBy, int fillterInstant,JsonCallback<XlsResponse> callback){
+    public void reqProducingData(JsonCallback<XlsResponse> callback){
         HashMap<String, Object> params = new HashMap<>();
-        params.put("orderBy", orderBy);
-        params.put("fillterInstant", fillterInstant);
+       /* params.put("orderBy", orderBy);
+        params.put("fillterInstant", fillterInstant);*/
         JSONObject jsonObject = new JSONObject(params);
 
         String url=null;
@@ -158,14 +154,12 @@ public class HttpHelper {
 
     /**
      * 请求已生产列表数据
-     * @param orderBy
-     * @param fillterInstant
      * @param callback
      */
-    public void reqProducedData(int orderBy, int fillterInstant,JsonCallback<XlsResponse> callback){
+    public void reqProducedData(JsonCallback<XlsResponse> callback){
         HashMap<String, Object> params = new HashMap<>();
-        params.put("orderBy", orderBy);
-        params.put("fillterInstant", fillterInstant);
+       /* params.put("orderBy", orderBy);
+        params.put("fillterInstant", fillterInstant);*/
         JSONObject jsonObject = new JSONObject(params);
 
         String url=null;
@@ -184,14 +178,10 @@ public class HttpHelper {
 
     /**
      * 请求配送中列表数据
-     * @param orderBy
-     * @param fillterInstant
      * @param callback
      */
-    public void reqDeliveryingData(int orderBy, int fillterInstant,JsonCallback<XlsResponse> callback){
+    public void reqDeliveryingData(JsonCallback<XlsResponse> callback){
         HashMap<String, Object> params = new HashMap<>();
-        params.put("orderBy", orderBy);
-        params.put("fillterInstant", fillterInstant);
         JSONObject jsonObject = new JSONObject(params);
 
         String url=null;
@@ -209,15 +199,11 @@ public class HttpHelper {
 
     /**
      * 请求已完成列表数据
-     * @param orderBy
-     * @param fillterInstant
      * @param callback
      */
-    public void reqFinishedListData(int orderBy, int fillterInstant, long orderId, JsonCallback<XlsResponse> callback){
+    public void reqFinishedListData(long orderId, JsonCallback<XlsResponse> callback){
         HashMap<String, Object> params = new HashMap<>();
         params.put("orderId",orderId); //区分是刷新还是加载更多
-        params.put("orderBy", orderBy);
-        params.put("fillterInstant", fillterInstant);
         JSONObject jsonObject = new JSONObject(params);
 
         String url=null;

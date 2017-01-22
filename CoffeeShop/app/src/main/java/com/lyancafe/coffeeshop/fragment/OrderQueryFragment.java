@@ -40,7 +40,6 @@ import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.lyancafe.coffeeshop.widget.ReportWindow;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -63,7 +62,6 @@ public class OrderQueryFragment extends BaseFragment{
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private QueryListRecyclerAdapter recyclerAdapter;
-    private ReportWindow reportWindow;
     private EditText orderSnEdit;
     private Button queryBtn;
 
