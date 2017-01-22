@@ -3,7 +3,6 @@ package com.lyancafe.coffeeshop.helper;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
@@ -92,7 +91,7 @@ public class OrderHelper {
     /*时间戳转换成字符窜*/
     public static String getDateToString(long time) {
         Date d = new Date(time);
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat sf = new SimpleDateFormat("MM-dd HH:mm");
         return sf.format(d);
     }
 

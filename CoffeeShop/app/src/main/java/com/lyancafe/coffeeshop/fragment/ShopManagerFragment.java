@@ -1,6 +1,7 @@
 package com.lyancafe.coffeeshop.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -26,14 +27,14 @@ public class ShopManagerFragment extends BaseFragment implements View.OnClickLis
     private LinearLayout printPasterLayout;
     private TextView printPasterText;
     private Fragment currentFragment;
-    private FragmentActivity mContext;
+    private Context mContext;
 
     private MaterialFragment materialFragment;
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        this.mContext = (FragmentActivity)activity;
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.mContext = context;
     }
 
     @Override
@@ -132,7 +133,7 @@ public class ShopManagerFragment extends BaseFragment implements View.OnClickLis
         if(fragment == currentFragment || fragment==null){
             return;
         }
-        FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
+        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         ft.replace(R.id.fragment_container,fragment).commit();
         fragment.onResume();
         currentFragment = fragment;

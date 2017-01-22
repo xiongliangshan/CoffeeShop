@@ -1,0 +1,111 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp">
+
+        <TextView
+            android:id="@+id/constant_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="日期:"
+            android:textSize="18sp"
+            android:textColor="@color/font_black"
+            />
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@id/constant_date"/>
+        <TextView
+            android:id="@+id/constant_order_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tv_date"
+            android:layout_marginLeft="16dp"
+            android:text="单量:"
+            android:textSize="18sp"
+            android:textColor="@color/font_black"
+            />
+        <TextView
+            android:id="@+id/tv_order_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:textSize="18sp"
+            android:layout_toRightOf="@id/constant_order_count"/>
+        <TextView
+            android:id="@+id/constant_cup_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tv_order_count"
+            android:layout_marginLeft="16dp"
+            android:text="杯量:"
+            android:textSize="18sp"
+            android:textColor="@color/font_black"
+            />
+        <TextView
+            android:id="@+id/tv_cup_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:textSize="18sp"
+            android:layout_toRightOf="@id/constant_cup_count"/>
+
+        <TextView
+            android:id="@+id/tv_good_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:drawableLeft="@mipmap/smile"
+            android:layout_toRightOf="@id/tv_cup_count"
+            android:text="好评"
+            android:textSize="18sp"
+            android:textColor="@color/font_red"/>
+
+        <TextView
+            android:id="@+id/tv_bad_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tv_good_comment"
+            android:layout_marginLeft="16dp"
+            android:drawableLeft="@mipmap/sad"
+            android:textSize="18sp"
+            android:text="差评"/>
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
+            android:id="@+id/plmgv_order_list"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:paddingRight="10dp"
+            android:layout_weight="20"
+            android:scrollbars="none"
+            />
+
+        <include
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="11"
+            layout = "@layout/view_shop_detail"
+            />
+    </LinearLayout>
+
+</LinearLayout>

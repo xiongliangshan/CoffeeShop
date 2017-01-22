@@ -25,6 +25,7 @@ import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.fragment.DeliverFragment;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
+import com.lyancafe.coffeeshop.fragment.ShopFragment;
 import com.lyancafe.coffeeshop.fragment.ShopManagerFragment;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
@@ -62,7 +63,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,D
     private OrdersFragment orderFrag;
 //    private OrderQueryFragment orderQueryFrag;
     private DeliverFragment deliverFragment;
-    private ShopManagerFragment shopManagerFrag;
+//    private ShopManagerFragment shopManagerFrag;
+    private ShopFragment shopFragment;
     private TaskService taskService;
     private ServiceConnection serviceConnection;
     private Context context;
@@ -177,11 +179,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,D
         orderFrag =  new OrdersFragment();
 //        orderQueryFrag = new OrderQueryFragment();
         deliverFragment = DeliverFragment.newInstance("","");
-        shopManagerFrag = new ShopManagerFragment();
+ //       shopManagerFrag = new ShopManagerFragment();
+        shopFragment = new ShopFragment();
         fragmentsList.add(orderFrag);
     //    fragmentsList.add(orderQueryFrag);
         fragmentsList.add(deliverFragment);
-        fragmentsList.add(shopManagerFrag);
+//        fragmentsList.add(shopManagerFrag);
+        fragmentsList.add(shopFragment);
 
     }
     @Override
@@ -320,13 +324,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,D
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         if(fragment instanceof OrdersFragment){
 //            ft.hide(orderQueryFrag).hide(shopManagerFrag).show(orderFrag);
-            ft.hide(deliverFragment).hide(shopManagerFrag).show(orderFrag);
+            ft.hide(deliverFragment).hide(shopFragment).show(orderFrag);
         }else if(fragment instanceof DeliverFragment){
 //            ft.hide(orderFrag).hide(shopManagerFrag).show(orderQueryFrag);
-            ft.hide(orderFrag).hide(shopManagerFrag).show(deliverFragment);
+            ft.hide(orderFrag).hide(shopFragment).show(deliverFragment);
         }else{
 //            ft.hide(orderFrag).hide(orderQueryFrag).show(shopManagerFrag);
-            ft.hide(orderFrag).hide(deliverFragment).show(shopManagerFrag);
+            ft.hide(orderFrag).hide(deliverFragment).show(shopFragment);
         }
         ft.commitAllowingStateLoss();
         for(int i = 0;i<fragmentsList.size();i++){

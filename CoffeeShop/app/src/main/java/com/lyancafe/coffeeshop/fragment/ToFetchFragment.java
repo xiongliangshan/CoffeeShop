@@ -20,6 +20,8 @@ import com.lyancafe.coffeeshop.event.RecallOrderEvent;
 import com.lyancafe.coffeeshop.event.UpdateDeliverFragmentTabOrderCount;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
+import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -122,6 +124,7 @@ public class ToFetchFragment extends BaseFragment{
         mRecyclerView = (RecyclerView) contentView.findViewById(R.id.rv_to_fetch);
         mAdapter = new ToFetchRvAdapter(getActivity());
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),4,GridLayoutManager.VERTICAL,false));
+        mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(4, getActivity()), false));
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -145,7 +148,6 @@ public class ToFetchFragment extends BaseFragment{
     //处理服务器返回数据---已生产
     private void handleProudcedResponse(XlsResponse xlsResponse,Call call,Response response){
         List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
- //       EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_PRODUCED,orderBeans.size()));
         EventBus.getDefault().post(new UpdateDeliverFragmentTabOrderCount(0,orderBeans.size()));
         mAdapter.setData(orderBeans);
         Log.d("xls","请求--待取货");

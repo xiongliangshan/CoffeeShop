@@ -1,17 +1,17 @@
 package com.lyancafe.coffeeshop.fragment;
 
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -26,46 +26,54 @@ import android.widget.TextView;
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.activity.AssignOrderActivity;
-import com.lyancafe.coffeeshop.adapter.DeliverFragmentPagerAdapter;
+import com.lyancafe.coffeeshop.activity.CommentActivity;
+import com.lyancafe.coffeeshop.adapter.FinishedRvAdapter;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.DialogCallback;
+import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
+import com.lyancafe.coffeeshop.event.CommentCountEvent;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
 import com.lyancafe.coffeeshop.event.RecallOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
-import com.lyancafe.coffeeshop.event.UpdateDeliverFragmentTabOrderCount;
-import com.lyancafe.coffeeshop.event.UpdateDeliverOrderDetailEvent;
+import com.lyancafe.coffeeshop.event.UpdateFinishedOrderDetailEvent;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
+import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.Call;
+import okhttp3.Request;
 import okhttp3.Response;
 
-public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSelectedListener {
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    public static int tabIndex = 0;
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreRecyclerView.PullLoadMoreListener {
 
+    private PullLoadMoreRecyclerView pullLoadMoreRecyclerView;
+    private FinishedRvAdapter mAdapter;
+    private long finishedLastOrderId = 0;
     private Context mContext;
-    private String mParam1;
-    private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
-    private DeliverFragmentPagerAdapter mPagerAdapter;
-
+    private TextView dateText;
+    private TextView orderCountText;
+    private TextView cupCountText;
+    private TextView goodCommentText;
+    private TextView badCommentText;
     /**
      * 订单详情页UI组件
      */
@@ -98,76 +106,72 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
 
     private IndoDetailListener indoDetailListener;
 
+    public FinishedOrderFragment() {
 
-
-    public DeliverFragment() {
-
-    }
-
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DeliverFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static DeliverFragment newInstance(String param1, String param2) {
-        DeliverFragment fragment = new DeliverFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
-//        Log.d("xls","DeliverFragment-onCreate");
         indoDetailListener = new IndoDetailListener();
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View contentView = inflater.inflate(R.layout.fragment_deliver, container, false);
+        EventBus.getDefault().register(this);
+        View contentView = inflater.inflate(R.layout.fragment_finished_order, container, false);
         initViews(contentView);
         initDetailView(contentView);
         return contentView;
     }
 
-    private void initViews(View contentView) {
-        tabLayout  = (TabLayout) contentView.findViewById(R.id.tabLayout);
-        viewPager = (ViewPager) contentView.findViewById(R.id.vp_container);
 
-        List<Fragment> fragments = new ArrayList<>();
-        fragments.add(new ToFetchFragment());
-        fragments.add(new DeliveringFragment());
-        mPagerAdapter = new DeliverFragmentPagerAdapter(getChildFragmentManager(),getActivity(),fragments);
-        viewPager.setAdapter(mPagerAdapter);
-        viewPager.setOffscreenPageLimit(1);
-        tabLayout.setupWithViewPager(viewPager);
-        tabLayout.setOnTabSelectedListener(this);
+    private void initViews(View contentView){
+        dateText = (TextView) contentView.findViewById(R.id.tv_date);
+        orderCountText = (TextView) contentView.findViewById(R.id.tv_order_count);
+        cupCountText = (TextView) contentView.findViewById(R.id.tv_cup_count);
+        goodCommentText = (TextView) contentView.findViewById(R.id.tv_good_comment);
+        badCommentText = (TextView) contentView.findViewById(R.id.tv_bad_comment);
+        pullLoadMoreRecyclerView = (PullLoadMoreRecyclerView) contentView.findViewById(R.id.plmgv_order_list);
 
+        pullLoadMoreRecyclerView.getRecyclerView().setLayoutManager(new GridLayoutManager(getActivity(),4,GridLayoutManager.VERTICAL,false) );
+        pullLoadMoreRecyclerView.getRecyclerView().setHasFixedSize(true);
+        pullLoadMoreRecyclerView.getRecyclerView().setItemAnimator(new DefaultItemAnimator());
+        pullLoadMoreRecyclerView.getRecyclerView().addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(4, mContext), false));
+        pullLoadMoreRecyclerView.setPullRefreshEnable(true);
+        pullLoadMoreRecyclerView.setPushRefreshEnable(false);
+
+        mAdapter = new FinishedRvAdapter(getActivity());
+        pullLoadMoreRecyclerView.setAdapter(mAdapter);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        dateText.setText(sdf.format(new Date()));
+
+        goodCommentText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //好评列表
+                Intent intent =  new Intent(mContext, CommentActivity.class);
+                intent.putExtra("coment_type",OrderHelper.GOOD_COMMENT);
+                mContext.startActivity(intent);
+            }
+        });
+
+        badCommentText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //差评列表
+                Intent intent =  new Intent(mContext, CommentActivity.class);
+                intent.putExtra("coment_type",OrderHelper.BAD_COMMENT);
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     private void initDetailView(View contentView){
@@ -198,106 +202,6 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
         printOrderBtn = (Button) contentView.findViewById(R.id.btn_print_order);
         moreBtn  = (Button) contentView.findViewById(R.id.btn_more);
     }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-//        Log.d("xls","DeliverFragment-onResume, postion="+tabLayout.getSelectedTabPosition());
-    }
-
-    @Subscribe
-    public void onUpdateDeliverFragmentTabOrderCount(UpdateDeliverFragmentTabOrderCount event){
-        TabLayout.Tab tab = tabLayout.getTabAt(event.tabIndex);
-        if(event.count>0){
-            tab.setText(mPagerAdapter.getPageTitle(event.tabIndex)+"("+event.count+")");
-        }else{
-            tab.setText(mPagerAdapter.getPageTitle(event.tabIndex));
-        }
-
-    }
-
-    @Subscribe
-    public void onUpdateDeliverOrderDetailEvent(UpdateDeliverOrderDetailEvent event){
-        updateDetailView(event.orderBean);
-    }
-
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d("xls","DeliverFragment-onPause");
-    }
-
-
-
-
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-
-
-    @Override
-    public void onDestroy() {
-        EventBus.getDefault().unregister(this);
-        super.onDestroy();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
-
-    @Override
-    public void onTabSelected(TabLayout.Tab tab) {
-        tabIndex = tab.getPosition();
-        viewPager.setCurrentItem(tabIndex);
-    }
-
-    @Override
-    public void onTabUnselected(TabLayout.Tab tab) {
-
-    }
-
-    @Override
-    public void onTabReselected(TabLayout.Tab tab) {
-
-    }
-
-
-    @Override
-    protected void onVisible() {
-//        Log.d("xls","DeliverFragment is onVisible , resume :"+isResumed()+"| hide:"+isHidden());
-        if(!isResumed()){
-            return;
-        }
-        for(int i=0;i<mPagerAdapter.getCount();i++){
-            if(i==tabIndex){
-                mPagerAdapter.getItem(i).setUserVisibleHint(true);
-            }else{
-                mPagerAdapter.getItem(i).setUserVisibleHint(false);
-            }
-        }
-
-    }
-
-    @Override
-    protected void onInVisible() {
-//        Log.d("xls","DeliverFragment is onInVisible");
-    }
-
 
     private void updateDetailView(final OrderBean order){
         if(order==null){
@@ -557,6 +461,131 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
         ll.invalidate();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        HttpHelper.getInstance().reqFinishedTotalAmountData(new JsonCallback<XlsResponse>() {
+            @Override
+            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                handleFinishedTotalAmountResponse(xlsResponse,call,response);
+            }
+
+        });
+        HttpHelper.getInstance().reqFinishedListData(2, 99, 0, new JsonCallback<XlsResponse>() {
+            @Override
+            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                handleFinishedResponse(xlsResponse, call, response);
+            }
+        });
+    }
+
+    @Subscribe
+    public void onUpdateFinishedOrderDetailEvent(UpdateFinishedOrderDetailEvent event){
+        updateDetailView(event.orderBean);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCommentCountEvent(CommentCountEvent event){
+        HttpHelper.getInstance().reqCommentCount(new JsonCallback<XlsResponse>() {
+            @Override
+            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                handleCommentCountResponse(xlsResponse,call,response);
+            }
+        });
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onRefresh() {
+
+    }
+
+
+
+    @Override
+    public void onLoadMore() {
+        HttpHelper.getInstance().reqFinishedListData(2, 99, finishedLastOrderId, new JsonCallback<XlsResponse>() {
+            @Override
+            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                pullLoadMoreRecyclerView.setPullLoadMoreCompleted();
+                handleFinishedResponse(xlsResponse,call,response);
+            }
+        });
+    }
+
+
+    /**
+     * 处理评论数量接口返回的数据
+     */
+    private void handleCommentCountResponse(XlsResponse xlsResponse,Call call,Response response){
+        if(xlsResponse.status==0){
+            int positive = xlsResponse.data.getIntValue("positive");
+            int negative = xlsResponse.data.getIntValue("negative");
+            if(goodCommentText!=null && badCommentText!=null){
+                goodCommentText.setText("好评"+positive);
+                badCommentText.setText("差评"+negative);
+            }
+
+        }
+    }
+
+    //处理服务器返回数据---已完成
+    private void handleFinishedResponse(XlsResponse xlsResponse,Call call,Response response){
+        Request request = call.request();
+        String isLoadMore = request.header("isLoadMore");
+        List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
+        if("yes".equalsIgnoreCase(isLoadMore)){
+            mAdapter.addData(orderBeans);
+        }else{
+            mAdapter.setData(orderBeans);
+        }
+
+        if(mAdapter.list.size()>0){
+            finishedLastOrderId = mAdapter.list.get(mAdapter.list.size()-1).getId();
+        }else {
+            finishedLastOrderId = 0;
+        }
+    }
+
+
+    @Override
+    protected void onVisible() {
+        super.onVisible();
+        if(!isResumed()){
+            return;
+        }
+        HttpHelper.getInstance().reqFinishedTotalAmountData(new JsonCallback<XlsResponse>() {
+            @Override
+            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                handleFinishedTotalAmountResponse(xlsResponse,call,response);
+            }
+
+        });
+        HttpHelper.getInstance().reqFinishedListData(2, 99, 0, new JsonCallback<XlsResponse>() {
+            @Override
+            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                handleFinishedResponse(xlsResponse, call, response);
+            }
+        });
+    }
+
+
+    //处理服务器返回的已完成订单总单量和杯量
+    private void handleFinishedTotalAmountResponse(XlsResponse xlsResponse,Call call,Response response){
+        if(xlsResponse.status==0){
+            int ordersAmount = xlsResponse.data.getIntValue("totalOrdersAmount");
+            int cupsAmount = xlsResponse.data.getIntValue("totalCupsAmount");
+            orderCountText.setText(String.valueOf(ordersAmount));
+            cupCountText.setText(String.valueOf(cupsAmount));
+        }
+    }
+
 
     class  IndoDetailListener implements View.OnClickListener{
         @Override
@@ -577,8 +606,4 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
             }
         }
     }
-
-
-
-
 }

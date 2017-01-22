@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -66,6 +64,7 @@ import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.helper.PrintHelper;
+import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
@@ -348,45 +347,6 @@ public class OrdersFragment extends BaseFragment {
             case 3:
                 radioGroup.check(R.id.rb_all);
                 break;
-        }
-    }
-
-
-    //设置RecyclerView item之间的间距
-    public class SpaceItemDecoration extends RecyclerView.ItemDecoration{
-
-        private int spanCount;
-        private int space;
-        private boolean includeEdge;
-
-
-        public SpaceItemDecoration(int spanCount, int space, boolean includeEdge) {
-            this.spanCount = spanCount;
-            this.space = space;
-            this.includeEdge = includeEdge;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            int position = parent.getChildAdapterPosition(view); // item position
-            int column = position % spanCount; // item column
-
-            if (includeEdge) {
-                outRect.left = space - column * space / spanCount; // spacing - column * ((1f / spanCount) * spacing)
-                outRect.right = (column + 1) * space / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
-
-                if (position < spanCount) { // top edge
-                    outRect.top = space;
-                }
-                outRect.bottom = space; // item bottom
-            } else {
-                outRect.left = column * space / spanCount; // column * ((1f / spanCount) * spacing)
-                outRect.right = space - (column + 1) * space / spanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)
-                if (position >= spanCount) {
-                    outRect.top = space; // item top
-                }
-            }
-
         }
     }
 
