@@ -10,13 +10,11 @@ import okhttp3.Response;
  */
 
 public class RecallOrderEvent {
-    public XlsResponse xlsResponse;
-    public Call call;
-    public Response response;
+    public int tabIndex;
+    public int orderId;
 
-    public RecallOrderEvent(XlsResponse xlsResponse, Call call, Response response) {
-        this.xlsResponse = xlsResponse;
-        this.call = call;
-        this.response = response;
+    public RecallOrderEvent(int tabIndex, int orderId) {
+        this.tabIndex = tabIndex;
+        this.orderId = orderId;
     }
 }

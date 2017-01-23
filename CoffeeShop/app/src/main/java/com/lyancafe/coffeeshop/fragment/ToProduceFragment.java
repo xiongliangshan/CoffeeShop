@@ -27,7 +27,11 @@ import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.constant.TabList;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
+import com.lyancafe.coffeeshop.event.NewOderComingEvent;
+import com.lyancafe.coffeeshop.event.RecallOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
+import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
+import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
 import com.lyancafe.coffeeshop.event.UpdateTabOrderListCountEvent;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
@@ -116,6 +120,21 @@ public class ToProduceFragment extends BaseFragment {
         });
     }
 
+
+    //新订单消息触发事件
+    @Subscribe
+    public void onNewOrderComing(NewOderComingEvent event){
+        if(isResumed()){
+            HttpHelper.getInstance().reqToProduceData(LoginHelper.getLimitLevel(mContext), new JsonCallback<XlsResponse>() {
+                @Override
+                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                    handleToProudceResponse(xlsResponse,call,response);
+                }
+            });
+        }
+
+    }
+
     /**
      * 点击开始生产按钮事件
      * @param event
@@ -123,6 +142,26 @@ public class ToProduceFragment extends BaseFragment {
     @Subscribe
     public void onStartProduceEvent(StartProduceEvent event){
         startProduceAndPrint(mContext, event.order);
+    }
+
+    /**
+     * 处理订单撤回状态刷新
+     * @param event
+     */
+    @Subscribe
+    public void onRecallOrderEvent(RecallOrderEvent event){
+        if(event.tabIndex==0){
+            for(int i=0;i<mAdapter.list.size();i++) {
+                OrderBean order = mAdapter.list.get(i);
+                if (event.orderId == order.getId()) {
+                    order.setStatus(OrderStatus.UNASSIGNED);
+                    mAdapter.notifyItemChanged(i);
+                    EventBus.getDefault().post(new UpdateOrderDetailEvent(order));
+                    break;
+                }
+            }
+        }
+
     }
 
     //点击开始生产并打印
@@ -171,7 +210,7 @@ public class ToProduceFragment extends BaseFragment {
     private void handleToProudceResponse(XlsResponse xlsResponse,Call call,Response response){
         if(xlsResponse.status==0){
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
-            EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_TOPRODUCE, orderBeans.size()));
+            EventBus.getDefault().post(new UpdateProduceFragmentTabOrderCount(0, orderBeans.size()));
             mAdapter.setData(orderBeans);
         }else if(xlsResponse.status==103){
             //token 无效

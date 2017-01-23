@@ -39,8 +39,10 @@ import com.lyancafe.coffeeshop.event.RecallOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateDeliverFragmentTabOrderCount;
 import com.lyancafe.coffeeshop.event.UpdateDeliverOrderDetailEvent;
+import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -88,10 +90,10 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
     private TextView userCommentContentText;
     private LinearLayout twoBtnLayout;
     private LinearLayout oneBtnLayout;
+    private TextView assignBtn;
     private Button produceAndPrintBtn;
     private Button finishProduceBtn;
     private Button printOrderBtn;
-    private Button moreBtn;
     /**
      * 订单详情
      */
@@ -193,10 +195,10 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
         userCommentContentText = (TextView) contentView.findViewById(R.id.user_comment_content);
         twoBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_twobtn);
         oneBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_onebtn);
+        assignBtn = (TextView) contentView.findViewById(R.id.btn_assign);
         produceAndPrintBtn = (Button) contentView.findViewById(R.id.btn_produce_print);
         finishProduceBtn = (Button) contentView.findViewById(R.id.btn_finish_produce);
         printOrderBtn = (Button) contentView.findViewById(R.id.btn_print_order);
-        moreBtn  = (Button) contentView.findViewById(R.id.btn_more);
     }
 
 
@@ -263,7 +265,7 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         tabIndex = tab.getPosition();
-        viewPager.setCurrentItem(tabIndex);
+        viewPager.setCurrentItem(tabIndex,false);
     }
 
     @Override
@@ -315,15 +317,14 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
             userCommentTagsText.setText("");
             userCommentContentText.setText("");
             itemsContainerLayout.removeAllViews();
+            assignBtn.setVisibility(View.GONE);
             produceAndPrintBtn.setEnabled(false);
             finishProduceBtn.setEnabled(false);
             printOrderBtn.setEnabled(false);
-            moreBtn.setEnabled(false);
         }else{
             produceAndPrintBtn.setEnabled(true);
             finishProduceBtn.setEnabled(true);
             printOrderBtn.setEnabled(true);
-            moreBtn.setEnabled(true);
 
             orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
             wholeOrderText.setText(order.getOrderSn());
@@ -341,6 +342,36 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
             csadRemarkTxt.setText(order.getCsrNotes());
             userCommentTagsText.setText(OrderHelper.getCommentTagsStr(order.getFeedbackTags()));
             userCommentContentText.setText(order.getFeedback());
+
+            if(order.getDeliveryTeam()== DeliveryTeam.MEITUAN || order.getStatus()==OrderStatus.DELIVERING){
+                assignBtn.setVisibility(View.GONE);
+            }else{
+                assignBtn.setVisibility(View.VISIBLE);
+                if (order.getStatus() == OrderStatus.UNASSIGNED) {
+                    assignBtn.setText("订单指派");
+                    assignBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(mContext, AssignOrderActivity.class);
+                            intent.putExtra("orderId", order.getId());
+                            mContext.startActivity(intent);
+                        }
+                    });
+                } else if (order.getStatus() == OrderStatus.ASSIGNED) {
+                    assignBtn.setText("订单撤回");
+                    assignBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            HttpHelper.getInstance().reqRecallOrder(order.getId(), new DialogCallback<XlsResponse>(getActivity()) {
+                                @Override
+                                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                                    handleRecallOrderResponse(xlsResponse, call, response);
+                                }
+                            });
+                        }
+                    });
+                }
+            }
 
             if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
                 twoBtnLayout.setVisibility(View.GONE);
@@ -395,7 +426,7 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
                 });
             }
 
-            if(order.getDeliveryTeam()== DeliveryTeam.MEITUAN){
+           /* if(order.getDeliveryTeam()== DeliveryTeam.MEITUAN){
                 moreBtn.setEnabled(false);
             }else{
                 moreBtn.setEnabled(true);
@@ -437,7 +468,7 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
                         popup.show();
                     }
                 });
-            }
+            }*/
 
         }
 
@@ -557,6 +588,16 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
         ll.invalidate();
     }
 
+    //处理服务器返回数据---订单收回
+    private void handleRecallOrderResponse(XlsResponse xlsResponse,Call call,Response response){
+        if(xlsResponse.status==0){
+            ToastUtil.showToast(getActivity(), R.string.do_success);
+            int id  = xlsResponse.data.getIntValue("id");
+            EventBus.getDefault().post(new RecallOrderEvent(10,id));
+        }else{
+            ToastUtil.showToast(getActivity(), xlsResponse.message);
+        }
+    }
 
     class  IndoDetailListener implements View.OnClickListener{
         @Override

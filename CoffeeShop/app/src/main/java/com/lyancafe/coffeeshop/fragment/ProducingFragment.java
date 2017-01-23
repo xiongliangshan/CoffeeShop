@@ -24,6 +24,9 @@ import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.constant.TabList;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
+import com.lyancafe.coffeeshop.event.RecallOrderEvent;
+import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
+import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
 import com.lyancafe.coffeeshop.event.UpdateTabOrderListCountEvent;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
@@ -120,6 +123,26 @@ public class ProducingFragment extends BaseFragment {
         finishProduce(mContext, event.order);
     }
 
+    /**
+     * 处理订单撤回状态刷新
+     * @param event
+     */
+    @Subscribe
+    public void onRecallOrderEvent(RecallOrderEvent event){
+        if(event.tabIndex==1){
+            for(int i=0;i<mAdapter.list.size();i++) {
+                OrderBean order = mAdapter.list.get(i);
+                if (event.orderId == order.getId()) {
+                    order.setStatus(OrderStatus.UNASSIGNED);
+                    mAdapter.notifyItemChanged(i);
+                    EventBus.getDefault().post(new UpdateOrderDetailEvent(order));
+                    break;
+                }
+            }
+        }
+
+    }
+
     //点击生产完成
     public void finishProduce(final Context context,final OrderBean order){
         ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
@@ -162,7 +185,7 @@ public class ProducingFragment extends BaseFragment {
     //处理服务器返回数据---生产中
     private void handleProudcingResponse(XlsResponse xlsResponse,Call call,Response response){
         List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
-        EventBus.getDefault().post(new UpdateTabOrderListCountEvent(TabList.TAB_PRODUCING,orderBeans.size()));
+        EventBus.getDefault().post(new UpdateProduceFragmentTabOrderCount(1,orderBeans.size()));
         mAdapter.setData(orderBeans);
     }
 }

@@ -3,6 +3,7 @@ package com.lyancafe.coffeeshop.helper;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
@@ -97,9 +98,10 @@ public class OrderHelper {
 
     /*时间戳转换成字符窜*/
     public static String getDateToMonthDay(long time) {
+        SimpleDateFormat sf = new SimpleDateFormat("HH:mm");
+        long t2 = time+30*60*1000;
         Date d = new Date(time);
-        SimpleDateFormat sf = new SimpleDateFormat("MM-dd HH:mm");
-        return sf.format(d);
+        return new SimpleDateFormat("MM-dd").format(d)+" "+sf.format(d)+"~"+sf.format(new Date(t2));
     }
 
     /*将字符串转为时间戳*/

@@ -140,7 +140,17 @@ public class ToFetchFragment extends BaseFragment{
      */
     @Subscribe
     public  void onRecallOrderEvent(RecallOrderEvent event){
-        handleRecallOrderResponse(event.xlsResponse,event.call,event.response);
+        if(event.tabIndex==10){
+            for(int i=0;i<mAdapter.list.size();i++) {
+                OrderBean order = mAdapter.list.get(i);
+                if (event.orderId == order.getId()) {
+                    order.setStatus(OrderStatus.UNASSIGNED);
+                    mAdapter.notifyItemChanged(i);
+                    EventBus.getDefault().post(new UpdateOrderDetailEvent(order));
+                    break;
+                }
+            }
+        }
     }
 
 
@@ -154,25 +164,7 @@ public class ToFetchFragment extends BaseFragment{
     }
 
 
-    //处理服务器返回数据---订单收回
-    private void handleRecallOrderResponse(XlsResponse xlsResponse,Call call,Response response){
-        if(xlsResponse.status==0){
-            ToastUtil.showToast(getActivity(), R.string.do_success);
-            int id  = xlsResponse.data.getIntValue("id");
-            for(OrderBean order:mAdapter.list){
-                if(id == order.getId()){
-                    order.setStatus(OrderStatus.UNASSIGNED);
-                    mAdapter.notifyDataSetChanged();
-                    EventBus.getDefault().post(new UpdateOrderDetailEvent(order));
-                    break;
-                }
-            }
 
-
-        }else{
-            ToastUtil.showToast(getActivity(), xlsResponse.message);
-        }
-    }
 
 
     @Override

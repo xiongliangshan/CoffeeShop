@@ -35,6 +35,7 @@ import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
+import com.lyancafe.coffeeshop.event.ClickCommentEvent;
 import com.lyancafe.coffeeshop.event.CommentCountEvent;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
@@ -99,7 +100,6 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     private Button produceAndPrintBtn;
     private Button finishProduceBtn;
     private Button printOrderBtn;
-    private Button moreBtn;
     /**
      * 订单详情
      */
@@ -200,7 +200,6 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
         produceAndPrintBtn = (Button) contentView.findViewById(R.id.btn_produce_print);
         finishProduceBtn = (Button) contentView.findViewById(R.id.btn_finish_produce);
         printOrderBtn = (Button) contentView.findViewById(R.id.btn_print_order);
-        moreBtn  = (Button) contentView.findViewById(R.id.btn_more);
     }
 
     private void updateDetailView(final OrderBean order){
@@ -222,12 +221,10 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
             produceAndPrintBtn.setEnabled(false);
             finishProduceBtn.setEnabled(false);
             printOrderBtn.setEnabled(false);
-            moreBtn.setEnabled(false);
         }else{
             produceAndPrintBtn.setEnabled(true);
             finishProduceBtn.setEnabled(true);
             printOrderBtn.setEnabled(true);
-            moreBtn.setEnabled(true);
 
             orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
             wholeOrderText.setText(order.getOrderSn());
@@ -299,7 +296,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
                 });
             }
 
-            if(order.getDeliveryTeam()== DeliveryTeam.MEITUAN){
+           /* if(order.getDeliveryTeam()== DeliveryTeam.MEITUAN){
                 moreBtn.setEnabled(false);
             }else{
                 moreBtn.setEnabled(true);
@@ -342,7 +339,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
                     }
                 });
             }
-
+*/
         }
 
     }
@@ -492,6 +489,11 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
                 handleCommentCountResponse(xlsResponse,call,response);
             }
         });
+    }
+
+    @Subscribe
+    public void onClickCommentEvent(ClickCommentEvent event){
+        updateDetailView(event.orderBean);
     }
 
 

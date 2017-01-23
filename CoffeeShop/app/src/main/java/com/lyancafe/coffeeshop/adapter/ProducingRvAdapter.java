@@ -302,9 +302,9 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         this.list = list;
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
-            EventBus.getDefault().post(new UpdateDeliverOrderDetailEvent(this.list.get(selected)));
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
         }else{
-            EventBus.getDefault().post(new UpdateDeliverOrderDetailEvent(null));
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
         }
 
     }

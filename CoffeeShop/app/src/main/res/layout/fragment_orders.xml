@@ -8,7 +8,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true">
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabLayout"
@@ -118,7 +119,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
-            layout = "@layout/view_order_detail"
+            android:layout_marginLeft="8dp"
+            layout = "@layout/view_produce_detail"
             />
 
     </LinearLayout>

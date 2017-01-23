@@ -348,15 +348,6 @@
                 android:text="开始生产（打印）"
                 />
         </LinearLayout>
-        <Button
-            android:id="@+id/btn_more"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@null"
-            android:textSize="16sp"
-            android:text="更多操作"
-            />
     </LinearLayout>
 
 </LinearLayout>

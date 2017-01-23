@@ -9,7 +9,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -20,22 +19,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.activity.AssignOrderActivity;
 import com.lyancafe.coffeeshop.activity.PrintOrderActivity;
-import com.lyancafe.coffeeshop.adapter.OrderGridViewAdapter;
-import com.lyancafe.coffeeshop.adapter.OrderListViewAdapter;
 import com.lyancafe.coffeeshop.adapter.ProduceFragmentPagerAdapter;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.bean.SFGroupBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
@@ -44,19 +37,18 @@ import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.CancelOrderEvent;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
-import com.lyancafe.coffeeshop.event.ClickCommentEvent;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
+import com.lyancafe.coffeeshop.event.RecallOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.event.UpdatePrintStatusEvent;
+import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
-import com.lyancafe.coffeeshop.helper.PrintHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.lyancafe.coffeeshop.widget.ConfirmDialog;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -93,11 +85,9 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
     private TextView wholeOrderText;
     private TextView orderTimeTxt;
     private TextView reachTimeTxt;
-    private TextView produceEffectTxt;
     private TextView receiveNameTxt;
     private TextView receivePhoneTxt;
     private TextView receiveAddressTxt;
-    private RelativeLayout deliverInfoContainerLayout;
     private TextView deliverNameTxt;
     private TextView deliverPhoneTxt;
     private LinearLayout itemsContainerLayout;
@@ -110,10 +100,11 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
     private TextView userCommentContentText;
     private LinearLayout twoBtnLayout;
     private LinearLayout oneBtnLayout;
+    private TextView assignBtn;
     private Button produceAndPrintBtn;
     private Button finishProduceBtn;
     private Button printOrderBtn;
-    private Button moreBtn;
+//    private Button moreBtn;
 
     @Override
     public void onAttach(Context context) {
@@ -133,10 +124,10 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView");
-        EventBus.getDefault().register(this);
         View contentView = inflater.inflate(R.layout.fragment_orders,container,false);
         initViews(contentView);
         initDetailView(contentView);
+        EventBus.getDefault().register(this);
         return contentView;
     }
 
@@ -263,11 +254,11 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
         wholeOrderText = (TextView) contentView.findViewById(R.id.tv_whole_order_sn);
         orderTimeTxt = (TextView) contentView.findViewById(R.id.order_time);
         reachTimeTxt = (TextView) contentView.findViewById(R.id.reach_time);
-        produceEffectTxt = (TextView) contentView.findViewById(R.id.produce_effect);
+//        produceEffectTxt = (TextView) contentView.findViewById(R.id.produce_effect);
         receiveNameTxt  = (TextView) contentView.findViewById(R.id.receiver_name);
         receivePhoneTxt = (TextView) contentView.findViewById(R.id.receiver_phone);
         receiveAddressTxt = (TextView) contentView.findViewById(R.id.receiver_address);
-        deliverInfoContainerLayout = (RelativeLayout) contentView.findViewById(R.id.deliver_info_container);
+//        deliverInfoContainerLayout = (RelativeLayout) contentView.findViewById(R.id.deliver_info_container);
         deliverNameTxt = (TextView) contentView.findViewById(R.id.deliver_name);
         deliverPhoneTxt = (TextView) contentView.findViewById(R.id.deliver_phone);
         itemsContainerLayout = (LinearLayout) contentView.findViewById(R.id.items_container_layout);
@@ -283,10 +274,11 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
         userCommentContentText = (TextView) contentView.findViewById(R.id.user_comment_content);
         twoBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_twobtn);
         oneBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_onebtn);
+        assignBtn = (TextView) contentView.findViewById(R.id.btn_assign);
         produceAndPrintBtn = (Button) contentView.findViewById(R.id.btn_produce_print);
         finishProduceBtn = (Button) contentView.findViewById(R.id.btn_finish_produce);
         printOrderBtn = (Button) contentView.findViewById(R.id.btn_print_order);
-        moreBtn  = (Button) contentView.findViewById(R.id.btn_more);
+//        moreBtn  = (Button) contentView.findViewById(R.id.btn_more);
     }
     private void updateDetailView(final OrderBean order){
         if(order==null){
@@ -294,7 +286,6 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
             wholeOrderText.setText("");
             orderTimeTxt.setText("");
             reachTimeTxt.setText("");
-            produceEffectTxt.setText("");
             receiveNameTxt.setText("");
             receivePhoneTxt.setText("");
             receiveAddressTxt.setText("");
@@ -305,50 +296,63 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
             userCommentTagsText.setText("");
             userCommentContentText.setText("");
             itemsContainerLayout.removeAllViews();
+            assignBtn.setVisibility(View.GONE);
             produceAndPrintBtn.setEnabled(false);
             finishProduceBtn.setEnabled(false);
             printOrderBtn.setEnabled(false);
-            moreBtn.setEnabled(false);
-        }else{
+        }else {
+            assignBtn.setVisibility(View.VISIBLE);
             produceAndPrintBtn.setEnabled(true);
             finishProduceBtn.setEnabled(true);
             printOrderBtn.setEnabled(true);
-            moreBtn.setEnabled(true);
 
             orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
             wholeOrderText.setText(order.getOrderSn());
             orderTimeTxt.setText(OrderHelper.getDateToString(order.getOrderTime()));
-
             reachTimeTxt.setText(order.getInstant() == 1 ? "尽快送达" : OrderHelper.getDateToMonthDay(order.getExpectedTime()));
-
-            if(order.getProduceStatus()==OrderStatus.UNPRODUCED){
-                if(order.getInstant()==0){
-                    produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
-                }else{
-                    produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn);
-                }
-                OrderHelper.showEffectOnly(order,produceEffectTxt);
-            }else{
-                OrderHelper.showEffect(order, finishProduceBtn, produceEffectTxt);
-            }
-
             receiveNameTxt.setText(order.getRecipient());
             receivePhoneTxt.setText(order.getPhone());
             receiveAddressTxt.setText(order.getAddress());
             deliverNameTxt.setText(order.getCourierName());
             deliverPhoneTxt.setText(order.getCourierPhone());
-            if(order.getStatus()== OrderStatus.UNASSIGNED){
-                deliverInfoContainerLayout.setVisibility(View.GONE);
-            }else {
-                deliverInfoContainerLayout.setVisibility(View.VISIBLE);
-            }
+
             fillItemListData(itemsContainerLayout, order);
+
             userRemarkTxt.setText(order.getNotes());
             csadRemarkTxt.setText(order.getCsrNotes());
             userCommentTagsText.setText(OrderHelper.getCommentTagsStr(order.getFeedbackTags()));
             userCommentContentText.setText(order.getFeedback());
+            if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN) {
+                assignBtn.setVisibility(View.GONE);
+            } else {
+                assignBtn.setVisibility(View.VISIBLE);
+                if (order.getStatus() == OrderStatus.UNASSIGNED) {
+                    assignBtn.setText("订单指派");
+                    assignBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(mContext, AssignOrderActivity.class);
+                            intent.putExtra("orderId", order.getId());
+                            mContext.startActivity(intent);
+                        }
+                    });
+                } else if (order.getStatus() == OrderStatus.ASSIGNED) {
+                    assignBtn.setText("订单撤回");
+                    assignBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            HttpHelper.getInstance().reqRecallOrder(order.getId(), new DialogCallback<XlsResponse>(getActivity()) {
+                                @Override
+                                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                                    handleRecallOrderResponse(xlsResponse, call, response);
+                                }
+                            });
+                        }
+                    });
+                }
+            }
 
-            if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
+            if (order.getProduceStatus() == OrderStatus.UNPRODUCED) {
                 twoBtnLayout.setVisibility(View.GONE);
                 oneBtnLayout.setVisibility(View.VISIBLE);
                 produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
@@ -358,7 +362,7 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
                         EventBus.getDefault().post(new StartProduceEvent(order));
                     }
                 });
-            }else if(order.getProduceStatus() == OrderStatus.PRODUCING){
+            } else if (order.getProduceStatus() == OrderStatus.PRODUCING) {
                 twoBtnLayout.setVisibility(View.VISIBLE);
                 oneBtnLayout.setVisibility(View.GONE);
                 finishProduceBtn.setVisibility(View.VISIBLE);
@@ -369,10 +373,10 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
                         EventBus.getDefault().post(new FinishProduceEvent(order));
                     }
                 });
-                if(OrderHelper.isPrinted(mContext, order.getOrderSn())){
+                if (OrderHelper.isPrinted(mContext, order.getOrderSn())) {
                     printOrderBtn.setText(R.string.print_again);
                     printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_red));
-                }else{
+                } else {
                     printOrderBtn.setText(R.string.print);
                     printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_black));
                 }
@@ -382,14 +386,14 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
                         EventBus.getDefault().post(new PrintOrderEvent(order));
                     }
                 });
-            }else{
+            } else {
                 twoBtnLayout.setVisibility(View.VISIBLE);
                 oneBtnLayout.setVisibility(View.GONE);
                 finishProduceBtn.setVisibility(View.GONE);
-                if(OrderHelper.isPrinted(mContext, order.getOrderSn())){
+                if (OrderHelper.isPrinted(mContext, order.getOrderSn())) {
                     printOrderBtn.setText(R.string.print_again);
                     printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_red));
-                }else{
+                } else {
                     printOrderBtn.setText(R.string.print);
                     printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_black));
                 }
@@ -397,57 +401,13 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
                     @Override
                     public void onClick(View v) {
                         EventBus.getDefault().post(new PrintOrderEvent(order));
-                    }
-                });
-            }
-
-            if(order.getDeliveryTeam()== DeliveryTeam.MEITUAN){
-               moreBtn.setEnabled(false);
-            }else{
-                moreBtn.setEnabled(true);
-                moreBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        final PopupMenu popup = new PopupMenu(mContext, v);
-                        popup.inflate(R.menu.menu_order_detail_more);
-                        if (order.getStatus() != OrderStatus.ASSIGNED) {
-                            popup.getMenu().findItem(R.id.menu_undo_order).setVisible(false);
-                        }
-                        if (order.getStatus() != OrderStatus.UNASSIGNED) {
-                            popup.getMenu().findItem(R.id.menu_assign_order).setVisible(false);
-                        }
-                        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                            @Override
-                            public boolean onMenuItemClick(MenuItem item) {
-                                switch (item.getItemId()) {
-                                    case R.id.menu_undo_order:
-                                        HttpHelper.getInstance().reqRecallOrder(order.getId(), new DialogCallback<XlsResponse>(getActivity()) {
-
-                                            @Override
-                                            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                                                handleRecallOrderResponse(xlsResponse,call,response);
-                                            }
-                                        });
-                                        break;
-                                    case R.id.menu_assign_order:
-                                        Intent intent = new Intent(mContext, AssignOrderActivity.class);
-                                        intent.putExtra("orderId", order.getId());
-                                        mContext.startActivity(intent);
-                                        break;
-                                }
-                                popup.dismiss();
-                                return false;
-                            }
-                        });
-
-                        popup.show();
                     }
                 });
             }
 
         }
-
     }
+
     //填充item数据
     private void fillItemListData(LinearLayout ll,final OrderBean order){
         if(order==null){
@@ -567,7 +527,7 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         tabIndex = tab.getPosition();
-        viewPager.setCurrentItem(tabIndex);
+        viewPager.setCurrentItem(tabIndex,false);
     }
 
     @Override
@@ -588,6 +548,22 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
     }
 
     /**
+     * 更新列表订单数量
+     * @param event
+     */
+    @Subscribe
+    public void OnUpdateProduceFragmentTabOrderCountEvent(UpdateProduceFragmentTabOrderCount event){
+        Log.d("xls","UpdateProduceFragmentTabOrderCount");
+        TabLayout.Tab tab = tabLayout.getTabAt(event.tabIndex);
+        tab.setTag(event.count);
+        if(event.count>0){
+            tab.setText(mPagerAdapter.getPageTitle(event.tabIndex)+"("+event.count+")");
+        }else{
+            tab.setText(mPagerAdapter.getPageTitle(event.tabIndex));
+        }
+    }
+
+    /**
      * 订单被撤销
      * @param event
      */
@@ -596,10 +572,6 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
         Log.d(TAG, "event:" + event.orderId);
     }
 
-    @Subscribe
-    public void onClickCommentEvent(ClickCommentEvent event){
-        updateDetailView(event.orderBean);
-    }
 
 
 
@@ -626,53 +598,26 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
 
 
 
-
-   /* *//**
-     * 刷新列表的时候，更新当前列表标签上的订单数量
-     * @param event
-     *//*
-    @Subscribe
-    public void onUpdateTabOrderListCountEvent(UpdateTabOrderListCountEvent event){
-        switch (event.witchTab){
-            case TabList.TAB_TOPRODUCE:
-                toDoTab.setCount(event.count);
-                break;
-            case TabList.TAB_PRODUCING:
-                doingTab.setCount(event.count);
-                break;
-        }
-    }*/
-
     /**
      * 对订单操作后更改相关列表中的订单数量角标显示
      * @param event
      */
-   /* @Subscribe
+    @Subscribe
     public void onChangeTabCountByActionEvent(ChangeTabCountByActionEvent event){
-        if(LoginHelper.isSFMode()){
-            switch (event.action){
-                case OrderAction.STARTPRODUCE:
-                    toDoTab.setCount(toDoTab.getCount()-event.count);
-                    doingTab.setCount(doingTab.getCount()+event.count);
-                    break;
-                case OrderAction.FINISHPRODUCE:
-                    doingTab.setCount(doingTab.getCount()-event.count);
-                    break;
-
-            }
-        }else{
-            switch (event.action){
-                case OrderAction.STARTPRODUCE:
-                    toDoTab.setCount(toDoTab.getCount()-1);
-                    doingTab.setCount(doingTab.getCount()+1);
-                    break;
-                case OrderAction.FINISHPRODUCE:
-                    doingTab.setCount(doingTab.getCount()-1);
-                    break;
-            }
+        TabLayout.Tab tabToproduce = tabLayout.getTabAt(0);
+        TabLayout.Tab tabProducing = tabLayout.getTabAt(1);
+        int toProduceCount = ((Integer) tabToproduce.getTag()).intValue();
+        int producingCount = ((Integer) tabProducing.getTag()).intValue();
+        switch (event.action){
+            case OrderAction.STARTPRODUCE:
+                tabToproduce.setText(mPagerAdapter.getPageTitle(0)+"("+(toProduceCount-event.count)+")");
+                tabProducing.setText(mPagerAdapter.getPageTitle(1)+"("+(producingCount+event.count)+")");
+                break;
+            case OrderAction.FINISHPRODUCE:
+                tabProducing.setText(mPagerAdapter.getPageTitle(1)+"("+(producingCount-event.count)+")");
+                break;
         }
-
-    }*/
+    }
 
 
 
@@ -696,41 +641,19 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
     }
 
 
-    //新订单消息触发事件
-    @Subscribe
-    public void onNewOrderComing(NewOderComingEvent event){
-        Log.d(TAG,"新订单消息触发事件");
-        Log.d(TAG, "requestData ---- onNewOrderComing");
-        HttpHelper.getInstance().reqToProduceData(LoginHelper.getLimitLevel(mContext), new JsonCallback<XlsResponse>() {
-                    @Override
-                    public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                //        handleToProudceResponse(xlsResponse,call,response);
-                    }
-        });
-    }
 
 
 
-
-
-    //处理服务器返回数据---订单收回
+    //处理服务器返回数据---订单撤回
     private void handleRecallOrderResponse(XlsResponse xlsResponse,Call call,Response response){
-       /* if(xlsResponse.status==0){
+        if(xlsResponse.status==0){
             ToastUtil.showToast(getActivity(), R.string.do_success);
             int id  = xlsResponse.data.getIntValue("id");
-            for(OrderBean order:adapter.list){
-                if(id == order.getId()){
-                    order.setStatus(OrderStatus.UNASSIGNED);
-                    adapter.notifyDataSetChanged();
-                    EventBus.getDefault().post(new UpdateOrderDetailEvent(order));
-                    break;
-                }
-            }
+            EventBus.getDefault().post(new RecallOrderEvent(tabIndex,id));
         }else{
             ToastUtil.showToast(getActivity(), xlsResponse.message);
-        }*/
+        }
     }
-
 
 
 
