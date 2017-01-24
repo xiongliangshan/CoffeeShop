@@ -13,12 +13,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -31,14 +29,12 @@ import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.DialogCallback;
-import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.CancelOrderEvent;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
-import com.lyancafe.coffeeshop.event.NewOderComingEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
 import com.lyancafe.coffeeshop.event.RecallOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
@@ -46,7 +42,6 @@ import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.event.UpdatePrintStatusEvent;
 import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
-import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
@@ -95,16 +90,12 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
     private TextView userRemarkTxt;
     private LinearLayout csadRemarkLayout;
     private TextView csadRemarkTxt;
-    private LinearLayout userCommentLayout;
-    private TextView userCommentTagsText;
-    private TextView userCommentContentText;
     private LinearLayout twoBtnLayout;
     private LinearLayout oneBtnLayout;
     private TextView assignBtn;
     private Button produceAndPrintBtn;
     private Button finishProduceBtn;
     private Button printOrderBtn;
-//    private Button moreBtn;
 
     @Override
     public void onAttach(Context context) {
@@ -254,11 +245,9 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
         wholeOrderText = (TextView) contentView.findViewById(R.id.tv_whole_order_sn);
         orderTimeTxt = (TextView) contentView.findViewById(R.id.order_time);
         reachTimeTxt = (TextView) contentView.findViewById(R.id.reach_time);
-//        produceEffectTxt = (TextView) contentView.findViewById(R.id.produce_effect);
         receiveNameTxt  = (TextView) contentView.findViewById(R.id.receiver_name);
         receivePhoneTxt = (TextView) contentView.findViewById(R.id.receiver_phone);
         receiveAddressTxt = (TextView) contentView.findViewById(R.id.receiver_address);
-//        deliverInfoContainerLayout = (RelativeLayout) contentView.findViewById(R.id.deliver_info_container);
         deliverNameTxt = (TextView) contentView.findViewById(R.id.deliver_name);
         deliverPhoneTxt = (TextView) contentView.findViewById(R.id.deliver_phone);
         itemsContainerLayout = (LinearLayout) contentView.findViewById(R.id.items_container_layout);
@@ -268,17 +257,12 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
         csadRemarkLayout = (LinearLayout) contentView.findViewById(R.id.ll_csad_remark);
         csadRemarkLayout.setOnClickListener(indoDetailListener);
         csadRemarkTxt = (TextView) contentView.findViewById(R.id.csad_remark);
-        userCommentLayout = (LinearLayout) contentView.findViewById(R.id.ll_user_comment);
-        userCommentLayout.setOnClickListener(indoDetailListener);
-        userCommentTagsText = (TextView) contentView.findViewById(R.id.user_comment_tags);
-        userCommentContentText = (TextView) contentView.findViewById(R.id.user_comment_content);
         twoBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_twobtn);
         oneBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_onebtn);
         assignBtn = (TextView) contentView.findViewById(R.id.btn_assign);
         produceAndPrintBtn = (Button) contentView.findViewById(R.id.btn_produce_print);
         finishProduceBtn = (Button) contentView.findViewById(R.id.btn_finish_produce);
         printOrderBtn = (Button) contentView.findViewById(R.id.btn_print_order);
-//        moreBtn  = (Button) contentView.findViewById(R.id.btn_more);
     }
     private void updateDetailView(final OrderBean order){
         if(order==null){
@@ -293,8 +277,6 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
             deliverPhoneTxt.setText("");
             userRemarkTxt.setText("");
             csadRemarkTxt.setText("");
-            userCommentTagsText.setText("");
-            userCommentContentText.setText("");
             itemsContainerLayout.removeAllViews();
             assignBtn.setVisibility(View.GONE);
             produceAndPrintBtn.setEnabled(false);
@@ -320,8 +302,6 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
 
             userRemarkTxt.setText(order.getNotes());
             csadRemarkTxt.setText(order.getCsrNotes());
-            userCommentTagsText.setText(OrderHelper.getCommentTagsStr(order.getFeedbackTags()));
-            userCommentContentText.setText(order.getFeedback());
             if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN) {
                 assignBtn.setVisibility(View.GONE);
             } else {
@@ -610,11 +590,17 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
         int producingCount = ((Integer) tabProducing.getTag()).intValue();
         switch (event.action){
             case OrderAction.STARTPRODUCE:
-                tabToproduce.setText(mPagerAdapter.getPageTitle(0)+"("+(toProduceCount-event.count)+")");
-                tabProducing.setText(mPagerAdapter.getPageTitle(1)+"("+(producingCount+event.count)+")");
+                int tabTo = toProduceCount-event.count;
+                int tabPro = producingCount+event.count;
+                tabToproduce.setText(mPagerAdapter.getPageTitle(0)+"("+tabTo+")");
+                tabProducing.setText(mPagerAdapter.getPageTitle(1)+"("+tabPro+")");
+                tabToproduce.setTag(tabTo);
+                tabProducing.setTag(tabPro);
                 break;
             case OrderAction.FINISHPRODUCE:
-                tabProducing.setText(mPagerAdapter.getPageTitle(1)+"("+(producingCount-event.count)+")");
+                int tabProduceResult = producingCount-event.count;
+                tabProducing.setText(mPagerAdapter.getPageTitle(1)+"("+tabProduceResult+")");
+                tabProducing.setTag(tabProduceResult);
                 break;
         }
     }
@@ -669,10 +655,6 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
                 case R.id.ll_csad_remark:
                     //客服备注
                     InfoDetailDialog.getInstance(mContext).show(csadRemarkTxt.getText().toString());
-                    break;
-                case R.id.ll_user_comment:
-                    //用户评价
-                    InfoDetailDialog.getInstance(mContext).show(userCommentTagsText.getText().toString()+"\n"+userCommentContentText.getText().toString());
                     break;
             }
         }

@@ -85,9 +85,6 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
     private TextView userRemarkTxt;
     private LinearLayout csadRemarkLayout;
     private TextView csadRemarkTxt;
-    private LinearLayout userCommentLayout;
-    private TextView userCommentTagsText;
-    private TextView userCommentContentText;
     private LinearLayout twoBtnLayout;
     private LinearLayout oneBtnLayout;
     private TextView assignBtn;
@@ -189,10 +186,6 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
         csadRemarkLayout = (LinearLayout) contentView.findViewById(R.id.ll_csad_remark);
         csadRemarkLayout.setOnClickListener(indoDetailListener);
         csadRemarkTxt = (TextView) contentView.findViewById(R.id.csad_remark);
-        userCommentLayout = (LinearLayout) contentView.findViewById(R.id.ll_user_comment);
-        userCommentLayout.setOnClickListener(indoDetailListener);
-        userCommentTagsText = (TextView) contentView.findViewById(R.id.user_comment_tags);
-        userCommentContentText = (TextView) contentView.findViewById(R.id.user_comment_content);
         twoBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_twobtn);
         oneBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_onebtn);
         assignBtn = (TextView) contentView.findViewById(R.id.btn_assign);
@@ -314,8 +307,6 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
             deliverPhoneTxt.setText("");
             userRemarkTxt.setText("");
             csadRemarkTxt.setText("");
-            userCommentTagsText.setText("");
-            userCommentContentText.setText("");
             itemsContainerLayout.removeAllViews();
             assignBtn.setVisibility(View.GONE);
             produceAndPrintBtn.setEnabled(false);
@@ -340,8 +331,6 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
             fillItemListData(itemsContainerLayout, order);
             userRemarkTxt.setText(order.getNotes());
             csadRemarkTxt.setText(order.getCsrNotes());
-            userCommentTagsText.setText(OrderHelper.getCommentTagsStr(order.getFeedbackTags()));
-            userCommentContentText.setText(order.getFeedback());
 
             if(order.getDeliveryTeam()== DeliveryTeam.MEITUAN || order.getStatus()==OrderStatus.DELIVERING){
                 assignBtn.setVisibility(View.GONE);
@@ -610,10 +599,6 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
                 case R.id.ll_csad_remark:
                     //客服备注
                     InfoDetailDialog.getInstance(mContext).show(csadRemarkTxt.getText().toString());
-                    break;
-                case R.id.ll_user_comment:
-                    //用户评价
-                    InfoDetailDialog.getInstance(mContext).show(userCommentTagsText.getText().toString()+"\n"+userCommentContentText.getText().toString());
                     break;
             }
         }
