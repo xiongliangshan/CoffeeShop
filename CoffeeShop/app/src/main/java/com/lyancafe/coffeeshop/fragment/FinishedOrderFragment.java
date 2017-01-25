@@ -595,15 +595,15 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
             switch (v.getId()){
                 case R.id.ll_user_remark:
                     //用户备注
-                    InfoDetailDialog.getInstance(mContext).show(userRemarkTxt.getText().toString());
+                    InfoDetailDialog.getInstance(getActivity()).show(userRemarkTxt.getText().toString());
                     break;
                 case R.id.ll_csad_remark:
                     //客服备注
-                    InfoDetailDialog.getInstance(mContext).show(csadRemarkTxt.getText().toString());
+                    InfoDetailDialog.getInstance(getActivity()).show(csadRemarkTxt.getText().toString());
                     break;
                 case R.id.ll_user_comment:
                     //用户评价
-                    InfoDetailDialog.getInstance(mContext).show(userCommentTagsText.getText().toString()+"\n"+userCommentContentText.getText().toString());
+                    InfoDetailDialog.getInstance(getActivity()).show(userCommentTagsText.getText().toString()+"\n"+userCommentContentText.getText().toString());
                     break;
             }
         }
