@@ -17,26 +17,9 @@ public class InfoDetailDialog extends Dialog {
 
     private static final String TAG = "InfoDetailDialog";
     private TextView infoDetailText;
-    private static InfoDetailDialog mDialog = null;
 
     public InfoDetailDialog(Context context) {
-        super(context);
-    }
-
-    public InfoDetailDialog(Context context, int theme) {
-        super(context, theme);
-    }
-
-    public InfoDetailDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
-        super(context, cancelable, cancelListener);
-    }
-
-    public static InfoDetailDialog getInstance(Context context){
-        if(mDialog==null){
-            mDialog = new InfoDetailDialog(context,R.style.MyDialog);
-        }
-
-        return mDialog;
+        super(context, R.style.MyDialog);
     }
 
 
@@ -54,7 +37,7 @@ public class InfoDetailDialog extends Dialog {
         if(TextUtils.isEmpty(content)||"\n".equals(content)){
             return;
         }
-        mDialog.show();
+        this.show();
         if(infoDetailText!=null){
             infoDetailText.setText(content);
         }

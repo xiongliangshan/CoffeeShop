@@ -650,11 +650,11 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
             switch (v.getId()){
                 case R.id.ll_user_remark:
                     //用户备注
-                    InfoDetailDialog.getInstance(mContext).show(userRemarkTxt.getText().toString());
+                    new InfoDetailDialog(getActivity()).show(userRemarkTxt.getText().toString());
                     break;
                 case R.id.ll_csad_remark:
                     //客服备注
-                    InfoDetailDialog.getInstance(mContext).show(csadRemarkTxt.getText().toString());
+                    new InfoDetailDialog(getActivity()).show(csadRemarkTxt.getText().toString());
                     break;
             }
         }

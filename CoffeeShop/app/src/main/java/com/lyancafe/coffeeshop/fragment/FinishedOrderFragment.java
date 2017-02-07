@@ -14,32 +14,26 @@ import android.support.v7.widget.GridLayoutManager;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.activity.AssignOrderActivity;
 import com.lyancafe.coffeeshop.activity.CommentActivity;
 import com.lyancafe.coffeeshop.adapter.FinishedRvAdapter;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
-import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
-import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.ClickCommentEvent;
 import com.lyancafe.coffeeshop.event.CommentCountEvent;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
-import com.lyancafe.coffeeshop.event.RecallOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateFinishedOrderDetailEvent;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
@@ -595,15 +589,15 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
             switch (v.getId()){
                 case R.id.ll_user_remark:
                     //用户备注
-                    InfoDetailDialog.getInstance(getActivity()).show(userRemarkTxt.getText().toString());
+                    new InfoDetailDialog(getActivity()).show(userRemarkTxt.getText().toString());
                     break;
                 case R.id.ll_csad_remark:
                     //客服备注
-                    InfoDetailDialog.getInstance(getActivity()).show(csadRemarkTxt.getText().toString());
+                    new InfoDetailDialog(getActivity()).show(csadRemarkTxt.getText().toString());
                     break;
                 case R.id.ll_user_comment:
                     //用户评价
-                    InfoDetailDialog.getInstance(getActivity()).show(userCommentTagsText.getText().toString()+"\n"+userCommentContentText.getText().toString());
+                    new InfoDetailDialog(getActivity()).show(userCommentTagsText.getText().toString()+"\n"+userCommentContentText.getText().toString());
                     break;
             }
         }

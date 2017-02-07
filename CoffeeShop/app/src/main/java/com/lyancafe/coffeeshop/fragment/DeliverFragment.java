@@ -14,12 +14,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -39,7 +37,6 @@ import com.lyancafe.coffeeshop.event.RecallOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateDeliverFragmentTabOrderCount;
 import com.lyancafe.coffeeshop.event.UpdateDeliverOrderDetailEvent;
-import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
@@ -594,11 +591,11 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
             switch (v.getId()){
                 case R.id.ll_user_remark:
                     //用户备注
-                    InfoDetailDialog.getInstance(mContext).show(userRemarkTxt.getText().toString());
+                    new InfoDetailDialog(getActivity()).show(userRemarkTxt.getText().toString());
                     break;
                 case R.id.ll_csad_remark:
                     //客服备注
-                    InfoDetailDialog.getInstance(mContext).show(csadRemarkTxt.getText().toString());
+                    new InfoDetailDialog(getActivity()).show(csadRemarkTxt.getText().toString());
                     break;
             }
         }

@@ -26,7 +26,6 @@ import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.fragment.DeliverFragment;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.fragment.ShopFragment;
-import com.lyancafe.coffeeshop.fragment.ShopManagerFragment;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
@@ -34,7 +33,6 @@ import com.lyancafe.coffeeshop.service.TaskService;
 import com.lyancafe.coffeeshop.service.UpdateService;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
@@ -210,7 +208,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,D
 
     @Override
     protected void onDestroy() {
-        InfoDetailDialog.getInstance(context).dismiss();
         unbindService(serviceConnection);
         super.onDestroy();
         Log.d("TaskService", "unbindService");

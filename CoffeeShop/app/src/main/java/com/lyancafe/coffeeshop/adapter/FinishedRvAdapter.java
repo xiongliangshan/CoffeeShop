@@ -21,14 +21,11 @@ import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
-import com.lyancafe.coffeeshop.constant.TabList;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
-import com.lyancafe.coffeeshop.event.UpdateDeliverOrderDetailEvent;
 import com.lyancafe.coffeeshop.event.UpdateFinishedOrderDetailEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
-import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 
 import org.greenrobot.eventbus.EventBus;

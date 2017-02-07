@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.adapter.DeliverFragmentPagerAdapter;
 import com.lyancafe.coffeeshop.adapter.ShopFragmentPagerAdapter;
 
 import java.util.ArrayList;

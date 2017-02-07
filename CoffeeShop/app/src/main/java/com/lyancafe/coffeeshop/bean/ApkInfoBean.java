@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSON;
 import java.io.Serializable;
 
 /**
+ * 版本信息
  * Created by Administrator on 2016/10/9.
  */
 public class ApkInfoBean implements Serializable{
