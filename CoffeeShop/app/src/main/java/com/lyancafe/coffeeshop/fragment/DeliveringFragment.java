@@ -22,6 +22,7 @@ import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -32,11 +33,13 @@ import okhttp3.Response;
  * Use the {@link DeliveringFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DeliveringFragment extends BaseFragment {
+public class DeliveringFragment extends BaseFragment implements DeliverFragment.FilterOrdersListenter{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    public List<OrderBean> allOrderList = new ArrayList<>();
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -111,6 +114,11 @@ public class DeliveringFragment extends BaseFragment {
     }
 
     @Override
+    public void filter(String category) {
+        mAdapter.setData(allOrderList,DeliverFragment.category);
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         Log.d("xls","DeliveringFragment-onPause");
@@ -128,7 +136,9 @@ public class DeliveringFragment extends BaseFragment {
     private void handleDeliveryingResponse(XlsResponse xlsResponse,Call call,Response response){
         List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
         EventBus.getDefault().post(new UpdateDeliverFragmentTabOrderCount(1,orderBeans.size()));
-        mAdapter.setData(orderBeans);
+        allOrderList.clear();
+        allOrderList.addAll(orderBeans);
+        mAdapter.setData(orderBeans,DeliverFragment.category);
         Log.d("xls","请求--配送中");
 
     }

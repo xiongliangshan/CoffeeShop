@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.constant.OrderAction;
+import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
@@ -32,6 +34,7 @@ import com.lyancafe.coffeeshop.widget.ConfirmDialog;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -40,13 +43,15 @@ import okhttp3.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ProducingFragment extends BaseFragment {
+public class ProducingFragment extends BaseFragment implements OrdersFragment.FilterOrdersListenter{
 
     private RecyclerView mRecyclerView;
     private ProducingRvAdapter mAdapter;
     private Context mContext;
 
+    public List<OrderBean> allOrderList = new ArrayList<>();
     public ProducingFragment() {
+
     }
 
     @Override
@@ -60,6 +65,7 @@ public class ProducingFragment extends BaseFragment {
         EventBus.getDefault().register(this);
         View contentView = inflater.inflate(R.layout.fragment_producing, container, false);
         initViews(contentView);
+        Log.d("xls","producing createView");
         return contentView;
     }
 
@@ -180,6 +186,15 @@ public class ProducingFragment extends BaseFragment {
     private void handleProudcingResponse(XlsResponse xlsResponse,Call call,Response response){
         List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
         EventBus.getDefault().post(new UpdateProduceFragmentTabOrderCount(1,orderBeans.size()));
-        mAdapter.setData(orderBeans);
+        allOrderList.clear();
+        allOrderList.addAll(orderBeans);
+        mAdapter.setData(orderBeans, OrdersFragment.category);
+    }
+
+
+    @Override
+    public void filter(String category) {
+        Log.d("xls","Producing category = "+category);
+        mAdapter.setData(allOrderList,OrdersFragment.category);
     }
 }

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ import com.lyancafe.coffeeshop.widget.ConfirmDialog;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -47,12 +49,13 @@ import okhttp3.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ToProduceFragment extends BaseFragment {
+public class ToProduceFragment extends BaseFragment implements OrdersFragment.FilterOrdersListenter{
 
 
     private RecyclerView mRecyclerView;
     private ToProduceRvAdapter mAdapter;
     private Context mContext;
+    public List<OrderBean> allOrderList = new ArrayList<>();
     public ToProduceFragment() {
 
     }
@@ -91,6 +94,12 @@ public class ToProduceFragment extends BaseFragment {
                 }
             });
         }
+    }
+
+    @Override
+    public void filter(String category) {
+        Log.d("xls","ToProduce category = "+category);
+        mAdapter.setData(allOrderList,OrdersFragment.category);
     }
 
     @Override
@@ -204,7 +213,9 @@ public class ToProduceFragment extends BaseFragment {
         if(xlsResponse.status==0){
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
             EventBus.getDefault().post(new UpdateProduceFragmentTabOrderCount(0, orderBeans.size()));
-            mAdapter.setData(orderBeans);
+            allOrderList.clear();
+            allOrderList.addAll(orderBeans);
+            mAdapter.setData(orderBeans,OrdersFragment.category);
         }else if(xlsResponse.status==103){
             //token 无效
             ToastUtil.showToast(mContext, xlsResponse.message);

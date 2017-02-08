@@ -44,7 +44,8 @@
             android:text="订单筛选"/>
 
         <android.support.v7.widget.AppCompatSpinner
-            android:layout_width="100dp"
+            android:id="@+id/spinner_category"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="4dp"

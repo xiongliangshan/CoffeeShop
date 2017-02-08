@@ -10,12 +10,14 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.AppCompatSpinner;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -30,6 +32,7 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
+import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
@@ -51,14 +54,18 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Response;
 
-public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSelectedListener {
+public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSelectedListener,AdapterView.OnItemSelectedListener {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     public static int tabIndex = 0;
+    public static int category = OrderCategory.ALL;
 
     private Context mContext;
     private String mParam1;
     private String mParam2;
+
+    private ToFetchFragment toFetchFragment;
+    private DeliveringFragment deliveringFragment;
 
     private OnFragmentInteractionListener mListener;
     private TabLayout tabLayout;
@@ -93,6 +100,8 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
      */
 
     private IndoDetailListener indoDetailListener;
+
+    private AppCompatSpinner spinnerCategory;
 
 
 
@@ -156,13 +165,18 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
         viewPager = (ViewPager) contentView.findViewById(R.id.vp_container);
 
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(new ToFetchFragment());
-        fragments.add(new DeliveringFragment());
+        toFetchFragment = new ToFetchFragment();
+        deliveringFragment = new DeliveringFragment();
+        fragments.add(toFetchFragment);
+        fragments.add(deliveringFragment);
         mPagerAdapter = new DeliverFragmentPagerAdapter(getChildFragmentManager(),getActivity(),fragments);
         viewPager.setAdapter(mPagerAdapter);
         viewPager.setOffscreenPageLimit(1);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setOnTabSelectedListener(this);
+
+        spinnerCategory = (AppCompatSpinner) contentView.findViewById(R.id.spinner_category);
+        spinnerCategory.setOnItemSelectedListener(this);
 
     }
 
@@ -196,6 +210,33 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
     public void onResume() {
         super.onResume();
 //        Log.d("xls","DeliverFragment-onResume, postion="+tabLayout.getSelectedTabPosition());
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        Object object = parent.getItemAtPosition(position);
+        switch (position){
+            case 0:
+                category = OrderCategory.ALL;
+                break;
+            case 1:
+                category = OrderCategory.MEITUN;
+                break;
+            case 2:
+                category = OrderCategory.OWN;
+                break;
+        }
+
+        if(tabIndex==0){
+            toFetchFragment.filter(String.valueOf(object));
+        }else if(tabIndex==1){
+            deliveringFragment.filter(String.valueOf(object));
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 
     @Subscribe
@@ -602,6 +643,8 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
     }
 
 
-
+    public interface FilterOrdersListenter{
+        void filter(String category);
+    }
 
 }

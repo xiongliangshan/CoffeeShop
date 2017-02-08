@@ -20,6 +20,7 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
+import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
@@ -300,8 +301,8 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         }
     }
 
-    public void setData(List<OrderBean> list){
-        this.list = list;
+    public void setData(List<OrderBean> list,int category){
+        this.list = filterOrders(list,category);
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
             EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
@@ -309,6 +310,27 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
             EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
         }
 
+    }
+
+    private List<OrderBean> filterOrders(List<OrderBean> list,int category){
+        List<OrderBean> subList = new ArrayList<>();
+        if(category== OrderCategory.MEITUN){
+            for(OrderBean orderBean:list){
+                if(orderBean.getDeliveryTeam()==8){
+                    subList.add(orderBean);
+                }
+            }
+        }else if(category==OrderCategory.OWN){
+            for(OrderBean orderBean:list){
+                if(orderBean.getDeliveryTeam()!=8){
+                    subList.add(orderBean);
+                }
+            }
+        }else{
+            subList = list;
+        }
+
+        return subList;
     }
 
 

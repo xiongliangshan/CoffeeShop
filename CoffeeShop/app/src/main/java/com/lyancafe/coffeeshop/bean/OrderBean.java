@@ -326,7 +326,9 @@ public class OrderBean implements Serializable{
         }
         try{
             com.alibaba.fastjson.JSONArray ordersArray= resp.data.getJSONArray("orders");
-            orderBeans = JSON.parseArray(ordersArray.toString(), OrderBean.class);
+            if(ordersArray!=null){
+                orderBeans = JSON.parseArray(ordersArray.toString(), OrderBean.class);
+            }
         }catch (JSONException e){
             Log.e(TAG,e.getMessage());
             ToastUtil.showToast(context, R.string.parse_json_fail);

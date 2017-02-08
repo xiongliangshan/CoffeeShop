@@ -9,12 +9,14 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.AppCompatSpinner;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -31,6 +33,7 @@ import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderAction;
+import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.CancelOrderEvent;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
@@ -58,20 +61,26 @@ import okhttp3.Response;
 /**
  * Created by Administrator on 2015/9/1.
  */
-public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelectedListener{
+public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelectedListener,AdapterView.OnItemSelectedListener{
 
     private static final String TAG  ="OrdersFragment";
     private Context mContext;
     public static int tabIndex = 0;
+    public static int category = OrderCategory.ALL;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ProduceFragmentPagerAdapter mPagerAdapter;
 
+    private ToProduceFragment toProduceFragment;
+    private ProducingFragment producingFragment;
+
     private TextView batchHandleBtn;
     private TextView batchPromptText;
 
     private IndoDetailListener indoDetailListener;
+
+    private AppCompatSpinner spinnerCategory;
 
     /**
      * 订单详情页UI组件
@@ -128,13 +137,19 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
         tabLayout  = (TabLayout) contentView.findViewById(R.id.tabLayout);
         viewPager = (ViewPager) contentView.findViewById(R.id.vp_container);
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(new ToProduceFragment());
-        fragments.add(new ProducingFragment());
+        toProduceFragment = new ToProduceFragment();
+        producingFragment = new ProducingFragment();
+        fragments.add(toProduceFragment);
+        fragments.add(producingFragment);
         mPagerAdapter = new ProduceFragmentPagerAdapter(getChildFragmentManager(),getActivity(),fragments);
         viewPager.setAdapter(mPagerAdapter);
-        viewPager.setOffscreenPageLimit(1);
+        viewPager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setOnTabSelectedListener(this);
+
+
+        spinnerCategory = (AppCompatSpinner) contentView.findViewById(R.id.spinner_category);
+        spinnerCategory.setOnItemSelectedListener(this);
 
       /*  refreshbtn = (TextView) contentView.findViewById(R.id.btn_refresh);
         refreshbtn.setOnClickListener(new View.OnClickListener() {
@@ -238,7 +253,32 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
 
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        Object object = parent.getItemAtPosition(position);
+        switch (position){
+            case 0:
+                category = OrderCategory.ALL;
+                break;
+            case 1:
+                category = OrderCategory.MEITUN;
+                break;
+            case 2:
+                category = OrderCategory.OWN;
+                break;
+        }
 
+        if(tabIndex==0){
+            toProduceFragment.filter(String.valueOf(object));
+        }else if(tabIndex==1){
+            producingFragment.filter(String.valueOf(object));
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 
     private void initDetailView(View contentView){
         orderIdTxt = (TextView) contentView.findViewById(R.id.order_id);
@@ -700,5 +740,10 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
     @Override
     protected void onInVisible() {
  //       Log.d("xls","OrdersFragment is onInVisible");
+    }
+
+
+    public interface FilterOrdersListenter{
+        void filter(String category);
     }
 }

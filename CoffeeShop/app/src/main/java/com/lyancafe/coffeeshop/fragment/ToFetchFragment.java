@@ -26,6 +26,7 @@ import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -36,11 +37,13 @@ import okhttp3.Response;
  * Use the {@link ToFetchFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ToFetchFragment extends BaseFragment{
+public class ToFetchFragment extends BaseFragment implements DeliverFragment.FilterOrdersListenter{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    public List<OrderBean> allOrderList = new ArrayList<>();
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -128,6 +131,11 @@ public class ToFetchFragment extends BaseFragment{
     }
 
     @Override
+    public void filter(String category) {
+        mAdapter.setData(allOrderList,DeliverFragment.category);
+    }
+
+    @Override
     public void onDestroyView() {
         EventBus.getDefault().unregister(this);
         super.onDestroyView();
@@ -158,7 +166,9 @@ public class ToFetchFragment extends BaseFragment{
     private void handleProudcedResponse(XlsResponse xlsResponse,Call call,Response response){
         List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
         EventBus.getDefault().post(new UpdateDeliverFragmentTabOrderCount(0,orderBeans.size()));
-        mAdapter.setData(orderBeans);
+        allOrderList.clear();
+        allOrderList.addAll(orderBeans);
+        mAdapter.setData(orderBeans,DeliverFragment.category);
         Log.d("xls","请求--待取货");
     }
 
@@ -184,4 +194,5 @@ public class ToFetchFragment extends BaseFragment{
     protected void onInVisible() {
         Log.d("xls","ToFetchFragment onInVisible");
     }
+
 }
