@@ -89,11 +89,11 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     private LinearLayout userCommentLayout;
     private TextView userCommentTagsText;
     private TextView userCommentContentText;
-    private LinearLayout twoBtnLayout;
+   /* private LinearLayout twoBtnLayout;
     private LinearLayout oneBtnLayout;
     private Button produceAndPrintBtn;
     private Button finishProduceBtn;
-    private Button printOrderBtn;
+    private Button printOrderBtn;*/
     /**
      * 订单详情
      */
@@ -191,11 +191,11 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
         userCommentLayout.setOnClickListener(indoDetailListener);
         userCommentTagsText = (TextView) contentView.findViewById(R.id.user_comment_tags);
         userCommentContentText = (TextView) contentView.findViewById(R.id.user_comment_content);
-        twoBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_twobtn);
-        oneBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_onebtn);
-        produceAndPrintBtn = (Button) contentView.findViewById(R.id.btn_produce_print);
-        finishProduceBtn = (Button) contentView.findViewById(R.id.btn_finish_produce);
-        printOrderBtn = (Button) contentView.findViewById(R.id.btn_print_order);
+//        twoBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_twobtn);
+//        oneBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_onebtn);
+//        produceAndPrintBtn = (Button) contentView.findViewById(R.id.btn_produce_print);
+//        finishProduceBtn = (Button) contentView.findViewById(R.id.btn_finish_produce);
+//        printOrderBtn = (Button) contentView.findViewById(R.id.btn_print_order);
     }
 
     private void updateDetailView(final OrderBean order){
@@ -214,13 +214,13 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
             userCommentTagsText.setText("");
             userCommentContentText.setText("");
             itemsContainerLayout.removeAllViews();
-            produceAndPrintBtn.setEnabled(false);
-            finishProduceBtn.setEnabled(false);
-            printOrderBtn.setEnabled(false);
+//            produceAndPrintBtn.setEnabled(false);
+//            finishProduceBtn.setEnabled(false);
+//            printOrderBtn.setEnabled(false);
         }else{
-            produceAndPrintBtn.setEnabled(true);
-            finishProduceBtn.setEnabled(true);
-            printOrderBtn.setEnabled(true);
+//            produceAndPrintBtn.setEnabled(true);
+//            finishProduceBtn.setEnabled(true);
+//            printOrderBtn.setEnabled(true);
 
             orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
             wholeOrderText.setText(order.getOrderSn());
@@ -239,7 +239,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
             userCommentTagsText.setText(OrderHelper.getCommentTagsStr(order.getFeedbackTags()));
             userCommentContentText.setText(order.getFeedback());
 
-            if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
+           /* if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
                 twoBtnLayout.setVisibility(View.GONE);
                 oneBtnLayout.setVisibility(View.VISIBLE);
                 produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
@@ -290,7 +290,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
                         EventBus.getDefault().post(new PrintOrderEvent(order));
                     }
                 });
-            }
+            }*/
 
            /* if(order.getDeliveryTeam()== DeliveryTeam.MEITUAN){
                 moreBtn.setEnabled(false);
@@ -513,6 +513,12 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
             public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
                 pullLoadMoreRecyclerView.setPullLoadMoreCompleted();
                 handleFinishedResponse(xlsResponse,call,response);
+            }
+
+            @Override
+            public void onError(Call call, Response response, Exception e) {
+                super.onError(call, response, e);
+                pullLoadMoreRecyclerView.setPullLoadMoreCompleted();
             }
         });
     }

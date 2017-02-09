@@ -145,7 +145,16 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Vi
         }
         fillItemListData(holder.itemContainerll, order.getItems());
         holder.cupCountText.setText(context.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
-        if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
+        holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
+        holder.onebtnContainerlayout.setVisibility(View.GONE);
+        holder.produceBtn.setVisibility(View.GONE);
+        holder.printBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(new PrintOrderEvent(order));
+            }
+        });
+        /*if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
             holder.twobtnContainerLayout.setVisibility(View.GONE);
             holder.onebtnContainerlayout.setVisibility(View.VISIBLE);
             holder.produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
@@ -173,7 +182,7 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Vi
                 }
             });
         }else{
-            holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
+            holder.twobtnContainerLayout.setVisibility(View.GONE);
             holder.onebtnContainerlayout.setVisibility(View.GONE);
             holder.produceBtn.setVisibility(View.GONE);
             holder.printBtn.setOnClickListener(new View.OnClickListener() {
@@ -183,7 +192,7 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Vi
                 }
             });
         }
-
+*/
     }
 
 

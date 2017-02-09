@@ -300,7 +300,7 @@
         </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
+    <!--<LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -348,6 +348,6 @@
                 android:text="开始生产（打印）"
                 />
         </LinearLayout>
-    </LinearLayout>
+    </LinearLayout>-->
 
 </LinearLayout>
