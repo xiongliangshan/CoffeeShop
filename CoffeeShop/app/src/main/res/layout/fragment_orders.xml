@@ -42,7 +42,8 @@
             android:textSize="@dimen/tab_text"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/tabLayout"
-            android:text="订单筛选"/>
+            android:text="订单筛选"
+            android:visibility="gone"/>
 
         <android.support.v7.widget.AppCompatSpinner
             android:id="@+id/spinner_category"
@@ -53,6 +54,7 @@
             android:gravity="center"
             android:layout_toRightOf="@id/tv_constant_order_select"
             android:entries="@array/platforms"
+            android:visibility="gone"
             />
 
 
@@ -64,7 +66,8 @@
             android:layout_marginRight="4dp"
             android:text="订单查找"
             android:textSize="@dimen/tab_text"
-            android:layout_toLeftOf="@+id/rg_search_type"/>
+            android:layout_toLeftOf="@+id/rg_search_type"
+            android:visibility="gone"/>
 
         <RadioGroup
             android:id="@id/rg_search_type"
@@ -72,7 +75,8 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:orientation="horizontal"
-            android:layout_toLeftOf="@+id/et_key_content">
+            android:layout_toLeftOf="@+id/et_key_content"
+            android:visibility="gone">
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -92,7 +96,8 @@
             android:layout_centerVertical="true"
             android:layout_height="wrap_content"
             android:textSize="@dimen/tab_text"
-            android:layout_toLeftOf="@+id/btn_search"/>
+            android:layout_toLeftOf="@+id/btn_search"
+            android:visibility="gone"/>
         <Button
             android:id="@id/btn_search"
             android:layout_width="wrap_content"
@@ -100,7 +105,8 @@
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:textSize="@dimen/tab_text"
-            android:text="查找"/>
+            android:text="查找"
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <LinearLayout
