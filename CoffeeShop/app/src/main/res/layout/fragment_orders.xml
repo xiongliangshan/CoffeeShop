@@ -9,7 +9,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:focusableInTouchMode="true">
+        android:focusableInTouchMode="true"
+        android:layout_marginLeft="12dp">
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabLayout"
