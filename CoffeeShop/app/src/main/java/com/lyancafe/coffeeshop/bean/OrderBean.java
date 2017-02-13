@@ -50,6 +50,7 @@ public class OrderBean implements Serializable{
     private int deliveryTeam;               //   配送团队 4:lyan 5:qusong 6:wokuaidao 7:sweets 8:美团外卖
     private int platformId;                 //   订单渠道ID  29:美团   其他：我们
     private int mtShopOrderNo;                  //   美团门店单号
+    private double orderDistance;           //订单距离
     private List<ItemContentBean> items; //购买的咖啡内容列表
 
 
@@ -307,6 +308,14 @@ public class OrderBean implements Serializable{
         this.mtShopOrderNo = mtShopOrderNo;
     }
 
+    public double getOrderDistance() {
+        return orderDistance;
+    }
+
+    public void setOrderDistance(double orderDistance) {
+        this.orderDistance = orderDistance;
+    }
+
     public List<ItemContentBean> getItems() {
         return items;
     }
@@ -370,6 +379,7 @@ public class OrderBean implements Serializable{
                 ", deliveryTeam=" + deliveryTeam +
                 ", platformId=" + platformId +
                 ", mtShopOrderNo=" + mtShopOrderNo +
+                ", orderDistance=" + orderDistance +
                 ", items=" + items +
                 '}';
     }

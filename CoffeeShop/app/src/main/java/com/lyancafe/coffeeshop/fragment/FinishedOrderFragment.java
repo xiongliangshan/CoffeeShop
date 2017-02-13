@@ -12,11 +12,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,12 +29,8 @@ import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
-import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.ClickCommentEvent;
 import com.lyancafe.coffeeshop.event.CommentCountEvent;
-import com.lyancafe.coffeeshop.event.FinishProduceEvent;
-import com.lyancafe.coffeeshop.event.PrintOrderEvent;
-import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateFinishedOrderDetailEvent;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
@@ -73,14 +69,10 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
      * 订单详情页UI组件
      */
     private TextView orderIdTxt;
-    private TextView wholeOrderText;
-    private TextView orderTimeTxt;
-    private TextView reachTimeTxt;
     private TextView receiveNameTxt;
     private TextView receivePhoneTxt;
     private TextView receiveAddressTxt;
-    private TextView deliverNameTxt;
-    private TextView deliverPhoneTxt;
+    private TextView orderDistanceText;
     private LinearLayout itemsContainerLayout;
     private LinearLayout userRemarkLayout;
     private TextView userRemarkTxt;
@@ -89,11 +81,6 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     private LinearLayout userCommentLayout;
     private TextView userCommentTagsText;
     private TextView userCommentContentText;
-   /* private LinearLayout twoBtnLayout;
-    private LinearLayout oneBtnLayout;
-    private Button produceAndPrintBtn;
-    private Button finishProduceBtn;
-    private Button printOrderBtn;*/
     /**
      * 订单详情
      */
@@ -103,6 +90,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     public FinishedOrderFragment() {
 
     }
+
 
     @Override
     public void onAttach(Context context) {
@@ -137,11 +125,12 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
         pullLoadMoreRecyclerView.getRecyclerView().setLayoutManager(new GridLayoutManager(getActivity(),4,GridLayoutManager.VERTICAL,false) );
         pullLoadMoreRecyclerView.getRecyclerView().setHasFixedSize(true);
         pullLoadMoreRecyclerView.getRecyclerView().setItemAnimator(new DefaultItemAnimator());
-        pullLoadMoreRecyclerView.getRecyclerView().addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(4, mContext), false));
+        pullLoadMoreRecyclerView.getRecyclerView().addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(8, mContext), false));
+        pullLoadMoreRecyclerView.setOnPullLoadMoreListener(this);
         pullLoadMoreRecyclerView.setRefreshing(false);
         pullLoadMoreRecyclerView.setPullRefreshEnable(false);
         pullLoadMoreRecyclerView.setPushRefreshEnable(true);
-        pullLoadMoreRecyclerView.setOnPullLoadMoreListener(this);
+
 
         mAdapter = new FinishedRvAdapter(getActivity());
         pullLoadMoreRecyclerView.setAdapter(mAdapter);
@@ -172,14 +161,10 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
     private void initDetailView(View contentView){
         orderIdTxt = (TextView) contentView.findViewById(R.id.order_id);
-        wholeOrderText = (TextView) contentView.findViewById(R.id.tv_whole_order_sn);
-        orderTimeTxt = (TextView) contentView.findViewById(R.id.order_time);
-        reachTimeTxt = (TextView) contentView.findViewById(R.id.reach_time);
         receiveNameTxt  = (TextView) contentView.findViewById(R.id.receiver_name);
         receivePhoneTxt = (TextView) contentView.findViewById(R.id.receiver_phone);
         receiveAddressTxt = (TextView) contentView.findViewById(R.id.receiver_address);
-        deliverNameTxt = (TextView) contentView.findViewById(R.id.deliver_name);
-        deliverPhoneTxt = (TextView) contentView.findViewById(R.id.deliver_phone);
+        orderDistanceText = (TextView) contentView.findViewById(R.id.tv_order_distance);
         itemsContainerLayout = (LinearLayout) contentView.findViewById(R.id.items_container_layout);
         userRemarkLayout = (LinearLayout) contentView.findViewById(R.id.ll_user_remark);
         userRemarkLayout.setOnClickListener(indoDetailListener);
@@ -191,151 +176,33 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
         userCommentLayout.setOnClickListener(indoDetailListener);
         userCommentTagsText = (TextView) contentView.findViewById(R.id.user_comment_tags);
         userCommentContentText = (TextView) contentView.findViewById(R.id.user_comment_content);
-//        twoBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_twobtn);
-//        oneBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_onebtn);
-//        produceAndPrintBtn = (Button) contentView.findViewById(R.id.btn_produce_print);
-//        finishProduceBtn = (Button) contentView.findViewById(R.id.btn_finish_produce);
-//        printOrderBtn = (Button) contentView.findViewById(R.id.btn_print_order);
     }
 
     private void updateDetailView(final OrderBean order){
         if(order==null){
             orderIdTxt.setText("");
-            wholeOrderText.setText("");
-            orderTimeTxt.setText("");
-            reachTimeTxt.setText("");
             receiveNameTxt.setText("");
             receivePhoneTxt.setText("");
             receiveAddressTxt.setText("");
-            deliverNameTxt.setText("");
-            deliverPhoneTxt.setText("");
+            orderDistanceText.setText("");
             userRemarkTxt.setText("");
             csadRemarkTxt.setText("");
             userCommentTagsText.setText("");
             userCommentContentText.setText("");
             itemsContainerLayout.removeAllViews();
-//            produceAndPrintBtn.setEnabled(false);
-//            finishProduceBtn.setEnabled(false);
-//            printOrderBtn.setEnabled(false);
         }else{
-//            produceAndPrintBtn.setEnabled(true);
-//            finishProduceBtn.setEnabled(true);
-//            printOrderBtn.setEnabled(true);
-
-            orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
-            wholeOrderText.setText(order.getOrderSn());
-            orderTimeTxt.setText(OrderHelper.getDateToString(order.getOrderTime()));
-
+            orderIdTxt.setText(order.getOrderSn());
             //服务时效
-            reachTimeTxt.setText(OrderHelper.getTimeToService(order));
             receiveNameTxt.setText(order.getRecipient());
             receivePhoneTxt.setText(order.getPhone());
             receiveAddressTxt.setText(order.getAddress());
-            deliverNameTxt.setText(order.getCourierName());
-            deliverPhoneTxt.setText(order.getCourierPhone());
+            orderDistanceText.setText(order.getOrderDistance()+"米");
             fillItemListData(itemsContainerLayout, order);
             userRemarkTxt.setText(order.getNotes());
             csadRemarkTxt.setText(order.getCsrNotes());
             userCommentTagsText.setText(OrderHelper.getCommentTagsStr(order.getFeedbackTags()));
             userCommentContentText.setText(order.getFeedback());
 
-           /* if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
-                twoBtnLayout.setVisibility(View.GONE);
-                oneBtnLayout.setVisibility(View.VISIBLE);
-                produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //点击开始生产（打印）按钮
-                        EventBus.getDefault().post(new StartProduceEvent(order));
-                    }
-                });
-            }else if(order.getProduceStatus() == OrderStatus.PRODUCING){
-                twoBtnLayout.setVisibility(View.VISIBLE);
-                oneBtnLayout.setVisibility(View.GONE);
-                finishProduceBtn.setVisibility(View.VISIBLE);
-                finishProduceBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //生产完成
-                        EventBus.getDefault().post(new FinishProduceEvent(order));
-                    }
-                });
-                if(OrderHelper.isPrinted(mContext, order.getOrderSn())){
-                    printOrderBtn.setText(R.string.print_again);
-                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_red));
-                }else{
-                    printOrderBtn.setText(R.string.print);
-                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_black));
-                }
-                printOrderBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        EventBus.getDefault().post(new PrintOrderEvent(order));
-                    }
-                });
-            }else{
-                twoBtnLayout.setVisibility(View.VISIBLE);
-                oneBtnLayout.setVisibility(View.GONE);
-                finishProduceBtn.setVisibility(View.GONE);
-                if(OrderHelper.isPrinted(mContext, order.getOrderSn())){
-                    printOrderBtn.setText(R.string.print_again);
-                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_red));
-                }else{
-                    printOrderBtn.setText(R.string.print);
-                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_black));
-                }
-                printOrderBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        EventBus.getDefault().post(new PrintOrderEvent(order));
-                    }
-                });
-            }*/
-
-           /* if(order.getDeliveryTeam()== DeliveryTeam.MEITUAN){
-                moreBtn.setEnabled(false);
-            }else{
-                moreBtn.setEnabled(true);
-                moreBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        final PopupMenu popup = new PopupMenu(mContext, v);
-                        popup.inflate(R.menu.menu_order_detail_more);
-                        if (order.getStatus() != OrderStatus.ASSIGNED) {
-                            popup.getMenu().findItem(R.id.menu_undo_order).setVisible(false);
-                        }
-                        if (order.getStatus() != OrderStatus.UNASSIGNED) {
-                            popup.getMenu().findItem(R.id.menu_assign_order).setVisible(false);
-                        }
-                        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                            @Override
-                            public boolean onMenuItemClick(MenuItem item) {
-                                switch (item.getItemId()) {
-                                    case R.id.menu_undo_order:
-                                        HttpHelper.getInstance().reqRecallOrder(order.getId(), new DialogCallback<XlsResponse>(getActivity()) {
-
-                                            @Override
-                                            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                                                EventBus.getDefault().post(new RecallOrderEvent(xlsResponse,call,response));
-                                            }
-                                        });
-                                        break;
-                                    case R.id.menu_assign_order:
-                                        Intent intent = new Intent(mContext, AssignOrderActivity.class);
-                                        intent.putExtra("orderId", order.getId());
-                                        mContext.startActivity(intent);
-                                        break;
-                                }
-                                popup.dismiss();
-                                return false;
-                            }
-                        });
-
-                        popup.show();
-                    }
-                });
-            }
-*/
         }
 
     }
@@ -546,8 +413,10 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
         List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
         if("yes".equalsIgnoreCase(isLoadMore)){
             mAdapter.addData(orderBeans);
+            Log.d("xls","addData orderBeans.size = "+orderBeans.size());
         }else{
             mAdapter.setData(orderBeans);
+            Log.d("xls","orderBeans.size = "+orderBeans.size());
         }
 
         if(mAdapter.list.size()>0){

@@ -543,7 +543,34 @@ public class OrderHelper {
 
     }
 
-    //计算订单的服务时效
+    public static String getPeriodOfExpectedtime(OrderBean orderBean){
+        if(DeliveryTeam.MEITUAN==orderBean.getDeliveryTeam()){
+            //美团订单
+            if(orderBean.getInstant()==1){
+                //及时单
+                return "立即送出";
+            }else{
+                //预约单
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                String start = sdf.format(new Date(orderBean.getExpectedTime()));
+                return start;
+            }
+        }else{
+            if(orderBean.getInstant()==1){
+                //及时单
+                return "尽快送达";
+            }else{
+                //预约单
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                String start = sdf.format(new Date(orderBean.getExpectedTime()));
+                String end = sdf.format(new Date(orderBean.getExpectedTime()+30*60*1000));
+                return start+"~"+end;
+            }
+        }
+
+    }
+
+    //针对当前时间送达计算订单的服务时效
     public static String getTimeToService(OrderBean orderBean){
         SimpleDateFormat sdf  = new SimpleDateFormat("HH:mm");
         String result = "";
@@ -571,6 +598,47 @@ public class OrderHelper {
             }
         }
         return result;
+    }
+
+    /**
+     * 实际该订单的服务时效
+     */
+    public static String getRealTimeToService(OrderBean orderBean){
+        SimpleDateFormat sdf  = new SimpleDateFormat("HH:mm");
+        long realReachTime = orderBean.getHandoverTime();
+        String result = "";
+        if(orderBean.getInstant()==1){  //及时单
+            long orderTime = orderBean.getOrderTime();
+            long deltaTime = realReachTime - orderTime;
+            if(deltaTime<=30*60*1000){
+                result = "良好";
+            }else if(deltaTime>30*60*1000 && deltaTime<=60*60*1000){
+                result = "合格";
+            }else if(deltaTime>60*60*1000){
+                result = "不及格";
+            }
+        }else{
+            long bookTime = orderBean.getExpectedTime();
+            long T2 = bookTime+30*60*1000;
+            if(realReachTime<=T2){
+                result = "良好";
+            }else if(realReachTime>T2 && realReachTime<=T2+5*60*1000){
+                result = "合格";
+            }else if(realReachTime>T2+5*60*1000){
+                result = "不及格";
+            }
+        }
+        return result;
+    }
+
+
+
+    /**
+     * 格式化时间
+     */
+    public static String formatOrderDate(long time){
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm (MM/dd)");
+        return sdf.format(new Date(time));
     }
 
 }

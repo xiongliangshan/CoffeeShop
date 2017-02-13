@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -20,10 +19,6 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
-import com.lyancafe.coffeeshop.constant.OrderStatus;
-import com.lyancafe.coffeeshop.event.FinishProduceEvent;
-import com.lyancafe.coffeeshop.event.PrintOrderEvent;
-import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateFinishedOrderDetailEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
@@ -49,7 +44,7 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Vi
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_list_item, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.finished_list_item, parent, false);
         return new ViewHolder(v);
     }
 
@@ -70,129 +65,27 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Vi
         });
 
         if(selected==position){
-            holder.rootLayout.setBackgroundResource(R.mipmap.touch_border);
+            holder.rootLayout.setBackgroundResource(R.drawable.bg_finished_order_selected);
         }else{
-            holder.rootLayout.setBackground(null);
+            holder.rootLayout.setBackgroundResource(R.drawable.bg_finished_order);
         }
         final OrderBean order = list.get(position);
-        if(OrderHelper.isBatchOrder(order.getId())){
-            holder.secondRootLayout.setBackgroundResource(R.drawable.bg_batch_order);
-            holder.itemContainerll.setBackgroundResource(R.mipmap.bg_batch_dot);
-        }else{
-            holder.secondRootLayout.setBackgroundResource(R.drawable.bg_order);
-            holder.itemContainerll.setBackgroundResource(R.mipmap.bg_normal_dot);
-        }
-        if(order.getDeliveryTeam()== DeliveryTeam.MEITUAN){
-            //美团订单
-            holder.firstRowLayout.setBackgroundColor(context.getResources().getColor(R.color.yellow));
-        }else{
-            holder.firstRowLayout.setBackground(null);
-        }
-        holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
 
-        //新用户订单
-        if(false){
-            holder.newUserOderIV.setImageResource(R.mipmap.flag_new_user);
+        if(DeliveryTeam.MEITUAN == order.getDeliveryTeam()){
+            holder.shopOrderIdText.setText("美团");
+            holder.deliverResultText.setText(String.valueOf(order.getMtShopOrderNo()));
+            holder.deliverNameText.setText("美团配送");
         }else{
-            holder.newUserOderIV.setImageResource(R.mipmap.flag_placeholder);
+            holder.shopOrderIdText.setText(OrderHelper.getShopOrderSn(order));
+            holder.deliverResultText.setText(OrderHelper.getRealTimeToService(order));
+            holder.deliverNameText.setText(order.getCourierName());
         }
-        //扫码下单
-        if(order.isWxScan()){
-            holder.saoImg.setImageResource(R.mipmap.flag_sao);
-        }else {
-            holder.saoImg.setImageResource(R.mipmap.flag_placeholder);
-        }
-        //定制
-        if(order.isRecipeFittings()){
-            holder.labelFlagImg.setImageResource(R.mipmap.flag_ding);
-        }else{
-            holder.labelFlagImg.setImageResource(R.mipmap.flag_placeholder);
-        }
+        holder.orderTimeText.setText(OrderHelper.formatOrderDate(order.getOrderTime()));
+        holder.expectedReachTimeText.setText(OrderHelper.getPeriodOfExpectedtime(order));
+        holder.realReachTimeText.setText(OrderHelper.formatOrderDate(order.getHandoverTime()));
+        holder.customEvaluationText.setText(order.getFeedbackType()==0?"无":order.getFeedbackType()==1?"好评":"差评");
 
-        //礼盒订单 or 礼品卡
-        if(order.getGift()==2||order.getGift()==5){
-            holder.giftIV.setImageResource(R.mipmap.flag_li);
-        }else{
-            holder.giftIV.setImageResource(R.mipmap.flag_placeholder);
-        }
-        //抢单
-        if(order.getStatus()== OrderStatus.UNASSIGNED){
-            holder.grabFlagIV.setImageResource(R.mipmap.flag_placeholder);
-        }else{
-            holder.grabFlagIV.setImageResource(R.mipmap.flag_qiang);
-        }
-        //备注
-        if(TextUtils.isEmpty(order.getNotes()) && TextUtils.isEmpty(order.getCsrNotes())){
-            holder.remarkFlagIV.setImageResource(R.mipmap.flag_placeholder);
-        }else {
-            holder.remarkFlagIV.setImageResource(R.mipmap.flag_bei);
-        }
-        //vip订单
-        if(order.isOrderVip()){
-            holder.vipFlagIV.setImageResource(R.mipmap.flag_vip);
-        }else{
-            holder.vipFlagIV.setImageResource(R.mipmap.flag_placeholder);
-        }
 
-        OrderHelper.showEffect(order, holder.produceBtn, holder.effectTimeTxt);
-
-        if(OrderHelper.isPrinted(context, order.getOrderSn())){
-            holder.printBtn.setText(R.string.print_again);
-            holder.printBtn.setTextColor(context.getResources().getColor(R.color.text_red));
-        }else{
-            holder.printBtn.setText(R.string.print);
-            holder.printBtn.setTextColor(context.getResources().getColor(R.color.text_black));
-        }
-        fillItemListData(holder.itemContainerll, order.getItems());
-        holder.cupCountText.setText(context.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
-        holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
-        holder.onebtnContainerlayout.setVisibility(View.GONE);
-        holder.produceBtn.setVisibility(View.GONE);
-        holder.printBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EventBus.getDefault().post(new PrintOrderEvent(order));
-            }
-        });
-        /*if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
-            holder.twobtnContainerLayout.setVisibility(View.GONE);
-            holder.onebtnContainerlayout.setVisibility(View.VISIBLE);
-            holder.produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //点击开始生产（打印）按钮
-                    EventBus.getDefault().post(new StartProduceEvent(order));
-                }
-            });
-        }else if(order.getProduceStatus() == OrderStatus.PRODUCING){
-            holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
-            holder.onebtnContainerlayout.setVisibility(View.GONE);
-            holder.produceBtn.setVisibility(View.VISIBLE);
-            holder.produceBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //生产完成
-                    EventBus.getDefault().post(new FinishProduceEvent(order));
-                }
-            });
-            holder.printBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    EventBus.getDefault().post(new PrintOrderEvent(order));
-                }
-            });
-        }else{
-            holder.twobtnContainerLayout.setVisibility(View.GONE);
-            holder.onebtnContainerlayout.setVisibility(View.GONE);
-            holder.produceBtn.setVisibility(View.GONE);
-            holder.printBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    EventBus.getDefault().post(new PrintOrderEvent(order));
-                }
-            });
-        }
-*/
     }
 
 
@@ -208,99 +101,29 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Vi
         return position;
     }
 
-    //填充item数据
-    private void fillItemListData(LinearLayout ll,List<ItemContentBean> items){
-        ll.removeAllViews();
-        for(ItemContentBean item:items){
-            TextView tv1 = new TextView(context);
-            tv1.setText(item.getProduct());
-            tv1.setMaxEms(6);
-            tv1.setTextSize(context.getResources().getDimension(R.dimen.content_item_text_size));
-            if(!TextUtils.isEmpty(OrderHelper.getLabelStr(item.getRecipeFittingsList()))){
-                Drawable drawable = ContextCompat.getDrawable(CSApplication.getInstance(),R.mipmap.flag_ding);
-                drawable.setBounds(0,1,OrderHelper.dip2Px(12,context),OrderHelper.dip2Px(12,context));
-                tv1.setCompoundDrawablePadding(OrderHelper.dip2Px(4,context));
-                tv1.setCompoundDrawables(null, null,drawable,null);
-            }
-            TextView tv2 = new TextView(context);
-            tv2.setText("x  " + item.getQuantity());
-            tv2.setTextSize(context.getResources().getDimension(R.dimen.content_item_text_size));
-            TextPaint tp = tv2.getPaint();
-            tp.setFakeBoldText(true);
-            RelativeLayout rl = new RelativeLayout(context);
-            RelativeLayout.LayoutParams lp1=new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
-            lp1.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            lp1.leftMargin = OrderHelper.dip2Px(2,context);
-            tv1.setLayoutParams(lp1);
-            rl.addView(tv1);
-
-            RelativeLayout.LayoutParams lp2=new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
-            lp2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            lp2.rightMargin = OrderHelper.dip2Px(2,context);
-            tv2.setLayoutParams(lp2);
-            rl.addView(tv2);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            );
-            lp.topMargin = OrderHelper.dip2Px(2,context);
-            ll.addView(rl,lp);
-        }
-        ll.invalidate();
-    }
-
-
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public RelativeLayout rootLayout;
-        public LinearLayout secondRootLayout;
-        public LinearLayout firstRowLayout;
-        public ImageView newUserOderIV;
-        public ImageView saoImg;
-        public ImageView giftIV;
-        public ImageView labelFlagImg;
-        public TextView orderIdTxt;
-        public TextView contantEffectTimeTxt;
-        public TextView effectTimeTxt;
-        public ImageView vipFlagIV;
-        public ImageView grabFlagIV;
-        public ImageView remarkFlagIV;
-        public LinearLayout itemContainerll;
-        public TextView cupCountText;
-        public LinearLayout twobtnContainerLayout;
-        public LinearLayout onebtnContainerlayout;
-        public TextView produceAndPrintBtn;
-        public TextView produceBtn;
-        public TextView printBtn;
+        public LinearLayout rootLayout;
+        public TextView shopOrderIdText;
+        public TextView deliverResultText;
+        public TextView orderTimeText;
+        public TextView expectedReachTimeText;
+        public TextView realReachTimeText;
+        public TextView customEvaluationText;
+        public TextView deliverNameText;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
-            rootLayout = (RelativeLayout) itemView.findViewById(R.id.root_view);
-            secondRootLayout = (LinearLayout) itemView.findViewById(R.id.second_root_view);
-            firstRowLayout = (LinearLayout) itemView.findViewById(R.id.ll_first_row);
-            newUserOderIV = (ImageView) itemView.findViewById(R.id.iv_new_user);
-            saoImg = (ImageView) itemView.findViewById(R.id.iv_sao_flag);
-            giftIV = (ImageView) itemView.findViewById(R.id.iv_gift);
-            labelFlagImg = (ImageView) itemView.findViewById(R.id.iv_label_flag);
-            orderIdTxt = (TextView) itemView.findViewById(R.id.item_order_id);
-            contantEffectTimeTxt = (TextView) itemView.findViewById(R.id.item_contant_produce_effect);
-            effectTimeTxt = (TextView) itemView.findViewById(R.id.item_produce_effect);
-            vipFlagIV = (ImageView) itemView.findViewById(R.id.item_vip_flag);
-            grabFlagIV = (ImageView) itemView.findViewById(R.id.item_grab_flag);
-            remarkFlagIV = (ImageView) itemView.findViewById(R.id.item_remark_flag);
-            itemContainerll = (LinearLayout) itemView.findViewById(R.id.item_container);
-            cupCountText = (TextView) itemView.findViewById(R.id.tv_cup_count);
-            twobtnContainerLayout = (LinearLayout) itemView.findViewById(R.id.ll_twobtn_container);
-            onebtnContainerlayout = (LinearLayout) itemView.findViewById(R.id.ll_onebtn_container);
-            produceBtn = (TextView) itemView.findViewById(R.id.item_produce);
-            printBtn = (TextView) itemView.findViewById(R.id.item_print);
-            produceAndPrintBtn = (TextView) itemView.findViewById(R.id.item_produce_and_print);
+            rootLayout = (LinearLayout) itemView.findViewById(R.id.ll_root);
+            shopOrderIdText = (TextView) itemView.findViewById(R.id.tv_shop_order_id);
+            deliverResultText = (TextView) itemView.findViewById(R.id.tv_deliver_result);
+            orderTimeText = (TextView) itemView.findViewById(R.id.tv_order_time);
+            expectedReachTimeText = (TextView) itemView.findViewById(R.id.tv_expected_reach_time);
+            realReachTimeText = (TextView) itemView.findViewById(R.id.tv_real_reach_time);
+            customEvaluationText = (TextView) itemView.findViewById(R.id.tv_custom_evaluation);
+            deliverNameText = (TextView) itemView.findViewById(R.id.tv_deliver_name);
         }
     }
 
