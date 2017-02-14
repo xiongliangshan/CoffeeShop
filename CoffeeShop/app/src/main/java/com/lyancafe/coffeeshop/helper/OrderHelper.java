@@ -76,6 +76,17 @@ public class OrderHelper {
         return df.format(distance/1000.0)+"公里";
     }
 
+    //距离显示格式化
+    public static String getDistanceFormat(double distance){
+        DecimalFormat df   =new  DecimalFormat("#.#");
+        if(distance>=1000){
+            return df.format(distance/1000.0)+"公里";
+        }else{
+            return new DecimalFormat("#").format(distance)+"米";
+        }
+
+    }
+
     /*
     * converts dip to px
     */

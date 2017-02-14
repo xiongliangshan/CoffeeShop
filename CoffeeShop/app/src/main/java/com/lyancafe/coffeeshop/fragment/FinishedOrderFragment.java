@@ -196,7 +196,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
             receiveNameTxt.setText(order.getRecipient());
             receivePhoneTxt.setText(order.getPhone());
             receiveAddressTxt.setText(order.getAddress());
-            orderDistanceText.setText(order.getOrderDistance()+"米");
+            orderDistanceText.setText(OrderHelper.getDistanceFormat(order.getOrderDistance()));
             fillItemListData(itemsContainerLayout, order);
             userRemarkTxt.setText(order.getNotes());
             csadRemarkTxt.setText(order.getCsrNotes());
