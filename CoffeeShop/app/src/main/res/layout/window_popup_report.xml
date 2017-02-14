@@ -81,7 +81,6 @@
         android:layout_height="280dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/stroke_background"
-        android:singleLine="false"
         android:inputType="textMultiLine"
         android:gravity="left|top"
         android:maxHeight="300dp"

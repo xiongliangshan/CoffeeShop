@@ -70,18 +70,12 @@ public class DeliveringRvAdapter extends RecyclerView.Adapter<DeliveringRvAdapte
         });
 
         if(selected==position){
-            holder.rootLayout.setBackgroundResource(R.mipmap.touch_border);
+            holder.rootLayout.setBackgroundResource(R.drawable.bg_order_selected);
         }else{
-            holder.rootLayout.setBackground(null);
+            holder.rootLayout.setBackgroundResource(R.drawable.bg_order);
         }
         final OrderBean order = list.get(position);
-        if(OrderHelper.isBatchOrder(order.getId())){
-            holder.secondRootLayout.setBackgroundResource(R.drawable.bg_batch_order);
-            holder.itemContainerll.setBackgroundResource(R.mipmap.bg_batch_dot);
-        }else{
-            holder.secondRootLayout.setBackgroundResource(R.drawable.bg_order);
-            holder.itemContainerll.setBackgroundResource(R.mipmap.bg_normal_dot);
-        }
+
         if(order.getDeliveryTeam()== DeliveryTeam.MEITUAN){
             //美团订单
             holder.firstRowLayout.setBackgroundColor(context.getResources().getColor(R.color.yellow));
@@ -248,8 +242,7 @@ public class DeliveringRvAdapter extends RecyclerView.Adapter<DeliveringRvAdapte
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public RelativeLayout rootLayout;
-        public LinearLayout secondRootLayout;
+        public LinearLayout rootLayout;
         public LinearLayout firstRowLayout;
         public ImageView newUserOderIV;
         public ImageView saoImg;
@@ -272,8 +265,7 @@ public class DeliveringRvAdapter extends RecyclerView.Adapter<DeliveringRvAdapte
 
         public ViewHolder(View itemView) {
             super(itemView);
-            rootLayout = (RelativeLayout) itemView.findViewById(R.id.root_view);
-            secondRootLayout = (LinearLayout) itemView.findViewById(R.id.second_root_view);
+            rootLayout = (LinearLayout) itemView.findViewById(R.id.root_view);
             firstRowLayout = (LinearLayout) itemView.findViewById(R.id.ll_first_row);
             newUserOderIV = (ImageView) itemView.findViewById(R.id.iv_new_user);
             saoImg = (ImageView) itemView.findViewById(R.id.iv_sao_flag);

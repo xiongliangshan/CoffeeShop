@@ -91,7 +91,7 @@
                     android:layout_height="wrap_content"
                     android:text="生产"
                     android:ems="1"
-                    android:textSize="24dp"
+                    android:textSize="24sp"
                     android:textColor="@android:color/black"/>
             </LinearLayout>
             <View
@@ -110,7 +110,7 @@
                     android:layout_height="wrap_content"
                     android:text="配送"
                     android:ems="1"
-                    android:textSize="24dp"
+                    android:textSize="24sp"
                     android:textColor="@android:color/black"
                     />
             </LinearLayout>
@@ -130,7 +130,7 @@
                     android:layout_height="wrap_content"
                     android:text="门店"
                     android:ems="1"
-                    android:textSize="24dp"
+                    android:textSize="24sp"
                     android:textColor="@android:color/black"/>
             </LinearLayout>
 

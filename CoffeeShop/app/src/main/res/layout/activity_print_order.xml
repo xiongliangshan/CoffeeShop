@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="300dp"
-    android:background="@color/white_font"
     android:padding="20dp"
      >
     <Button
@@ -14,7 +13,7 @@
         android:layout_marginTop="10dip"
         android:background="@drawable/bg_printer_btn"
         android:textColor="@color/white_font"
-        android:textSize="16dip"
+        android:textSize="16sp"
         android:text="打印订单信息" />
 
     <Button
@@ -26,7 +25,7 @@
         android:background="@drawable/bg_printer_btn"
         android:text="打印商品贴纸"
         android:textColor="@color/white_font"
-        android:textSize="16dip" />
+        android:textSize="16sp" />
 
     <Button
         android:id="@+id/btn_print_all"
@@ -37,7 +36,7 @@
         android:background="@drawable/bg_printer_btn"
         android:text="打印全部"
         android:textColor="@color/white_font"
-        android:textSize="16dip" />
+        android:textSize="16sp" />
 
 
 
@@ -50,6 +49,6 @@
         android:background="@drawable/bg_printer_btn"
         android:text="检查打印机"
         android:textColor="@color/white_font"
-        android:textSize="16dip" />
+        android:textSize="16sp" />
 
 </RelativeLayout>

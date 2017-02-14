@@ -1,210 +1,191 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_order"
     android:descendantFocusability="blocksDescendants"
-    android:padding="1dp"
     >
+
     <LinearLayout
-        android:id="@+id/second_root_view"
+        android:id="@+id/ll_first_row"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@drawable/bg_order"
-        >
-        <LinearLayout
-            android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/item_order_id"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="4dp"
-            android:layout_marginLeft="4dp"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:text="003约"
+            />
+
+        <TextView
+            android:id="@+id/item_contant_produce_effect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="生产时效"
+            android:textSize="10sp"
+            android:textColor="@color/font_gray"
             android:layout_marginRight="4dp"
-            >
-            <LinearLayout
-                android:id="@+id/ll_first_row"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:id="@+id/item_order_id"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="14sp"
-                    android:text="003约"
-                    />
-
-                <TextView
-                    android:id="@+id/item_contant_produce_effect"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="生产时效"
-                    android:textSize="10sp"
-                    android:textColor="@color/font_gray"
-                    android:layout_marginRight="4dp"
-                    />
-                <TextView
-                    android:id="@+id/item_produce_effect"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="18sp"
-                    android:text="08:36"
-                    />
-            </LinearLayout>
-        </LinearLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
+            />
+        <TextView
+            android:id="@+id/item_produce_effect"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="4dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            >
-            <ImageView
-                android:id="@+id/iv_new_user"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/flag_new_user"
-                />
-
-            <ImageView
-                android:id="@+id/iv_sao_flag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/iv_new_user"
-                android:layout_marginLeft="4dp"
-                android:src="@mipmap/flag_sao"/>
-
-            <ImageView
-                android:id="@+id/iv_label_flag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/iv_sao_flag"
-                android:src="@mipmap/flag_ding"
-                android:layout_marginLeft="4dp"
-                />
-
-            <ImageView
-                android:id="@+id/item_remark_flag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
-                android:src="@mipmap/flag_bei"
-                android:layout_toRightOf="@id/iv_label_flag"
-                />
-
-            <ImageView
-                android:id="@+id/item_vip_flag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/item_remark_flag"
-                android:src="@mipmap/flag_vip"
-                android:layout_marginLeft="4dp"/>
-
-            <ImageView
-                android:id="@+id/iv_gift"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/flag_li"
-                android:layout_toRightOf="@id/item_vip_flag"
-                android:layout_marginLeft="4dp"
-                />
-
-            <ImageView
-                android:id="@+id/item_grab_flag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/iv_gift"
-                android:src="@mipmap/flag_qiang"
-                android:layout_marginLeft="4dp"/>
-
-
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/order_item_content_height"
-            android:layout_marginRight="4dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginTop="8dp">
-            <LinearLayout
-                android:id="@+id/item_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@mipmap/bg_normal_dot"
-                android:orientation="vertical"
-                android:gravity="center_horizontal"
-                android:padding="2dp"
-                />
-            <TextView
-                android:id="@+id/tv_cup_count"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:layout_alignParentBottom="true"
-                android:text=""/>
-        </RelativeLayout>
-        <LinearLayout
-            android:id="@+id/ll_twobtn_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_margin="4dp"
-            android:visibility="gone"
-            >
-
-            <TextView
-                android:id="@+id/item_produce"
-                android:layout_width="0dp"
-                android:padding="8dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="生产完成"
-                android:textSize="13sp"
-                android:textColor="@color/white_font"
-                android:background="@drawable/bg_produce_btn"
-                android:layout_marginRight="3dp"
-                />
-            <TextView
-                android:id="@+id/item_print"
-                android:layout_width="0dp"
-                android:padding="8dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/print"
-                android:textSize="13sp"
-                android:layout_marginLeft="3dp"
-                />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_onebtn_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_margin="4dp"
-            >
-            <TextView
-                android:id="@+id/item_produce_and_print"
-                android:layout_width="match_parent"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="开始生产（打印）"
-                android:textSize="13sp"
-                android:textColor="@color/white_font"
-                android:background="@drawable/bg_produce_btn"
-                />
-        </LinearLayout>
+            android:textSize="18sp"
+            android:text="08:36"
+            />
     </LinearLayout>
-</RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp"
+        >
+        <ImageView
+            android:id="@+id/iv_new_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/flag_new_user"
+            />
+
+        <ImageView
+            android:id="@+id/iv_sao_flag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/iv_new_user"
+            android:layout_marginLeft="4dp"
+            android:src="@mipmap/flag_sao"/>
+
+        <ImageView
+            android:id="@+id/iv_label_flag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/iv_sao_flag"
+            android:src="@mipmap/flag_ding"
+            android:layout_marginLeft="4dp"
+            />
+
+        <ImageView
+            android:id="@+id/item_remark_flag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:src="@mipmap/flag_bei"
+            android:layout_toRightOf="@id/iv_label_flag"
+            />
+
+        <ImageView
+            android:id="@+id/item_vip_flag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/item_remark_flag"
+            android:src="@mipmap/flag_vip"
+            android:layout_marginLeft="4dp"/>
+
+        <ImageView
+            android:id="@+id/iv_gift"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/flag_li"
+            android:layout_toRightOf="@id/item_vip_flag"
+            android:layout_marginLeft="4dp"
+            />
+
+        <ImageView
+            android:id="@+id/item_grab_flag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/iv_gift"
+            android:src="@mipmap/flag_qiang"
+            android:layout_marginLeft="4dp"/>
+
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/order_item_content_height"
+        android:layout_marginTop="8dp">
+        <LinearLayout
+            android:id="@+id/item_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@mipmap/bg_normal_dot"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:padding="2dp"
+            />
+        <TextView
+            android:id="@+id/tv_cup_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_alignParentBottom="true"
+            android:text=""/>
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/ll_twobtn_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp"
+        android:visibility="gone"
+        >
+
+        <TextView
+            android:id="@+id/item_produce"
+            android:layout_width="0dp"
+            android:padding="8dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="生产完成"
+            android:textSize="13sp"
+            android:textColor="@color/white_font"
+            android:background="@drawable/bg_produce_btn"
+            android:layout_marginRight="3dp"
+            />
+        <TextView
+            android:id="@+id/item_print"
+            android:layout_width="0dp"
+            android:padding="8dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/print"
+            android:textSize="13sp"
+            android:layout_marginLeft="3dp"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_onebtn_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp"
+        >
+        <TextView
+            android:id="@+id/item_produce_and_print"
+            android:layout_width="match_parent"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="开始生产（打印）"
+            android:textSize="13sp"
+            android:textColor="@color/white_font"
+            android:background="@drawable/bg_produce_btn"
+            />
+    </LinearLayout>
+
+</LinearLayout>

@@ -32,7 +32,7 @@
                 android:text="咖啡屋管理系统"
                 android:layout_centerHorizontal="true"
                 android:textColor="@android:color/black"
-                android:textSize="50sp"
+                android:textSize="36sp"
                 />
 
             <LinearLayout
@@ -41,18 +41,18 @@
                 android:orientation="vertical"
                 android:layout_below="@id/soft_name"
                 android:layout_centerInParent="true"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="30dp"
                 >
                 <EditText
                     android:id="@+id/username"
-                    android:layout_width="400dp"
+                    android:layout_width="260dp"
                     android:layout_height="wrap_content"
                     android:hint="请输入用户名"
                     android:singleLine="true"
                     />
                 <EditText
                     android:id="@+id/password"
-                    android:layout_width="400dp"
+                    android:layout_width="260dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:inputType="textPassword"
@@ -68,7 +68,7 @@
                     android:textColor="@color/white_font"
                     android:textSize="18sp"
                     android:background="@drawable/bg_login"
-                    android:layout_marginTop="60dp"
+                    android:layout_marginTop="30dp"
                     android:layout_gravity="center_horizontal"
                     />
             </LinearLayout>

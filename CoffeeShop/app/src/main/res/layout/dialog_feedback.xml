@@ -11,7 +11,6 @@
         android:maxHeight="300dp"
         android:layout_centerInParent="true"
         android:background="@drawable/stroke_background"
-        android:singleLine="false"
         android:inputType="textMultiLine"
         android:hint="请输入你对app的意见"
         android:gravity="left|top"

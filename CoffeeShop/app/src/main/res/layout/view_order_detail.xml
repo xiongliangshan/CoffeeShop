@@ -259,65 +259,24 @@
             android:baselineAligned="false"
             >
 
-            <LinearLayout
+            <ScrollView
+                android:id="@+id/scrollView"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
                 android:layout_weight="1"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="5dp"
+                android:scrollbars="none"
+                android:background="@mipmap/bg_normal_dot"
                 >
-                <ScrollView
-                    android:id="@+id/scrollView"
+                <LinearLayout
+                    android:id="@+id/items_container_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:layout_marginRight="5dp"
-                    android:scrollbars="none"
-                    android:background="@mipmap/bg_normal_dot"
-                    >
-                    <LinearLayout
-                        android:id="@+id/items_container_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="4dp"
-                        android:orientation="vertical"
-                        />
-                </ScrollView>
-                <!--<RelativeLayout
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp"
-                    >
-                    <TextView
-                        android:id="@+id/order_price"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text ="应付:"
-                        android:layout_marginRight="10dp"
-                        android:visibility="gone"
-                        />
-                    <TextView
-                        android:id="@+id/pay_way"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=""
-                        android:layout_toRightOf="@id/order_price"
-                        android:layout_marginRight="10dp"
-                        android:textColor="@color/font_gray"
-                        />
-                    <TextView
-                        android:id="@+id/money"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=""
-                        android:layout_toRightOf="@id/pay_way"
-                        android:textColor="@color/font_black"
-                        />
-                </RelativeLayout>-->
+                    android:padding="4dp"
+                    android:orientation="vertical"
+                    />
+            </ScrollView>
 
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"

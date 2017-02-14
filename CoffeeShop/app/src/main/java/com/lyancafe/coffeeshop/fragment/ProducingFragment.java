@@ -18,7 +18,6 @@ import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.constant.OrderAction;
-import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;

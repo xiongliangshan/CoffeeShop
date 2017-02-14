@@ -7,8 +7,8 @@
         android:color="@color/tab_orange"/>
 
     <size
-        android:width="200dp"
-        android:height="60dp"/>
+        android:width="160dp"
+        android:height="40dp"/>
 
     <corners
         android:radius="30dp"/>
