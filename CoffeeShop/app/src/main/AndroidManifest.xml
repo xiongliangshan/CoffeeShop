@@ -64,7 +64,8 @@
         <activity
             android:name=".activity.HomeActivity"
             android:parentActivityName=".activity.BaseActivity"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensorLandscape"
+            android:configChanges="keyboardHidden|screenSize|orientation"
             android:launchMode="singleTask">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
