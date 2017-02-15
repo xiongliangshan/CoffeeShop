@@ -2,20 +2,12 @@
 <resources>
 	<color name="radiobutton_text_normal">#FF595959</color>
 	<color name="radiobutton_text_press">#ff2babfc</color>
-	<color name="theme_gray_bg">#fff5f5f5</color>
-	
+
 	<color name="yellow">#FFFF00</color>
 	<color name="blue">#0000FF</color>
-	<color name="grey">#a0a0a0</color>
 
 
 	<color name="white_font">#ffffff</color>
-
-	<color name="bg_refresh">#28b332</color>
-
-	<color name="bg_batch_handle">#CD8C02</color>
-
-	<color name="bg_batch_prompt">#FFFFF2</color>
 
 	<color name="bg_blue">#3d5de8</color>
 
