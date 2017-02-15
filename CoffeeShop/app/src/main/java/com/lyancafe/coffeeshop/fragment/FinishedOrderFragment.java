@@ -68,6 +68,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     /**
      * 订单详情页UI组件
      */
+    private TextView shopOrderNumText;
     private TextView orderIdTxt;
     private TextView receiveNameTxt;
     private TextView receivePhoneTxt;
@@ -160,6 +161,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     }
 
     private void initDetailView(View contentView){
+        shopOrderNumText = (TextView) contentView.findViewById(R.id.tv_shop_order_id);
         orderIdTxt = (TextView) contentView.findViewById(R.id.order_id);
         receiveNameTxt  = (TextView) contentView.findViewById(R.id.receiver_name);
         receivePhoneTxt = (TextView) contentView.findViewById(R.id.receiver_phone);
@@ -191,6 +193,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
             userCommentContentText.setText("");
             itemsContainerLayout.removeAllViews();
         }else{
+            shopOrderNumText.setText(OrderHelper.getShopOrderSn(order));
             orderIdTxt.setText(order.getOrderSn());
             //服务时效
             receiveNameTxt.setText(order.getRecipient());
