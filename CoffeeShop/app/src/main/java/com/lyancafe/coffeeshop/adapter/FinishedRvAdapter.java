@@ -76,7 +76,7 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Vi
         holder.orderTimeText.setText(OrderHelper.formatOrderDate(order.getOrderTime()));
         holder.expectedReachTimeText.setText(OrderHelper.getPeriodOfExpectedtime(order));
         holder.realReachTimeText.setText(OrderHelper.formatOrderDate(order.getHandoverTime()));
-        holder.customEvaluationText.setText(order.getFeedbackType()==0?"无":order.getFeedbackType()==1?"好评":"差评");
+        holder.customEvaluationText.setText(order.getFeedbackType()==0?"无":order.getFeedbackType()==4?"好评":"差评");
 
 
     }
