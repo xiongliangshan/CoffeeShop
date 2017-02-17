@@ -87,11 +87,11 @@
 
         <activity android:name=".activity.PrintOrderActivity"
             android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.Holo.Dialog.NoActionBar"/>
+            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar"/>
 
         <activity android:name=".activity.AssignOrderActivity"
             android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.Holo.Dialog.NoActionBar"/>
+            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar"/>
 
         <activity android:name=".activity.CommentActivity"
             android:screenOrientation="landscape"

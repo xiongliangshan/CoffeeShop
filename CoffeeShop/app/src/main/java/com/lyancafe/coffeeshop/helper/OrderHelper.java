@@ -652,4 +652,20 @@ public class OrderHelper {
         return sdf.format(new Date(time));
     }
 
+
+
+    //列表显示订单尾号
+    public static String getSimpleOrderSnForPrint(String orderSn){
+        if(TextUtils.isEmpty(orderSn)){
+            return "";
+        }
+
+        if(orderSn.length()<=6){
+            return "("+orderSn+")";
+        }else {
+            return "("+orderSn.substring(6)+")";
+        }
+
+    }
+
 }
