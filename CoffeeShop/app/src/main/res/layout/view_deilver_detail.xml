@@ -84,6 +84,15 @@
             android:textColor="@color/font_black"
             />
 
+        <com.lyancafe.coffeeshop.widget.UnderLineTextView
+            android:id="@+id/contant_issue_feedback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@id/contant_custom_info"
+            android:textColor="@color/bg_blue"
+            android:text="问题反馈"/>
+
         <TextView
             android:id="@+id/contant_order_time"
             android:layout_width="wrap_content"

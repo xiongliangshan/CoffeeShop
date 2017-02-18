@@ -84,7 +84,7 @@
             android:textColor="@color/font_black"
             />
 
-        <TextView
+        <com.lyancafe.coffeeshop.widget.UnderLineTextView
             android:id="@+id/contant_issue_feedback"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

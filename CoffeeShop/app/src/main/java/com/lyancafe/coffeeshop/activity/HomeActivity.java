@@ -148,13 +148,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,D
         checkUpdateText = (TextView) findViewById(R.id.tv_check_update);
         loginOutText = (TextView) findViewById(R.id.tv_login_out);
 
-        checkUpdateText.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-        checkUpdateText.getPaint().setAntiAlias(true);
-
-        loginOutText.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-        loginOutText.getPaint().setAntiAlias(true);
-
-
         tabProduceLayout.setOnClickListener(this);
         tabDeliverlayout.setOnClickListener(this);
         tabShopLayout.setOnClickListener(this);

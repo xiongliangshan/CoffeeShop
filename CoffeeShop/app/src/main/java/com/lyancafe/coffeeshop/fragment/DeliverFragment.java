@@ -44,6 +44,7 @@ import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
+import com.lyancafe.coffeeshop.widget.ReportIssueDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -91,6 +92,7 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
     private TextView csadRemarkTxt;
     private LinearLayout twoBtnLayout;
     private LinearLayout oneBtnLayout;
+    private TextView reportIssueBtn;
     private TextView assignBtn;
     private Button produceAndPrintBtn;
     private Button finishProduceBtn;
@@ -199,6 +201,7 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
         csadRemarkTxt = (TextView) contentView.findViewById(R.id.csad_remark);
         twoBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_twobtn);
         oneBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_onebtn);
+        reportIssueBtn = (TextView) contentView.findViewById(R.id.contant_issue_feedback);
         assignBtn = (TextView) contentView.findViewById(R.id.btn_assign);
         produceAndPrintBtn = (Button) contentView.findViewById(R.id.btn_produce_print);
         finishProduceBtn = (Button) contentView.findViewById(R.id.btn_finish_produce);
@@ -347,10 +350,12 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
             csadRemarkTxt.setText("");
             itemsContainerLayout.removeAllViews();
             assignBtn.setVisibility(View.GONE);
+            reportIssueBtn.setVisibility(View.GONE);
             produceAndPrintBtn.setEnabled(false);
             finishProduceBtn.setEnabled(false);
             printOrderBtn.setEnabled(false);
         }else{
+            reportIssueBtn.setVisibility(View.VISIBLE);
             produceAndPrintBtn.setEnabled(true);
             finishProduceBtn.setEnabled(true);
             printOrderBtn.setEnabled(true);
@@ -369,6 +374,15 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
             fillItemListData(itemsContainerLayout, order);
             userRemarkTxt.setText(order.getNotes());
             csadRemarkTxt.setText(order.getCsrNotes());
+
+            reportIssueBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //问题反馈
+                    ReportIssueDialog rid = ReportIssueDialog.newInstance(order.getId());
+                    rid.show(getChildFragmentManager(),"report_issue");
+                }
+            });
 
             if(order.getDeliveryTeam()== DeliveryTeam.MEITUAN || order.getStatus()==OrderStatus.DELIVERING){
                 assignBtn.setVisibility(View.GONE);

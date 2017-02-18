@@ -321,11 +321,13 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
             userRemarkTxt.setText("");
             csadRemarkTxt.setText("");
             itemsContainerLayout.removeAllViews();
+            reportIssueBtn.setVisibility(View.GONE);
             assignBtn.setVisibility(View.GONE);
             produceAndPrintBtn.setEnabled(false);
             finishProduceBtn.setEnabled(false);
             printOrderBtn.setEnabled(false);
         }else {
+            reportIssueBtn.setVisibility(View.VISIBLE);
             assignBtn.setVisibility(View.VISIBLE);
             produceAndPrintBtn.setEnabled(true);
             finishProduceBtn.setEnabled(true);
