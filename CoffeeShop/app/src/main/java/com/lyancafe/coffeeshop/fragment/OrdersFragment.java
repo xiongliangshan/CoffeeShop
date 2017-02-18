@@ -48,6 +48,7 @@ import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
+import com.lyancafe.coffeeshop.widget.ReportIssueDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -105,6 +106,7 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
     private Button produceAndPrintBtn;
     private Button finishProduceBtn;
     private Button printOrderBtn;
+    private TextView reportIssueBtn;
 
     @Override
     public void onAttach(Context context) {
@@ -299,6 +301,7 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
         csadRemarkTxt = (TextView) contentView.findViewById(R.id.csad_remark);
         twoBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_twobtn);
         oneBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_onebtn);
+        reportIssueBtn = (TextView) contentView.findViewById(R.id.contant_issue_feedback);
         assignBtn = (TextView) contentView.findViewById(R.id.btn_assign);
         produceAndPrintBtn = (Button) contentView.findViewById(R.id.btn_produce_print);
         finishProduceBtn = (Button) contentView.findViewById(R.id.btn_finish_produce);
@@ -342,6 +345,14 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
 
             userRemarkTxt.setText(order.getNotes());
             csadRemarkTxt.setText(order.getCsrNotes());
+            reportIssueBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //问题反馈
+                    ReportIssueDialog rid = ReportIssueDialog.newInstance(order.getId());
+                    rid.show(getChildFragmentManager(),"report_issue");
+                }
+            });
             if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN) {
                 assignBtn.setVisibility(View.GONE);
             } else {

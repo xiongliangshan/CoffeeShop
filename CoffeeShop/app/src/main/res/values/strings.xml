@@ -87,6 +87,10 @@
     <string name="sf_batch_start">批量开始</string>
     <string name="sf_batch_produced">批量完成</string>
     <string name="sf_batch_print">批量打印</string>
+    <string name="change_shop">变更生产点</string>
+    <string name="change_address">变更订单地址</string>
+    <string name="change_date">变更订单日期</string>
+    <string name="change_time">变更订单时间</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 </resources>
