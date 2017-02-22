@@ -395,11 +395,12 @@ public class HttpHelper {
     /**
      * 上报问题订单
      * @param orderId
-     * @param questionType
-     * @param questionIdea
+     * @param questionType 14.产线繁忙 15.无法生产 16.定位错误，应属其他区域 17.其他
+     * @param questionIdea 1.取消订单 2.改约时间
      * @param questionDesc
      * @param callback
      */
+
     public void reqReportIssueOrder(long orderId, int questionType, int questionIdea, String questionDesc,JsonCallback<XlsResponse> callback){
         String url = Urls.BASE_URL+shopId+"/order/"+orderId+"/raiseissue?token="+token;
         Map<String,Object> params = new HashMap<String,Object>();

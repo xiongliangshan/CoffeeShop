@@ -47,7 +47,7 @@ public class OrderBean implements Serializable{
     private List<String> feedbackTags;   //评论标签
     private String feedback;             //评论内容
     private int feedbackType;            // 0:没有评价，4:好评，5:差评
-    private int deliveryTeam;               //   配送团队 4:lyan 5:qusong 6:wokuaidao 7:sweets 8:美团外卖
+    private int deliveryTeam;               //   配送团队 4:lyan 5:qusong 6:wokuaidao 7:sweets 8:美团外卖 9:海葵
     private int platformId;                 //   订单渠道ID  29:美团   其他：我们
     private int mtShopOrderNo;                  //   美团门店单号
     private double orderDistance;           //订单距离

@@ -49,8 +49,8 @@ public class PrintHelper {
         Log.d(TAG,"PrintHelpter()");
         mPoolExecutor = new ThreadPoolExecutor(1, 5, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
         if(Urls.BASE_URL.contains("cn")||Urls.BASE_URL.contains("192.168")){
-            ip_print_order = "192.168.1.196";
-            ip_print_cup = "192.168.1.196";
+            ip_print_order = "192.168.1.201";
+            ip_print_cup = "192.168.1.201";
         }else{
             ip_print_order = "192.19.1.231";
             ip_print_cup = "192.19.1.232";
@@ -255,7 +255,7 @@ public class PrintHelper {
                  gift +
                 "A10,100,0,200,1,1,N,\"收货人：\""+"\n"+
                 "A120,100,0,200,2,2,N,\""+bean.getReceiverName()+"\""+"\n"+
-                "A290,110,0,200,1,1,N,\""+bean.getReceiverPhone()+"\""+"\n"+
+                "A320,120,0,200,1,1,N,\""+bean.getReceiverPhone()+"\""+"\n"+
                  addressCMD +                             //配送地址
                 "A10,220,0,200,1,1,N,\"清单：\""+"\n"+
                 "A20,250,0,200,1,1,N,\""+order1+"\""+"\n"+

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
@@ -31,6 +32,7 @@ public class ReportIssueDialog extends DialogFragment implements View.OnClickLis
 
     public static final String TAG = ReportIssueDialog.class.getName();
     private long mOrderId;
+    private TextView orderIdText;
     private Button changeShopBtn;
     private Button changeAddressBtn;
     private Button changeDateBtn;
@@ -69,6 +71,7 @@ public class ReportIssueDialog extends DialogFragment implements View.OnClickLis
     }
 
     private void initView(View view) {
+        orderIdText = (TextView) view.findViewById(R.id.tv_order_id);
         changeShopBtn = (Button) view.findViewById(R.id.btn_change_shop);
         changeAddressBtn = (Button) view.findViewById(R.id.btn_change_address);
         changeDateBtn = (Button) view.findViewById(R.id.btn_change_date);
@@ -81,6 +84,10 @@ public class ReportIssueDialog extends DialogFragment implements View.OnClickLis
         changeDateBtn.setOnClickListener(this);
         changeTimeBtn.setOnClickListener(this);
         commitBtn.setOnClickListener(this);
+
+        if(mOrderId!=0){
+            orderIdText.setText(String.valueOf(mOrderId));
+        }
     }
 
 
@@ -138,10 +145,11 @@ public class ReportIssueDialog extends DialogFragment implements View.OnClickLis
                     ToastUtil.show(getContext(),"请输入问题说明");
                     return;
                 }
-                HttpHelper.getInstance().reqReportIssueOrder(mOrderId, 0, 0, contentEdit.getText().toString(), new JsonCallback<XlsResponse>() {
+                HttpHelper.getInstance().reqReportIssueOrder(mOrderId, 17, 3, contentEdit.getText().toString(), new JsonCallback<XlsResponse>() {
                     @Override
                     public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
                         if(xlsResponse.status==0){
+                            ToastUtil.show(getContext(),"提交成功");
                             dismiss();
                         }else{
                             ToastUtil.show(getContext(),xlsResponse.message);

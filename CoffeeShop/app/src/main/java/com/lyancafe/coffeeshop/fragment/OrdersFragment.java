@@ -340,8 +340,16 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
             receiveNameTxt.setText(order.getRecipient());
             receivePhoneTxt.setText(order.getPhone());
             receiveAddressTxt.setText(order.getAddress());
-            deliverNameTxt.setText(order.getCourierName());
-            deliverPhoneTxt.setText(order.getCourierPhone());
+            if(order.getDeliveryTeam()==DeliveryTeam.HAIKUI){
+                deliverNameTxt.setText("海葵配送");
+                deliverPhoneTxt.setText("");
+            }else if(order.getDeliveryTeam()==DeliveryTeam.MEITUAN){
+                deliverNameTxt.setText("美团配送");
+                deliverPhoneTxt.setText("");
+            }else {
+                deliverNameTxt.setText(order.getCourierName());
+                deliverPhoneTxt.setText(order.getCourierPhone());
+            }
 
             fillItemListData(itemsContainerLayout, order);
 
@@ -355,7 +363,7 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
                     rid.show(getChildFragmentManager(),"report_issue");
                 }
             });
-            if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN) {
+            if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN || order.getDeliveryTeam()==DeliveryTeam.HAIKUI) {
                 assignBtn.setVisibility(View.GONE);
             } else {
                 assignBtn.setVisibility(View.VISIBLE);

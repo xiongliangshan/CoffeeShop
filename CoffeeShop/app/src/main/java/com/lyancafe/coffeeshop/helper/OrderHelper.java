@@ -648,6 +648,9 @@ public class OrderHelper {
      * 格式化时间
      */
     public static String formatOrderDate(long time){
+        if(time==0){
+            return "-- -- -- --";
+        }
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm (MM/dd)");
         return sdf.format(new Date(time));
     }

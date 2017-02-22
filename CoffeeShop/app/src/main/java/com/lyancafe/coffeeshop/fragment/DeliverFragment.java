@@ -369,8 +369,16 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
             receiveNameTxt.setText(order.getRecipient());
             receivePhoneTxt.setText(order.getPhone());
             receiveAddressTxt.setText(order.getAddress());
-            deliverNameTxt.setText(order.getCourierName());
-            deliverPhoneTxt.setText(order.getCourierPhone());
+            if(order.getDeliveryTeam()==DeliveryTeam.HAIKUI){
+                deliverNameTxt.setText("海葵配送");
+                deliverPhoneTxt.setText("");
+            }else if(order.getDeliveryTeam()==DeliveryTeam.MEITUAN){
+                deliverNameTxt.setText("美团配送");
+                deliverPhoneTxt.setText("");
+            }else {
+                deliverNameTxt.setText(order.getCourierName());
+                deliverPhoneTxt.setText(order.getCourierPhone());
+            }
             fillItemListData(itemsContainerLayout, order);
             userRemarkTxt.setText(order.getNotes());
             csadRemarkTxt.setText(order.getCsrNotes());
