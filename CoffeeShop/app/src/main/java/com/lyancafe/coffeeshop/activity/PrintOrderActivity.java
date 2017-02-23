@@ -4,23 +4,21 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.helper.PrintHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Created by Administrator on 2016/1/27.
  */
-public class PrintOrderActivity extends Activity implements View.OnClickListener,PrintHelper.OnPromptListener{
+public class PrintOrderActivity extends Activity implements PrintHelper.OnPromptListener {
 
     private static final String TAG = "PrintOrderActivity";
-    private Button printBoxBtn;
-    private Button printCupBtn;
-    private Button printAllBtn;
-    private Button checkPrinterBtn;
     private OrderBean mOrderBean;
     private Context mContext;
 
@@ -29,20 +27,11 @@ public class PrintOrderActivity extends Activity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         mContext = this;
         setContentView(R.layout.activity_print_order);
-        initView();
+        ButterKnife.bind(this);
         PrintHelper.getInstance().setPromptlistener(this);
         mOrderBean = (OrderBean) getIntent().getSerializableExtra("order");
     }
-    private void initView(){
-        printBoxBtn = (Button) findViewById(R.id.btn_print_box);
-        printBoxBtn.setOnClickListener(this);
-        printCupBtn = (Button) findViewById(R.id.btn_print_cup);
-        printCupBtn.setOnClickListener(this);
-        printAllBtn = (Button) findViewById(R.id.btn_print_all);
-        printAllBtn.setOnClickListener(this);
-        checkPrinterBtn = (Button) findViewById(R.id.btn_check_printer);
-        checkPrinterBtn.setOnClickListener(this);
-    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -53,9 +42,9 @@ public class PrintOrderActivity extends Activity implements View.OnClickListener
         super.onDestroy();
     }
 
-    @Override
+    @OnClick({R.id.btn_print_box, R.id.btn_print_cup, R.id.btn_print_all, R.id.btn_check_printer})
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_print_box:
                 PrintHelper.getInstance().printOrderInfo(mOrderBean);
                 break;
@@ -74,6 +63,7 @@ public class PrintOrderActivity extends Activity implements View.OnClickListener
 
     @Override
     public void onPrompt(int type, String message) {
-        ToastUtil.showToast(mContext,message);
+        ToastUtil.showToast(mContext, message);
     }
+
 }

@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.CSApplication;
@@ -49,6 +50,7 @@ import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
 import com.lyancafe.coffeeshop.widget.ReportIssueDialog;
+import com.lyancafe.coffeeshop.widget.UnderLineTextView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -56,57 +58,82 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import okhttp3.Call;
 import okhttp3.Response;
 
 /**
  * Created by Administrator on 2015/9/1.
  */
-public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelectedListener,AdapterView.OnItemSelectedListener{
+public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelectedListener, AdapterView.OnItemSelectedListener {
 
-    private static final String TAG  ="OrdersFragment";
+    private static final String TAG = "OrdersFragment";
     private Context mContext;
     public static int tabIndex = 0;
     public static int category = OrderCategory.ALL;
 
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
+    @BindView(R.id.tabLayout)
+    TabLayout tabLayout;
+    @BindView(R.id.spinner_category)
+    AppCompatSpinner spinnerCategory;
+    @BindView(R.id.vp_container)
+    ViewPager viewPager;
+    @BindView(R.id.order_id)
+    TextView orderIdTxt;
+    @BindView(R.id.reach_time)
+    TextView reachTimeTxt;
+    @BindView(R.id.receiver_name)
+    TextView receiveNameTxt;
+    @BindView(R.id.receiver_phone)
+    TextView receivePhoneTxt;
+    @BindView(R.id.order_time)
+    TextView orderTimeTxt;
+    @BindView(R.id.tv_whole_order_sn)
+    TextView wholeOrderText;
+    @BindView(R.id.receiver_address)
+    TextView receiveAddressTxt;
+    @BindView(R.id.deliver_name)
+    TextView deliverNameTxt;
+    @BindView(R.id.deliver_phone)
+    TextView deliverPhoneTxt;
+    @BindView(R.id.btn_assign)
+    TextView assignBtn;
+    @BindView(R.id.items_container_layout)
+    LinearLayout itemsContainerLayout;
+    @BindView(R.id.scrollView)
+    ScrollView scrollView;
+    @BindView(R.id.user_remark)
+    TextView userRemarkTxt;
+    @BindView(R.id.ll_user_remark)
+    LinearLayout userRemarkLayout;
+    @BindView(R.id.csad_remark)
+    TextView csadRemarkTxt;
+    @BindView(R.id.ll_csad_remark)
+    LinearLayout csadRemarkLayout;
+    @BindView(R.id.btn_finish_produce)
+    Button finishProduceBtn;
+    @BindView(R.id.btn_print_order)
+    Button printOrderBtn;
+    @BindView(R.id.ll_twobtn)
+    LinearLayout twoBtnLayout;
+    @BindView(R.id.btn_produce_print)
+    Button produceAndPrintBtn;
+    @BindView(R.id.ll_onebtn)
+    LinearLayout oneBtnLayout;
+    @BindView(R.id.contant_issue_feedback)
+    UnderLineTextView reportIssueBtn;
+
     private ProduceFragmentPagerAdapter mPagerAdapter;
 
     private ToProduceFragment toProduceFragment;
     private ProducingFragment producingFragment;
 
-    private TextView batchHandleBtn;
-    private TextView batchPromptText;
-
     private IndoDetailListener indoDetailListener;
 
-    private AppCompatSpinner spinnerCategory;
+    private Unbinder unbinder;
 
-    /**
-     * 订单详情页UI组件
-     */
-    private TextView orderIdTxt;
-    private TextView wholeOrderText;
-    private TextView orderTimeTxt;
-    private TextView reachTimeTxt;
-    private TextView receiveNameTxt;
-    private TextView receivePhoneTxt;
-    private TextView receiveAddressTxt;
-    private TextView deliverNameTxt;
-    private TextView deliverPhoneTxt;
-    private LinearLayout itemsContainerLayout;
-    private LinearLayout userRemarkLayout;
-    private TextView userRemarkTxt;
-    private LinearLayout csadRemarkLayout;
-    private TextView csadRemarkTxt;
-    private LinearLayout twoBtnLayout;
-    private LinearLayout oneBtnLayout;
-    private TextView assignBtn;
-    private Button produceAndPrintBtn;
-    private Button finishProduceBtn;
-    private Button printOrderBtn;
-    private TextView reportIssueBtn;
 
     @Override
     public void onAttach(Context context) {
@@ -126,24 +153,21 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView");
-        View contentView = inflater.inflate(R.layout.fragment_orders,container,false);
+        View contentView = inflater.inflate(R.layout.fragment_orders, container, false);
+        unbinder = ButterKnife.bind(this, contentView);
         initViews(contentView);
-        initDetailView(contentView);
         EventBus.getDefault().register(this);
         return contentView;
     }
 
 
-
-    private void initViews(View contentView){
-        tabLayout  = (TabLayout) contentView.findViewById(R.id.tabLayout);
-        viewPager = (ViewPager) contentView.findViewById(R.id.vp_container);
+    private void initViews(View contentView) {
         List<Fragment> fragments = new ArrayList<>();
         toProduceFragment = new ToProduceFragment();
         producingFragment = new ProducingFragment();
         fragments.add(toProduceFragment);
         fragments.add(producingFragment);
-        mPagerAdapter = new ProduceFragmentPagerAdapter(getChildFragmentManager(),getActivity(),fragments);
+        mPagerAdapter = new ProduceFragmentPagerAdapter(getChildFragmentManager(), getActivity(), fragments);
         viewPager.setAdapter(mPagerAdapter);
         viewPager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(viewPager);
@@ -258,7 +282,7 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         Object object = parent.getItemAtPosition(position);
-        switch (position){
+        switch (position) {
             case 0:
                 category = OrderCategory.ALL;
                 break;
@@ -270,9 +294,9 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
                 break;
         }
 
-        if(tabIndex==0){
+        if (tabIndex == 0) {
             toProduceFragment.filter(String.valueOf(object));
-        }else if(tabIndex==1){
+        } else if (tabIndex == 1) {
             producingFragment.filter(String.valueOf(object));
         }
     }
@@ -282,33 +306,8 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
 
     }
 
-    private void initDetailView(View contentView){
-        orderIdTxt = (TextView) contentView.findViewById(R.id.order_id);
-        wholeOrderText = (TextView) contentView.findViewById(R.id.tv_whole_order_sn);
-        orderTimeTxt = (TextView) contentView.findViewById(R.id.order_time);
-        reachTimeTxt = (TextView) contentView.findViewById(R.id.reach_time);
-        receiveNameTxt  = (TextView) contentView.findViewById(R.id.receiver_name);
-        receivePhoneTxt = (TextView) contentView.findViewById(R.id.receiver_phone);
-        receiveAddressTxt = (TextView) contentView.findViewById(R.id.receiver_address);
-        deliverNameTxt = (TextView) contentView.findViewById(R.id.deliver_name);
-        deliverPhoneTxt = (TextView) contentView.findViewById(R.id.deliver_phone);
-        itemsContainerLayout = (LinearLayout) contentView.findViewById(R.id.items_container_layout);
-        userRemarkLayout = (LinearLayout) contentView.findViewById(R.id.ll_user_remark);
-        userRemarkLayout.setOnClickListener(indoDetailListener);
-        userRemarkTxt = (TextView) contentView.findViewById(R.id.user_remark);
-        csadRemarkLayout = (LinearLayout) contentView.findViewById(R.id.ll_csad_remark);
-        csadRemarkLayout.setOnClickListener(indoDetailListener);
-        csadRemarkTxt = (TextView) contentView.findViewById(R.id.csad_remark);
-        twoBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_twobtn);
-        oneBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_onebtn);
-        reportIssueBtn = (TextView) contentView.findViewById(R.id.contant_issue_feedback);
-        assignBtn = (TextView) contentView.findViewById(R.id.btn_assign);
-        produceAndPrintBtn = (Button) contentView.findViewById(R.id.btn_produce_print);
-        finishProduceBtn = (Button) contentView.findViewById(R.id.btn_finish_produce);
-        printOrderBtn = (Button) contentView.findViewById(R.id.btn_print_order);
-    }
-    private void updateDetailView(final OrderBean order){
-        if(order==null){
+    private void updateDetailView(final OrderBean order) {
+        if (order == null) {
             orderIdTxt.setText("");
             wholeOrderText.setText("");
             orderTimeTxt.setText("");
@@ -326,7 +325,7 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
             produceAndPrintBtn.setEnabled(false);
             finishProduceBtn.setEnabled(false);
             printOrderBtn.setEnabled(false);
-        }else {
+        } else {
             reportIssueBtn.setVisibility(View.VISIBLE);
             assignBtn.setVisibility(View.VISIBLE);
             produceAndPrintBtn.setEnabled(true);
@@ -340,13 +339,13 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
             receiveNameTxt.setText(order.getRecipient());
             receivePhoneTxt.setText(order.getPhone());
             receiveAddressTxt.setText(order.getAddress());
-            if(order.getDeliveryTeam()==DeliveryTeam.HAIKUI){
+            if (order.getDeliveryTeam() == DeliveryTeam.HAIKUI) {
                 deliverNameTxt.setText("海葵配送");
                 deliverPhoneTxt.setText("");
-            }else if(order.getDeliveryTeam()==DeliveryTeam.MEITUAN){
+            } else if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN) {
                 deliverNameTxt.setText("美团配送");
                 deliverPhoneTxt.setText("");
-            }else {
+            } else {
                 deliverNameTxt.setText(order.getCourierName());
                 deliverPhoneTxt.setText(order.getCourierPhone());
             }
@@ -360,10 +359,10 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
                 public void onClick(View v) {
                     //问题反馈
                     ReportIssueDialog rid = ReportIssueDialog.newInstance(order.getId());
-                    rid.show(getChildFragmentManager(),"report_issue");
+                    rid.show(getChildFragmentManager(), "report_issue");
                 }
             });
-            if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN || order.getDeliveryTeam()==DeliveryTeam.HAIKUI) {
+            if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN || order.getDeliveryTeam() == DeliveryTeam.HAIKUI) {
                 assignBtn.setVisibility(View.GONE);
             } else {
                 assignBtn.setVisibility(View.VISIBLE);
@@ -450,13 +449,13 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
     }
 
     //填充item数据
-    private void fillItemListData(LinearLayout ll,final OrderBean order){
-        if(order==null){
+    private void fillItemListData(LinearLayout ll, final OrderBean order) {
+        if (order == null) {
             return;
         }
         ll.removeAllViews();
         List<ItemContentBean> items = order.getItems();
-        for(ItemContentBean item:items){
+        for (ItemContentBean item : items) {
             TextView tv1 = new TextView(mContext);
             tv1.setId(R.id.item_name);
             tv1.setText(item.getProduct());
@@ -470,38 +469,38 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
             tv2.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
 
             RelativeLayout rl = new RelativeLayout(mContext);
-            RelativeLayout.LayoutParams lp1=new RelativeLayout.LayoutParams(
+            RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             lp1.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            lp1.leftMargin = OrderHelper.dip2Px(2,mContext);
+            lp1.leftMargin = OrderHelper.dip2Px(2, mContext);
             tv1.setLayoutParams(lp1);
             rl.addView(tv1);
 
-            RelativeLayout.LayoutParams lp2=new RelativeLayout.LayoutParams(
+            RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             lp2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            lp2.rightMargin = OrderHelper.dip2Px(2,mContext);
+            lp2.rightMargin = OrderHelper.dip2Px(2, mContext);
             tv2.setLayoutParams(lp2);
             rl.addView(tv2);
 
             String dingzhi = OrderHelper.getLabelStr(item.getRecipeFittingsList());
-            if(!TextUtils.isEmpty(dingzhi)){
+            if (!TextUtils.isEmpty(dingzhi)) {
                 TextView tv5 = new TextView(mContext);
                 tv5.setId(R.id.item_flag);
                 tv5.setText(dingzhi);
-                Drawable drawable = ContextCompat.getDrawable(CSApplication.getInstance(),R.mipmap.flag_ding);
+                Drawable drawable = ContextCompat.getDrawable(CSApplication.getInstance(), R.mipmap.flag_ding);
                 drawable.setBounds(0, 1, OrderHelper.dip2Px(14, mContext), OrderHelper.dip2Px(14, mContext));
                 tv5.setCompoundDrawablePadding(OrderHelper.dip2Px(4, mContext));
                 tv5.setCompoundDrawables(drawable, null, null, null);
                 tv5.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
                 tv5.setTextColor(mContext.getResources().getColor(R.color.font_black));
-                RelativeLayout.LayoutParams lp5=new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams lp5 = new RelativeLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
-                lp5.addRule(RelativeLayout.BELOW,tv1.getId());
-                lp5.addRule(RelativeLayout.ALIGN_LEFT,tv1.getId());
+                lp5.addRule(RelativeLayout.BELOW, tv1.getId());
+                lp5.addRule(RelativeLayout.ALIGN_LEFT, tv1.getId());
                 tv5.setLayoutParams(lp5);
                 rl.addView(tv5);
             }
@@ -510,10 +509,10 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
-            lp.topMargin = OrderHelper.dip2Px(2,mContext);
-            ll.addView(rl,lp);
+            lp.topMargin = OrderHelper.dip2Px(2, mContext);
+            ll.addView(rl, lp);
         }
-        if(!TextUtils.isEmpty(order.getWishes())){
+        if (!TextUtils.isEmpty(order.getWishes())) {
             TextView tv3 = new TextView(mContext);
             tv3.setText("礼品卡");
             tv3.setMaxEms(9);
@@ -525,19 +524,19 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
             tv4.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
             RelativeLayout r2 = new RelativeLayout(mContext);
             r2.setBackgroundColor(Color.YELLOW);
-            RelativeLayout.LayoutParams lp3=new RelativeLayout.LayoutParams(
+            RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             lp3.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            lp3.leftMargin = OrderHelper.dip2Px(2,mContext);
+            lp3.leftMargin = OrderHelper.dip2Px(2, mContext);
             tv3.setLayoutParams(lp3);
             r2.addView(tv3);
 
-            RelativeLayout.LayoutParams lp4=new RelativeLayout.LayoutParams(
+            RelativeLayout.LayoutParams lp4 = new RelativeLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             lp4.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            lp4.rightMargin = OrderHelper.dip2Px(2,mContext);
+            lp4.rightMargin = OrderHelper.dip2Px(2, mContext);
             tv4.setLayoutParams(lp4);
             r2.addView(tv4);
 
@@ -545,7 +544,7 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
-            lp.topMargin = OrderHelper.dip2Px(4,mContext);
+            lp.topMargin = OrderHelper.dip2Px(4, mContext);
             ll.addView(r2, lp);
         }
 
@@ -557,7 +556,7 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
-        lp6.topMargin = OrderHelper.dip2Px(30,mContext);
+        lp6.topMargin = OrderHelper.dip2Px(30, mContext);
         tv6.setLayoutParams(lp6);
         ll.addView(tv6, lp6);
 
@@ -568,7 +567,7 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         tabIndex = tab.getPosition();
-        viewPager.setCurrentItem(tabIndex,false);
+        viewPager.setCurrentItem(tabIndex, false);
     }
 
     @Override
@@ -582,7 +581,7 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
     }
 
     @Subscribe
-    public void OnUpdatePrintStatusEvent(UpdatePrintStatusEvent event){
+    public void OnUpdatePrintStatusEvent(UpdatePrintStatusEvent event) {
         Log.d(TAG, "OnUpdatePrintStatusEvent,orderSn = " + event.orderSn);
         //打印界面退出的时候，刷新一下打印按钮文字
 
@@ -590,30 +589,30 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
 
     /**
      * 更新列表订单数量
+     *
      * @param event
      */
     @Subscribe
-    public void OnUpdateProduceFragmentTabOrderCountEvent(UpdateProduceFragmentTabOrderCount event){
-        Log.d("xls","UpdateProduceFragmentTabOrderCount");
+    public void OnUpdateProduceFragmentTabOrderCountEvent(UpdateProduceFragmentTabOrderCount event) {
+        Log.d("xls", "UpdateProduceFragmentTabOrderCount");
         TabLayout.Tab tab = tabLayout.getTabAt(event.tabIndex);
         tab.setTag(event.count);
-        if(event.count>0){
-            tab.setText(mPagerAdapter.getPageTitle(event.tabIndex)+"("+event.count+")");
-        }else{
+        if (event.count > 0) {
+            tab.setText(mPagerAdapter.getPageTitle(event.tabIndex) + "(" + event.count + ")");
+        } else {
             tab.setText(mPagerAdapter.getPageTitle(event.tabIndex));
         }
     }
 
     /**
      * 订单被撤销
+     *
      * @param event
      */
     @Subscribe
-    public void onCancelOrderEvent(CancelOrderEvent event){
+    public void onCancelOrderEvent(CancelOrderEvent event) {
         Log.d(TAG, "event:" + event.orderId);
     }
-
-
 
 
     @Override
@@ -627,6 +626,7 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
     public void onDestroyView() {
         EventBus.getDefault().unregister(this);
         super.onDestroyView();
+        unbinder.unbind();
         Log.d(TAG, "onDestroyView");
     }
 
@@ -638,77 +638,68 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
     }
 
 
-
     /**
      * 对订单操作后更改相关列表中的订单数量角标显示
+     *
      * @param event
      */
     @Subscribe
-    public void onChangeTabCountByActionEvent(ChangeTabCountByActionEvent event){
+    public void onChangeTabCountByActionEvent(ChangeTabCountByActionEvent event) {
         TabLayout.Tab tabToproduce = tabLayout.getTabAt(0);
         TabLayout.Tab tabProducing = tabLayout.getTabAt(1);
         int toProduceCount = ((Integer) tabToproduce.getTag()).intValue();
         int producingCount = ((Integer) tabProducing.getTag()).intValue();
-        switch (event.action){
+        switch (event.action) {
             case OrderAction.STARTPRODUCE:
-                int tabTo = toProduceCount-event.count;
-                int tabPro = producingCount+event.count;
-                tabToproduce.setText(mPagerAdapter.getPageTitle(0)+"("+tabTo+")");
-                tabProducing.setText(mPagerAdapter.getPageTitle(1)+"("+tabPro+")");
+                int tabTo = toProduceCount - event.count;
+                int tabPro = producingCount + event.count;
+                tabToproduce.setText(mPagerAdapter.getPageTitle(0) + "(" + tabTo + ")");
+                tabProducing.setText(mPagerAdapter.getPageTitle(1) + "(" + tabPro + ")");
                 tabToproduce.setTag(tabTo);
                 tabProducing.setTag(tabPro);
                 break;
             case OrderAction.FINISHPRODUCE:
-                int tabProduceResult = producingCount-event.count;
-                tabProducing.setText(mPagerAdapter.getPageTitle(1)+"("+tabProduceResult+")");
+                int tabProduceResult = producingCount - event.count;
+                tabProducing.setText(mPagerAdapter.getPageTitle(1) + "(" + tabProduceResult + ")");
                 tabProducing.setTag(tabProduceResult);
                 break;
         }
     }
 
 
-
-
-
-
-
     /**
      * 单独点击打印按钮事件
+     *
      * @param event
      */
     @Subscribe
-    public void onPrintOrderEvent(PrintOrderEvent event){
+    public void onPrintOrderEvent(PrintOrderEvent event) {
         printOrder(mContext, event.order);
     }
 
 
     @Subscribe
-    public void onUpdateOrderDetailEvent(UpdateOrderDetailEvent event){
+    public void onUpdateOrderDetailEvent(UpdateOrderDetailEvent event) {
         updateDetailView(event.orderBean);
     }
 
 
-
-
-
     //处理服务器返回数据---订单撤回
-    private void handleRecallOrderResponse(XlsResponse xlsResponse,Call call,Response response){
-        if(xlsResponse.status==0){
+    private void handleRecallOrderResponse(XlsResponse xlsResponse, Call call, Response response) {
+        if (xlsResponse.status == 0) {
             ToastUtil.showToast(getActivity(), R.string.do_success);
-            int id  = xlsResponse.data.getIntValue("id");
-            EventBus.getDefault().post(new RecallOrderEvent(tabIndex,id));
-        }else{
+            int id = xlsResponse.data.getIntValue("id");
+            EventBus.getDefault().post(new RecallOrderEvent(tabIndex, id));
+        } else {
             ToastUtil.showToast(getActivity(), xlsResponse.message);
         }
     }
 
 
-
-
-    class IndoDetailListener implements View.OnClickListener{
+    class IndoDetailListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            switch (v.getId()){
+            switch (v.getId()) {
                 case R.id.ll_user_remark:
                     //用户备注
                     new InfoDetailDialog(getActivity()).show(userRemarkTxt.getText().toString());
@@ -722,12 +713,8 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
     }
 
 
-
-
-
-
     //点击打印
-    public void printOrder(Context context,final OrderBean order){
+    public void printOrder(Context context, final OrderBean order) {
         //打印按钮
         if (order.getInstant() == 0) {
             Intent intent = new Intent(context, PrintOrderActivity.class);
@@ -745,14 +732,14 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
 
     @Override
     protected void onVisible() {
- //      Log.d("xls","OrdersFragment is onVisible");
-        if(!isResumed()){
+        //      Log.d("xls","OrdersFragment is onVisible");
+        if (!isResumed()) {
             return;
         }
-        for(int i=0;i<mPagerAdapter.getCount();i++){
-            if(i==tabIndex){
+        for (int i = 0; i < mPagerAdapter.getCount(); i++) {
+            if (i == tabIndex) {
                 mPagerAdapter.getItem(i).setUserVisibleHint(true);
-            }else{
+            } else {
                 mPagerAdapter.getItem(i).setUserVisibleHint(false);
             }
         }
@@ -760,11 +747,11 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
 
     @Override
     protected void onInVisible() {
- //       Log.d("xls","OrdersFragment is onInVisible");
+        //       Log.d("xls","OrdersFragment is onInVisible");
     }
 
 
-    public interface FilterOrdersListenter{
+    public interface FilterOrdersListenter {
         void filter(String category);
     }
 }

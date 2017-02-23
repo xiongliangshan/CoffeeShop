@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -48,36 +47,43 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.BindViews;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Response;
 
 /**
  * Created by Administrator on 2015/9/18.
  */
-public class HomeActivity extends BaseActivity implements View.OnClickListener,DeliverFragment.OnFragmentInteractionListener{
+public class HomeActivity extends BaseActivity implements DeliverFragment.OnFragmentInteractionListener{
 
     private static final String TAG ="HomeActivity";
     public List<Fragment> fragmentsList = new ArrayList<Fragment>();
     private OrdersFragment orderFrag;
-//    private OrderQueryFragment orderQueryFrag;
     private DeliverFragment deliverFragment;
-//    private ShopManagerFragment shopManagerFrag;
     private ShopFragment shopFragment;
     private TaskService taskService;
     private ServiceConnection serviceConnection;
     private Context context;
-
-    private LinearLayout tabProduceLayout;
-    private LinearLayout tabDeliverlayout;
-    private LinearLayout tabShopLayout;
-
     private int mSelectedIndex = 0;
-    private List<LinearLayout> tabList;
 
-    private TextView shopNameText;
-    private TextView curVerText;
-    private TextView checkUpdateText;
-    private TextView loginOutText;
+    @BindView(R.id.ll_produce_tab) LinearLayout tabProduceLayout;
+
+    @BindView(R.id.ll_deliver_tab) LinearLayout tabDeliverlayout;
+
+    @BindView(R.id.ll_shop_tab) LinearLayout tabShopLayout;
+
+    @BindViews({R.id.ll_produce_tab,R.id.ll_deliver_tab,R.id.ll_shop_tab})
+    List<LinearLayout> tabList;
+
+    @BindView(R.id.tv_shop_name) TextView shopNameText;
+
+    @BindView(R.id.tv_current_version) TextView curVerText;
+
+
+
 
 
     @Override
@@ -85,6 +91,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,D
         super.onCreate(savedInstanceState);
         context  = HomeActivity.this;
         setContentView(R.layout.activity_home);
+        ButterKnife.bind(this);
         initViews();
         initFragments();
         updateTab(mSelectedIndex);
@@ -140,42 +147,15 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,D
     }
 
     private void initViews(){
-        tabProduceLayout = (LinearLayout) findViewById(R.id.ll_produce_tab);
-        tabDeliverlayout = (LinearLayout) findViewById(R.id.ll_deliver_tab);
-        tabShopLayout = (LinearLayout) findViewById(R.id.ll_shop_tab);
-        shopNameText = (TextView) findViewById(R.id.tv_shop_name);
-        curVerText = (TextView) findViewById(R.id.tv_current_version);
-        checkUpdateText = (TextView) findViewById(R.id.tv_check_update);
-        loginOutText = (TextView) findViewById(R.id.tv_login_out);
-
-        tabProduceLayout.setOnClickListener(this);
-        tabDeliverlayout.setOnClickListener(this);
-        tabShopLayout.setOnClickListener(this);
-        curVerText.setOnClickListener(this);
-        checkUpdateText.setOnClickListener(this);
-        loginOutText.setOnClickListener(this);
-
         shopNameText.setText(LoginHelper.getLoginBean(context).getShopName());
         curVerText.setText("当前版本:" + MyUtil.getVersion(context));
-
-        tabList = new ArrayList<>();
-        tabList.add(tabProduceLayout);
-        tabList.add(tabDeliverlayout);
-        tabList.add(tabShopLayout);
-
-
-
     }
     private void initFragments(){
         orderFrag =  new OrdersFragment();
-//        orderQueryFrag = new OrderQueryFragment();
         deliverFragment = DeliverFragment.newInstance("","");
- //       shopManagerFrag = new ShopManagerFragment();
         shopFragment = new ShopFragment();
         fragmentsList.add(orderFrag);
-    //    fragmentsList.add(orderQueryFrag);
         fragmentsList.add(deliverFragment);
-//        fragmentsList.add(shopManagerFrag);
         fragmentsList.add(shopFragment);
 
     }
@@ -246,8 +226,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,D
 
 
 
-    @Override
-    public void onClick(View v) {
+    @OnClick({R.id.ll_produce_tab,R.id.ll_deliver_tab,R.id.ll_shop_tab})
+    void onLeftTabClick(View v) {
         switch (v.getId()){
             case R.id.ll_produce_tab:
                 mSelectedIndex = 0;
@@ -261,6 +241,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,D
                 mSelectedIndex = 2;
                 updateTab(mSelectedIndex);
                 break;
+        }
+
+    }
+
+    @OnClick({R.id.tv_check_update,R.id.tv_login_out})
+    void onClick(View v){
+        switch (v.getId()){
             case R.id.tv_check_update:
                 //系统更新
                 if (!MyUtil.isOnline(context)) {
@@ -290,7 +277,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,D
                 HomeActivity.this.overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);
                 break;
         }
-
     }
 
     private void updateTab(int selectedIndex){
@@ -313,13 +299,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,D
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         if(fragment instanceof OrdersFragment){
-//            ft.hide(orderQueryFrag).hide(shopManagerFrag).show(orderFrag);
             ft.hide(deliverFragment).hide(shopFragment).show(orderFrag);
         }else if(fragment instanceof DeliverFragment){
-//            ft.hide(orderFrag).hide(shopManagerFrag).show(orderQueryFrag);
             ft.hide(orderFrag).hide(shopFragment).show(deliverFragment);
         }else{
-//            ft.hide(orderFrag).hide(orderQueryFrag).show(shopManagerFrag);
             ft.hide(orderFrag).hide(deliverFragment).show(shopFragment);
         }
         ft.commitAllowingStateLoss();

@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.Spinner;
 
 import com.lyancafe.coffeeshop.R;
@@ -19,6 +16,10 @@ import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnItemSelected;
 import okhttp3.Call;
 import okhttp3.Response;
 
@@ -29,9 +30,8 @@ public class AssignOrderActivity extends Activity  {
 
     private static final String TAG = "AssignOrderActivity";
     private Context mContext;
-    private Spinner courierSpinner;
+    @BindView(R.id.spinner_courier) Spinner courierSpinner;
     private CourierListAdapter mAdapter;
-    private Button assignBtn;
     private CourierBean mCourier = null;
     private long mOrderId = 0;
 
@@ -40,14 +40,9 @@ public class AssignOrderActivity extends Activity  {
         super.onCreate(savedInstanceState);
         mContext = this;
         setContentView(R.layout.activity_assign_order);
+        ButterKnife.bind(this);
         mOrderId = getIntent().getLongExtra("orderId",0);
         initViews();
-
-        mAdapter = new CourierListAdapter(mContext);
-        courierSpinner.setAdapter(mAdapter);
-        courierSpinner.setSelection(0, true);
-
-
     }
 
     @Override
@@ -62,38 +57,31 @@ public class AssignOrderActivity extends Activity  {
     }
 
 
+    @OnItemSelected(value = R.id.spinner_courier,callback = OnItemSelected.Callback.ITEM_SELECTED)
+    void onItemSelected(int position){
+        mCourier = (CourierBean) mAdapter.getItem(position);
+        Log.d(TAG,"选择了:"+mCourier.toString());
+    }
+
+
 
     private void initViews(){
-        courierSpinner = (Spinner) findViewById(R.id.spinner_courier);
-        courierSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mCourier = (CourierBean) mAdapter.getItem(position);
-                Log.d(TAG,"选择了:"+mCourier.toString());
-            }
+        mAdapter = new CourierListAdapter(mContext);
+        courierSpinner.setAdapter(mAdapter);
+        courierSpinner.setSelection(0, true);
+    }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        assignBtn = (Button) findViewById(R.id.btn_assign);
-        assignBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "点击指派按钮");
-                if (mCourier != null && mOrderId != 0) {
-                    HttpHelper.getInstance().reqAssignOrder(mOrderId, mCourier.getUserId(), new JsonCallback<XlsResponse>() {
-                        @Override
-                        public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                            handleAssignOrderResponse(xlsResponse,call,response);
-                        }
-                    });
+    @OnClick(R.id.btn_assign)
+    void assign(){
+        Log.d(TAG, "点击指派按钮");
+        if (mCourier != null && mOrderId != 0) {
+            HttpHelper.getInstance().reqAssignOrder(mOrderId, mCourier.getUserId(), new JsonCallback<XlsResponse>() {
+                @Override
+                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                    handleAssignOrderResponse(xlsResponse,call,response);
                 }
-
-            }
-        });
+            });
+        }
     }
 
     @Override

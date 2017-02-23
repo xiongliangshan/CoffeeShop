@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.lyancafe.coffeeshop.CSApplication;
@@ -20,6 +18,9 @@ import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.jpush.android.api.JPushInterface;
 import okhttp3.Call;
 import okhttp3.Response;
@@ -30,10 +31,15 @@ import okhttp3.Response;
 public class LoginActivity extends BaseActivity {
 
     private static final String TAG = "LoginActivity";
-    private EditText userNameEdit;
-    private EditText passwordEdit;
-    private Button loginBtn;
+
+    @BindView(R.id.username)
+    EditText userNameEdit;
+
+    @BindView(R.id.password)
+    EditText passwordEdit;
+
     private Context mContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,26 +51,23 @@ public class LoginActivity extends BaseActivity {
             LoginActivity.this.finish();
         }
         setContentView(R.layout.activity_login);
-        userNameEdit = (EditText) findViewById(R.id.username);
-        passwordEdit = (EditText) findViewById(R.id.password);
-        loginBtn = (Button) findViewById(R.id.login_btn);
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String userName = userNameEdit.getText().toString();
-                String password = passwordEdit.getText().toString();
-                if(LoginHelper.verifyLoginParams(mContext,userName,password)){
-                    HttpHelper.getInstance().reqLogin(userName, password, new DialogCallback<XlsResponse>(LoginActivity.this) {
-                        @Override
-                        public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                            handleLoginResponse(xlsResponse,call,response);
-                        }
-                    });
-                }
-
-            }
-        });
+        ButterKnife.bind(this);
     }
+
+    @OnClick(R.id.login_btn)
+     void login(){
+        String userName = userNameEdit.getText().toString();
+        String password = passwordEdit.getText().toString();
+        if(LoginHelper.verifyLoginParams(mContext,userName,password)){
+            HttpHelper.getInstance().reqLogin(userName, password, new DialogCallback<XlsResponse>(LoginActivity.this) {
+                @Override
+                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                    handleLoginResponse(xlsResponse,call,response);
+                }
+            });
+        }
+    }
+
 
     //处理登录返回的结果
     private void handleLoginResponse(XlsResponse xlsResponse, Call call, Response response) {
