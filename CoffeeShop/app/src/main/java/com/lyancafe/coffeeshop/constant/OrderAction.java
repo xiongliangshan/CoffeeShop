@@ -6,7 +6,7 @@ package com.lyancafe.coffeeshop.constant;
 public class OrderAction {
 
     /**
-     * 定义对订单的操作，如开始生产，生产完成，扫码交付
+     * 定义对订单的操作，如开始生产，生产完成
      */
 
     public static final int STARTPRODUCE = 1001;  //开始生产

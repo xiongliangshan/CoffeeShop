@@ -15,17 +15,22 @@ import android.widget.TextView;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.FragmentTabAdapter;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+
 /**
  * Created by Administrator on 2015/9/1.
  */
-public class ShopManagerFragment extends BaseFragment implements View.OnClickListener{
+public class ShopManagerFragment extends BaseFragment {
 
     private static final String TAG ="ShopManagerFragment";
-    private View mContentView;
-    private LinearLayout printPasterLayout;
-    private TextView printPasterText;
+    @BindView(R.id.ll_print_paster) LinearLayout printPasterLayout;
+    @BindView(R.id.tv_item_paster) TextView printPasterText;
     private Fragment currentFragment;
     private Context mContext;
+    private Unbinder unbinder;
 
     private MaterialFragment materialFragment;
 
@@ -48,18 +53,15 @@ public class ShopManagerFragment extends BaseFragment implements View.OnClickLis
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mContentView = inflater.inflate(R.layout.fragment_shop_manager,container,false);
-        initView(mContentView);
+        View view = inflater.inflate(R.layout.fragment_shop_manager,container,false);
+        unbinder = ButterKnife.bind(this,view);
+        initView();
         switchFragment(materialFragment);
-        return mContentView;
+        return view;
 
     }
 
-    private void initView(View contentView){
-        printPasterLayout = (LinearLayout) contentView.findViewById(R.id.ll_print_paster);
-        printPasterLayout.setOnClickListener(this);
-        printPasterText = (TextView) contentView.findViewById(R.id.tv_item_paster);
-
+    private void initView(){
         setSelected(printPasterText,true);
     }
 
@@ -74,13 +76,9 @@ public class ShopManagerFragment extends BaseFragment implements View.OnClickLis
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.ll_print_paster:
-                setSelected(printPasterText,true);
-                break;
-        }
+    @OnClick(R.id.ll_print_paster)
+    void onClick(View v) {
+       setSelected(printPasterText,true);
     }
 
     @Override
@@ -115,6 +113,7 @@ public class ShopManagerFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        unbinder.unbind();
     }
 
     @Override

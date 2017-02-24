@@ -25,6 +25,9 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import okhttp3.Call;
 import okhttp3.Response;
 
@@ -45,9 +48,10 @@ public class DeliveringFragment extends BaseFragment implements DeliverFragment.
     private String mParam1;
     private String mParam2;
 
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.rv_delivering)
+    RecyclerView mRecyclerView;
     private DeliveringRvAdapter mAdapter;
-
+    private Unbinder unbinder;
 
 
     public DeliveringFragment() {
@@ -86,12 +90,12 @@ public class DeliveringFragment extends BaseFragment implements DeliverFragment.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.fragment_delivering, container, false);
-        initViews(contentView);
+        unbinder = ButterKnife.bind(this,contentView);
+        initViews();
         return contentView;
     }
 
-    private void initViews(View contentView) {
-        mRecyclerView = (RecyclerView) contentView.findViewById(R.id.rv_delivering);
+    private void initViews() {
         mAdapter = new DeliveringRvAdapter(getActivity());
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),4,GridLayoutManager.VERTICAL,false));
         mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(4, getActivity()), false));
@@ -127,6 +131,7 @@ public class DeliveringFragment extends BaseFragment implements DeliverFragment.
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        unbinder.unbind();
     }
 
 

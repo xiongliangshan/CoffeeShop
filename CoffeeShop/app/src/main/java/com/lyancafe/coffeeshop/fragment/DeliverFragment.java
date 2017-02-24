@@ -52,6 +52,10 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 import okhttp3.Call;
 import okhttp3.Response;
 
@@ -62,64 +66,46 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
     public static int category = OrderCategory.ALL;
 
     private Context mContext;
-    private String mParam1;
-    private String mParam2;
-
     private ToFetchFragment toFetchFragment;
     private DeliveringFragment deliveringFragment;
-
     private OnFragmentInteractionListener mListener;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
     private DeliverFragmentPagerAdapter mPagerAdapter;
+    private Unbinder unbinder;
 
+    @BindView(R.id.tabLayout) TabLayout tabLayout;
+    @BindView(R.id.vp_container) ViewPager viewPager;
     /**
      * 订单详情页UI组件
      */
-    private TextView orderIdTxt;
-    private TextView wholeOrderText;
-    private TextView orderTimeTxt;
-    private TextView reachTimeTxt;
-    private TextView receiveNameTxt;
-    private TextView receivePhoneTxt;
-    private TextView receiveAddressTxt;
-    private TextView deliverNameTxt;
-    private TextView deliverPhoneTxt;
-    private LinearLayout itemsContainerLayout;
-    private LinearLayout userRemarkLayout;
-    private TextView userRemarkTxt;
-    private LinearLayout csadRemarkLayout;
-    private TextView csadRemarkTxt;
-    private LinearLayout twoBtnLayout;
-    private LinearLayout oneBtnLayout;
-    private TextView reportIssueBtn;
-    private TextView assignBtn;
-    private Button produceAndPrintBtn;
-    private Button finishProduceBtn;
-    private Button printOrderBtn;
+    @BindView(R.id.order_id) TextView orderIdTxt;
+    @BindView(R.id.tv_whole_order_sn) TextView wholeOrderText;
+    @BindView(R.id.order_time) TextView orderTimeTxt;
+    @BindView(R.id.reach_time) TextView reachTimeTxt;
+    @BindView(R.id.receiver_name) TextView receiveNameTxt;
+    @BindView(R.id.receiver_phone) TextView receivePhoneTxt;
+    @BindView(R.id.receiver_address) TextView receiveAddressTxt;
+    @BindView(R.id.deliver_name) TextView deliverNameTxt;
+    @BindView(R.id.deliver_phone) TextView deliverPhoneTxt;
+    @BindView(R.id.items_container_layout) LinearLayout itemsContainerLayout;
+    @BindView(R.id.ll_user_remark) LinearLayout userRemarkLayout;
+    @BindView(R.id.user_remark) TextView userRemarkTxt;
+    @BindView(R.id.ll_csad_remark) LinearLayout csadRemarkLayout;
+    @BindView(R.id.csad_remark) TextView csadRemarkTxt;
+    @BindView(R.id.ll_twobtn) LinearLayout twoBtnLayout;
+    @BindView(R.id.ll_onebtn) LinearLayout oneBtnLayout;
+    @BindView(R.id.contant_issue_feedback) TextView reportIssueBtn;
+    @BindView(R.id.btn_assign) TextView assignBtn;
+    @BindView(R.id.btn_produce_print) Button produceAndPrintBtn;
+    @BindView(R.id.btn_finish_produce) Button finishProduceBtn;
+    @BindView(R.id.btn_print_order) Button printOrderBtn;
     /**
      * 订单详情
      */
 
-    private IndoDetailListener indoDetailListener;
-
-    private AppCompatSpinner spinnerCategory;
-
+    @BindView(R.id.spinner_category)
+    AppCompatSpinner spinnerCategory;
 
 
-    public DeliverFragment() {
-
-    }
-
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DeliverFragment.
-     */
     // TODO: Rename and change types and number of parameters
     public static DeliverFragment newInstance(String param1, String param2) {
         DeliverFragment fragment = new DeliverFragment();
@@ -146,26 +132,17 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
-//        Log.d("xls","DeliverFragment-onCreate");
-        indoDetailListener = new IndoDetailListener();
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.fragment_deliver, container, false);
+        unbinder = ButterKnife.bind(this,contentView);
         initViews(contentView);
-        initDetailView(contentView);
         return contentView;
     }
 
     private void initViews(View contentView) {
-        tabLayout  = (TabLayout) contentView.findViewById(R.id.tabLayout);
-        viewPager = (ViewPager) contentView.findViewById(R.id.vp_container);
-
         List<Fragment> fragments = new ArrayList<>();
         toFetchFragment = new ToFetchFragment();
         deliveringFragment = new DeliveringFragment();
@@ -176,43 +153,14 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
         viewPager.setOffscreenPageLimit(1);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setOnTabSelectedListener(this);
-
-        spinnerCategory = (AppCompatSpinner) contentView.findViewById(R.id.spinner_category);
         spinnerCategory.setOnItemSelectedListener(this);
 
-    }
-
-    private void initDetailView(View contentView){
-        orderIdTxt = (TextView) contentView.findViewById(R.id.order_id);
-        wholeOrderText = (TextView) contentView.findViewById(R.id.tv_whole_order_sn);
-        orderTimeTxt = (TextView) contentView.findViewById(R.id.order_time);
-        reachTimeTxt = (TextView) contentView.findViewById(R.id.reach_time);
-        receiveNameTxt  = (TextView) contentView.findViewById(R.id.receiver_name);
-        receivePhoneTxt = (TextView) contentView.findViewById(R.id.receiver_phone);
-        receiveAddressTxt = (TextView) contentView.findViewById(R.id.receiver_address);
-        deliverNameTxt = (TextView) contentView.findViewById(R.id.deliver_name);
-        deliverPhoneTxt = (TextView) contentView.findViewById(R.id.deliver_phone);
-        itemsContainerLayout = (LinearLayout) contentView.findViewById(R.id.items_container_layout);
-        userRemarkLayout = (LinearLayout) contentView.findViewById(R.id.ll_user_remark);
-        userRemarkLayout.setOnClickListener(indoDetailListener);
-        userRemarkTxt = (TextView) contentView.findViewById(R.id.user_remark);
-        csadRemarkLayout = (LinearLayout) contentView.findViewById(R.id.ll_csad_remark);
-        csadRemarkLayout.setOnClickListener(indoDetailListener);
-        csadRemarkTxt = (TextView) contentView.findViewById(R.id.csad_remark);
-        twoBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_twobtn);
-        oneBtnLayout = (LinearLayout) contentView.findViewById(R.id.ll_onebtn);
-        reportIssueBtn = (TextView) contentView.findViewById(R.id.contant_issue_feedback);
-        assignBtn = (TextView) contentView.findViewById(R.id.btn_assign);
-        produceAndPrintBtn = (Button) contentView.findViewById(R.id.btn_produce_print);
-        finishProduceBtn = (Button) contentView.findViewById(R.id.btn_finish_produce);
-        printOrderBtn = (Button) contentView.findViewById(R.id.btn_print_order);
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
-//        Log.d("xls","DeliverFragment-onResume, postion="+tabLayout.getSelectedTabPosition());
     }
 
     @Override
@@ -277,6 +225,11 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
     }
 
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
 
     @Override
     public void onDestroy() {
@@ -475,50 +428,6 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
                 });
             }
 
-           /* if(order.getDeliveryTeam()== DeliveryTeam.MEITUAN){
-                moreBtn.setEnabled(false);
-            }else{
-                moreBtn.setEnabled(true);
-                moreBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        final PopupMenu popup = new PopupMenu(mContext, v);
-                        popup.inflate(R.menu.menu_order_detail_more);
-                        if (order.getStatus() != OrderStatus.ASSIGNED) {
-                            popup.getMenu().findItem(R.id.menu_undo_order).setVisible(false);
-                        }
-                        if (order.getStatus() != OrderStatus.UNASSIGNED) {
-                            popup.getMenu().findItem(R.id.menu_assign_order).setVisible(false);
-                        }
-                        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                            @Override
-                            public boolean onMenuItemClick(MenuItem item) {
-                                switch (item.getItemId()) {
-                                    case R.id.menu_undo_order:
-                                        HttpHelper.getInstance().reqRecallOrder(order.getId(), new DialogCallback<XlsResponse>(getActivity()) {
-
-                                            @Override
-                                            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                                                EventBus.getDefault().post(new RecallOrderEvent(xlsResponse,call,response));
-                                            }
-                                        });
-                                        break;
-                                    case R.id.menu_assign_order:
-                                        Intent intent = new Intent(mContext, AssignOrderActivity.class);
-                                        intent.putExtra("orderId", order.getId());
-                                        mContext.startActivity(intent);
-                                        break;
-                                }
-                                popup.dismiss();
-                                return false;
-                            }
-                        });
-
-                        popup.show();
-                    }
-                });
-            }*/
-
         }
 
     }
@@ -648,21 +557,21 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
         }
     }
 
-    class  IndoDetailListener implements View.OnClickListener{
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()){
-                case R.id.ll_user_remark:
-                    //用户备注
-                    new InfoDetailDialog(getActivity()).show(userRemarkTxt.getText().toString());
-                    break;
-                case R.id.ll_csad_remark:
-                    //客服备注
-                    new InfoDetailDialog(getActivity()).show(csadRemarkTxt.getText().toString());
-                    break;
-            }
+
+    @OnClick({R.id.ll_user_remark,R.id.ll_csad_remark})
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.ll_user_remark:
+                //用户备注
+                new InfoDetailDialog(getActivity()).show(userRemarkTxt.getText().toString());
+                break;
+            case R.id.ll_csad_remark:
+                //客服备注
+                new InfoDetailDialog(getActivity()).show(csadRemarkTxt.getText().toString());
+                break;
         }
     }
+
 
 
     public interface FilterOrdersListenter{

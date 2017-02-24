@@ -7,15 +7,7 @@ import android.view.Window;
 
 import com.lzy.okgo.request.BaseRequest;
 
-/**
- * ================================================
- * 作    者：廖子尧
- * 版    本：1.0
- * 创建日期：2016/1/14
- * 描    述：对于网络请求是否需要弹出进度对话框
- * 修订历史：
- * ================================================
- */
+
 public abstract class DialogCallback<T> extends JsonCallback<T> {
 
     private ProgressDialog dialog;

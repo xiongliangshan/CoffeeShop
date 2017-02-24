@@ -29,6 +29,9 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import okhttp3.Call;
 import okhttp3.Response;
 
@@ -49,9 +52,10 @@ public class ToFetchFragment extends BaseFragment implements DeliverFragment.Fil
     private String mParam1;
     private String mParam2;
 
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.rv_to_fetch)
+    RecyclerView mRecyclerView;
     private ToFetchRvAdapter mAdapter;
-
+    private Unbinder unbinder;
 
     public ToFetchFragment() {
         // Required empty public constructor
@@ -118,12 +122,12 @@ public class ToFetchFragment extends BaseFragment implements DeliverFragment.Fil
         Log.d("xls","ToFetchFragment-onCreateView");
         EventBus.getDefault().register(this);
         View contentView =  inflater.inflate(R.layout.fragment_to_fetch, container, false);
+        unbinder = ButterKnife.bind(this,contentView);
         initViews(contentView);
         return contentView;
     }
 
     private void initViews(View contentView) {
-        mRecyclerView = (RecyclerView) contentView.findViewById(R.id.rv_to_fetch);
         mAdapter = new ToFetchRvAdapter(getActivity());
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),4,GridLayoutManager.VERTICAL,false));
         mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(4, getActivity()), false));
@@ -139,6 +143,7 @@ public class ToFetchFragment extends BaseFragment implements DeliverFragment.Fil
     public void onDestroyView() {
         EventBus.getDefault().unregister(this);
         super.onDestroyView();
+        unbinder.unbind();
     }
 
     /**

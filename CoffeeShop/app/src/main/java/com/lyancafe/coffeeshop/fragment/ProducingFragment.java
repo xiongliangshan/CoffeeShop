@@ -36,6 +36,9 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import okhttp3.Call;
 import okhttp3.Response;
 
@@ -44,7 +47,9 @@ import okhttp3.Response;
  */
 public class ProducingFragment extends BaseFragment implements OrdersFragment.FilterOrdersListenter{
 
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.rv_producing)
+    RecyclerView mRecyclerView;
+    private Unbinder unbinder;
     private ProducingRvAdapter mAdapter;
     private Context mContext;
 
@@ -63,13 +68,12 @@ public class ProducingFragment extends BaseFragment implements OrdersFragment.Fi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         EventBus.getDefault().register(this);
         View contentView = inflater.inflate(R.layout.fragment_producing, container, false);
+        unbinder = ButterKnife.bind(this,contentView);
         initViews(contentView);
-        Log.d("xls","producing createView");
         return contentView;
     }
 
     private void initViews(View contentView) {
-        mRecyclerView = (RecyclerView) contentView.findViewById(R.id.rv_producing);
         mAdapter = new ProducingRvAdapter(getActivity());
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),4,GridLayoutManager.VERTICAL,false));
         mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(4, getActivity()), false));
@@ -95,6 +99,7 @@ public class ProducingFragment extends BaseFragment implements OrdersFragment.Fi
     public void onDestroyView() {
         EventBus.getDefault().unregister(this);
         super.onDestroyView();
+        unbinder.unbind();
     }
 
     @Override

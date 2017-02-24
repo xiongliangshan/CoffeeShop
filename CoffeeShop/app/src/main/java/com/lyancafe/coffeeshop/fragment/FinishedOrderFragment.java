@@ -46,6 +46,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -55,38 +59,40 @@ import okhttp3.Response;
  */
 public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreRecyclerView.PullLoadMoreListener {
 
-    private PullLoadMoreRecyclerView pullLoadMoreRecyclerView;
+    @BindView(R.id.plmgv_order_list)
+    PullLoadMoreRecyclerView pullLoadMoreRecyclerView;
     private FinishedRvAdapter mAdapter;
     private long finishedLastOrderId = 0;
     private Context mContext;
 
-    private TextView dateText;
-    private TextView orderCountText;
-    private TextView cupCountText;
-    private TextView goodCommentText;
-    private TextView badCommentText;
+    @BindView(R.id.tv_date)
+    TextView dateText;
+    @BindView(R.id.tv_order_count)
+    TextView orderCountText;
+    @BindView(R.id.tv_cup_count)
+    TextView cupCountText;
+    @BindView(R.id.tv_good_comment)
+    TextView goodCommentText;
+    @BindView(R.id.tv_bad_comment)
+    TextView badCommentText;
     /**
      * 订单详情页UI组件
      */
-    private TextView shopOrderNumText;
-    private TextView orderIdTxt;
-    private TextView receiveNameTxt;
-    private TextView receivePhoneTxt;
-    private TextView receiveAddressTxt;
-    private TextView orderDistanceText;
-    private LinearLayout itemsContainerLayout;
-    private LinearLayout userRemarkLayout;
-    private TextView userRemarkTxt;
-    private LinearLayout csadRemarkLayout;
-    private TextView csadRemarkTxt;
-    private LinearLayout userCommentLayout;
-    private TextView userCommentTagsText;
-    private TextView userCommentContentText;
+    @BindView(R.id.tv_shop_order_id) TextView shopOrderNumText;
+    @BindView(R.id.order_id) TextView orderIdTxt;
+    @BindView(R.id.receiver_name) TextView receiveNameTxt;
+    @BindView(R.id.receiver_phone) TextView receivePhoneTxt;
+    @BindView(R.id.receiver_address) TextView receiveAddressTxt;
+    @BindView(R.id.tv_order_distance) TextView orderDistanceText;
+    @BindView(R.id.items_container_layout) LinearLayout itemsContainerLayout;
+    @BindView(R.id.user_remark) TextView userRemarkTxt;
+    @BindView(R.id.csad_remark) TextView csadRemarkTxt;
+    @BindView(R.id.user_comment_tags) TextView userCommentTagsText;
+    @BindView(R.id.user_comment_content) TextView userCommentContentText;
     /**
      * 订单详情
      */
-
-    private IndoDetailListener indoDetailListener;
+    private Unbinder unbinder;
 
     public FinishedOrderFragment() {
 
@@ -102,27 +108,19 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        indoDetailListener = new IndoDetailListener();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         EventBus.getDefault().register(this);
         View contentView = inflater.inflate(R.layout.fragment_finished_order, container, false);
+        unbinder = ButterKnife.bind(this,contentView);
         initViews(contentView);
-        initDetailView(contentView);
         return contentView;
     }
 
 
     private void initViews(View contentView){
-        dateText = (TextView) contentView.findViewById(R.id.tv_date);
-        orderCountText = (TextView) contentView.findViewById(R.id.tv_order_count);
-        cupCountText = (TextView) contentView.findViewById(R.id.tv_cup_count);
-        goodCommentText = (TextView) contentView.findViewById(R.id.tv_good_comment);
-        badCommentText = (TextView) contentView.findViewById(R.id.tv_bad_comment);
-        pullLoadMoreRecyclerView = (PullLoadMoreRecyclerView) contentView.findViewById(R.id.plmgv_order_list);
-
         pullLoadMoreRecyclerView.getRecyclerView().setLayoutManager(new GridLayoutManager(getActivity(),4,GridLayoutManager.VERTICAL,false) );
         pullLoadMoreRecyclerView.getRecyclerView().setHasFixedSize(true);
         pullLoadMoreRecyclerView.getRecyclerView().setItemAnimator(new DefaultItemAnimator());
@@ -132,53 +130,32 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
         pullLoadMoreRecyclerView.setPullRefreshEnable(false);
         pullLoadMoreRecyclerView.setPushRefreshEnable(true);
 
-
         mAdapter = new FinishedRvAdapter(getActivity());
         pullLoadMoreRecyclerView.setAdapter(mAdapter);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         dateText.setText(sdf.format(new Date()));
 
-        goodCommentText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    }
+
+    @OnClick({R.id.tv_good_comment,R.id.tv_bad_comment})
+    void onClickComment(View v){
+        switch (v.getId()){
+            case R.id.tv_good_comment:
                 //好评列表
-                Intent intent =  new Intent(mContext, CommentActivity.class);
-                intent.putExtra("coment_type",OrderHelper.GOOD_COMMENT);
-                mContext.startActivity(intent);
-            }
-        });
-
-        badCommentText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                Intent intent_good =  new Intent(mContext, CommentActivity.class);
+                intent_good.putExtra("coment_type",OrderHelper.GOOD_COMMENT);
+                mContext.startActivity(intent_good);
+                break;
+            case R.id.tv_bad_comment:
                 //差评列表
-                Intent intent =  new Intent(mContext, CommentActivity.class);
-                intent.putExtra("coment_type",OrderHelper.BAD_COMMENT);
-                mContext.startActivity(intent);
-            }
-        });
+                Intent intent_bad =  new Intent(mContext, CommentActivity.class);
+                intent_bad.putExtra("coment_type",OrderHelper.BAD_COMMENT);
+                mContext.startActivity(intent_bad);
+                break;
+        }
     }
 
-    private void initDetailView(View contentView){
-        shopOrderNumText = (TextView) contentView.findViewById(R.id.tv_shop_order_id);
-        orderIdTxt = (TextView) contentView.findViewById(R.id.order_id);
-        receiveNameTxt  = (TextView) contentView.findViewById(R.id.receiver_name);
-        receivePhoneTxt = (TextView) contentView.findViewById(R.id.receiver_phone);
-        receiveAddressTxt = (TextView) contentView.findViewById(R.id.receiver_address);
-        orderDistanceText = (TextView) contentView.findViewById(R.id.tv_order_distance);
-        itemsContainerLayout = (LinearLayout) contentView.findViewById(R.id.items_container_layout);
-        userRemarkLayout = (LinearLayout) contentView.findViewById(R.id.ll_user_remark);
-        userRemarkLayout.setOnClickListener(indoDetailListener);
-        userRemarkTxt = (TextView) contentView.findViewById(R.id.user_remark);
-        csadRemarkLayout = (LinearLayout) contentView.findViewById(R.id.ll_csad_remark);
-        csadRemarkLayout.setOnClickListener(indoDetailListener);
-        csadRemarkTxt = (TextView) contentView.findViewById(R.id.csad_remark);
-        userCommentLayout = (LinearLayout) contentView.findViewById(R.id.ll_user_comment);
-        userCommentLayout.setOnClickListener(indoDetailListener);
-        userCommentTagsText = (TextView) contentView.findViewById(R.id.user_comment_tags);
-        userCommentContentText = (TextView) contentView.findViewById(R.id.user_comment_content);
-    }
 
     private void updateDetailView(final OrderBean order){
         if(order==null){
@@ -367,6 +344,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     public void onDestroyView() {
         EventBus.getDefault().unregister(this);
         super.onDestroyView();
+        unbinder.unbind();
     }
 
     @Override
@@ -463,23 +441,23 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     }
 
 
-    class  IndoDetailListener implements View.OnClickListener{
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()){
-                case R.id.ll_user_remark:
-                    //用户备注
-                    new InfoDetailDialog(getActivity()).show(userRemarkTxt.getText().toString());
-                    break;
-                case R.id.ll_csad_remark:
-                    //客服备注
-                    new InfoDetailDialog(getActivity()).show(csadRemarkTxt.getText().toString());
-                    break;
-                case R.id.ll_user_comment:
-                    //用户评价
-                    new InfoDetailDialog(getActivity()).show(userCommentTagsText.getText().toString()+"\n"+userCommentContentText.getText().toString());
-                    break;
-            }
+
+    @OnClick({R.id.ll_user_remark,R.id.ll_csad_remark,R.id.ll_user_comment})
+    void onClick(View v) {
+        switch (v.getId()){
+            case R.id.ll_user_remark:
+                //用户备注
+                new InfoDetailDialog(getActivity()).show(userRemarkTxt.getText().toString());
+                break;
+            case R.id.ll_csad_remark:
+                //客服备注
+                new InfoDetailDialog(getActivity()).show(csadRemarkTxt.getText().toString());
+                break;
+            case R.id.ll_user_comment:
+                //用户评价
+                new InfoDetailDialog(getActivity()).show(userCommentTagsText.getText().toString()+"\n"+userCommentContentText.getText().toString());
+                break;
         }
     }
+
 }

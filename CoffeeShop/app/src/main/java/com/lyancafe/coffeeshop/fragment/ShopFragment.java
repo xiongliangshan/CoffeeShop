@@ -15,14 +15,22 @@ import com.lyancafe.coffeeshop.adapter.ShopFragmentPagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ShopFragment extends BaseFragment implements TabLayout.OnTabSelectedListener{
 
     public static int tabIndex = 0;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
+    @BindView(R.id.tabLayout)
+    TabLayout tabLayout;
+    @BindView(R.id.vp_container)
+    ViewPager viewPager;
+    private Unbinder unbinder;
+
     private ShopFragmentPagerAdapter mPagerAdapter;
 
     public ShopFragment() {
@@ -32,14 +40,12 @@ public class ShopFragment extends BaseFragment implements TabLayout.OnTabSelecte
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.fragment_shop, container, false);
+        unbinder = ButterKnife.bind(this,contentView);
         initViews(contentView);
         return contentView;
     }
 
     private void initViews(View contentView) {
-        tabLayout  = (TabLayout) contentView.findViewById(R.id.tabLayout);
-        viewPager = (ViewPager) contentView.findViewById(R.id.vp_container);
-
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new FinishedOrderFragment());
         fragments.add(new ShopManagerFragment());
@@ -51,6 +57,11 @@ public class ShopFragment extends BaseFragment implements TabLayout.OnTabSelecte
 
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
