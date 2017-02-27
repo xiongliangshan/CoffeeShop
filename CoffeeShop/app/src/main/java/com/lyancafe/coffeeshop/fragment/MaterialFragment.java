@@ -31,6 +31,9 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Response;
 
@@ -41,13 +44,12 @@ public class MaterialFragment extends Fragment {
 
     private static final String TAG ="MaterialFragment";
     private Context mContext;
-    private View mContentView;
-    private TextView printPasterText;
-    private TextView printMaterialText;
-    private RecyclerView recyclerView;
+    @BindView(R.id.tv_print_paster) TextView printPasterText;
+    @BindView(R.id.tv_print_material) TextView printMaterialText;
+    @BindView(R.id.rv_material) RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private MaterialAdatapter materialAdatapter;
-    private ContentLoadingProgressBar clpBar;
+    @BindView(R.id.progress_bar) ContentLoadingProgressBar clpBar;
     private MaterialBean toPrintMaterial;
 
     @Override
@@ -68,9 +70,10 @@ public class MaterialFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView");
         EventBus.getDefault().register(this);
-        mContentView = inflater.inflate(R.layout.fragment_material,container,false);
+        View view = inflater.inflate(R.layout.fragment_material,container,false);
+        ButterKnife.bind(this,view);
         initView();
-        return mContentView;
+        return view;
     }
 
     @Override
@@ -85,6 +88,21 @@ public class MaterialFragment extends Fragment {
         });
     }
 
+    @OnClick({R.id.tv_print_paster,R.id.tv_print_material})
+    void onClick(View v){
+        switch (v.getId()){
+            case R.id.tv_print_paster:
+                PrintHelper.getInstance().printPasterSmall();
+                break;
+            case R.id.tv_print_material:
+                //开始打印
+                if(toPrintMaterial!=null){
+                    PrintHelper.getInstance().printMaterialBig(toPrintMaterial);
+                }
+                break;
+        }
+    }
+
     private void handleMaterialListResponse(XlsResponse xlsResponse, Call call, Response response) {
         if(xlsResponse.status==0){
             List<MaterialBean> materialList = MaterialBean.parseJsonMaterials(mContext,xlsResponse);
@@ -95,28 +113,6 @@ public class MaterialFragment extends Fragment {
     }
 
     private void initView(){
-        printPasterText = (TextView) mContentView.findViewById(R.id.tv_print_paster);
-        printPasterText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PrintHelper.getInstance().printPasterSmall();
-            }
-        });
-        printMaterialText = (TextView) mContentView.findViewById(R.id.tv_print_material);
-        printMaterialText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //开始打印
-                if(toPrintMaterial!=null){
-                    PrintHelper.getInstance().printMaterialBig(toPrintMaterial);
-                }
-
-            }
-        });
-
-        clpBar = (ContentLoadingProgressBar) mContentView.findViewById(R.id.progress_bar);
-
-        recyclerView= (RecyclerView) mContentView.findViewById(R.id.rv_material);
         layoutManager = new GridLayoutManager(mContext, 4);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);

@@ -25,10 +25,8 @@ import butterknife.Unbinder;
 public class ShopFragment extends BaseFragment implements TabLayout.OnTabSelectedListener{
 
     public static int tabIndex = 0;
-    @BindView(R.id.tabLayout)
-    TabLayout tabLayout;
-    @BindView(R.id.vp_container)
-    ViewPager viewPager;
+    @BindView(R.id.tabLayout) TabLayout tabLayout;
+    @BindView(R.id.vp_container) ViewPager viewPager;
     private Unbinder unbinder;
 
     private ShopFragmentPagerAdapter mPagerAdapter;
@@ -41,17 +39,18 @@ public class ShopFragment extends BaseFragment implements TabLayout.OnTabSelecte
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.fragment_shop, container, false);
         unbinder = ButterKnife.bind(this,contentView);
-        initViews(contentView);
+        initViews();
         return contentView;
     }
 
-    private void initViews(View contentView) {
+    private void initViews() {
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new FinishedOrderFragment());
+        fragments.add(new EvaluationFragment());
         fragments.add(new ShopManagerFragment());
         mPagerAdapter = new ShopFragmentPagerAdapter(getChildFragmentManager(),getActivity(),fragments);
         viewPager.setAdapter(mPagerAdapter);
-        viewPager.setOffscreenPageLimit(1);
+        viewPager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setOnTabSelectedListener(this);
 

@@ -55,8 +55,7 @@ import okhttp3.Response;
 public class ToProduceFragment extends BaseFragment implements OrdersFragment.FilterOrdersListenter{
 
 
-    @BindView(R.id.rv_to_produce)
-    RecyclerView mRecyclerView;
+    @BindView(R.id.rv_to_produce) RecyclerView mRecyclerView;
 
     private Unbinder unbinder;
 

@@ -52,8 +52,7 @@ public class ToFetchFragment extends BaseFragment implements DeliverFragment.Fil
     private String mParam1;
     private String mParam2;
 
-    @BindView(R.id.rv_to_fetch)
-    RecyclerView mRecyclerView;
+    @BindView(R.id.rv_to_fetch) RecyclerView mRecyclerView;
     private ToFetchRvAdapter mAdapter;
     private Unbinder unbinder;
 

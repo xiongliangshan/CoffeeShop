@@ -34,6 +34,9 @@ public class ShopManagerFragment extends BaseFragment {
 
     private MaterialFragment materialFragment;
 
+    public ShopManagerFragment() {
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

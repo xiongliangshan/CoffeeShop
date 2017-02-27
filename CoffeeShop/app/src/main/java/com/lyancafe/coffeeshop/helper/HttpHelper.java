@@ -232,6 +232,25 @@ public class HttpHelper {
     }
 
     /**
+     * 请求评价列表
+     * @param orderId
+     * @param type
+     * @param callback
+     */
+    public void reqEvaluationListData(int orderId,int type,JsonCallback<XlsResponse> callback){
+        HashMap<String,Object> params = new HashMap<>();
+        params.put("orderId",orderId);
+        params.put("feedbackType",type);
+        JSONObject jsonObject = new JSONObject(params);
+        String url=Urls.BASE_URL+shopId + "/orders/feedbackList?token="+token;
+        OkGo.post(url)
+                .tag("evaluation")
+                .headers("isLoadMore", orderId == 0 ? "no" : "yes")
+                .upJson(jsonObject.toString())
+                .execute(callback);
+    }
+
+    /**
      * 按日期查询当天所有订单
      * @param date
      * @param callback

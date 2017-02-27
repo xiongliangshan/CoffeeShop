@@ -1,0 +1,50 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    >
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="horizontal">
+
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_gravity="center_vertical"
+           android:text="订单筛选"/>
+
+       <RadioGroup
+           android:id="@+id/rg_select_condition"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal">
+           <RadioButton
+               android:id="@+id/rb_all"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:checked="true"
+               android:text="全部"/>
+           <RadioButton
+               android:id="@+id/rb_bad_evaluation"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="差评"/>
+           <RadioButton
+               android:id="@+id/rb_good_evaluation"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="好评"/>
+       </RadioGroup>
+
+   </LinearLayout>
+
+    <com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
+        android:id="@+id/pmrv_evaluation_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

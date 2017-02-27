@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.bean.EvaluationBean;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
@@ -397,6 +398,27 @@ public class OrderHelper {
             return shopOrderSn+"约";
         }
     }
+
+    public static String getShopOrderSn(EvaluationBean evaluationBean){
+        if(evaluationBean.getDeliveryTeam()== DeliveryTeam.MEITUAN){
+            return "美"+evaluationBean.getMtShopOrderNo();
+        }
+        String shopOrderSn = "";
+        if(evaluationBean.getShopOrderNo()<10){
+            shopOrderSn = "00"+evaluationBean.getShopOrderNo();
+        }else if(evaluationBean.getShopOrderNo()>=10&&evaluationBean.getShopOrderNo()<100){
+            shopOrderSn = "0"+evaluationBean.getShopOrderNo();
+        }else{
+            shopOrderSn = ""+evaluationBean.getShopOrderNo();
+        }
+        if(evaluationBean.getInstant()==1){//及时单
+            return shopOrderSn;
+        }else{
+            return shopOrderSn+"约";
+        }
+    }
+
+
 
     //拼接个性化标签
     public static String getLabelStr(List<String> list){

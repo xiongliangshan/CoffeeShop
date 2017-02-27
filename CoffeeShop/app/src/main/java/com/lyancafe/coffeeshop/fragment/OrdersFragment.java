@@ -74,56 +74,31 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
     public static int tabIndex = 0;
     public static int category = OrderCategory.ALL;
 
-    @BindView(R.id.tabLayout)
-    TabLayout tabLayout;
-    @BindView(R.id.spinner_category)
-    AppCompatSpinner spinnerCategory;
-    @BindView(R.id.vp_container)
-    ViewPager viewPager;
-    @BindView(R.id.order_id)
-    TextView orderIdTxt;
-    @BindView(R.id.reach_time)
-    TextView reachTimeTxt;
-    @BindView(R.id.receiver_name)
-    TextView receiveNameTxt;
-    @BindView(R.id.receiver_phone)
-    TextView receivePhoneTxt;
-    @BindView(R.id.order_time)
-    TextView orderTimeTxt;
-    @BindView(R.id.tv_whole_order_sn)
-    TextView wholeOrderText;
-    @BindView(R.id.receiver_address)
-    TextView receiveAddressTxt;
-    @BindView(R.id.deliver_name)
-    TextView deliverNameTxt;
-    @BindView(R.id.deliver_phone)
-    TextView deliverPhoneTxt;
-    @BindView(R.id.btn_assign)
-    TextView assignBtn;
-    @BindView(R.id.items_container_layout)
-    LinearLayout itemsContainerLayout;
-    @BindView(R.id.scrollView)
-    ScrollView scrollView;
-    @BindView(R.id.user_remark)
-    TextView userRemarkTxt;
-    @BindView(R.id.ll_user_remark)
-    LinearLayout userRemarkLayout;
-    @BindView(R.id.csad_remark)
-    TextView csadRemarkTxt;
-    @BindView(R.id.ll_csad_remark)
-    LinearLayout csadRemarkLayout;
-    @BindView(R.id.btn_finish_produce)
-    Button finishProduceBtn;
-    @BindView(R.id.btn_print_order)
-    Button printOrderBtn;
-    @BindView(R.id.ll_twobtn)
-    LinearLayout twoBtnLayout;
-    @BindView(R.id.btn_produce_print)
-    Button produceAndPrintBtn;
-    @BindView(R.id.ll_onebtn)
-    LinearLayout oneBtnLayout;
-    @BindView(R.id.contant_issue_feedback)
-    UnderLineTextView reportIssueBtn;
+    @BindView(R.id.tabLayout) TabLayout tabLayout;
+    @BindView(R.id.spinner_category) AppCompatSpinner spinnerCategory;
+    @BindView(R.id.vp_container) ViewPager viewPager;
+    @BindView(R.id.order_id) TextView orderIdTxt;
+    @BindView(R.id.reach_time) TextView reachTimeTxt;
+    @BindView(R.id.receiver_name) TextView receiveNameTxt;
+    @BindView(R.id.receiver_phone) TextView receivePhoneTxt;
+    @BindView(R.id.order_time) TextView orderTimeTxt;
+    @BindView(R.id.tv_whole_order_sn) TextView wholeOrderText;
+    @BindView(R.id.receiver_address) TextView receiveAddressTxt;
+    @BindView(R.id.deliver_name) TextView deliverNameTxt;
+    @BindView(R.id.deliver_phone) TextView deliverPhoneTxt;
+    @BindView(R.id.btn_assign) TextView assignBtn;
+    @BindView(R.id.items_container_layout) LinearLayout itemsContainerLayout;
+    @BindView(R.id.scrollView) ScrollView scrollView;
+    @BindView(R.id.user_remark) TextView userRemarkTxt;
+    @BindView(R.id.ll_user_remark) LinearLayout userRemarkLayout;
+    @BindView(R.id.csad_remark) TextView csadRemarkTxt;
+    @BindView(R.id.ll_csad_remark) LinearLayout csadRemarkLayout;
+    @BindView(R.id.btn_finish_produce) Button finishProduceBtn;
+    @BindView(R.id.btn_print_order) Button printOrderBtn;
+    @BindView(R.id.ll_twobtn) LinearLayout twoBtnLayout;
+    @BindView(R.id.btn_produce_print) Button produceAndPrintBtn;
+    @BindView(R.id.ll_onebtn) LinearLayout oneBtnLayout;
+    @BindView(R.id.contant_issue_feedback) UnderLineTextView reportIssueBtn;
 
     private ProduceFragmentPagerAdapter mPagerAdapter;
 
