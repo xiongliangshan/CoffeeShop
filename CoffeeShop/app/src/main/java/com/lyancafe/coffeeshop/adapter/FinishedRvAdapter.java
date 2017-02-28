@@ -21,6 +21,9 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by Administrator on 2015/9/21.
  */
@@ -101,26 +104,19 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Vi
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public LinearLayout rootLayout;
-        public TextView shopOrderIdText;
-        public TextView deliverResultText;
-        public TextView orderTimeText;
-        public TextView expectedReachTimeText;
-        public TextView realReachTimeText;
-        public TextView customEvaluationText;
-        public TextView deliverNameText;
+        @BindView(R.id.ll_root) LinearLayout rootLayout;
+        @BindView(R.id.tv_shop_order_id) TextView shopOrderIdText;
+        @BindView(R.id.tv_deliver_result) TextView deliverResultText;
+        @BindView(R.id.tv_order_time) TextView orderTimeText;
+        @BindView(R.id.tv_expected_reach_time) TextView expectedReachTimeText;
+        @BindView(R.id.tv_real_reach_time) TextView realReachTimeText;
+        @BindView(R.id.tv_custom_evaluation) TextView customEvaluationText;
+        @BindView(R.id.tv_deliver_name) TextView deliverNameText;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
-            rootLayout = (LinearLayout) itemView.findViewById(R.id.ll_root);
-            shopOrderIdText = (TextView) itemView.findViewById(R.id.tv_shop_order_id);
-            deliverResultText = (TextView) itemView.findViewById(R.id.tv_deliver_result);
-            orderTimeText = (TextView) itemView.findViewById(R.id.tv_order_time);
-            expectedReachTimeText = (TextView) itemView.findViewById(R.id.tv_expected_reach_time);
-            realReachTimeText = (TextView) itemView.findViewById(R.id.tv_real_reach_time);
-            customEvaluationText = (TextView) itemView.findViewById(R.id.tv_custom_evaluation);
-            deliverNameText = (TextView) itemView.findViewById(R.id.tv_deliver_name);
+            ButterKnife.bind(this,itemView);
         }
     }
 

@@ -33,6 +33,9 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by Administrator on 2015/9/21.
  */
@@ -243,48 +246,30 @@ public class ToFetchRvAdapter extends RecyclerView.Adapter<ToFetchRvAdapter.View
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public LinearLayout rootLayout;
-        public LinearLayout firstRowLayout;
-        public ImageView newUserOderIV;
-        public ImageView saoImg;
-        public ImageView giftIV;
-        public ImageView labelFlagImg;
-        public TextView orderIdTxt;
-        public TextView contantEffectTimeTxt;
-        public TextView effectTimeTxt;
-        public ImageView vipFlagIV;
-        public ImageView grabFlagIV;
-        public ImageView remarkFlagIV;
-        public LinearLayout itemContainerll;
-        public TextView cupCountText;
-        public LinearLayout twobtnContainerLayout;
-        public LinearLayout onebtnContainerlayout;
-        public TextView produceAndPrintBtn;
-        public TextView produceBtn;
-        public TextView printBtn;
+        @BindView(R.id.root_view) LinearLayout rootLayout;
+        @BindView(R.id.ll_first_row) LinearLayout firstRowLayout;
+        @BindView(R.id.iv_new_user) ImageView newUserOderIV;
+        @BindView(R.id.iv_sao_flag) ImageView saoImg;
+        @BindView(R.id.iv_gift) ImageView giftIV;
+        @BindView(R.id.iv_label_flag) ImageView labelFlagImg;
+        @BindView(R.id.item_order_id) TextView orderIdTxt;
+        @BindView(R.id.item_contant_produce_effect) TextView contantEffectTimeTxt;
+        @BindView(R.id.item_produce_effect) TextView effectTimeTxt;
+        @BindView(R.id.item_vip_flag) ImageView vipFlagIV;
+        @BindView(R.id.item_grab_flag) ImageView grabFlagIV;
+        @BindView(R.id.item_remark_flag) ImageView remarkFlagIV;
+        @BindView(R.id.item_container) LinearLayout itemContainerll;
+        @BindView(R.id.tv_cup_count) TextView cupCountText;
+        @BindView(R.id.ll_twobtn_container) LinearLayout twobtnContainerLayout;
+        @BindView(R.id.ll_onebtn_container) LinearLayout onebtnContainerlayout;
+        @BindView(R.id.item_produce_and_print) TextView produceAndPrintBtn;
+        @BindView(R.id.item_produce) TextView produceBtn;
+        @BindView(R.id.item_print) TextView printBtn;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
-            rootLayout = (LinearLayout) itemView.findViewById(R.id.root_view);
-            firstRowLayout = (LinearLayout) itemView.findViewById(R.id.ll_first_row);
-            newUserOderIV = (ImageView) itemView.findViewById(R.id.iv_new_user);
-            saoImg = (ImageView) itemView.findViewById(R.id.iv_sao_flag);
-            giftIV = (ImageView) itemView.findViewById(R.id.iv_gift);
-            labelFlagImg = (ImageView) itemView.findViewById(R.id.iv_label_flag);
-            orderIdTxt = (TextView) itemView.findViewById(R.id.item_order_id);
-            contantEffectTimeTxt = (TextView) itemView.findViewById(R.id.item_contant_produce_effect);
-            effectTimeTxt = (TextView) itemView.findViewById(R.id.item_produce_effect);
-            vipFlagIV = (ImageView) itemView.findViewById(R.id.item_vip_flag);
-            grabFlagIV = (ImageView) itemView.findViewById(R.id.item_grab_flag);
-            remarkFlagIV = (ImageView) itemView.findViewById(R.id.item_remark_flag);
-            itemContainerll = (LinearLayout) itemView.findViewById(R.id.item_container);
-            cupCountText = (TextView) itemView.findViewById(R.id.tv_cup_count);
-            twobtnContainerLayout = (LinearLayout) itemView.findViewById(R.id.ll_twobtn_container);
-            onebtnContainerlayout = (LinearLayout) itemView.findViewById(R.id.ll_onebtn_container);
-            produceBtn = (TextView) itemView.findViewById(R.id.item_produce);
-            printBtn = (TextView) itemView.findViewById(R.id.item_print);
-            produceAndPrintBtn = (TextView) itemView.findViewById(R.id.item_produce_and_print);
+            ButterKnife.bind(this,itemView);
         }
     }
 

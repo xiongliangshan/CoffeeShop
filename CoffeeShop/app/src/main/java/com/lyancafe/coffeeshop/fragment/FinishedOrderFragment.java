@@ -107,12 +107,12 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
         EventBus.getDefault().register(this);
         View contentView = inflater.inflate(R.layout.fragment_finished_order, container, false);
         unbinder = ButterKnife.bind(this,contentView);
-        initViews(contentView);
+        initViews();
         return contentView;
     }
 
 
-    private void initViews(View contentView){
+    private void initViews(){
         pullLoadMoreRecyclerView.getRecyclerView().setLayoutManager(new GridLayoutManager(getActivity(),4,GridLayoutManager.VERTICAL,false) );
         pullLoadMoreRecyclerView.getRecyclerView().setHasFixedSize(true);
         pullLoadMoreRecyclerView.getRecyclerView().setItemAnimator(new DefaultItemAnimator());
