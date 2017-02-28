@@ -433,27 +433,4 @@ public class HttpHelper {
                 .execute(callback);
     }
 
-    /**
-     * 扫码交付
-     * @param orderId
-     * @param callback
-     */
-    public void reqScanCode(long orderId,JsonCallback<XlsResponse> callback){
-        String url = Urls.BASE_URL+shopId+"/order/"+orderId+"/deliver?token="+token;
-        OkGo.post(url)
-                .tag(this)
-                .execute(callback);
-    }
-
-    /**
-     * 评论列表
-     * @param commentType
-     * @param callback
-     */
-    public void reqCommentList(int commentType,JsonCallback<XlsResponse> callback){
-        String url = Urls.BASE_URL+shopId+"/orders/feedback/"+commentType+"?token="+token;
-        OkGo.post(url)
-                .tag(this)
-                .execute(callback);
-    }
 }

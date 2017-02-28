@@ -6,7 +6,6 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.lyancafe.coffeeshop.event.CommentCountEvent;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -49,7 +48,6 @@ public class TaskService extends Service {
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "onBind");
         startTimer();
-        startCommentTimer();
         return binder;
     }
 
@@ -60,8 +58,6 @@ public class TaskService extends Service {
             stopTimer();
         }
         n = 0;
-
-        stopCommentTimer();
         return super.onUnbind(intent);
     }
 
@@ -99,30 +95,5 @@ public class TaskService extends Service {
             return TaskService.this;
         }
     }
-
-
-
-    //刷新评论有关
-    public void startCommentTimer(){
-        commentTimer  = new Timer();
-        commentTask = new TimerTask() {
-            @Override
-            public void run() {
-                Log.d(TAG, "请求服务器--" + (n++));
-                EventBus.getDefault().post(new CommentCountEvent());
-            }
-        };
-        commentTimer.schedule(commentTask, 1000, COMMENT_PERIOD_TIME);
-        Log.d("xiongliangshan", "startCommentTimer ----");
-    }
-
-    public void stopCommentTimer(){
-        Log.d("xiongliangshan","---- stopCommentTimer");
-        if(commentTimer!=null){
-            commentTimer.cancel();
-            commentTimer=null;
-        }
-    }
-
 
 }

@@ -3,7 +3,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:background="@drawable/bg_finished_order"
-    android:layout_height="160dp">
+    android:layout_height="180dp">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -60,19 +60,19 @@
     <View
         android:layout_width="1dp"
         android:layout_height="match_parent"
-        android:background="@color/bg_line_separator"/>
+        android:background="@color/bg_line_separator"
+        android:layout_marginRight="4dp"/>
 
     <LinearLayout
         android:id="@+id/ll_detail_layout"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:gravity="center"
         android:paddingLeft="8dp"
         android:paddingRight="8dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:ems="1"
             android:textSize="17sp"

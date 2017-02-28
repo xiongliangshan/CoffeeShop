@@ -32,11 +32,13 @@
                android:id="@+id/rb_bad_evaluation"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
+               android:layout_marginLeft="2dp"
                android:text="差评"/>
            <RadioButton
                android:id="@+id/rb_good_evaluation"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
+               android:layout_marginLeft="2dp"
                android:text="好评"/>
        </RadioGroup>
 

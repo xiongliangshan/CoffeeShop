@@ -2,7 +2,6 @@ package com.lyancafe.coffeeshop.fragment;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -23,14 +22,12 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.activity.CommentActivity;
 import com.lyancafe.coffeeshop.adapter.FinishedRvAdapter;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.event.ClickCommentEvent;
-import com.lyancafe.coffeeshop.event.CommentCountEvent;
 import com.lyancafe.coffeeshop.event.UpdateFinishedOrderDetailEvent;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
@@ -40,7 +37,6 @@ import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -71,10 +67,6 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     TextView orderCountText;
     @BindView(R.id.tv_cup_count)
     TextView cupCountText;
-    @BindView(R.id.tv_good_comment)
-    TextView goodCommentText;
-    @BindView(R.id.tv_bad_comment)
-    TextView badCommentText;
     /**
      * 订单详情页UI组件
      */
@@ -136,24 +128,6 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         dateText.setText(sdf.format(new Date()));
 
-    }
-
-    @OnClick({R.id.tv_good_comment,R.id.tv_bad_comment})
-    void onClickComment(View v){
-        switch (v.getId()){
-            case R.id.tv_good_comment:
-                //好评列表
-                Intent intent_good =  new Intent(mContext, CommentActivity.class);
-                intent_good.putExtra("coment_type",OrderHelper.GOOD_COMMENT);
-                mContext.startActivity(intent_good);
-                break;
-            case R.id.tv_bad_comment:
-                //差评列表
-                Intent intent_bad =  new Intent(mContext, CommentActivity.class);
-                intent_bad.putExtra("coment_type",OrderHelper.BAD_COMMENT);
-                mContext.startActivity(intent_bad);
-                break;
-        }
     }
 
 
@@ -324,20 +298,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
         updateDetailView(event.orderBean);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCommentCountEvent(CommentCountEvent event){
-        HttpHelper.getInstance().reqCommentCount(new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleCommentCountResponse(xlsResponse,call,response);
-            }
-        });
-    }
 
-    @Subscribe
-    public void onClickCommentEvent(ClickCommentEvent event){
-        updateDetailView(event.orderBean);
-    }
 
 
     @Override
@@ -372,20 +333,6 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     }
 
 
-    /**
-     * 处理评论数量接口返回的数据
-     */
-    private void handleCommentCountResponse(XlsResponse xlsResponse,Call call,Response response){
-        if(xlsResponse.status==0){
-            int positive = xlsResponse.data.getIntValue("positive");
-            int negative = xlsResponse.data.getIntValue("negative");
-            if(goodCommentText!=null && badCommentText!=null){
-                goodCommentText.setText("好评"+positive);
-                badCommentText.setText("差评"+negative);
-            }
-
-        }
-    }
 
     //处理服务器返回数据---已完成
     private void handleFinishedResponse(XlsResponse xlsResponse,Call call,Response response){

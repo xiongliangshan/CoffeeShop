@@ -1,8 +1,6 @@
 package com.lyancafe.coffeeshop.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +19,10 @@ import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lzy.okgo.OkGo;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -122,12 +124,40 @@ public class EvaluationFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        HttpHelper.getInstance().reqCommentCount(new JsonCallback<XlsResponse>() {
+            @Override
+            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                handleCommentCountResponse(xlsResponse,call,response);
+            }
+        });
         HttpHelper.getInstance().reqEvaluationListData(mLastOrderId, mType, new JsonCallback<XlsResponse>() {
             @Override
             public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
                 handleEvaluationListDataResponse(xlsResponse,call,response);
             }
         });
+    }
+
+
+    /**
+     * 处理评论数量接口返回的数据
+     */
+    private void handleCommentCountResponse(XlsResponse xlsResponse,Call call,Response response){
+        if(xlsResponse.status==0){
+            int positive = xlsResponse.data.getIntValue("positive");
+            int negative = xlsResponse.data.getIntValue("negative");
+            Log.d(TAG,"positive = "+positive+",negative = "+negative);
+            if(rbBadEvaluation!=null && rbGoodEvaluation!=null){
+                if(positive>0){
+                    rbGoodEvaluation.setText("好评("+positive+")");
+                }
+                if(negative>0){
+                    rbBadEvaluation.setText("差评("+negative+")");
+                }
+
+            }
+
+        }
     }
 
     private void handleEvaluationListDataResponse(XlsResponse xlsResponse, Call call, Response response) {
@@ -187,6 +217,12 @@ public class EvaluationFragment extends BaseFragment {
         if(!isResumed()){
             return;
         }
+        HttpHelper.getInstance().reqCommentCount(new JsonCallback<XlsResponse>() {
+            @Override
+            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                handleCommentCountResponse(xlsResponse,call,response);
+            }
+        });
         HttpHelper.getInstance().reqEvaluationListData(0, mType, new JsonCallback<XlsResponse>() {
             @Override
             public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {

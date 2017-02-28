@@ -60,27 +60,6 @@
             android:textSize="18sp"
             android:layout_toRightOf="@id/constant_cup_count"/>
 
-        <TextView
-            android:id="@+id/tv_good_comment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:drawableLeft="@mipmap/smile"
-            android:layout_toRightOf="@id/tv_cup_count"
-            android:text="好评"
-            android:textSize="18sp"
-            android:textColor="@color/font_red"/>
-
-        <TextView
-            android:id="@+id/tv_bad_comment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/tv_good_comment"
-            android:layout_marginLeft="16dp"
-            android:drawableLeft="@mipmap/sad"
-            android:textSize="18sp"
-            android:text="差评"/>
-
     </RelativeLayout>
 
 

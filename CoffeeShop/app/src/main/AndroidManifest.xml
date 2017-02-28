@@ -93,11 +93,6 @@
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar"/>
 
-        <activity android:name=".activity.CommentActivity"
-            android:screenOrientation="landscape"
-            android:theme="@style/CommentWindow"
-            android:launchMode="singleTask"/>
-
         <service android:name=".service.TaskService"/>
         <service android:name=".service.UpdateService"/>
 
