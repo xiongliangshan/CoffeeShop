@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
@@ -42,21 +44,28 @@ import okhttp3.Response;
  */
 public class MaterialFragment extends Fragment {
 
-    private static final String TAG ="MaterialFragment";
+    private static final String TAG = "MaterialFragment";
+    @BindView(R.id.rb_normal) RadioButton rbNormal;
+    @BindView(R.id.rb_new) RadioButton rbNew;
+    @BindView(R.id.rg_printer) RadioGroup rgPrinter;
     private Context mContext;
-    @BindView(R.id.tv_print_paster) TextView printPasterText;
-    @BindView(R.id.tv_print_material) TextView printMaterialText;
-    @BindView(R.id.rv_material) RecyclerView recyclerView;
+    @BindView(R.id.tv_print_paster)
+    TextView printPasterText;
+    @BindView(R.id.tv_print_material)
+    TextView printMaterialText;
+    @BindView(R.id.rv_material)
+    RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private MaterialAdatapter materialAdatapter;
-    @BindView(R.id.progress_bar) ContentLoadingProgressBar clpBar;
+    @BindView(R.id.progress_bar)
+    ContentLoadingProgressBar clpBar;
     private MaterialBean toPrintMaterial;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mContext = activity;
-        Log.d(TAG,"onAttach");
+        Log.d(TAG, "onAttach");
     }
 
     @Override
@@ -70,8 +79,8 @@ public class MaterialFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView");
         EventBus.getDefault().register(this);
-        View view = inflater.inflate(R.layout.fragment_material,container,false);
-        ButterKnife.bind(this,view);
+        View view = inflater.inflate(R.layout.fragment_material, container, false);
+        ButterKnife.bind(this, view);
         initView();
         return view;
     }
@@ -88,15 +97,15 @@ public class MaterialFragment extends Fragment {
         });
     }
 
-    @OnClick({R.id.tv_print_paster,R.id.tv_print_material})
-    void onClick(View v){
-        switch (v.getId()){
+    @OnClick({R.id.tv_print_paster, R.id.tv_print_material})
+    void onClick(View v) {
+        switch (v.getId()) {
             case R.id.tv_print_paster:
                 PrintHelper.getInstance().printPasterSmall();
                 break;
             case R.id.tv_print_material:
                 //开始打印
-                if(toPrintMaterial!=null){
+                if (toPrintMaterial != null) {
                     PrintHelper.getInstance().printMaterialBig(toPrintMaterial);
                 }
                 break;
@@ -104,15 +113,21 @@ public class MaterialFragment extends Fragment {
     }
 
     private void handleMaterialListResponse(XlsResponse xlsResponse, Call call, Response response) {
-        if(xlsResponse.status==0){
-            List<MaterialBean> materialList = MaterialBean.parseJsonMaterials(mContext,xlsResponse);
+        if (xlsResponse.status == 0) {
+            List<MaterialBean> materialList = MaterialBean.parseJsonMaterials(mContext, xlsResponse);
             materialAdatapter.setData(materialList);
-        }else{
-            ToastUtil.showToast(mContext,xlsResponse.message);
+        } else {
+            ToastUtil.showToast(mContext, xlsResponse.message);
         }
     }
 
-    private void initView(){
+    private void initView() {
+        if(PrintHelper.getInstance().getProperty()){
+            rgPrinter.check(R.id.rb_new);
+        }else{
+            rgPrinter.check(R.id.rb_normal);
+        }
+
         layoutManager = new GridLayoutManager(mContext, 4);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
@@ -123,15 +138,14 @@ public class MaterialFragment extends Fragment {
     }
 
 
-
     @Subscribe
-    public void OnMessageEvent(MaterialSelectEvent event){
-        if(event.selected>=0){
+    public void OnMessageEvent(MaterialSelectEvent event) {
+        if (event.selected >= 0) {
             toPrintMaterial = event.materialBean;
             printMaterialText.setEnabled(true);
             printMaterialText.setBackground(mContext.getResources().getDrawable(R.drawable.bg_black_circle));
             printMaterialText.setTextColor(mContext.getResources().getColor(R.color.white_font));
-        }else{
+        } else {
             toPrintMaterial = null;
             printMaterialText.setEnabled(false);
             printMaterialText.setBackground(mContext.getResources().getDrawable(R.drawable.bg_white_circle));
@@ -168,4 +182,16 @@ public class MaterialFragment extends Fragment {
         super.onDetach();
     }
 
+    @OnClick({R.id.rb_normal, R.id.rb_new})
+    public void onClickRadioBt(View view) {
+        rgPrinter.check(view.getId());
+        switch (view.getId()) {
+            case R.id.rb_normal:
+                PrintHelper.getInstance().saveProperty(false);
+                break;
+            case R.id.rb_new:
+                PrintHelper.getInstance().saveProperty(true);
+                break;
+        }
+    }
 }

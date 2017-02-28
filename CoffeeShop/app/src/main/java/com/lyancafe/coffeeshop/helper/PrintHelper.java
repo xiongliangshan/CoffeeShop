@@ -1,5 +1,7 @@
 package com.lyancafe.coffeeshop.helper;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -44,6 +46,7 @@ public class PrintHelper {
     private OnPromptListener mlistener;
     private boolean printerIsAvailable = true;
     private  ThreadPoolExecutor mPoolExecutor;
+    private static final String PREFERENCES_PRINTER = "print";
 
     private PrintHelper() {
         Log.d(TAG,"PrintHelpter()");
@@ -196,11 +199,23 @@ public class PrintHelper {
         Log.d(TAG, "printOrderInfo");
         List<PrintOrderBean> printList = calculatePinterOrderBeanList(orderBean);
         Log.d(TAG, "printList.size  =" + printList.size());
-        for(PrintOrderBean bean:printList){
-            String printContent = getPrintOrderContent(bean);
-            DoPrintOrder(printContent);
-            Log.d(TAG, "打印盒子清单:" + bean.toString());
+        if(getProperty()){
+            //新打印机驱动
+            Log.w(TAG,"新驱动 230");
+            for(PrintOrderBean bean:printList){
+                String printContent = getPrintOrderContentNew(bean);
+                DoPrintOrder(printContent);
+                Log.d(TAG, "打印盒子清单:" + bean.toString());
+            }
+        }else{
+            Log.w(TAG,"旧 200");
+            for(PrintOrderBean bean:printList){
+                String printContent = getPrintOrderContent(bean);
+                DoPrintOrder(printContent);
+                Log.d(TAG, "打印盒子清单:" + bean.toString());
+            }
         }
+
         OrderHelper.addPrintedSet(CSApplication.getInstance(), orderBean.getOrderSn());
         EventBus.getDefault().post(new UpdatePrintStatusEvent(orderBean.getOrderSn()));
     }
@@ -269,6 +284,72 @@ public class PrintHelper {
 
         return text;
     }
+
+    public String getPrintOrderContentNew(PrintOrderBean bean){
+        String order1 = "",order2 = "",order3 = "",order4 = "";
+        List<PrintCupBean> coffeeList = bean.getCoffeeList();
+        switch (coffeeList.size()){
+            case 1:
+                order1 = coffeeList.get(0).getCoffee()+OrderHelper.getLabelStr(coffeeList.get(0).getLabelList());
+                break;
+            case 2:
+                order1 = coffeeList.get(0).getCoffee()+OrderHelper.getLabelStr(coffeeList.get(0).getLabelList());
+                order2 = coffeeList.get(1).getCoffee()+OrderHelper.getLabelStr(coffeeList.get(1).getLabelList());
+                break;
+            case 3:
+                order1 = coffeeList.get(0).getCoffee()+OrderHelper.getLabelStr(coffeeList.get(0).getLabelList());
+                order2 = coffeeList.get(1).getCoffee()+OrderHelper.getLabelStr(coffeeList.get(1).getLabelList());
+                order3 = coffeeList.get(2).getCoffee()+OrderHelper.getLabelStr(coffeeList.get(2).getLabelList());
+                break;
+            case 4:
+                order1 = coffeeList.get(0).getCoffee()+OrderHelper.getLabelStr(coffeeList.get(0).getLabelList());
+                order2 = coffeeList.get(1).getCoffee()+OrderHelper.getLabelStr(coffeeList.get(1).getLabelList());
+                order3 = coffeeList.get(2).getCoffee()+OrderHelper.getLabelStr(coffeeList.get(2).getLabelList());
+                order4 = coffeeList.get(3).getCoffee()+OrderHelper.getLabelStr(coffeeList.get(3).getLabelList());
+                break;
+        }
+
+        String addressCMD, addr1, addr2,gift;
+        Log.d(TAG, "address len: " + bean.getAddress().length());
+        if (bean.getAddress().length() <= 22) {
+            addressCMD = "A120,160,0,230,1,1,N,\""+bean.getAddress()+"\""+"\n";
+        } else {
+            addr1 = bean.getAddress().substring(0, 22);
+            addr2 = bean.getAddress().substring(22);
+            addressCMD = "A120,160,0,230,1,1,N,\""+addr1+"\""+"\n" +
+                    "A90,190,0,230,1,1,N,\""+addr2+"\""+"\n";
+        }
+        if(bean.isGiftBox()){
+            gift = "A480,40,0,230,2,2,N,\"礼盒\""+"\n";
+        }else{
+            gift = "A480,40,0,230,2,2,N,\"\""+"\n";
+        }
+        String text =
+                "N"+"\n"+
+                        "q640"+"\n"+
+                        "Q400,16"+"\n"+
+                        "S3"+"\n"+
+                        "D8"+"\n"+
+                        "A10,50,0,230,1,1,N,\"门店单号：\""+"\n"+ //订单号
+                        "A120,40,0,230,2,2,N,\""+bean.getShopOrderNo()+OrderHelper.getSimpleOrderSnForPrint(bean.getOrderSn())+"  "+bean.getBoxAmount()+"-" +bean.getBoxNumber()+"|"+bean.getCupAmount()+"\""+"\n"+ //杯数盒子信息
+                        gift +
+                        "A10,100,0,230,1,1,N,\"收货人：\""+"\n"+
+                        "A120,100,0,230,2,2,N,\""+bean.getReceiverName()+"\""+"\n"+
+                        "A320,120,0,230,1,1,N,\""+bean.getReceiverPhone()+"\""+"\n"+
+                        addressCMD +                             //配送地址
+                        "A10,220,0,230,1,1,N,\"清单：\""+"\n"+
+                        "A20,250,0,230,1,1,N,\""+order1+"\""+"\n"+
+                        "A340,250,0,230,1,1,N,\""+order2+"\""+"\n"+
+                        "A20,280,0,230,1,1,N,\""+order3+"\""+"\n"+
+                        "A340,280,0,230,1,1,N,\""+order4+"\""+"\n"+
+                        "A10,330,0,230,2,2,N,\""+OrderHelper.getPeriodOfExpectedtime(bean)+"\""+"\n"+
+                        "A250,330,0,230,2,2,N,\""+getRemarkFlag(bean.isHaveRemarks())+"\""+"\n"+
+                        "A400,340,0,230,1,1,N,\""+bean.getDeliverName()+"\""+"\n"+
+                        "P1"+"\n";
+
+        return text;
+    }
+
     public  void DoPrintOrder(String printContent){
         Log.i(TAG,"DoPrintOrder");
         DoPrintRunnable dpt = new DoPrintRunnable();
@@ -285,16 +366,30 @@ public class PrintHelper {
         List<PrintCupBean> coolPrintList = new ArrayList<>();
         calculatePinterCupBeanList(orderBean, hotPrintList, coolPrintList);
         Log.d(TAG, "printList.size = " + hotPrintList.size() + "+" + coolPrintList.size());
-        for(PrintCupBean bean:hotPrintList){
-            String printContent = getPrintCupContent(bean);
-            DoPrintCup(printContent);
-            Log.d(TAG, "打印杯贴纸:" + bean.toString());
+        if(getProperty()){
+            for(PrintCupBean bean:hotPrintList){
+                String printContent = getPrintCupContentNew(bean);
+                DoPrintCup(printContent);
+                Log.d(TAG, "打印杯贴纸:" + bean.toString());
+            }
+            for(PrintCupBean bean:coolPrintList){
+                String printContent = getPrintCupContentNew(bean);
+                DoPrintCup(printContent);
+                Log.d(TAG, "打印杯贴纸:" + bean.toString());
+            }
+        }else{
+            for(PrintCupBean bean:hotPrintList){
+                String printContent = getPrintCupContent(bean);
+                DoPrintCup(printContent);
+                Log.d(TAG, "打印杯贴纸:" + bean.toString());
+            }
+            for(PrintCupBean bean:coolPrintList){
+                String printContent = getPrintCupContent(bean);
+                DoPrintCup(printContent);
+                Log.d(TAG, "打印杯贴纸:" + bean.toString());
+            }
         }
-        for(PrintCupBean bean:coolPrintList){
-            String printContent = getPrintCupContent(bean);
-            DoPrintCup(printContent);
-            Log.d(TAG, "打印杯贴纸:" + bean.toString());
-        }
+
     }
 
 
@@ -411,6 +506,23 @@ public class PrintHelper {
                 "A20,70,0,200,1,1,N,\""+bean.getCoffee()+"\""+"\n"+
                 "A20,100,0,200,1,1,N,\""+OrderHelper.getLabelPrintStr(bean.getLabelList())+"\""+"\n"+
                 "P1"+"\n";
+        return text;
+    }
+
+    public String getPrintCupContentNew(PrintCupBean bean){
+        String shopOrderSn = bean.getShopOrderNo();
+        String text =
+                "N"+"\n"+
+                        "OD"+"\n"+
+                        "q240"+"\n"+
+                        "Q160,16"+"\n"+
+                        "S3"+"\n"+
+                        "D8"+"\n"+
+                        "A20,40,0,230,1,1,N,\""+shopOrderSn+"\""+"\n"+
+                        "A110,40,0,230,1,1,N,\""+bean.getBoxAmount()+"-"+bean.getBoxNumber()+"|"+bean.getCupAmount()+"-" +bean.getCupNumber()+"\""+"\n"+ //杯数盒子信息
+                        "A20,70,0,230,1,1,N,\""+bean.getCoffee()+"\""+"\n"+
+                        "A20,100,0,230,1,1,N,\""+OrderHelper.getLabelPrintStr(bean.getLabelList())+"\""+"\n"+
+                        "P1"+"\n";
         return text;
     }
 
@@ -550,11 +662,21 @@ public class PrintHelper {
     public void printBatchCups(List<OrderBean> orderList){
         List<PrintCupBean> cupBeanList = calculateBatchCupList(orderList);
         List<PrintCupBean> sortedCupList = sortCupList(cupBeanList);
-        for(PrintCupBean bean:sortedCupList){
-            String printContent = getPrintCupContent(bean);
-            DoPrintCup(printContent);
-            Log.d(TAG, "打印杯贴纸:" + bean.toString());
+        if(getProperty()){
+            //新打印机驱动
+            for(PrintCupBean bean:sortedCupList){
+                String printContent = getPrintCupContentNew(bean);
+                DoPrintCup(printContent);
+                Log.d(TAG, "打印杯贴纸:" + bean.toString());
+            }
+        }else{
+            for(PrintCupBean bean:sortedCupList){
+                String printContent = getPrintCupContent(bean);
+                DoPrintCup(printContent);
+                Log.d(TAG, "打印杯贴纸:" + bean.toString());
+            }
         }
+
     }
 
     //生成批量打印的杯贴纸集合（按同种咖啡数量多到少排序）
@@ -637,9 +759,22 @@ public class PrintHelper {
         return text;
     }
 
+    public String getMaterialContentNew(MaterialBean materialBean){
+        String text =
+                "N"+"\n"+
+                        "OD"+"\n"+
+                        "q640"+"\n"+
+                        "Q400,16"+"\n"+
+                        "S3"+"\n"+
+                        "D8"+"\n"+
+                        "A60,150,0,230,3,4,N,\""+materialBean.getName()+"\""+"\n"+
+                        "P1"+"\n";
+        return text;
+    }
+
     //打印物料（大纸）
     public  void printMaterialBig(MaterialBean materialBean){
-        String printMaterialContent = getMaterialContent(materialBean);
+        String printMaterialContent = getProperty()==true?getMaterialContentNew(materialBean):getMaterialContent(materialBean);
         DoPrintMaterial(printMaterialContent);
     }
 
@@ -661,9 +796,27 @@ public class PrintHelper {
                         "P1"+"\n";
         return text;
     }
+
+    public String getPasterContentNew(){
+        String text =
+                "N"+"\n"+
+                        "OD"+"\n"+
+                        "q240"+"\n"+
+                        "Q160,16"+"\n"+
+                        "S3"+"\n"+
+                        "D8"+"\n"+
+                        "A10,19,0,230,1,1,N,\"报废时间:\""+"\n"+
+                        "A10,46,0,230,1,1,N,\"──────────────────────\""+"\n"+
+                        "A10,72,0,230,1,1,N,\"品名:\""+"\n"+
+                        "A120,72,0,230,1,1,N,\"签名:\""+"\n"+
+                        "A10,98,0,230,1,1,N,\"──────────────────────\""+"\n"+
+                        "A10,125,0,230,1,1,N,\"原始到期日:\""+"\n"+
+                        "P1"+"\n";
+        return text;
+    }
     //打印贴纸（小纸）
     public void printPasterSmall(){
-        String pasterContent = getPasterContent();
+        String pasterContent = getProperty()==true?getPasterContentNew():getPasterContent();
         DoPrintPaster(pasterContent);
     }
 
@@ -682,6 +835,20 @@ public class PrintHelper {
         }else{
             return "";
         }
+    }
+
+    /**
+     * 打印机针对生僻字驱动升级，过度阶段配置
+     * @param isNew
+     */
+    public void saveProperty(boolean isNew){
+        SharedPreferences sp = CSApplication.getInstance().getSharedPreferences(PREFERENCES_PRINTER, Context.MODE_PRIVATE);
+        sp.edit().putBoolean("isNew",isNew).commit();
+    }
+
+    public boolean getProperty(){
+        SharedPreferences sp = CSApplication.getInstance().getSharedPreferences(PREFERENCES_PRINTER, Context.MODE_PRIVATE);
+        return sp.getBoolean("isNew",false);
     }
 
 
