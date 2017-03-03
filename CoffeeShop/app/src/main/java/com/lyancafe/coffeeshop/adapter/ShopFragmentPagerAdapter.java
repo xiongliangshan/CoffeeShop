@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ShopFragmentPagerAdapter extends FragmentPagerAdapter {
 
-    public String[] titles = new String[]{"订单一览","评价详情","门店管理"};
+    public String[] titles = new String[]{"订单一览","时效详情","评价详情","门店管理"};
     private List<Fragment> fragments;
     private Context mContext;
 

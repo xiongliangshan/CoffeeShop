@@ -46,6 +46,7 @@ public class ShopFragment extends BaseFragment implements TabLayout.OnTabSelecte
     private void initViews() {
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new FinishedOrderFragment());
+        fragments.add(new TimeEffectFragment());
         fragments.add(new EvaluationFragment());
         fragments.add(new ShopManagerFragment());
         mPagerAdapter = new ShopFragmentPagerAdapter(getChildFragmentManager(),getActivity(),fragments);
