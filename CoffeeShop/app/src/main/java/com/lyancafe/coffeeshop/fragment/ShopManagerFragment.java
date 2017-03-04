@@ -3,22 +3,41 @@ package com.lyancafe.coffeeshop.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.ContentLoadingProgressBar;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.FragmentTabAdapter;
+import com.lyancafe.coffeeshop.adapter.MaterialAdatapter;
+import com.lyancafe.coffeeshop.bean.MaterialBean;
+import com.lyancafe.coffeeshop.bean.XlsResponse;
+import com.lyancafe.coffeeshop.callback.JsonCallback;
+import com.lyancafe.coffeeshop.event.MaterialSelectEvent;
+import com.lyancafe.coffeeshop.helper.HttpHelper;
+import com.lyancafe.coffeeshop.helper.PrintHelper;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import okhttp3.Call;
+import okhttp3.Response;
 
 /**
  * Created by Administrator on 2015/9/1.
@@ -26,13 +45,19 @@ import butterknife.Unbinder;
 public class ShopManagerFragment extends BaseFragment {
 
     private static final String TAG ="ShopManagerFragment";
-    @BindView(R.id.ll_print_paster) LinearLayout printPasterLayout;
-    @BindView(R.id.tv_item_paster) TextView printPasterText;
-    private Fragment currentFragment;
+    @BindView(R.id.rb_normal) RadioButton rbNormal;
+    @BindView(R.id.rb_new) RadioButton rbNew;
+    @BindView(R.id.rg_printer) RadioGroup rgPrinter;
+    @BindView(R.id.tv_print_paster) TextView printPasterText;
+    @BindView(R.id.tv_print_material) TextView printMaterialText;
+    @BindView(R.id.rv_material) RecyclerView recyclerView;
+    @BindView(R.id.progress_bar) ContentLoadingProgressBar clpBar;
+
+    private MaterialAdatapter materialAdatapter;
+    private MaterialBean toPrintMaterial;
     private Context mContext;
     private Unbinder unbinder;
 
-    private MaterialFragment materialFragment;
 
     public ShopManagerFragment() {
     }
@@ -46,12 +71,10 @@ public class ShopManagerFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initFragments();
+
 
     }
-    private void initFragments(){
-        materialFragment = new MaterialFragment();
-    }
+
 
     @Nullable
     @Override
@@ -59,29 +82,69 @@ public class ShopManagerFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_shop_manager,container,false);
         unbinder = ButterKnife.bind(this,view);
         initView();
-        switchFragment(materialFragment);
+        EventBus.getDefault().register(this);
         return view;
 
     }
 
     private void initView(){
-        setSelected(printPasterText,true);
+        if(PrintHelper.getInstance().getProperty()){
+            rgPrinter.check(R.id.rb_new);
+        }else{
+            rgPrinter.check(R.id.rb_normal);
+        }
+
+        recyclerView.setLayoutManager(new GridLayoutManager(mContext, 4));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        ArrayList<MaterialBean> itemList = new ArrayList<>();
+        materialAdatapter = new MaterialAdatapter(itemList, mContext);
+        recyclerView.setAdapter(materialAdatapter);
     }
 
-    //设置左侧菜单选中标志
-    private void setSelected(TextView textView,boolean isSelected){
-        if(isSelected){
-            textView.setBackgroundColor(mContext.getResources().getColor(R.color.bg_menu_selected));
-            textView.setTextColor(mContext.getResources().getColor(R.color.font_menu_selected));
-        }else{
-            textView.setBackgroundColor(mContext.getResources().getColor(android.R.color.transparent));
-            textView.setTextColor(mContext.getResources().getColor(R.color.font_munu_normal));
+    @Subscribe
+    public void OnMessageEvent(MaterialSelectEvent event) {
+        if (event.selected >= 0) {
+            toPrintMaterial = event.materialBean;
+            printMaterialText.setEnabled(true);
+            printMaterialText.setBackground(mContext.getResources().getDrawable(R.drawable.bg_black_circle));
+            printMaterialText.setTextColor(mContext.getResources().getColor(R.color.white_font));
+        } else {
+            toPrintMaterial = null;
+            printMaterialText.setEnabled(false);
+            printMaterialText.setBackground(mContext.getResources().getDrawable(R.drawable.bg_white_circle));
+            printMaterialText.setTextColor(mContext.getResources().getColor(R.color.text_black));
         }
     }
 
-    @OnClick(R.id.ll_print_paster)
-    void onClick(View v) {
-       setSelected(printPasterText,true);
+
+    @OnClick({R.id.tv_print_paster, R.id.tv_print_material})
+    void onClickPrint(View v) {
+        switch (v.getId()) {
+            case R.id.tv_print_paster:
+                PrintHelper.getInstance().printPasterSmall();
+                break;
+            case R.id.tv_print_material:
+                //开始打印
+                if (toPrintMaterial != null) {
+                    PrintHelper.getInstance().printMaterialBig(toPrintMaterial);
+                }
+                break;
+        }
+    }
+
+
+    @OnClick({R.id.rb_normal, R.id.rb_new})
+    public void onClickRadioBt(View view) {
+        rgPrinter.check(view.getId());
+        switch (view.getId()) {
+            case R.id.rb_normal:
+                PrintHelper.getInstance().saveProperty(false);
+                break;
+            case R.id.rb_new:
+                PrintHelper.getInstance().saveProperty(true);
+                break;
+        }
     }
 
     @Override
@@ -116,6 +179,7 @@ public class ShopManagerFragment extends BaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        EventBus.getDefault().unregister(this);
         unbinder.unbind();
     }
 
@@ -129,26 +193,36 @@ public class ShopManagerFragment extends BaseFragment {
         super.onDetach();
     }
 
-    private void switchFragment(Fragment fragment){
-        if(fragment == currentFragment || fragment==null){
-            return;
-        }
-        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-        ft.replace(R.id.fragment_container,fragment).commit();
-        fragment.onResume();
-        currentFragment = fragment;
-    }
-
-
 
     @Override
     protected void onVisible() {
-//        Log.d("xls","ShopManagerFragment is onVisible");
+        Log.d("xls","ShopManagerFragment Visible");
+        if(!isResumed()){
+            return;
+        }
+        HttpHelper.getInstance().reqMaterialList(new JsonCallback<XlsResponse>() {
+            @Override
+            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                handleMaterialListResponse(xlsResponse, call, response);
+            }
+        });
     }
+
+
 
     @Override
     protected void onInVisible() {
-//        Log.d("xls","ShopManagerFragment is onInVisible");
+        Log.d("xls","ShopManagerFragment InVisible");
+    }
+
+
+    private void handleMaterialListResponse(XlsResponse xlsResponse, Call call, Response response) {
+        if (xlsResponse.status == 0) {
+            List<MaterialBean> materialList = MaterialBean.parseJsonMaterials(mContext, xlsResponse);
+            materialAdatapter.setData(materialList);
+        } else {
+            ToastUtil.showToast(mContext, xlsResponse.message);
+        }
     }
 
 }

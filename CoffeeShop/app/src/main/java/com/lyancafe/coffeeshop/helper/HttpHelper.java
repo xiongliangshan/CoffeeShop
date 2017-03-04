@@ -106,8 +106,6 @@ public class HttpHelper {
 
     /**
      * 请求待生产列表数据
-     * @param orderBy
-     * @param fillterInstant
      * @param limitLevel
      * @param callback
      */
@@ -202,6 +200,7 @@ public class HttpHelper {
      * @param callback
      */
     public void reqFinishedListData(long orderId, JsonCallback<XlsResponse> callback){
+        Log.d("xls","请求订单一览列表数据");
         HashMap<String, Object> params = new HashMap<>();
         params.put("orderId",orderId); //区分是刷新还是加载更多
         JSONObject jsonObject = new JSONObject(params);
@@ -225,6 +224,7 @@ public class HttpHelper {
      * @param callback
      */
     public void reqFinishedTotalAmountData(JsonCallback<XlsResponse> callback){
+        Log.d("xls","请求总杯量和总单量");
         String url=Urls.BASE_URL+shopId + "/orders/today/finishedTotal?token="+token;
         OkGo.get(url)
                 .tag(this)
@@ -279,6 +279,7 @@ public class HttpHelper {
      * @param callback
      */
     public void reqMaterialList(JsonCallback<XlsResponse> callback){
+        Log.d("xls","请求物料");
         String url = Urls.BASE_URL+shopId+"/supplies?token="+token;
         OkGo.get(url)
                 .tag(this)
@@ -355,6 +356,7 @@ public class HttpHelper {
      * @param callback
      */
     public void reqCommentCount(JsonCallback<XlsResponse> callback){
+        Log.d("xls","请求评论列表");
         String url = Urls.BASE_URL+shopId+"/orders/feedback/count?token="+token;
         OkGo.get(url)
                 .tag(this)

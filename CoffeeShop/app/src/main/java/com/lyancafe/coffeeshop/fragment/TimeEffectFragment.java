@@ -3,6 +3,7 @@ package com.lyancafe.coffeeshop.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,7 @@ import butterknife.Unbinder;
  * Use the {@link TimeEffectFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TimeEffectFragment extends Fragment implements PullLoadMoreRecyclerView.PullLoadMoreListener {
+public class TimeEffectFragment extends BaseFragment implements PullLoadMoreRecyclerView.PullLoadMoreListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -150,5 +151,18 @@ public class TimeEffectFragment extends Fragment implements PullLoadMoreRecycler
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+
+    @Override
+    protected void onVisible() {
+        super.onVisible();
+        Log.d("xls","TimeEffectFragment  Visible");
+    }
+
+    @Override
+    protected void onInVisible() {
+        super.onInVisible();
+        Log.d("xls","TimeEffectFragment  InVisible");
     }
 }

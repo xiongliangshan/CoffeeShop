@@ -1,63 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/bg_shop"
-    android:baselineAligned="false"
-    android:padding="16dp">
+    android:orientation="vertical"
+    android:padding="20dp">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-    <android.support.v7.widget.CardView
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="2"
-        app:cardBackgroundColor="@color/white_font"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="1dp"
-        >
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_print_paster"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="2"
+            android:lines="2"
+            android:textSize="16sp"
+            android:text="@string/print_paster"
+            android:lineSpacingMultiplier="1.1"
+            android:textColor="@color/white_font"
+            android:gravity="center"
+            android:background="@drawable/bg_black_circle"/>
 
-            <LinearLayout
-                android:id="@+id/ll_print_paster"
-                android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_gravity="center_vertical"
+            android:text="打印机配置:"/>
+
+        <RadioGroup
+            android:id="@+id/rg_printer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb_normal"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp">
+                android:text="200"/>
 
-                <TextView
-                    android:id="@+id/tv_item_paster"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="打印贴纸"
-                    android:textSize="16sp"
-                    android:padding="16dp"/>
+            <RadioButton
+                android:id="@+id/rb_new"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="230"/>
+        </RadioGroup>
 
-            </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background ="@color/bg_line_separator"/>
-        </LinearLayout>
+    </LinearLayout>
 
-    </android.support.v7.widget.CardView>
-
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/fragment_container"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="8"
-        android:layout_marginLeft="16dp"
-        android:orientation="vertical"
-        app:cardBackgroundColor="@color/white_font"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="2dp"/>
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_print_material"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="2"
+            android:lines="2"
+            android:textSize="16sp"
+            android:text="@string/print_material"
+            android:layout_gravity="center_vertical"
+            android:lineSpacingMultiplier="1.1"
+            android:textColor="@color/text_black"
+            android:gravity="center"
+            android:background="@drawable/bg_white_circle"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_material"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp"
+                android:layout_marginLeft="5dp"
+                android:background="@mipmap/info_border"
+                android:layout_gravity="center_vertical"/>
+
+            <android.support.v4.widget.ContentLoadingProgressBar
+                android:id="@+id/progress_bar"
+                style="?android:attr/progressBarStyleInverse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

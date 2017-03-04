@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +52,7 @@ public class ShopFragment extends BaseFragment implements TabLayout.OnTabSelecte
         fragments.add(new ShopManagerFragment());
         mPagerAdapter = new ShopFragmentPagerAdapter(getChildFragmentManager(),getActivity(),fragments);
         viewPager.setAdapter(mPagerAdapter);
-        viewPager.setOffscreenPageLimit(2);
+        viewPager.setOffscreenPageLimit(3);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setOnTabSelectedListener(this);
 
@@ -78,22 +79,5 @@ public class ShopFragment extends BaseFragment implements TabLayout.OnTabSelecte
     public void onTabReselected(TabLayout.Tab tab) {
 
     }
-
-
-    @Override
-    protected void onVisible() {
-        super.onVisible();
-        if(!isResumed()){
-            return;
-        }
-        for(int i=0;i<mPagerAdapter.getCount();i++){
-            if(i==tabIndex){
-                mPagerAdapter.getItem(i).setUserVisibleHint(true);
-            }else{
-                mPagerAdapter.getItem(i).setUserVisibleHint(false);
-            }
-        }
-    }
-
 
 }

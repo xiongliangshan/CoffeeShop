@@ -121,7 +121,7 @@ public class EvaluationFragment extends BaseFragment {
         });
     }
 
-    @Override
+    /*@Override
     public void onResume() {
         super.onResume();
         HttpHelper.getInstance().reqCommentCount(new JsonCallback<XlsResponse>() {
@@ -136,7 +136,7 @@ public class EvaluationFragment extends BaseFragment {
                 handleEvaluationListDataResponse(xlsResponse,call,response);
             }
         });
-    }
+    }*/
 
 
     /**
@@ -214,6 +214,7 @@ public class EvaluationFragment extends BaseFragment {
     @Override
     protected void onVisible() {
         super.onVisible();
+        Log.d("xls","EvaluationFragment  Visible");
         if(!isResumed()){
             return;
         }
@@ -229,5 +230,11 @@ public class EvaluationFragment extends BaseFragment {
                 handleEvaluationListDataResponse(xlsResponse,call,response);
             }
         });
+    }
+
+    @Override
+    protected void onInVisible() {
+        super.onInVisible();
+        Log.d("xls","EvaluationFragment  InVisible");
     }
 }

@@ -358,6 +358,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     @Override
     protected void onVisible() {
         super.onVisible();
+        Log.d("xls","FinishedOrderFragment  Visible");
         if(!isResumed()){
             return;
         }
@@ -376,6 +377,11 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
         });
     }
 
+    @Override
+    protected void onInVisible() {
+        super.onInVisible();
+        Log.d("xls","FinishedOrderFragment  InVisible");
+    }
 
     //处理服务器返回的已完成订单总单量和杯量
     private void handleFinishedTotalAmountResponse(XlsResponse xlsResponse,Call call,Response response){
