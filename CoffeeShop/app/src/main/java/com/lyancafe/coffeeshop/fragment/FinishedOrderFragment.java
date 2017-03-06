@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -27,13 +28,11 @@ import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
-import com.lyancafe.coffeeshop.event.ClickCommentEvent;
 import com.lyancafe.coffeeshop.event.UpdateFinishedOrderDetailEvent;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
-import com.lzy.okgo.OkGo;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -87,6 +86,9 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
      */
     private Unbinder unbinder;
 
+    private Handler mHandler;
+    private FineshedTaskRunnable mRunnable;
+
     public FinishedOrderFragment() {
 
     }
@@ -101,6 +103,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mHandler = new Handler();
     }
 
     @Override
@@ -317,6 +320,14 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mHandler!=null){
+            mHandler=null;
+        }
+    }
+
+    @Override
     public void onRefresh() {
 
     }
@@ -372,25 +383,38 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
         if(!isResumed()){
             return;
         }
-        HttpHelper.getInstance().reqFinishedTotalAmountData(new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleFinishedTotalAmountResponse(xlsResponse,call,response);
-            }
+        mRunnable = new FineshedTaskRunnable();
+        mHandler.postDelayed(mRunnable,1000);
 
-        });
-        HttpHelper.getInstance().reqFinishedListData(0, new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleFinishedResponse(xlsResponse, call, response);
-            }
-        });
+    }
+
+    class FineshedTaskRunnable implements Runnable{
+        @Override
+        public void run() {
+            HttpHelper.getInstance().reqFinishedTotalAmountData(new JsonCallback<XlsResponse>() {
+                @Override
+                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                    handleFinishedTotalAmountResponse(xlsResponse,call,response);
+                }
+
+            });
+            HttpHelper.getInstance().reqFinishedListData(0, new JsonCallback<XlsResponse>() {
+                @Override
+                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                    handleFinishedResponse(xlsResponse, call, response);
+                }
+            });
+        }
     }
 
     @Override
     protected void onInVisible() {
         super.onInVisible();
         Log.d("xls","FinishedOrderFragment  InVisible");
+        if(mHandler!=null){
+            Log.d("xls","removeCallbacks finished");
+            mHandler.removeCallbacks(mRunnable);
+        }
     }
 
     //处理服务器返回的已完成订单总单量和杯量

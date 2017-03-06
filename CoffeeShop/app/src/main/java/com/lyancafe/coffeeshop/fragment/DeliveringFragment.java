@@ -2,6 +2,7 @@ package com.lyancafe.coffeeshop.fragment;
 
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -53,6 +54,8 @@ public class DeliveringFragment extends BaseFragment implements DeliverFragment.
     private DeliveringRvAdapter mAdapter;
     private Unbinder unbinder;
 
+    private Handler mHandler;
+    private DeliveringTaskRunnable mRunnable;
 
     public DeliveringFragment() {
         // Required empty public constructor
@@ -84,6 +87,7 @@ public class DeliveringFragment extends BaseFragment implements DeliverFragment.
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        mHandler = new Handler();
     }
 
     @Override
@@ -125,7 +129,13 @@ public class DeliveringFragment extends BaseFragment implements DeliverFragment.
     }
 
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mHandler!=null){
+            mHandler=null;
+        }
+    }
 
     //处理服务器返回数据---配送中
     private void handleDeliveryingResponse(XlsResponse xlsResponse,Call call,Response response){
@@ -143,17 +153,29 @@ public class DeliveringFragment extends BaseFragment implements DeliverFragment.
         if(!isResumed()){
             return;
         }
-        HttpHelper.getInstance().reqDeliveryingData(new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleDeliveryingResponse(xlsResponse,call,response);
-            }
+        mRunnable = new DeliveringTaskRunnable();
+        mHandler.postDelayed(mRunnable,1000);
 
-        });
     }
 
     @Override
     protected void onInVisible() {
         Log.d("xls","Delivering onInVisible");
+        if(mHandler!=null){
+            mHandler.removeCallbacks(mRunnable);
+        }
+    }
+
+    class DeliveringTaskRunnable implements Runnable{
+        @Override
+        public void run() {
+            HttpHelper.getInstance().reqDeliveryingData(new JsonCallback<XlsResponse>() {
+                @Override
+                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                    handleDeliveryingResponse(xlsResponse,call,response);
+                }
+
+            });
+        }
     }
 }

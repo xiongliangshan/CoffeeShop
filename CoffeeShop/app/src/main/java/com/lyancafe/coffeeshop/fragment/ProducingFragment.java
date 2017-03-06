@@ -3,6 +3,8 @@ package com.lyancafe.coffeeshop.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -53,6 +55,10 @@ public class ProducingFragment extends BaseFragment implements OrdersFragment.Fi
     private Context mContext;
 
     public List<OrderBean> allOrderList = new ArrayList<>();
+
+    private Handler mHandler;
+    private ProducingTaskRunnable mRunnable;
+
     public ProducingFragment() {
 
     }
@@ -61,6 +67,12 @@ public class ProducingFragment extends BaseFragment implements OrdersFragment.Fi
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mHandler = new Handler();
     }
 
     @Override
@@ -93,25 +105,32 @@ public class ProducingFragment extends BaseFragment implements OrdersFragment.Fi
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mHandler!=null){
+            mHandler=null;
+        }
+    }
+
+    @Override
     protected void onVisible() {
         super.onVisible();
         Log.d("xls","producingFragment is Visible");
         if(!isResumed()){
             return;
         }
-        HttpHelper.getInstance().reqProducingData(new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleProudcingResponse(xlsResponse,call,response);
-            }
+        mRunnable = new ProducingTaskRunnable();
+        mHandler.postDelayed(mRunnable,1000);
 
-        });
     }
 
     @Override
     protected void onInVisible() {
         super.onInVisible();
         Log.d("xls","producingFragment is InVisible");
+        if(mHandler!=null){
+            mHandler.removeCallbacks(mRunnable);
+        }
     }
 
     /**
@@ -196,5 +215,19 @@ public class ProducingFragment extends BaseFragment implements OrdersFragment.Fi
     public void filter(String category) {
         Log.d("xls","Producing category = "+category);
         mAdapter.setData(allOrderList,OrdersFragment.category);
+    }
+
+
+    class ProducingTaskRunnable implements Runnable{
+        @Override
+        public void run() {
+            HttpHelper.getInstance().reqProducingData(new JsonCallback<XlsResponse>() {
+                @Override
+                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                    handleProudcingResponse(xlsResponse,call,response);
+                }
+
+            });
+        }
     }
 }

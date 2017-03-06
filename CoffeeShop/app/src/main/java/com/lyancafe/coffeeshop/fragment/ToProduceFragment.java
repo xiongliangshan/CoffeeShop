@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -63,6 +64,8 @@ public class ToProduceFragment extends BaseFragment implements OrdersFragment.Fi
     private ToProduceRvAdapter mAdapter;
     private Context mContext;
     public List<OrderBean> allOrderList = new ArrayList<>();
+    private Handler mHandler;
+    private ToProduceTaskRunnable mRunnable;
     public ToProduceFragment() {
 
     }
@@ -71,6 +74,12 @@ public class ToProduceFragment extends BaseFragment implements OrdersFragment.Fi
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mHandler = new Handler();
     }
 
     @Override
@@ -120,24 +129,32 @@ public class ToProduceFragment extends BaseFragment implements OrdersFragment.Fi
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mHandler!=null){
+            mHandler=null;
+        }
+    }
+
+    @Override
     protected void onVisible() {
         super.onVisible();
         Log.d("xls","ToproduceFragment is Visible");
         if(!isResumed()){
             return;
         }
-        HttpHelper.getInstance().reqToProduceData(LoginHelper.getLimitLevel(mContext), new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleToProudceResponse(xlsResponse,call,response);
-            }
-        });
+        mRunnable = new ToProduceTaskRunnable();
+        mHandler.postDelayed(mRunnable,1000);
+
     }
 
     @Override
     protected void onInVisible() {
         super.onInVisible();
         Log.d("xls","ToproduceFragment is InVisible");
+        if(mHandler!=null){
+            mHandler.removeCallbacks(mRunnable);
+        }
     }
 
     //新订单消息触发事件
@@ -252,5 +269,17 @@ public class ToProduceFragment extends BaseFragment implements OrdersFragment.Fi
 
         }
 
+    }
+
+    class ToProduceTaskRunnable implements Runnable{
+        @Override
+        public void run() {
+            HttpHelper.getInstance().reqToProduceData(LoginHelper.getLimitLevel(mContext), new JsonCallback<XlsResponse>() {
+                @Override
+                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                    handleToProudceResponse(xlsResponse,call,response);
+                }
+            });
+        }
     }
 }

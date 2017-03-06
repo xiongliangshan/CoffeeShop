@@ -1,6 +1,7 @@
 package com.lyancafe.coffeeshop.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,10 +20,6 @@ import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lzy.okgo.OkGo;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -54,6 +51,9 @@ public class EvaluationFragment extends BaseFragment {
 
     private Unbinder unbinder;
 
+    private Handler mHandler;
+    private EvaluationTaskRunnable mRunnable;
+
     public EvaluationFragment() {
 
     }
@@ -75,6 +75,7 @@ public class EvaluationFragment extends BaseFragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        mHandler = new Handler();
     }
 
     @Override
@@ -169,7 +170,13 @@ public class EvaluationFragment extends BaseFragment {
         unbinder.unbind();
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mHandler!=null){
+            mHandler=null;
+        }
+    }
 
     @OnClick({R.id.rb_all, R.id.rb_bad_evaluation, R.id.rb_good_evaluation})
     public void onClick(View view) {
@@ -201,23 +208,35 @@ public class EvaluationFragment extends BaseFragment {
         if(!isResumed()){
             return;
         }
-        HttpHelper.getInstance().reqCommentCount(new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleCommentCountResponse(xlsResponse,call,response);
-            }
-        });
-        HttpHelper.getInstance().reqEvaluationListData(0, mType, new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleEvaluationListDataResponse(xlsResponse,call,response);
-            }
-        });
+        mRunnable = new EvaluationTaskRunnable();
+        mHandler.postDelayed(mRunnable,1000);
+
     }
 
     @Override
     protected void onInVisible() {
         super.onInVisible();
         Log.d("xls","EvaluationFragment  InVisible");
+        if(mHandler!=null){
+            mHandler.removeCallbacks(mRunnable);
+        }
+    }
+
+    class EvaluationTaskRunnable implements Runnable{
+        @Override
+        public void run() {
+            HttpHelper.getInstance().reqCommentCount(new JsonCallback<XlsResponse>() {
+                @Override
+                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                    handleCommentCountResponse(xlsResponse,call,response);
+                }
+            });
+            HttpHelper.getInstance().reqEvaluationListData(0, mType, new JsonCallback<XlsResponse>() {
+                @Override
+                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                    handleEvaluationListDataResponse(xlsResponse,call,response);
+                }
+            });
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.lyancafe.coffeeshop.fragment;
 
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,17 +13,13 @@ import android.widget.RadioGroup;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.TimeEffectListAdapter;
-import com.lyancafe.coffeeshop.bean.EvaluationBean;
 import com.lyancafe.coffeeshop.bean.TimeEffectBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
-import com.lyancafe.coffeeshop.helper.OrderHelper;
-import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lzy.okgo.OkGo;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -67,6 +64,9 @@ public class TimeEffectFragment extends BaseFragment implements PullLoadMoreRecy
 
     private TimeEffectListAdapter mAdapter;
 
+    private Handler mHandler;
+    private TimeEffectTaskRunnable mRunnable;
+
 
     public TimeEffectFragment() {
         // Required empty public constructor
@@ -89,6 +89,7 @@ public class TimeEffectFragment extends BaseFragment implements PullLoadMoreRecy
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        mHandler = new Handler();
     }
 
     @Override
@@ -163,12 +164,37 @@ public class TimeEffectFragment extends BaseFragment implements PullLoadMoreRecy
     }
 
 
+    class TimeEffectTaskRunnable implements Runnable{
+        @Override
+        public void run() {
+            HttpHelper.getInstance().reqTimeEffectTypeCount(new JsonCallback<XlsResponse>() {
+                @Override
+                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                    handleTimeEffectCountResponse(xlsResponse,call,response);
+                }
+            });
+            HttpHelper.getInstance().reqTimeEffectList(0, mType, new JsonCallback<XlsResponse>() {
+                @Override
+                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                    handleTimeEffectListResponse(xlsResponse,call,response);
+                }
+            });
+        }
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mHandler!=null){
+            mHandler=null;
+        }
+    }
 
     @Override
     protected void onVisible() {
@@ -177,18 +203,19 @@ public class TimeEffectFragment extends BaseFragment implements PullLoadMoreRecy
         if(!isResumed()){
             return;
         }
-        HttpHelper.getInstance().reqTimeEffectTypeCount(new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleTimeEffectCountResponse(xlsResponse,call,response);
-            }
-        });
-        HttpHelper.getInstance().reqTimeEffectList(0, mType, new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleTimeEffectListResponse(xlsResponse,call,response);
-            }
-        });
+        mRunnable = new TimeEffectTaskRunnable();
+        mHandler.postDelayed(mRunnable,1000);
+
+    }
+
+    @Override
+    protected void onInVisible() {
+        super.onInVisible();
+        Log.d("xls","TimeEffectFragment  InVisible");
+        if(mHandler!=null){
+            Log.d("xls","removeCallbacks timeEffect");
+            mHandler.removeCallbacks(mRunnable);
+        }
     }
 
     private void handleTimeEffectCountResponse(XlsResponse xlsResponse, Call call, Response response) {
@@ -229,9 +256,5 @@ public class TimeEffectFragment extends BaseFragment implements PullLoadMoreRecy
         }
     }
 
-    @Override
-    protected void onInVisible() {
-        super.onInVisible();
-        Log.d("xls","TimeEffectFragment  InVisible");
-    }
+
 }

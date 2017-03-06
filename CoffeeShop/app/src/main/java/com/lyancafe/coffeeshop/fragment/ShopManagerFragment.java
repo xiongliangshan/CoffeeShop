@@ -2,6 +2,7 @@ package com.lyancafe.coffeeshop.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -58,6 +59,9 @@ public class ShopManagerFragment extends BaseFragment {
     private Context mContext;
     private Unbinder unbinder;
 
+    private Handler mHandler;
+    private ManagerTaskRunnable mRunnable;
+
 
     public ShopManagerFragment() {
     }
@@ -71,8 +75,7 @@ public class ShopManagerFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
+        mHandler = new Handler();
     }
 
 
@@ -186,6 +189,9 @@ public class ShopManagerFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if(mHandler!=null){
+            mHandler=null;
+        }
     }
 
     @Override
@@ -200,12 +206,8 @@ public class ShopManagerFragment extends BaseFragment {
         if(!isResumed()){
             return;
         }
-        HttpHelper.getInstance().reqMaterialList(new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleMaterialListResponse(xlsResponse, call, response);
-            }
-        });
+        mRunnable = new ManagerTaskRunnable();
+        mHandler.postDelayed(mRunnable,1000);
     }
 
 
@@ -213,6 +215,9 @@ public class ShopManagerFragment extends BaseFragment {
     @Override
     protected void onInVisible() {
         Log.d("xls","ShopManagerFragment InVisible");
+        if(mHandler!=null){
+            mHandler.removeCallbacks(mRunnable);
+        }
     }
 
 
@@ -225,4 +230,15 @@ public class ShopManagerFragment extends BaseFragment {
         }
     }
 
+    class ManagerTaskRunnable implements Runnable{
+        @Override
+        public void run() {
+            HttpHelper.getInstance().reqMaterialList(new JsonCallback<XlsResponse>() {
+                @Override
+                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                    handleMaterialListResponse(xlsResponse, call, response);
+                }
+            });
+        }
+    }
 }
