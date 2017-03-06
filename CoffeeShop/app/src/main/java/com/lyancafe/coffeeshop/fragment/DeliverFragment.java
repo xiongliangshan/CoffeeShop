@@ -152,7 +152,7 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
         viewPager.setAdapter(mPagerAdapter);
         viewPager.setOffscreenPageLimit(1);
         tabLayout.setupWithViewPager(viewPager);
-        tabLayout.setOnTabSelectedListener(this);
+        tabLayout.addOnTabSelectedListener(this);
         spinnerCategory.setOnItemSelectedListener(this);
 
     }
@@ -161,6 +161,9 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
     @Override
     public void onResume() {
         super.onResume();
+        if(toFetchFragment!=null){
+            toFetchFragment.onVisible();
+        }
     }
 
     @Override
@@ -263,28 +266,6 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
 
-    }
-
-
-    @Override
-    protected void onVisible() {
-//        Log.d("xls","DeliverFragment is onVisible , resume :"+isResumed()+"| hide:"+isHidden());
-        if(!isResumed()){
-            return;
-        }
-        for(int i=0;i<mPagerAdapter.getCount();i++){
-            if(i==tabIndex){
-                mPagerAdapter.getItem(i).setUserVisibleHint(true);
-            }else{
-                mPagerAdapter.getItem(i).setUserVisibleHint(false);
-            }
-        }
-
-    }
-
-    @Override
-    protected void onInVisible() {
-//        Log.d("xls","DeliverFragment is onInVisible");
     }
 
 

@@ -276,8 +276,9 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
         HttpHelper.getInstance().reqFinishedTotalAmountData(new JsonCallback<XlsResponse>() {
             @Override
             public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
@@ -291,6 +292,12 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
                 handleFinishedResponse(xlsResponse, call, response);
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 
     @Subscribe

@@ -110,6 +110,7 @@ public class HttpHelper {
      * @param callback
      */
     public void reqToProduceData(int limitLevel,JsonCallback<XlsResponse> callback){
+        Log.d("xls","请求待生产列表");
         HashMap<String, Object> params = new HashMap<>();
         params.put("limitLevel", limitLevel);
         JSONObject jsonObject = new JSONObject(params);
@@ -132,6 +133,7 @@ public class HttpHelper {
      * @param callback
      */
     public void reqProducingData(JsonCallback<XlsResponse> callback){
+        Log.d("xls","请求生产中列表");
         HashMap<String, Object> params = new HashMap<>();
        /* params.put("orderBy", orderBy);
         params.put("fillterInstant", fillterInstant);*/
@@ -155,6 +157,7 @@ public class HttpHelper {
      * @param callback
      */
     public void reqProducedData(JsonCallback<XlsResponse> callback){
+        Log.d("xls","请求待取货列表");
         HashMap<String, Object> params = new HashMap<>();
        /* params.put("orderBy", orderBy);
         params.put("fillterInstant", fillterInstant);*/
@@ -179,6 +182,7 @@ public class HttpHelper {
      * @param callback
      */
     public void reqDeliveryingData(JsonCallback<XlsResponse> callback){
+        Log.d("xls","请求配送中列表");
         HashMap<String, Object> params = new HashMap<>();
         JSONObject jsonObject = new JSONObject(params);
 

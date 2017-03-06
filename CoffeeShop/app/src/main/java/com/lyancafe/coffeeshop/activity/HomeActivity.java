@@ -306,15 +306,7 @@ public class HomeActivity extends BaseActivity implements DeliverFragment.OnFrag
             ft.hide(orderFrag).hide(deliverFragment).show(shopFragment);
         }
         ft.commitAllowingStateLoss();
-        for(int i = 0;i<fragmentsList.size();i++){
-            if(i==selectedIndex){
-                fragmentsList.get(i).setUserVisibleHint(true);
-            }else{
-                fragmentsList.get(i).setUserVisibleHint(false);
-            }
-        }
-
-
+        fragment.onResume();
     }
 
     /**

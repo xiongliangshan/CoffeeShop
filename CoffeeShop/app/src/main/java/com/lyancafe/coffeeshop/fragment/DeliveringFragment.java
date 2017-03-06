@@ -105,16 +105,6 @@ public class DeliveringFragment extends BaseFragment implements DeliverFragment.
     @Override
     public void onResume() {
         super.onResume();
-        if(DeliverFragment.tabIndex==1){
-            HttpHelper.getInstance().reqDeliveryingData(new JsonCallback<XlsResponse>() {
-                @Override
-                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                    handleDeliveryingResponse(xlsResponse,call,response);
-                }
-
-            });
-        }
-        Log.d("xls","DeliveringFragment-onResume");
     }
 
     @Override
@@ -144,8 +134,6 @@ public class DeliveringFragment extends BaseFragment implements DeliverFragment.
         allOrderList.clear();
         allOrderList.addAll(orderBeans);
         mAdapter.setData(orderBeans,DeliverFragment.category);
-        Log.d("xls","请求--配送中");
-
     }
 
 

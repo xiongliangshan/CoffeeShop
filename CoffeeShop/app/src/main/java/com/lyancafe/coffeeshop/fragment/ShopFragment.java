@@ -32,6 +32,11 @@ public class ShopFragment extends BaseFragment implements TabLayout.OnTabSelecte
 
     private ShopFragmentPagerAdapter mPagerAdapter;
 
+    private FinishedOrderFragment finishedOrderFragment;
+    private TimeEffectFragment timeEffectFragment;
+    private EvaluationFragment evaluationFragment;
+    private ShopManagerFragment shopManagerFragment;
+
     public ShopFragment() {
     }
 
@@ -46,16 +51,28 @@ public class ShopFragment extends BaseFragment implements TabLayout.OnTabSelecte
 
     private void initViews() {
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(new FinishedOrderFragment());
-        fragments.add(new TimeEffectFragment());
-        fragments.add(new EvaluationFragment());
-        fragments.add(new ShopManagerFragment());
+        finishedOrderFragment = new FinishedOrderFragment();
+        timeEffectFragment = new TimeEffectFragment();
+        evaluationFragment = new EvaluationFragment();
+        shopManagerFragment = new ShopManagerFragment();
+        fragments.add(finishedOrderFragment);
+        fragments.add(timeEffectFragment);
+        fragments.add(evaluationFragment);
+        fragments.add(shopManagerFragment);
         mPagerAdapter = new ShopFragmentPagerAdapter(getChildFragmentManager(),getActivity(),fragments);
         viewPager.setAdapter(mPagerAdapter);
         viewPager.setOffscreenPageLimit(3);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setOnTabSelectedListener(this);
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(finishedOrderFragment!=null){
+            finishedOrderFragment.onVisible();
+        }
     }
 
     @Override

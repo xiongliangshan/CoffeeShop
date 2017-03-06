@@ -2,6 +2,7 @@ package com.lyancafe.coffeeshop.fragment;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -88,32 +89,6 @@ public class ToFetchFragment extends BaseFragment implements DeliverFragment.Fil
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d("xls","ToFetchFragment-onResume");
-        if(DeliverFragment.tabIndex==0){
-            HttpHelper.getInstance().reqProducedData(new JsonCallback<XlsResponse>() {
-                @Override
-                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                    handleProudcedResponse(xlsResponse,call,response);
-                }
-            });
-        }
-
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d("xls","ToFetchFragment-onPause");
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.d("xls","ToFetchFragment-onDetach");
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -131,6 +106,35 @@ public class ToFetchFragment extends BaseFragment implements DeliverFragment.Fil
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),4,GridLayoutManager.VERTICAL,false));
         mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(4, getActivity()), false));
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        HttpHelper.getInstance().reqProducedData(new JsonCallback<XlsResponse>() {
+            @Override
+            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                handleProudcedResponse(xlsResponse,call,response);
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("xls","ToFetchFragment-onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("xls","ToFetchFragment-onPause");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d("xls","ToFetchFragment-onDetach");
     }
 
     @Override
@@ -173,7 +177,6 @@ public class ToFetchFragment extends BaseFragment implements DeliverFragment.Fil
         allOrderList.clear();
         allOrderList.addAll(orderBeans);
         mAdapter.setData(orderBeans,DeliverFragment.category);
-        Log.d("xls","请求--待取货");
     }
 
 
@@ -182,7 +185,7 @@ public class ToFetchFragment extends BaseFragment implements DeliverFragment.Fil
 
     @Override
     protected void onVisible() {
-        Log.d("xls","ToFetchFragment onVisible");
+        Log.d("xls","ToFetchFragment Visible");
         if(!isResumed()){
             return;
         }
@@ -196,7 +199,7 @@ public class ToFetchFragment extends BaseFragment implements DeliverFragment.Fil
 
     @Override
     protected void onInVisible() {
-        Log.d("xls","ToFetchFragment onInVisible");
+        Log.d("xls","ToFetchFragment InVisible");
     }
 
 }

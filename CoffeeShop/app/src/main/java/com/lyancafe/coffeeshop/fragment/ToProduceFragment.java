@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -90,16 +91,19 @@ public class ToProduceFragment extends BaseFragment implements OrdersFragment.Fi
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        HttpHelper.getInstance().reqToProduceData(LoginHelper.getLimitLevel(mContext), new JsonCallback<XlsResponse>() {
+            @Override
+            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                handleToProudceResponse(xlsResponse,call,response);
+            }
+        });
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        if(OrdersFragment.tabIndex==0){
-            HttpHelper.getInstance().reqToProduceData(LoginHelper.getLimitLevel(mContext), new JsonCallback<XlsResponse>() {
-                @Override
-                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                    handleToProudceResponse(xlsResponse,call,response);
-                }
-            });
-        }
     }
 
     @Override
@@ -118,6 +122,7 @@ public class ToProduceFragment extends BaseFragment implements OrdersFragment.Fi
     @Override
     protected void onVisible() {
         super.onVisible();
+        Log.d("xls","ToproduceFragment is Visible");
         if(!isResumed()){
             return;
         }
@@ -129,6 +134,11 @@ public class ToProduceFragment extends BaseFragment implements OrdersFragment.Fi
         });
     }
 
+    @Override
+    protected void onInVisible() {
+        super.onInVisible();
+        Log.d("xls","ToproduceFragment is InVisible");
+    }
 
     //新订单消息触发事件
     @Subscribe

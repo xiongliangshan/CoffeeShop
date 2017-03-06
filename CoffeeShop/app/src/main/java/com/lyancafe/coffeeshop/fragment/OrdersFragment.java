@@ -144,9 +144,9 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
         fragments.add(producingFragment);
         mPagerAdapter = new ProduceFragmentPagerAdapter(getChildFragmentManager(), getActivity(), fragments);
         viewPager.setAdapter(mPagerAdapter);
-        viewPager.setOffscreenPageLimit(2);
+        viewPager.setOffscreenPageLimit(1);
         tabLayout.setupWithViewPager(viewPager);
-        tabLayout.setOnTabSelectedListener(this);
+        tabLayout.addOnTabSelectedListener(this);
 
         spinnerCategory.setOnItemSelectedListener(this);
 
@@ -492,7 +492,9 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume:");
-
+        if(toProduceFragment!=null){
+            toProduceFragment.onVisible();
+        }
     }
 
     @Override
@@ -602,26 +604,6 @@ public class OrdersFragment extends BaseFragment implements TabLayout.OnTabSelec
 
     }
 
-
-    @Override
-    protected void onVisible() {
-        //      Log.d("xls","OrdersFragment is onVisible");
-        if (!isResumed()) {
-            return;
-        }
-        for (int i = 0; i < mPagerAdapter.getCount(); i++) {
-            if (i == tabIndex) {
-                mPagerAdapter.getItem(i).setUserVisibleHint(true);
-            } else {
-                mPagerAdapter.getItem(i).setUserVisibleHint(false);
-            }
-        }
-    }
-
-    @Override
-    protected void onInVisible() {
-        //       Log.d("xls","OrdersFragment is onInVisible");
-    }
 
 
     public interface FilterOrdersListenter {

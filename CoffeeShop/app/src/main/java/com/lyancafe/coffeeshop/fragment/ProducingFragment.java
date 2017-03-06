@@ -83,15 +83,6 @@ public class ProducingFragment extends BaseFragment implements OrdersFragment.Fi
     @Override
     public void onResume() {
         super.onResume();
-        if(OrdersFragment.tabIndex==1){
-            HttpHelper.getInstance().reqProducingData(new JsonCallback<XlsResponse>() {
-                @Override
-                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                    handleProudcingResponse(xlsResponse,call,response);
-                }
-
-            });
-        }
     }
 
     @Override
@@ -104,6 +95,7 @@ public class ProducingFragment extends BaseFragment implements OrdersFragment.Fi
     @Override
     protected void onVisible() {
         super.onVisible();
+        Log.d("xls","producingFragment is Visible");
         if(!isResumed()){
             return;
         }
@@ -116,6 +108,11 @@ public class ProducingFragment extends BaseFragment implements OrdersFragment.Fi
         });
     }
 
+    @Override
+    protected void onInVisible() {
+        super.onInVisible();
+        Log.d("xls","producingFragment is InVisible");
+    }
 
     /**
      * 点击生产完成的按钮事件
