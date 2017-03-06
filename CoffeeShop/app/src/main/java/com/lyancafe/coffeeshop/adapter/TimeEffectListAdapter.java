@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.TimeEffectBean;
+import com.lyancafe.coffeeshop.helper.OrderHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ import butterknife.ButterKnife;
 public class TimeEffectListAdapter extends RecyclerView.Adapter<TimeEffectListAdapter.ViewHolder> {
 
     private Context mContext;
-    private List<TimeEffectBean> list = new ArrayList<>();
+    public List<TimeEffectBean> list = new ArrayList<>();
 
     public TimeEffectListAdapter(Context mContext) {
         this.mContext = mContext;
@@ -40,14 +41,28 @@ public class TimeEffectListAdapter extends RecyclerView.Adapter<TimeEffectListAd
         TimeEffectBean timeEffectBean = list.get(position);
         holder.tvShopNo.setText(String.valueOf(timeEffectBean.getShopOrderNo()));
         holder.tvOrderId.setText(String.valueOf(timeEffectBean.getOrderId()));
-        holder.tvOrderType.setText(String.valueOf(timeEffectBean.getInstant()));
-        holder.tvOrderTime.setText(String.valueOf(timeEffectBean.getOrderTime()));
-        holder.tvExpectedReachTime.setText(String.valueOf(timeEffectBean.getExceptedTime()));
-        holder.tvProducedTime.setText(String.valueOf(timeEffectBean.getProducedTime()));
-        holder.tvGrabTime.setText(String.valueOf(timeEffectBean.getGrabTime()));
-        holder.tvFetchTime.setText(String.valueOf(timeEffectBean.getFetchTime()));
-        holder.tvRealReachTime.setText(String.valueOf(timeEffectBean.getDeliveredTime()));
+        holder.tvOrderType.setText(timeEffectBean.getInstant()==1?"及时":"预约");
+        holder.tvOrderTime.setText(OrderHelper.getDateToString(timeEffectBean.getOrderTime()));
+        holder.tvExpectedReachTime.setText(OrderHelper.getDateToString(timeEffectBean.getExceptedTime()));
+        holder.tvProducedTime.setText(OrderHelper.getDateToString(timeEffectBean.getProducedTime()));
+        holder.tvGrabTime.setText(OrderHelper.getDateToString(timeEffectBean.getGrabTime()));
+        holder.tvFetchTime.setText(OrderHelper.getDateToString(timeEffectBean.getFetchTime()));
+        holder.tvRealReachTime.setText(OrderHelper.getDateToString(timeEffectBean.getDeliveredTime()));
         holder.tvDeliverName.setText(String.valueOf(timeEffectBean.getDeliverName()));
+        switch (timeEffectBean.getLevleType()){
+            case 1:
+                holder.tvEffctDescription.setText("良好");
+                holder.tvEffctDescription.setBackground(null);
+                break;
+            case 2:
+                holder.tvEffctDescription.setText("合格");
+                holder.tvEffctDescription.setBackground(null);
+                break;
+            case 3:
+                holder.tvEffctDescription.setText("不及格");
+                holder.tvEffctDescription.setBackgroundColor(mContext.getResources().getColor(R.color.font_red));
+                break;
+        }
     }
 
     @Override
@@ -57,6 +72,11 @@ public class TimeEffectListAdapter extends RecyclerView.Adapter<TimeEffectListAd
 
     public void setData(List<TimeEffectBean> list){
         this.list = list;
+        notifyDataSetChanged();
+    }
+
+    public void addData(List<TimeEffectBean> list){
+        this.list.addAll(list);
         notifyDataSetChanged();
     }
 

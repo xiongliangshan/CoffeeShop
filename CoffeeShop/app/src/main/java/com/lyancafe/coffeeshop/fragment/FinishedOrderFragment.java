@@ -33,6 +33,7 @@ import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
+import com.lzy.okgo.OkGo;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -350,7 +351,9 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
             mAdapter.addData(orderBeans);
             Log.d("xls","addData orderBeans.size = "+orderBeans.size());
         }else{
-            mAdapter.setData(orderBeans);
+            if(isVisible){
+                mAdapter.setData(orderBeans);
+            }
             Log.d("xls","orderBeans.size = "+orderBeans.size());
         }
 

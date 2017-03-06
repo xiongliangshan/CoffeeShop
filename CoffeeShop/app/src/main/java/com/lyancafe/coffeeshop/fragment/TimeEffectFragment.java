@@ -12,9 +12,14 @@ import android.widget.RadioGroup;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.TimeEffectListAdapter;
+import com.lyancafe.coffeeshop.bean.EvaluationBean;
 import com.lyancafe.coffeeshop.bean.TimeEffectBean;
+import com.lyancafe.coffeeshop.bean.XlsResponse;
+import com.lyancafe.coffeeshop.callback.JsonCallback;
+import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
+import com.lzy.okgo.OkGo;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
 import java.util.ArrayList;
@@ -24,6 +29,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import okhttp3.Call;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,6 +55,9 @@ public class TimeEffectFragment extends BaseFragment implements PullLoadMoreRecy
     RadioGroup rgEffctType;
     @BindView(R.id.rv_effectListView)
     PullLoadMoreRecyclerView rvEffectListView;
+
+    private int mLastOrderId = 0;
+    private int mType = 0;
 
     private Unbinder unbinder;
 
@@ -99,7 +110,6 @@ public class TimeEffectFragment extends BaseFragment implements PullLoadMoreRecy
         rvEffectListView.getRecyclerView().setHasFixedSize(true);
         rvEffectListView.setOnPullLoadMoreListener(this);
 
-        mAdapter.setData(testData());
     }
 
     @Override
@@ -109,41 +119,47 @@ public class TimeEffectFragment extends BaseFragment implements PullLoadMoreRecy
 
     @Override
     public void onLoadMore() {
-        rvEffectListView.setPullLoadMoreCompleted();
+        HttpHelper.getInstance().reqTimeEffectList(mLastOrderId, mType, new JsonCallback<XlsResponse>() {
+            @Override
+            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                rvEffectListView.setPullLoadMoreCompleted();
+                handleTimeEffectListResponse(xlsResponse,call,response);
+            }
+
+            @Override
+            public void onError(Call call, Response response, Exception e) {
+                super.onError(call, response, e);
+                rvEffectListView.setPullLoadMoreCompleted();
+            }
+        });
+
     }
 
-    public List<TimeEffectBean> testData(){
-        List<TimeEffectBean> list = new ArrayList<>();
-        for(int i=0;i<20;i++){
-            TimeEffectBean t = new TimeEffectBean();
-            t.setShopOrderNo(1);
-            t.setOrderId(665348);
-            t.setInstant(0);
-            t.setOrderTime(164515156L);
-            t.setExceptedTime(4564454L);
-            t.setProducedTime(452345645L);
-            t.setGrabTime(84968556L);
-            t.setFetchTime(225665654L);
-            t.setDeliveredTime(565444454L);
-            t.setDeliverName("熊良山");
-            list.add(t);
-        }
-
-        return list;
-    }
 
     @OnClick({R.id.rb_all, R.id.rb_bad, R.id.rb_normal, R.id.rb_great})
     public void onClick(View view) {
+        rgEffctType.check(view.getId());
+        OkGo.getInstance().cancelTag("timeEffect");
         switch (view.getId()) {
             case R.id.rb_all:
+                mType = 0;
                 break;
             case R.id.rb_bad:
+                mType = 3;
                 break;
             case R.id.rb_normal:
+                mType = 2;
                 break;
             case R.id.rb_great:
+                mType = 1;
                 break;
         }
+        HttpHelper.getInstance().reqTimeEffectList(0, mType, new JsonCallback<XlsResponse>() {
+            @Override
+            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                handleTimeEffectListResponse(xlsResponse,call,response);
+            }
+        });
     }
 
 
@@ -158,6 +174,59 @@ public class TimeEffectFragment extends BaseFragment implements PullLoadMoreRecy
     protected void onVisible() {
         super.onVisible();
         Log.d("xls","TimeEffectFragment  Visible");
+        if(!isResumed()){
+            return;
+        }
+        HttpHelper.getInstance().reqTimeEffectTypeCount(new JsonCallback<XlsResponse>() {
+            @Override
+            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                handleTimeEffectCountResponse(xlsResponse,call,response);
+            }
+        });
+        HttpHelper.getInstance().reqTimeEffectList(0, mType, new JsonCallback<XlsResponse>() {
+            @Override
+            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                handleTimeEffectListResponse(xlsResponse,call,response);
+            }
+        });
+    }
+
+    private void handleTimeEffectCountResponse(XlsResponse xlsResponse, Call call, Response response) {
+        if(xlsResponse.status==0){
+            int totalCount = xlsResponse.data.getIntValue("totalCount");
+            int goodCount =xlsResponse.data.getIntValue("goodCount");
+            int passedCount = xlsResponse.data.getIntValue("passedCount");
+            int fallingCount = xlsResponse.data.getIntValue("fallingCount");
+            if(rbAll!=null && totalCount>0){
+                rbAll.setText(getContext().getResources().getString(R.string.count_all,totalCount));
+            }
+            if(rbBad!=null && fallingCount>0){
+                rbBad.setText(getContext().getResources().getString(R.string.count_not_passed,fallingCount));
+            }
+            if(rbNormal!=null && passedCount>0){
+                rbNormal.setText(getContext().getResources().getString(R.string.count_passed,passedCount));
+            }
+            if(rbGreat!=null && goodCount>0){
+                rbGreat.setText(getContext().getResources().getString(R.string.count_good,goodCount));
+            }
+        }
+    }
+
+    private void handleTimeEffectListResponse(XlsResponse xlsResponse, Call call, Response response) {
+        Request request = call.request();
+        String isLoadMore = request.header("isLoadMore");
+        List<TimeEffectBean> timeEffectBeanList = TimeEffectBean.parseJsonOrders(getContext(),xlsResponse);
+        Log.d("xls","list.size = "+timeEffectBeanList.size());
+        if("yes".equalsIgnoreCase(isLoadMore)){
+            mAdapter.addData(timeEffectBeanList);
+        }else{
+            mAdapter.setData(timeEffectBeanList);
+        }
+        if(mAdapter.list.size()>0){
+            mLastOrderId = mAdapter.list.get(mAdapter.list.size()-1).getOrderId();
+        }else {
+            mLastOrderId = 0;
+        }
     }
 
     @Override

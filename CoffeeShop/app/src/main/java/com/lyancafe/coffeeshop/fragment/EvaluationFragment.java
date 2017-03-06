@@ -121,23 +121,6 @@ public class EvaluationFragment extends BaseFragment {
         });
     }
 
-    /*@Override
-    public void onResume() {
-        super.onResume();
-        HttpHelper.getInstance().reqCommentCount(new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleCommentCountResponse(xlsResponse,call,response);
-            }
-        });
-        HttpHelper.getInstance().reqEvaluationListData(mLastOrderId, mType, new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleEvaluationListDataResponse(xlsResponse,call,response);
-            }
-        });
-    }*/
-
 
     /**
      * 处理评论数量接口返回的数据

@@ -232,7 +232,10 @@ public class ToProduceFragment extends BaseFragment implements OrdersFragment.Fi
             EventBus.getDefault().post(new UpdateProduceFragmentTabOrderCount(0, orderBeans.size()));
             allOrderList.clear();
             allOrderList.addAll(orderBeans);
-            mAdapter.setData(orderBeans,OrdersFragment.category);
+            if(isVisible){
+                mAdapter.setData(orderBeans,OrdersFragment.category);
+            }
+
         }else if(xlsResponse.status==103){
             //token 无效
             ToastUtil.showToast(mContext, xlsResponse.message);

@@ -216,7 +216,7 @@ public class HttpHelper {
             url = Urls.BASE_URL + shopId + "/orders/today/finished?token="+token;
         }
         OkGo.post(url)
-                .tag(this)
+                .tag("finished")
                 .headers("isLoadMore", orderId == 0 ? "no" : "yes")
                 .upJson(jsonObject.toString())
                 .execute(callback);
@@ -231,7 +231,7 @@ public class HttpHelper {
         Log.d("xls","请求总杯量和总单量");
         String url=Urls.BASE_URL+shopId + "/orders/today/finishedTotal?token="+token;
         OkGo.get(url)
-                .tag(this)
+                .tag("finished")
                 .execute(callback);
     }
 
@@ -369,26 +369,34 @@ public class HttpHelper {
 
 
     /**
-     * 顺风单组批量开始生产
-     * @param groupId
+     * 请求时效列表
+     * @param lastOrderId
+     * @param levelType
      * @param callback
      */
-    public void reqStartBatchProduce(int groupId,JsonCallback<XlsResponse> callback){
-        String url = Urls.BASE_URL+shopId+"/order/"+groupId+"/beginproducebatch?token="+token;
+    public void reqTimeEffectList(int lastOrderId,int levelType,JsonCallback<XlsResponse> callback){
+        Log.d("xls","请求时效列表");
+        HashMap<String,Object> params = new HashMap<>();
+        params.put("orderId",lastOrderId);
+        params.put("levelType",levelType);
+        JSONObject jsonObject = new JSONObject(params);
+        String url=Urls.BASE_URL+shopId + "/orders/commissionList?token="+token;
         OkGo.post(url)
-                .tag(this)
+                .tag("timeEffect")
+                .headers("isLoadMore", lastOrderId == 0 ? "no" : "yes")
+                .upJson(jsonObject.toString())
                 .execute(callback);
     }
 
     /**
-     * 顺风单批量生产完成
-     * @param groupId
+     * 请求各类时效订单的数量
      * @param callback
      */
-    public void reqFinishBatchProduce(int groupId,JsonCallback<XlsResponse> callback){
-        String url = Urls.BASE_URL+shopId+"/order/"+groupId+"/producebatch?token="+token;
-        OkGo.post(url)
-                .tag(this)
+    public void reqTimeEffectTypeCount(JsonCallback<XlsResponse> callback){
+        Log.d("xls","请求时效数量");
+        String url = Urls.BASE_URL+shopId+"/orders/commissionListCount?token="+token;
+        OkGo.get(url)
+                .tag("timeEffect")
                 .execute(callback);
     }
 

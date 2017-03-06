@@ -92,8 +92,9 @@
     <string name="change_date">变更订单日期</string>
     <string name="change_time">变更订单时间</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="count_all">全部(<xliff:g id="count">%d</xliff:g>)</string>
+    <string name="count_good">良好(<xliff:g id="count">%d</xliff:g>)</string>
+    <string name="count_passed">合格(<xliff:g id="count">%d</xliff:g>)</string>
+    <string name="count_not_passed">不及格(<xliff:g id="count">%d</xliff:g>)</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
 </resources>

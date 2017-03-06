@@ -1,5 +1,15 @@
 package com.lyancafe.coffeeshop.bean;
 
+import android.content.Context;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONException;
+import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Administrator on 2017/3/3.
  */
@@ -11,6 +21,9 @@ public class TimeEffectBean {
 
     //订单号
     private int orderId;
+
+    //0:全部,  1：良好，2：及格，3：不及格
+    private int levleType;
 
     //订单类型 0:预约单 1:及时单
     private int instant;
@@ -39,6 +52,7 @@ public class TimeEffectBean {
     //小哥姓名
     private String deliverName;
 
+
     public int getShopOrderNo() {
         return shopOrderNo;
     }
@@ -53,6 +67,14 @@ public class TimeEffectBean {
 
     public void setOrderId(int orderId) {
         this.orderId = orderId;
+    }
+
+    public int getLevleType() {
+        return levleType;
+    }
+
+    public void setLevleType(int levleType) {
+        this.levleType = levleType;
     }
 
     public int getInstant() {
@@ -86,7 +108,6 @@ public class TimeEffectBean {
     public void setExceptedTime(long exceptedTime) {
         this.exceptedTime = exceptedTime;
     }
-
 
     public long getProducedTime() {
         return producedTime;
@@ -128,12 +149,12 @@ public class TimeEffectBean {
         this.deliverName = deliverName;
     }
 
-
     @Override
     public String toString() {
         return "TimeEffectBean{" +
                 "shopOrderNo=" + shopOrderNo +
                 ", orderId=" + orderId +
+                ", levleType=" + levleType +
                 ", instant=" + instant +
                 ", deliverTeam=" + deliverTeam +
                 ", orderTime=" + orderTime +
@@ -142,7 +163,25 @@ public class TimeEffectBean {
                 ", grabTime=" + grabTime +
                 ", fetchTime=" + fetchTime +
                 ", deliveredTime=" + deliveredTime +
-                ", deliverName=" + deliverName +
+                ", deliverName='" + deliverName + '\'' +
                 '}';
+    }
+
+
+    //解析数据
+    public  static List<TimeEffectBean> parseJsonOrders(Context context, XlsResponse resp){
+        List<TimeEffectBean> timeEffectBeanList = new ArrayList<>();
+        if(resp==null || resp.data==null){
+            return timeEffectBeanList;
+        }
+        try{
+            com.alibaba.fastjson.JSONArray ordersArray= resp.data.getJSONArray("orders");
+            if(ordersArray!=null){
+                timeEffectBeanList = JSON.parseArray(ordersArray.toString(), TimeEffectBean.class);
+            }
+        }catch (JSONException e){
+            ToastUtil.showToast(context, R.string.parse_json_fail);
+        }
+        return timeEffectBeanList;
     }
 }
