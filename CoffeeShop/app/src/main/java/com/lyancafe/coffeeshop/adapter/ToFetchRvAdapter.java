@@ -52,7 +52,7 @@ public class ToFetchRvAdapter extends RecyclerView.Adapter<ToFetchRvAdapter.View
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_list_item, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.deliver_order_list_item, parent, false);
         return new ViewHolder(v);
     }
 
@@ -132,55 +132,16 @@ public class ToFetchRvAdapter extends RecyclerView.Adapter<ToFetchRvAdapter.View
         }
 
 
-        OrderHelper.showEffect(order, holder.produceBtn, holder.effectTimeTxt);
-
-        if(OrderHelper.isPrinted(context, order.getOrderSn())){
-            holder.printBtn.setText(R.string.print_again);
-            holder.printBtn.setTextColor(context.getResources().getColor(R.color.text_red));
+        OrderHelper.showEffect(order, null, holder.effectTimeTxt);
+        if(order.getDeliveryTeam()==DeliveryTeam.MEITUAN){
+            holder.bottomText.setText("美团配送");
+        }else if(order.getDeliveryTeam()==DeliveryTeam.HAIKUI){
+            holder.bottomText.setText("海葵配送");
         }else{
-            holder.printBtn.setText(R.string.print);
-            holder.printBtn.setTextColor(context.getResources().getColor(R.color.text_black));
+            holder.bottomText.setText(OrderHelper.getTimeToService(order));
         }
         fillItemListData(holder.itemContainerll, order.getItems());
         holder.cupCountText.setText(context.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
-        if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
-            holder.twobtnContainerLayout.setVisibility(View.GONE);
-            holder.onebtnContainerlayout.setVisibility(View.VISIBLE);
-            holder.produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //点击开始生产（打印）按钮
-                    EventBus.getDefault().post(new StartProduceEvent(order));
-                }
-            });
-        }else if(order.getProduceStatus() == OrderStatus.PRODUCING){
-            holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
-            holder.onebtnContainerlayout.setVisibility(View.GONE);
-            holder.produceBtn.setVisibility(View.VISIBLE);
-            holder.produceBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //生产完成
-                    EventBus.getDefault().post(new FinishProduceEvent(order));
-                }
-            });
-            holder.printBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    EventBus.getDefault().post(new PrintOrderEvent(order));
-                }
-            });
-        }else{
-            holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
-            holder.onebtnContainerlayout.setVisibility(View.GONE);
-            holder.produceBtn.setVisibility(View.GONE);
-            holder.printBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    EventBus.getDefault().post(new PrintOrderEvent(order));
-                }
-            });
-        }
 
     }
 
@@ -260,11 +221,7 @@ public class ToFetchRvAdapter extends RecyclerView.Adapter<ToFetchRvAdapter.View
         @BindView(R.id.item_remark_flag) ImageView remarkFlagIV;
         @BindView(R.id.item_container) LinearLayout itemContainerll;
         @BindView(R.id.tv_cup_count) TextView cupCountText;
-        @BindView(R.id.ll_twobtn_container) LinearLayout twobtnContainerLayout;
-        @BindView(R.id.ll_onebtn_container) LinearLayout onebtnContainerlayout;
-        @BindView(R.id.item_produce_and_print) TextView produceAndPrintBtn;
-        @BindView(R.id.item_produce) TextView produceBtn;
-        @BindView(R.id.item_print) TextView printBtn;
+        @BindView(R.id.tv_item_bottom) TextView bottomText;
 
 
         public ViewHolder(View itemView) {

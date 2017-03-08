@@ -180,13 +180,19 @@ public class OrderHelper {
         Log.d(TAG, "mms = " + mms);
         if(mms<=0){
             effectTimeTxt.setTextColor(Color.parseColor("#e2435a"));
-            produceBtn.setBackgroundResource(R.drawable.bg_produce_btn_red);
+            if(produceBtn!=null){
+                produceBtn.setBackgroundResource(R.drawable.bg_produce_btn_red);
+            }
             effectTimeTxt.setText("+"+OrderHelper.getDateToMinutes(Math.abs(mms)));
         }else{
             if(order.getInstant()==0){
-                produceBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
+                if(produceBtn!=null){
+                    produceBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
+                }
             }else{
-                produceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
+                if(produceBtn!=null){
+                    produceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
+                }
             }
             effectTimeTxt.setTextColor(Color.parseColor("#000000"));
             effectTimeTxt.setText(OrderHelper.getDateToMinutes(mms));

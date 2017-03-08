@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_order"
+    android:descendantFocusability="blocksDescendants">
+
+    <LinearLayout
+        android:id="@+id/ll_first_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/item_order_id"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:text="003约"
+            />
+
+        <TextView
+            android:id="@+id/item_contant_produce_effect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="生产时效"
+            android:textSize="10sp"
+            android:textColor="@color/font_gray"
+            android:layout_marginRight="4dp"
+            />
+        <TextView
+            android:id="@+id/item_produce_effect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="08:36"
+            />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp"
+        >
+        <ImageView
+            android:id="@+id/iv_new_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/flag_new_user"
+            />
+
+        <ImageView
+            android:id="@+id/iv_sao_flag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/iv_new_user"
+            android:layout_marginLeft="4dp"
+            android:src="@mipmap/flag_sao"/>
+
+        <ImageView
+            android:id="@+id/iv_label_flag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/iv_sao_flag"
+            android:src="@mipmap/flag_ding"
+            android:layout_marginLeft="4dp"
+            />
+
+        <ImageView
+            android:id="@+id/item_remark_flag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:src="@mipmap/flag_bei"
+            android:layout_toRightOf="@id/iv_label_flag"
+            />
+
+        <ImageView
+            android:id="@+id/item_vip_flag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/item_remark_flag"
+            android:src="@mipmap/flag_vip"
+            android:layout_marginLeft="4dp"/>
+
+        <ImageView
+            android:id="@+id/iv_gift"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/flag_li"
+            android:layout_toRightOf="@id/item_vip_flag"
+            android:layout_marginLeft="4dp"
+            />
+
+        <ImageView
+            android:id="@+id/item_grab_flag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/iv_gift"
+            android:src="@mipmap/flag_qiang"
+            android:layout_marginLeft="4dp"/>
+
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/order_item_content_height"
+        android:layout_marginTop="8dp">
+        <LinearLayout
+            android:id="@+id/item_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@mipmap/bg_normal_dot"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:padding="2dp"
+            />
+        <TextView
+            android:id="@+id/tv_cup_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_alignParentBottom="true"
+            android:text=""/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_item_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:padding="4dp"
+        android:gravity="center"
+        tools:text="美团配送"/>
+
+</LinearLayout>
