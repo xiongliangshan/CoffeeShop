@@ -384,7 +384,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
             return;
         }
         mRunnable = new FineshedTaskRunnable();
-        mHandler.postDelayed(mRunnable,1000);
+        mHandler.postDelayed(mRunnable,OrderHelper.DELAY_LOAD_TIME);
 
     }
 

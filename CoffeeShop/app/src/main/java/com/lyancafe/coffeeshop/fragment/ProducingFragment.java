@@ -80,11 +80,11 @@ public class ProducingFragment extends BaseFragment implements OrdersFragment.Fi
         EventBus.getDefault().register(this);
         View contentView = inflater.inflate(R.layout.fragment_producing, container, false);
         unbinder = ButterKnife.bind(this,contentView);
-        initViews(contentView);
+        initViews();
         return contentView;
     }
 
-    private void initViews(View contentView) {
+    private void initViews() {
         mAdapter = new ProducingRvAdapter(getActivity());
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),4,GridLayoutManager.VERTICAL,false));
         mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(4, getActivity()), false));
@@ -120,7 +120,7 @@ public class ProducingFragment extends BaseFragment implements OrdersFragment.Fi
             return;
         }
         mRunnable = new ProducingTaskRunnable();
-        mHandler.postDelayed(mRunnable,1000);
+        mHandler.postDelayed(mRunnable,OrderHelper.DELAY_LOAD_TIME);
 
     }
 

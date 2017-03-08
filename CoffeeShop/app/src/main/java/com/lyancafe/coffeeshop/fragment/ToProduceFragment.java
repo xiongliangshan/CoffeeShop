@@ -102,7 +102,7 @@ public class ToProduceFragment extends BaseFragment implements OrdersFragment.Fi
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        HttpHelper.getInstance().reqToProduceData(LoginHelper.getLimitLevel(mContext), new JsonCallback<XlsResponse>() {
+        HttpHelper.getInstance().reqToProduceData(new JsonCallback<XlsResponse>() {
             @Override
             public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
                 handleToProudceResponse(xlsResponse,call,response);
@@ -144,7 +144,7 @@ public class ToProduceFragment extends BaseFragment implements OrdersFragment.Fi
             return;
         }
         mRunnable = new ToProduceTaskRunnable();
-        mHandler.postDelayed(mRunnable,1000);
+        mHandler.postDelayed(mRunnable,OrderHelper.DELAY_LOAD_TIME);
 
     }
 
@@ -161,7 +161,7 @@ public class ToProduceFragment extends BaseFragment implements OrdersFragment.Fi
     @Subscribe
     public void onNewOrderComing(NewOderComingEvent event){
         if(isResumed()){
-            HttpHelper.getInstance().reqToProduceData(LoginHelper.getLimitLevel(mContext), new JsonCallback<XlsResponse>() {
+            HttpHelper.getInstance().reqToProduceData(new JsonCallback<XlsResponse>() {
                 @Override
                 public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
                     handleToProudceResponse(xlsResponse,call,response);
@@ -274,7 +274,7 @@ public class ToProduceFragment extends BaseFragment implements OrdersFragment.Fi
     class ToProduceTaskRunnable implements Runnable{
         @Override
         public void run() {
-            HttpHelper.getInstance().reqToProduceData(LoginHelper.getLimitLevel(mContext), new JsonCallback<XlsResponse>() {
+            HttpHelper.getInstance().reqToProduceData(new JsonCallback<XlsResponse>() {
                 @Override
                 public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
                     handleToProudceResponse(xlsResponse,call,response);

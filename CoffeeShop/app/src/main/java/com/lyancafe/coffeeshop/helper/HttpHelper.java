@@ -106,24 +106,13 @@ public class HttpHelper {
 
     /**
      * 请求待生产列表数据
-     * @param limitLevel
      * @param callback
      */
-    public void reqToProduceData(int limitLevel,JsonCallback<XlsResponse> callback){
+    public void reqToProduceData(JsonCallback<XlsResponse> callback){
         Log.d("xls","请求待生产列表");
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("limitLevel", limitLevel);
-        JSONObject jsonObject = new JSONObject(params);
-
-        String url=null;
-        if(LoginHelper.isSFMode()){
-            url = Urls.BASE_URL+shopId + "/orders/today/toproduce/tailwind?token="+token;
-        }else{
-            url = Urls.BASE_URL + shopId + "/orders/today/toproduce?token="+token;
-        }
+        String url = Urls.BASE_URL + shopId + "/orders/today/toproduce?token="+token;;
         OkGo.post(url)
                 .tag(this)
-                .upJson(jsonObject.toString())
                 .execute(callback);
 
     }
@@ -134,20 +123,9 @@ public class HttpHelper {
      */
     public void reqProducingData(JsonCallback<XlsResponse> callback){
         Log.d("xls","请求生产中列表");
-        HashMap<String, Object> params = new HashMap<>();
-       /* params.put("orderBy", orderBy);
-        params.put("fillterInstant", fillterInstant);*/
-        JSONObject jsonObject = new JSONObject(params);
-
-        String url=null;
-        if(LoginHelper.isSFMode()){
-            url = Urls.BASE_URL+shopId + "/orders/today/producing/tailwind?token="+token;
-        }else{
-            url = Urls.BASE_URL + shopId + "/orders/today/producing?token="+token;
-        }
+        String url = Urls.BASE_URL + shopId + "/orders/today/producing?token="+token;
         OkGo.post(url)
                 .tag(this)
-                .upJson(jsonObject.toString())
                 .execute(callback);
 
     }
@@ -158,20 +136,9 @@ public class HttpHelper {
      */
     public void reqProducedData(JsonCallback<XlsResponse> callback){
         Log.d("xls","请求待取货列表");
-        HashMap<String, Object> params = new HashMap<>();
-       /* params.put("orderBy", orderBy);
-        params.put("fillterInstant", fillterInstant);*/
-        JSONObject jsonObject = new JSONObject(params);
-
-        String url=null;
-        if(LoginHelper.isSFMode()){
-            url = Urls.BASE_URL+shopId + "/orders/today/produced/tailwind?token="+token;
-        }else{
-            url = Urls.BASE_URL + shopId + "/orders/today/produced?token="+token;
-        }
+        String url = Urls.BASE_URL + shopId + "/orders/today/produced?token="+token;
         OkGo.post(url)
                 .tag(this)
-                .upJson(jsonObject.toString())
                 .execute(callback);
 
     }
@@ -183,18 +150,9 @@ public class HttpHelper {
      */
     public void reqDeliveryingData(JsonCallback<XlsResponse> callback){
         Log.d("xls","请求配送中列表");
-        HashMap<String, Object> params = new HashMap<>();
-        JSONObject jsonObject = new JSONObject(params);
-
-        String url=null;
-        if(LoginHelper.isSFMode()){
-            url = Urls.BASE_URL+shopId + "/orders/today/delivering/tailwind?token="+token;
-        }else{
-            url = Urls.BASE_URL + shopId + "/orders/today/delivering?token="+token;
-        }
+        String url = Urls.BASE_URL + shopId + "/orders/today/delivering?token="+token;
         OkGo.post(url)
                 .tag(this)
-                .upJson(jsonObject.toString())
                 .execute(callback);
 
     }
@@ -209,12 +167,7 @@ public class HttpHelper {
         params.put("orderId",orderId); //区分是刷新还是加载更多
         JSONObject jsonObject = new JSONObject(params);
 
-        String url=null;
-        if(LoginHelper.isSFMode()){
-            url = Urls.BASE_URL+shopId + "/orders/today/finished/tailwind?token="+token;
-        }else{
-            url = Urls.BASE_URL + shopId + "/orders/today/finished?token="+token;
-        }
+        String url = Urls.BASE_URL + shopId + "/orders/today/finished?token="+token;
         OkGo.post(url)
                 .tag("finished")
                 .headers("isLoadMore", orderId == 0 ? "no" : "yes")

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/detail_root_view"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="@drawable/bg_order"
-    >
+    android:background="@drawable/bg_order">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -66,7 +66,7 @@
             android:id="@+id/receiver_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="张三"
+            tools:text="张三"
             android:layout_marginLeft="12dp"
             android:layout_toRightOf="@id/contant_custom_info"
             android:layout_alignBaseline="@id/contant_custom_info"
@@ -76,7 +76,7 @@
             android:id="@+id/receiver_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="18217131583"
+            tools:text="18217131583"
             android:layout_toRightOf="@id/receiver_name"
             android:layout_alignBaseline="@id/receiver_name"
             android:layout_marginLeft="8dp"
@@ -108,7 +108,7 @@
             android:layout_marginLeft="12dp"
             android:layout_toRightOf="@id/contant_order_time"
             android:layout_alignBaseline="@id/contant_order_time"
-            android:text="2017-01-20 15:52"
+            tools:text="2017-01-20 15:52"
             android:textColor="@color/font_black"
             />
         <TextView
@@ -128,7 +128,7 @@
             android:layout_toRightOf="@id/constant_order_id"
             android:layout_alignBaseline="@id/constant_order_id"
             android:layout_marginLeft="12dp"
-            android:text="17012060757"
+            tools:text="17012060757"
             android:textColor="@color/font_black"/>
 
         <TextView
@@ -147,7 +147,7 @@
             android:layout_marginLeft="12dp"
             android:layout_toRightOf="@id/constant_receiver_address"
             android:layout_alignTop="@id/constant_receiver_address"
-            android:text="上海市徐汇区古美路1515号凤凰大楼1801"
+            tools:text="上海市徐汇区古美路1515号凤凰大楼1801"
             android:textColor="@color/font_black"
             />
 
@@ -180,7 +180,7 @@
                     android:layout_marginLeft="12dp"
                     android:layout_toRightOf="@id/contant_deliver"
                     android:layout_centerVertical="true"
-                    android:text="二狗子"
+                    tools:text="二狗子"
                     android:textColor="@color/blue"
                     />
                 <TextView
@@ -190,7 +190,7 @@
                     android:layout_toRightOf="@id/deliver_name"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="8dp"
-                    android:text="182151652156"
+                    tools:text="182151652156"
                     android:textColor="@color/blue"
                     />
 

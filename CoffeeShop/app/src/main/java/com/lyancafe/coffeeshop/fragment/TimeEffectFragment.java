@@ -17,6 +17,7 @@ import com.lyancafe.coffeeshop.bean.TimeEffectBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
+import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lzy.okgo.OkGo;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
@@ -204,7 +205,7 @@ public class TimeEffectFragment extends BaseFragment implements PullLoadMoreRecy
             return;
         }
         mRunnable = new TimeEffectTaskRunnable();
-        mHandler.postDelayed(mRunnable,1000);
+        mHandler.postDelayed(mRunnable, OrderHelper.DELAY_LOAD_TIME);
 
     }
 

@@ -43,6 +43,8 @@ public class OrderHelper {
     public static List<OrderBean> batchList = new ArrayList<>();
     public static Map<String,Integer> contentMap = new HashMap<>();
 
+    public static long DELAY_LOAD_TIME = 600;  //单位 ms
+
     public static final int GOOD_COMMENT = 4;  //好评
     public static final int BAD_COMMENT = 5;   //差评
 
@@ -382,7 +384,7 @@ public class OrderHelper {
 
     public static String getShopOrderSn(OrderBean orderBean){
         if(orderBean.getDeliveryTeam()== DeliveryTeam.MEITUAN){
-            return "美"+orderBean.getMtShopOrderNo();
+            return "美团"+orderBean.getMtShopOrderNo();
         }
         String shopOrderSn = "";
         if(orderBean.getShopOrderNo()<10){
@@ -401,7 +403,7 @@ public class OrderHelper {
 
     public static String getShopOrderSn(EvaluationBean evaluationBean){
         if(evaluationBean.getDeliveryTeam()== DeliveryTeam.MEITUAN){
-            return "美"+evaluationBean.getMtShopOrderNo();
+            return "美团"+evaluationBean.getMtShopOrderNo();
         }
         String shopOrderSn = "";
         if(evaluationBean.getShopOrderNo()<10){

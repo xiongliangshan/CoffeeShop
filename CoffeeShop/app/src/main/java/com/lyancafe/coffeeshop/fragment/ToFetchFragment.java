@@ -195,7 +195,7 @@ public class ToFetchFragment extends BaseFragment implements DeliverFragment.Fil
             return;
         }
         mRunnale = new ToFetchTaskRunnable();
-        mHandler.postDelayed(mRunnale,1000);
+        mHandler.postDelayed(mRunnale,OrderHelper.DELAY_LOAD_TIME);
     }
 
     @Override

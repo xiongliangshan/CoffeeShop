@@ -24,6 +24,7 @@ import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.event.MaterialSelectEvent;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
+import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.helper.PrintHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
@@ -207,7 +208,7 @@ public class ShopManagerFragment extends BaseFragment {
             return;
         }
         mRunnable = new ManagerTaskRunnable();
-        mHandler.postDelayed(mRunnable,1000);
+        mHandler.postDelayed(mRunnable, OrderHelper.DELAY_LOAD_TIME);
     }
 
 

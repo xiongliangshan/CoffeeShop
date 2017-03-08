@@ -154,7 +154,7 @@ public class DeliveringFragment extends BaseFragment implements DeliverFragment.
             return;
         }
         mRunnable = new DeliveringTaskRunnable();
-        mHandler.postDelayed(mRunnable,1000);
+        mHandler.postDelayed(mRunnable,OrderHelper.DELAY_LOAD_TIME);
 
     }
 

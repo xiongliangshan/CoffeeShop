@@ -80,17 +80,6 @@ public class LoginHelper {
         return sp.getLong("login_time",0L);
     }
 
-    //保存当前限单设置
-    public static void saveLimitLevel(Context context,int limitLevel){
-        SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
-        sp.edit().putInt("limit_level",limitLevel).commit();
-    }
-
-    //获取当前限单设置
-    public static int getLimitLevel(Context context){
-        SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
-        return sp.getInt("limit_level", 1);
-    }
 
     //判断是否是当天第一次登陆
     public static boolean isCurrentDayFirstLogin(Context context){
