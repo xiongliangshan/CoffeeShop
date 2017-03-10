@@ -96,5 +96,7 @@
     <string name="count_good">良好(<xliff:g id="count">%d</xliff:g>)</string>
     <string name="count_passed">合格(<xliff:g id="count">%d</xliff:g>)</string>
     <string name="count_not_passed">不及格(<xliff:g id="count">%d</xliff:g>)</string>
+    <string name="time_effect_description">服务时效（及时单）:下单 ~ 送达,\t\t\t\t良好:0 ~ 30,\t\t\t及格:30 ~ 60,\t\t\t不及格:T>60。
+     \n服务时效（预约单）: 预约时段T1~T2,\t良好:T1-45 ~ T2,\t及格:T2 ~ T2+5,\t不及格:除此以外</string>
 
 </resources>
