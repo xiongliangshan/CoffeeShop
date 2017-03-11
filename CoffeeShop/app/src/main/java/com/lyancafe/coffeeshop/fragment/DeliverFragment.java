@@ -66,6 +66,7 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
     public static int category = OrderCategory.ALL;
 
     private Context mContext;
+    private CourierFragment courierFragment;
     private ToFetchFragment toFetchFragment;
     private DeliveringFragment deliveringFragment;
     private OnFragmentInteractionListener mListener;
@@ -144,8 +145,10 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
 
     private void initViews(View contentView) {
         List<Fragment> fragments = new ArrayList<>();
+        courierFragment = new CourierFragment();
         toFetchFragment = new ToFetchFragment();
         deliveringFragment = new DeliveringFragment();
+        fragments.add(courierFragment);
         fragments.add(toFetchFragment);
         fragments.add(deliveringFragment);
         mPagerAdapter = new DeliverFragmentPagerAdapter(getChildFragmentManager(),getActivity(),fragments);
