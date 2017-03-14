@@ -6,9 +6,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
-import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.bean.LoginBean;
+import com.lyancafe.coffeeshop.login.model.UserBean;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.text.SimpleDateFormat;
@@ -38,35 +37,24 @@ public class LoginHelper {
         return true;
     }
 
-    public static void saveLoginBean(Context context,LoginBean loginBean){
+    public static void saveLoginBean(Context context,UserBean userBean){
         SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
-        sp.edit().putString("login", JSON.toJSONString(loginBean)).commit();
+        sp.edit().putString("login", JSON.toJSONString(userBean)).commit();
     }
 
-    public static LoginBean getLoginBean(Context context){
+    public static UserBean getLoginBean(Context context){
         SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
         String strLogin = sp.getString("login", "");
         if(TextUtils.isEmpty(strLogin)){
             Log.e("xls","getUser,userJsonStr is Empty");
-            return new LoginBean();
+            return new UserBean();
         }else{
-            return JSON.parseObject(strLogin,LoginBean.class);
+            return JSON.parseObject(strLogin,UserBean.class);
         }
 
     }
 
 
-    //保存当前模式， 是否是顺风单模式
-    public static void saveSfFlag(Context context ,boolean isSF){
-        SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
-        sp.edit().putBoolean("is_sf",isSF).commit();
-    }
-
-    //获取当前模式
-    public static boolean getSfFlag(Context context){
-        SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
-        return sp.getBoolean("is_sf", false);
-    }
 
     //记录当天第一次登陆的时间
     public static void saveCurrentDayFirstLoginTime(Context context,long loginTime){
@@ -98,13 +86,4 @@ public class LoginHelper {
         }
     }
 
-
-
-    /**
-     * 判断是否为顺风单模式
-     * @return
-     */
-    public static boolean isSFMode(){
-       return getSfFlag(CSApplication.getInstance());
-    }
 }

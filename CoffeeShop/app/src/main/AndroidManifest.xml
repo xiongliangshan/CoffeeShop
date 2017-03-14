@@ -73,7 +73,7 @@
         </activity>
 
         <activity
-            android:name=".activity.LoginActivity"
+            android:name=".login.ui.LoginActivity"
             android:screenOrientation="landscape"
             android:launchMode="singleTask"
             >

@@ -16,9 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.activity.LoginActivity;
+import com.lyancafe.coffeeshop.login.ui.LoginActivity;
 import com.lyancafe.coffeeshop.adapter.ToProduceRvAdapter;
-import com.lyancafe.coffeeshop.bean.LoginBean;
+import com.lyancafe.coffeeshop.login.model.UserBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.DialogCallback;
@@ -256,9 +256,9 @@ public class ToProduceFragment extends BaseFragment implements OrdersFragment.Fi
         }else if(xlsResponse.status==103){
             //token 无效
             ToastUtil.showToast(mContext, xlsResponse.message);
-            LoginBean loginBean = LoginHelper.getLoginBean(mContext);
-            loginBean.setToken("");
-            LoginHelper.saveLoginBean(mContext, loginBean);
+            UserBean userBean = LoginHelper.getLoginBean(mContext);
+            userBean.setToken("");
+            LoginHelper.saveLoginBean(mContext, userBean);
             Intent intent = new Intent(mContext, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);

@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ApkInfoBean;
-import com.lyancafe.coffeeshop.bean.LoginBean;
+import com.lyancafe.coffeeshop.login.model.UserBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
@@ -269,9 +269,9 @@ public class HomeActivity extends BaseActivity implements DeliverFragment.OnFrag
                         handleLoginOutResponse(xlsResponse,call,response);
                     }
                 });
-                LoginBean loginBean = LoginHelper.getLoginBean(context);
-                loginBean.setToken("");
-                LoginHelper.saveLoginBean(context,loginBean);
+                UserBean userBean = LoginHelper.getLoginBean(context);
+                userBean.setToken("");
+                LoginHelper.saveLoginBean(context, userBean);
                 OrderHelper.batchList.clear();
                 HomeActivity.this.finish();
                 HomeActivity.this.overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);

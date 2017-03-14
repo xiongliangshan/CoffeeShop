@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
 import com.lyancafe.coffeeshop.CSApplication;
-import com.lyancafe.coffeeshop.bean.LoginBean;
+import com.lyancafe.coffeeshop.login.model.UserBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
@@ -37,10 +37,10 @@ public class HttpHelper {
 
     public static HttpHelper getInstance(){
         if(http==null){
-            LoginBean loginBean = LoginHelper.getLoginBean(CSApplication.getInstance());
-            int shopId = loginBean.getShopId();
-            int userId = loginBean.getUserId();
-            String token = loginBean.getToken();
+            UserBean userBean = LoginHelper.getLoginBean(CSApplication.getInstance());
+            int shopId = userBean.getShopId();
+            int userId = userBean.getUserId();
+            String token = userBean.getToken();
             return new HttpHelper(shopId,userId,token);
         }
         return http;

@@ -1,13 +1,15 @@
-package com.lyancafe.coffeeshop.bean;
+package com.lyancafe.coffeeshop.login.model;
 
 import android.content.Context;
+
+import com.lyancafe.coffeeshop.bean.XlsResponse;
 
 import java.io.Serializable;
 
 /**
  * Created by Administrator on 2015/10/21.
  */
-public class LoginBean implements Serializable{
+public class UserBean implements Serializable{
 
     private int userId;
     private int shopId;
@@ -15,10 +17,10 @@ public class LoginBean implements Serializable{
     private boolean isSFMode;
     private String token;
 
-    public LoginBean() {
+    public UserBean() {
     }
 
-    public LoginBean(int userId, int shopId, String shopName, boolean isSFMode, String token) {
+    public UserBean(int userId, int shopId, String shopName, boolean isSFMode, String token) {
         this.userId = userId;
         this.shopId = shopId;
         this.shopName = shopName;
@@ -67,19 +69,19 @@ public class LoginBean implements Serializable{
     }
 
     //解析数据
-    public static LoginBean parseJsonLoginBean(Context context,XlsResponse resp){
+    public static UserBean parseJsonLoginBean(Context context, XlsResponse resp){
         int shopId = resp.data.getIntValue("shopId");
         int userId = resp.data.getIntValue("userId");
         String shopName = resp.data.getString("shopName");
         String token = resp.data.getString("token");
         boolean isSFMode = resp.data.getBoolean("isSFMode");
-        LoginBean loginBean = new LoginBean(userId,shopId,shopName,isSFMode,token);
-        return loginBean;
+        UserBean userBean = new UserBean(userId,shopId,shopName,isSFMode,token);
+        return userBean;
     }
 
     @Override
     public String toString() {
-        return "LoginBean{" +
+        return "UserBean{" +
                 "userId=" + userId +
                 ", shopId=" + shopId +
                 ", shopName='" + shopName + '\'' +
