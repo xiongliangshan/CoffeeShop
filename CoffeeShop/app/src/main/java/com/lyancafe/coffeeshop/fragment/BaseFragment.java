@@ -27,11 +27,11 @@ public class BaseFragment extends Fragment {
         }
     }
 
-    protected void onVisible(){
+    public void onVisible(){
 
     }
 
-    protected void onInVisible(){
+    public void onInVisible(){
 
     }
 }

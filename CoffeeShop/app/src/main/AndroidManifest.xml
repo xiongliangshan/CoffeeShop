@@ -62,7 +62,7 @@
             android:label="@string/title_activity_base" >
         </activity>
         <activity
-            android:name=".activity.HomeActivity"
+            android:name=".main.ui.HomeActivity"
             android:parentActivityName=".activity.BaseActivity"
             android:screenOrientation="sensorLandscape"
             android:configChanges="keyboardHidden|screenSize|orientation"

@@ -148,7 +148,7 @@ public class DeliveringFragment extends BaseFragment implements DeliverFragment.
 
 
     @Override
-    protected void onVisible() {
+    public void onVisible() {
         Log.d("xls","Delivering onVisible");
         if(!isResumed()){
             return;
@@ -159,7 +159,7 @@ public class DeliveringFragment extends BaseFragment implements DeliverFragment.
     }
 
     @Override
-    protected void onInVisible() {
+    public void onInVisible() {
         Log.d("xls","Delivering onInVisible");
         if(mHandler!=null){
             mHandler.removeCallbacks(mRunnable);

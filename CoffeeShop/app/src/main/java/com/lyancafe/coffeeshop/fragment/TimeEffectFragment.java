@@ -198,7 +198,7 @@ public class TimeEffectFragment extends BaseFragment implements PullLoadMoreRecy
     }
 
     @Override
-    protected void onVisible() {
+    public void onVisible() {
         super.onVisible();
         Log.d("xls","TimeEffectFragment  Visible");
         if(!isResumed()){
@@ -210,7 +210,7 @@ public class TimeEffectFragment extends BaseFragment implements PullLoadMoreRecy
     }
 
     @Override
-    protected void onInVisible() {
+    public void onInVisible() {
         super.onInVisible();
         Log.d("xls","TimeEffectFragment  InVisible");
         if(mHandler!=null){

@@ -1,4 +1,4 @@
-package com.lyancafe.coffeeshop.adapter;
+package com.lyancafe.coffeeshop.produce.ui;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -19,7 +19,6 @@ import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
@@ -39,14 +38,14 @@ import butterknife.ButterKnife;
 /**
  * Created by Administrator on 2015/9/21.
  */
-public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.ViewHolder>{
+public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.ViewHolder>{
 
     private static final String TAG  ="OrderGridViewAdapter";
     private Context context;
     public List<OrderBean> list = new ArrayList<OrderBean>();
     public int selected = -1;
 
-    public ToProduceRvAdapter(Context context) {
+    public ProducingRvAdapter(Context context) {
         this.context = context;
     }
 
@@ -79,7 +78,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         }
         final OrderBean order = list.get(position);
 
-        /*if(order.getDeliveryTeam()== DeliveryTeam.MEITUAN){
+       /* if(order.getDeliveryTeam()== DeliveryTeam.MEITUAN){
             //美团订单
             holder.firstRowLayout.setBackgroundColor(context.getResources().getColor(R.color.yellow));
         }else{
@@ -132,12 +131,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         }
 
 
-        if(order.getInstant()==0){
-            holder.produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
-        }else{
-            holder.produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn);
-        }
-        OrderHelper.showEffectOnly(order,holder.effectTimeTxt);
+        OrderHelper.showEffect(order, holder.produceBtn, holder.effectTimeTxt);
 
         if(OrderHelper.isPrinted(context, order.getOrderSn())){
             holder.printBtn.setText(R.string.print_again);
@@ -291,7 +285,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
 
     private List<OrderBean> filterOrders(List<OrderBean> list,int category){
         List<OrderBean> subList = new ArrayList<>();
-        if(category== OrderCategory.MEITUN){
+        if(category==OrderCategory.MEITUN){
             for(OrderBean orderBean:list){
                 if(orderBean.getDeliveryTeam()==8){
                     subList.add(orderBean);

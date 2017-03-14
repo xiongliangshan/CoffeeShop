@@ -28,14 +28,12 @@ public class LoginActivity extends BaseActivity implements LoginView{
     @BindView(R.id.password)
     EditText passwordEdit;
 
-    private Context mContext;
     private LoginPresenter mLoginPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = this;
-        mLoginPresenter = new LoginPresenterImpl(getApplication(),this);
+        mLoginPresenter = new LoginPresenterImpl(this,this);
         mLoginPresenter.checkLoginStatus();
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);

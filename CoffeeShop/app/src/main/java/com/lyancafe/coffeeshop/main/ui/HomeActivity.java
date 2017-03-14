@@ -1,9 +1,7 @@
-package com.lyancafe.coffeeshop.activity;
+package com.lyancafe.coffeeshop.main.ui;
 
-import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.net.Uri;
@@ -17,21 +15,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.bean.ApkInfoBean;
+import com.lyancafe.coffeeshop.activity.BaseActivity;
 import com.lyancafe.coffeeshop.login.model.UserBean;
-import com.lyancafe.coffeeshop.bean.XlsResponse;
-import com.lyancafe.coffeeshop.callback.DialogCallback;
-import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.fragment.DeliverFragment;
 import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.fragment.ShopFragment;
-import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.main.presenter.MainPresenter;
+import com.lyancafe.coffeeshop.main.presenter.MainPresenterImpl;
+import com.lyancafe.coffeeshop.main.view.MainView;
 import com.lyancafe.coffeeshop.service.TaskService;
-import com.lyancafe.coffeeshop.service.UpdateService;
 import com.lyancafe.coffeeshop.utils.MyUtil;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
@@ -51,35 +46,30 @@ import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import okhttp3.Call;
-import okhttp3.Response;
 
 /**
  * Created by Administrator on 2015/9/18.
  */
-public class HomeActivity extends BaseActivity implements DeliverFragment.OnFragmentInteractionListener{
+public class HomeActivity extends BaseActivity implements DeliverFragment.OnFragmentInteractionListener,MainView{
 
-    private static final String TAG ="HomeActivity";
+    private static final String TAG ="main";
     public List<Fragment> fragmentsList = new ArrayList<Fragment>();
     private OrdersFragment orderFrag;
     private DeliverFragment deliverFragment;
     private ShopFragment shopFragment;
     private TaskService taskService;
-    private ServiceConnection serviceConnection;
+    private ServiceConnection connection;
     private Context context;
     private int mSelectedIndex = 0;
 
+    private MainPresenter mMainPresenter;
+
     @BindView(R.id.ll_produce_tab) LinearLayout tabProduceLayout;
-
     @BindView(R.id.ll_deliver_tab) LinearLayout tabDeliverlayout;
-
     @BindView(R.id.ll_shop_tab) LinearLayout tabShopLayout;
-
     @BindViews({R.id.ll_produce_tab,R.id.ll_deliver_tab,R.id.ll_shop_tab})
     List<LinearLayout> tabList;
-
     @BindView(R.id.tv_shop_name) TextView shopNameText;
-
     @BindView(R.id.tv_current_version) TextView curVerText;
 
 
@@ -92,26 +82,26 @@ public class HomeActivity extends BaseActivity implements DeliverFragment.OnFrag
         context  = HomeActivity.this;
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
+        mMainPresenter = new MainPresenterImpl(this);
         initViews();
-        initFragments();
         updateTab(mSelectedIndex);
         //启动service
-        serviceConnection = new ServiceConnection() {
+        connection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 Log.d("TaskService","onServiceConnected");
                 TaskService.MyBinder myBinder = (TaskService.MyBinder)service;
                 taskService = myBinder.getService();
             }
-
             @Override
             public void onServiceDisconnected(ComponentName name) {
                 Log.d("TaskService","onServiceDisconnected");
+                taskService = null;
             }
         };
         Intent intent=new Intent(HomeActivity.this,TaskService.class);
-        bindService(intent, serviceConnection, BIND_AUTO_CREATE);
-        Log.d("TaskService", "bindService");
+        bindService(intent, connection, BIND_AUTO_CREATE);
+
 
         final File cacheDir = StorageUtils.getCacheDirectory(HomeActivity.this);
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(HomeActivity.this)
@@ -137,93 +127,30 @@ public class HomeActivity extends BaseActivity implements DeliverFragment.OnFrag
                 .build();
         ImageLoader.getInstance().init(config);
 
+        mMainPresenter.checkUpdate(this,true);
 
-        HttpHelper.getInstance().reqCheckUpdate(new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleCheckUpdateResponse(xlsResponse,call,response);
-            }
-        });
     }
 
     private void initViews(){
         shopNameText.setText(LoginHelper.getLoginBean(context).getShopName());
         curVerText.setText("当前版本:" + MyUtil.getVersion(context));
-    }
-    private void initFragments(){
+
         orderFrag =  new OrdersFragment();
         deliverFragment = DeliverFragment.newInstance("","");
         shopFragment = new ShopFragment();
         fragmentsList.add(orderFrag);
         fragmentsList.add(deliverFragment);
         fragmentsList.add(shopFragment);
-
-    }
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        unbindService(serviceConnection);
+        unbindService(connection);
         super.onDestroy();
         Log.d("TaskService", "unbindService");
 
 
     }
-
-
-    /**
-     * 处理检测更新接口
-     * @param xlsResponse
-     * @param call
-     * @param response
-     */
-    private void handleCheckUpdateResponse(XlsResponse xlsResponse,Call call,Response response){
-        if(xlsResponse.status==0){
-            final ApkInfoBean apkInfoBean = ApkInfoBean.parseJsonToBean(xlsResponse.data.toString());
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setMessage(context.getResources().getString(R.string.confirm_download, apkInfoBean.getAppName()));
-            builder.setTitle(context.getResources().getString(R.string.version_update));
-            builder.setIcon(R.mipmap.ic_launcher);
-            builder.setPositiveButton(context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    //启动Service下载apk文件
-                    Intent intent = new Intent(context, UpdateService.class);
-                    intent.putExtra("apk",apkInfoBean);
-                    context.startService(intent);
-                }
-            });
-            builder.setNegativeButton(context.getResources().getString(R.string.cacel), new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            builder.create().show();
-        }
-    }
-
 
 
     @OnClick({R.id.ll_produce_tab,R.id.ll_deliver_tab,R.id.ll_shop_tab})
@@ -250,28 +177,12 @@ public class HomeActivity extends BaseActivity implements DeliverFragment.OnFrag
         switch (v.getId()){
             case R.id.tv_check_update:
                 //系统更新
-                if (!MyUtil.isOnline(context)) {
-                    ToastUtil.show(context, context.getResources().getString(R.string.check_internet));
-                } else {
-                    HttpHelper.getInstance().reqCheckUpdate(new DialogCallback<XlsResponse>(HomeActivity.this) {
-                        @Override
-                        public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                            handleCheckUpdateResponse(xlsResponse, call, response);
-                        }
-                    });
-                }
+                mMainPresenter.checkUpdate(this,false);
                 break;
             case R.id.tv_login_out:
                 //退出登录
-                HttpHelper.getInstance().reqLoginOut(new JsonCallback<XlsResponse>() {
-                    @Override
-                    public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                        handleLoginOutResponse(xlsResponse,call,response);
-                    }
-                });
-                UserBean userBean = LoginHelper.getLoginBean(context);
-                userBean.setToken("");
-                LoginHelper.saveLoginBean(context, userBean);
+                mMainPresenter.exitLogin();
+                mMainPresenter.resetToken();
                 OrderHelper.batchList.clear();
                 HomeActivity.this.finish();
                 HomeActivity.this.overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);
@@ -289,7 +200,9 @@ public class HomeActivity extends BaseActivity implements DeliverFragment.OnFrag
         switchFragment(selectedIndex);
     }
 
-    private void switchFragment(int selectedIndex){
+
+    @Override
+    public void switchFragment(int selectedIndex) {
         Fragment fragment = fragmentsList.get(selectedIndex);
         if(!fragment.isAdded()){
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -309,16 +222,6 @@ public class HomeActivity extends BaseActivity implements DeliverFragment.OnFrag
         fragment.onResume();
     }
 
-    /**
-     * 处理退出登录
-     * @param xlsResponse
-     * @param call
-     * @param response
-     */
-    private void handleLoginOutResponse(XlsResponse xlsResponse, Call call, Response response) {
-        Intent intent_update = new Intent(context, UpdateService.class);
-        context.stopService(intent_update);
-    }
 
 
     @Override

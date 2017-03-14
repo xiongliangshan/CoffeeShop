@@ -9,7 +9,7 @@ import android.util.Log;
 
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.activity.HomeActivity;
+import com.lyancafe.coffeeshop.main.ui.HomeActivity;
 import com.lyancafe.coffeeshop.login.model.UserBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
@@ -76,7 +76,7 @@ public class LoginPresenterImpl implements LoginPresenter,LoginModelImpl.OnHandl
             UserBean login = UserBean.parseJsonLoginBean(mContext,xlsResponse);
             LoginHelper.saveLoginBean(mContext, login);
             //如果是当天第一次登陆，就清空本地缓存的订单打印记录
-            if(LoginHelper.isCurrentDayFirstLogin(mContext)){
+            if(mLoginModel.isCurrentDayFirstLogin(mContext)){
                 OrderHelper.clearPrintedSet(mContext);
             }
             Intent intent = new Intent(mContext, HomeActivity.class);

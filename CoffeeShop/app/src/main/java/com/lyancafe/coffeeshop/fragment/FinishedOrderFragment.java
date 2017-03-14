@@ -377,7 +377,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
 
     @Override
-    protected void onVisible() {
+    public void onVisible() {
         super.onVisible();
         Log.d("xls","FinishedOrderFragment  Visible");
         if(!isResumed()){
@@ -408,7 +408,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     }
 
     @Override
-    protected void onInVisible() {
+    public void onInVisible() {
         super.onInVisible();
         Log.d("xls","FinishedOrderFragment  InVisible");
         if(mHandler!=null){

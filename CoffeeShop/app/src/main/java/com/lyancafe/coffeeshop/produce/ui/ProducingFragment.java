@@ -1,4 +1,4 @@
-package com.lyancafe.coffeeshop.fragment;
+package com.lyancafe.coffeeshop.produce.ui;
 
 
 import android.content.Context;
@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.adapter.ProducingRvAdapter;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.DialogCallback;
@@ -26,6 +25,8 @@ import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.RecallOrderEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
+import com.lyancafe.coffeeshop.fragment.BaseFragment;
+import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
@@ -47,7 +48,7 @@ import okhttp3.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ProducingFragment extends BaseFragment implements OrdersFragment.FilterOrdersListenter{
+public class ProducingFragment extends BaseFragment implements OrdersFragment.FilterOrdersListenter {
 
     @BindView(R.id.rv_producing) RecyclerView mRecyclerView;
     private Unbinder unbinder;
@@ -113,7 +114,7 @@ public class ProducingFragment extends BaseFragment implements OrdersFragment.Fi
     }
 
     @Override
-    protected void onVisible() {
+    public void onVisible() {
         super.onVisible();
         Log.d("xls","producingFragment is Visible");
         if(!isResumed()){
@@ -125,7 +126,7 @@ public class ProducingFragment extends BaseFragment implements OrdersFragment.Fi
     }
 
     @Override
-    protected void onInVisible() {
+    public void onInVisible() {
         super.onInVisible();
         Log.d("xls","producingFragment is InVisible");
         if(mHandler!=null){

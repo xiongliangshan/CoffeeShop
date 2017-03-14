@@ -202,7 +202,7 @@ public class ShopManagerFragment extends BaseFragment {
 
 
     @Override
-    protected void onVisible() {
+    public void onVisible() {
         Log.d("xls","ShopManagerFragment Visible");
         if(!isResumed()){
             return;
@@ -214,7 +214,7 @@ public class ShopManagerFragment extends BaseFragment {
 
 
     @Override
-    protected void onInVisible() {
+    public void onInVisible() {
         Log.d("xls","ShopManagerFragment InVisible");
         if(mHandler!=null){
             mHandler.removeCallbacks(mRunnable);
@@ -231,7 +231,7 @@ public class ShopManagerFragment extends BaseFragment {
         }
     }
 
-    class ManagerTaskRunnable implements Runnable{
+    private class ManagerTaskRunnable implements Runnable{
         @Override
         public void run() {
             HttpHelper.getInstance().reqMaterialList(new JsonCallback<XlsResponse>() {

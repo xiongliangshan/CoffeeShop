@@ -59,7 +59,7 @@ public class LoginHelper {
     //记录当天第一次登陆的时间
     public static void saveCurrentDayFirstLoginTime(Context context,long loginTime){
         SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
-        sp.edit().putLong("login_time",loginTime).commit();
+        sp.edit().putLong("login_time",loginTime).apply();
     }
 
     //获取保存的登陆时间
@@ -68,22 +68,5 @@ public class LoginHelper {
         return sp.getLong("login_time",0L);
     }
 
-
-    //判断是否是当天第一次登陆
-    public static boolean isCurrentDayFirstLogin(Context context){
-        long currentTime = System.currentTimeMillis();
-        long firstTime = getLoginTime(context);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String time1 = sdf.format(new Date(firstTime));
-        String time2 = sdf.format(new Date(currentTime));
-        if(time1.equals(time2)){
-            Log.d(TAG,"not current day first login");
-            return false;
-        }else{
-            saveCurrentDayFirstLoginTime(context,currentTime);
-            Log.d(TAG, "is first login");
-            return true;
-        }
-    }
 
 }

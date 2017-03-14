@@ -1,8 +1,10 @@
 package com.lyancafe.coffeeshop;
 
+import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.os.Environment;
+import android.os.Process;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
@@ -13,6 +15,7 @@ import com.lzy.okgo.cookie.store.PersistentCookieStore;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import java.io.File;
+import java.util.List;
 import java.util.logging.Level;
 
 import cn.jpush.android.api.JPushInterface;
@@ -40,7 +43,7 @@ public class CSApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "onCreate()");
+        Log.d(TAG, "onCreate() process = " + getProcessName(this, Process.myPid()));
         application = this;
         getDeviceScreenSize();
 
@@ -104,6 +107,21 @@ public class CSApplication extends Application {
     public void onTerminate() {
         super.onTerminate();
         Log.d(TAG, "onTerminate()");
+    }
+
+
+    public static String getProcessName(Context cxt, int pid) {
+        ActivityManager am = (ActivityManager) cxt.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> runningApps = am.getRunningAppProcesses();
+        if (runningApps == null) {
+            return null;
+        }
+        for (ActivityManager.RunningAppProcessInfo procInfo : runningApps) {
+            if (procInfo.pid == pid) {
+                return procInfo.processName;
+            }
+        }
+        return null;
     }
 
 

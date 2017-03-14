@@ -189,7 +189,7 @@ public class ToFetchFragment extends BaseFragment implements DeliverFragment.Fil
 
 
     @Override
-    protected void onVisible() {
+    public void onVisible() {
         Log.d("xls","ToFetchFragment Visible");
         if(!isResumed()){
             return;
@@ -199,7 +199,7 @@ public class ToFetchFragment extends BaseFragment implements DeliverFragment.Fil
     }
 
     @Override
-    protected void onInVisible() {
+    public void onInVisible() {
         Log.d("xls","ToFetchFragment InVisible");
         if(mHandler!=null){
             mHandler.removeCallbacks(mRunnale);

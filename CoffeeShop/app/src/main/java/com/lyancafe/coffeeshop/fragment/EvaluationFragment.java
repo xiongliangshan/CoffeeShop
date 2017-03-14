@@ -202,7 +202,7 @@ public class EvaluationFragment extends BaseFragment {
     }
 
     @Override
-    protected void onVisible() {
+    public void onVisible() {
         super.onVisible();
         Log.d("xls","EvaluationFragment  Visible");
         if(!isResumed()){
@@ -214,7 +214,7 @@ public class EvaluationFragment extends BaseFragment {
     }
 
     @Override
-    protected void onInVisible() {
+    public void onInVisible() {
         super.onInVisible();
         Log.d("xls","EvaluationFragment  InVisible");
         if(mHandler!=null){
