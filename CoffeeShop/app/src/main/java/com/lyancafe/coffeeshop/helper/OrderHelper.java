@@ -104,6 +104,9 @@ public class OrderHelper {
 
     /*时间戳转换成字符窜*/
     public static String getDateToString(long time) {
+        if(time == 0){
+            return "-- --";
+        }
         Date d = new Date(time);
         SimpleDateFormat sf = new SimpleDateFormat("MM-dd HH:mm");
         return sf.format(d);
@@ -111,6 +114,9 @@ public class OrderHelper {
 
     /*时间戳转换成字符窜*/
     public static String getDateToMonthDay(long time) {
+        if(time == 0){
+            return "-- --";
+        }
         SimpleDateFormat sf = new SimpleDateFormat("HH:mm");
         long t2 = time+30*60*1000;
         Date d = new Date(time);
