@@ -1,4 +1,4 @@
-package com.lyancafe.coffeeshop.fragment;
+package com.lyancafe.coffeeshop.base;
 
 
 import android.support.v4.app.Fragment;

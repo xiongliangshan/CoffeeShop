@@ -43,7 +43,7 @@ public class OrderHelper {
     public static List<OrderBean> batchList = new ArrayList<>();
     public static Map<String,Integer> contentMap = new HashMap<>();
 
-    public static long DELAY_LOAD_TIME = 600;  //单位 ms
+    public static long DELAY_LOAD_TIME = 400;  //单位 ms
 
     public static final int GOOD_COMMENT = 4;  //好评
     public static final int BAD_COMMENT = 5;   //差评

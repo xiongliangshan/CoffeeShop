@@ -7,7 +7,6 @@ import android.util.Log;
 import android.widget.Spinner;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.adapter.CourierListAdapter;
 import com.lyancafe.coffeeshop.produce.model.CourierBean;
 import com.lyancafe.coffeeshop.produce.presenter.AssignOrderPresenter;
 import com.lyancafe.coffeeshop.produce.presenter.AssignOrderPresenterImpl;

@@ -60,6 +60,70 @@
             android:textSize="18sp"
             android:layout_toRightOf="@id/constant_cup_count"/>
 
+
+        <TextView
+            android:id="@+id/constant_service_effect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tv_cup_count"
+            android:layout_marginLeft="60dp"
+            android:textSize="18sp"
+            android:textColor="@color/font_black"
+            android:text="服务时效"/>
+
+        <TextView
+            android:id="@+id/constant_good"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/constant_service_effect"
+            android:layout_marginLeft="20dp"
+            android:textSize="18sp"
+            android:textColor="@color/font_black"
+            android:text="良好:"/>
+
+        <TextView
+            android:id="@+id/tv_good"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/constant_good"
+            android:textSize="18sp"
+            />
+
+        <TextView
+            android:id="@+id/constant_passed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/constant_good"
+            android:layout_marginLeft="48dp"
+            android:textSize="18sp"
+            android:textColor="@color/font_black"
+            android:text="合格:"/>
+
+        <TextView
+            android:id="@+id/tv_passed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/constant_passed"
+            android:textSize="18sp"
+            />
+        <TextView
+            android:id="@+id/constant_not_passed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/constant_passed"
+            android:layout_marginLeft="48dp"
+            android:textSize="18sp"
+            android:textColor="@color/font_black"
+            android:text="不及格:"/>
+
+        <TextView
+            android:id="@+id/tv_not_passed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/constant_not_passed"
+            android:textSize="18sp"
+            />
+
     </RelativeLayout>
 
 

@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.FinishedRvAdapter;
+import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
@@ -57,6 +58,12 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
     @BindView(R.id.plmgv_order_list)
     PullLoadMoreRecyclerView pullLoadMoreRecyclerView;
+    @BindView(R.id.tv_good)
+    TextView tvGood;
+    @BindView(R.id.tv_passed)
+    TextView tvPassed;
+    @BindView(R.id.tv_not_passed)
+    TextView tvNotPassed;
     private FinishedRvAdapter mAdapter;
     private long finishedLastOrderId = 0;
     private Context mContext;
@@ -70,17 +77,28 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     /**
      * 订单详情页UI组件
      */
-    @BindView(R.id.tv_shop_order_id) TextView shopOrderNumText;
-    @BindView(R.id.order_id) TextView orderIdTxt;
-    @BindView(R.id.receiver_name) TextView receiveNameTxt;
-    @BindView(R.id.receiver_phone) TextView receivePhoneTxt;
-    @BindView(R.id.receiver_address) TextView receiveAddressTxt;
-    @BindView(R.id.tv_order_distance) TextView orderDistanceText;
-    @BindView(R.id.items_container_layout) LinearLayout itemsContainerLayout;
-    @BindView(R.id.user_remark) TextView userRemarkTxt;
-    @BindView(R.id.csad_remark) TextView csadRemarkTxt;
-    @BindView(R.id.user_comment_tags) TextView userCommentTagsText;
-    @BindView(R.id.user_comment_content) TextView userCommentContentText;
+    @BindView(R.id.tv_shop_order_id)
+    TextView shopOrderNumText;
+    @BindView(R.id.order_id)
+    TextView orderIdTxt;
+    @BindView(R.id.receiver_name)
+    TextView receiveNameTxt;
+    @BindView(R.id.receiver_phone)
+    TextView receivePhoneTxt;
+    @BindView(R.id.receiver_address)
+    TextView receiveAddressTxt;
+    @BindView(R.id.tv_order_distance)
+    TextView orderDistanceText;
+    @BindView(R.id.items_container_layout)
+    LinearLayout itemsContainerLayout;
+    @BindView(R.id.user_remark)
+    TextView userRemarkTxt;
+    @BindView(R.id.csad_remark)
+    TextView csadRemarkTxt;
+    @BindView(R.id.user_comment_tags)
+    TextView userCommentTagsText;
+    @BindView(R.id.user_comment_content)
+    TextView userCommentContentText;
     /**
      * 订单详情
      */
@@ -110,14 +128,14 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         EventBus.getDefault().register(this);
         View contentView = inflater.inflate(R.layout.fragment_finished_order, container, false);
-        unbinder = ButterKnife.bind(this,contentView);
+        unbinder = ButterKnife.bind(this, contentView);
         initViews();
         return contentView;
     }
 
 
-    private void initViews(){
-        pullLoadMoreRecyclerView.getRecyclerView().setLayoutManager(new GridLayoutManager(getActivity(),4,GridLayoutManager.VERTICAL,false) );
+    private void initViews() {
+        pullLoadMoreRecyclerView.getRecyclerView().setLayoutManager(new GridLayoutManager(getActivity(), 4, GridLayoutManager.VERTICAL, false));
         pullLoadMoreRecyclerView.getRecyclerView().setHasFixedSize(true);
         pullLoadMoreRecyclerView.getRecyclerView().setItemAnimator(new DefaultItemAnimator());
         pullLoadMoreRecyclerView.getRecyclerView().addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(8, mContext), false));
@@ -135,8 +153,8 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     }
 
 
-    private void updateDetailView(final OrderBean order){
-        if(order==null){
+    private void updateDetailView(final OrderBean order) {
+        if (order == null) {
             orderIdTxt.setText("");
             receiveNameTxt.setText("");
             receivePhoneTxt.setText("");
@@ -147,7 +165,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
             userCommentTagsText.setText("");
             userCommentContentText.setText("");
             itemsContainerLayout.removeAllViews();
-        }else{
+        } else {
             shopOrderNumText.setText(OrderHelper.getShopOrderSn(order));
             orderIdTxt.setText(order.getOrderSn());
             //服务时效
@@ -164,14 +182,15 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
         }
 
     }
+
     //填充item数据
-    private void fillItemListData(LinearLayout ll,final OrderBean order){
-        if(order==null){
+    private void fillItemListData(LinearLayout ll, final OrderBean order) {
+        if (order == null) {
             return;
         }
         ll.removeAllViews();
         List<ItemContentBean> items = order.getItems();
-        for(ItemContentBean item:items){
+        for (ItemContentBean item : items) {
             TextView tv1 = new TextView(mContext);
             tv1.setId(R.id.item_name);
             tv1.setText(item.getProduct());
@@ -185,38 +204,38 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
             tv2.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
 
             RelativeLayout rl = new RelativeLayout(mContext);
-            RelativeLayout.LayoutParams lp1=new RelativeLayout.LayoutParams(
+            RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             lp1.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            lp1.leftMargin = OrderHelper.dip2Px(2,mContext);
+            lp1.leftMargin = OrderHelper.dip2Px(2, mContext);
             tv1.setLayoutParams(lp1);
             rl.addView(tv1);
 
-            RelativeLayout.LayoutParams lp2=new RelativeLayout.LayoutParams(
+            RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             lp2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            lp2.rightMargin = OrderHelper.dip2Px(2,mContext);
+            lp2.rightMargin = OrderHelper.dip2Px(2, mContext);
             tv2.setLayoutParams(lp2);
             rl.addView(tv2);
 
             String dingzhi = OrderHelper.getLabelStr(item.getRecipeFittingsList());
-            if(!TextUtils.isEmpty(dingzhi)){
+            if (!TextUtils.isEmpty(dingzhi)) {
                 TextView tv5 = new TextView(mContext);
                 tv5.setId(R.id.item_flag);
                 tv5.setText(dingzhi);
-                Drawable drawable = ContextCompat.getDrawable(CSApplication.getInstance(),R.mipmap.flag_ding);
+                Drawable drawable = ContextCompat.getDrawable(CSApplication.getInstance(), R.mipmap.flag_ding);
                 drawable.setBounds(0, 1, OrderHelper.dip2Px(14, mContext), OrderHelper.dip2Px(14, mContext));
                 tv5.setCompoundDrawablePadding(OrderHelper.dip2Px(4, mContext));
                 tv5.setCompoundDrawables(drawable, null, null, null);
                 tv5.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
                 tv5.setTextColor(mContext.getResources().getColor(R.color.font_black));
-                RelativeLayout.LayoutParams lp5=new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams lp5 = new RelativeLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
-                lp5.addRule(RelativeLayout.BELOW,tv1.getId());
-                lp5.addRule(RelativeLayout.ALIGN_LEFT,tv1.getId());
+                lp5.addRule(RelativeLayout.BELOW, tv1.getId());
+                lp5.addRule(RelativeLayout.ALIGN_LEFT, tv1.getId());
                 tv5.setLayoutParams(lp5);
                 rl.addView(tv5);
             }
@@ -225,10 +244,10 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
-            lp.topMargin = OrderHelper.dip2Px(2,mContext);
-            ll.addView(rl,lp);
+            lp.topMargin = OrderHelper.dip2Px(2, mContext);
+            ll.addView(rl, lp);
         }
-        if(!TextUtils.isEmpty(order.getWishes())){
+        if (!TextUtils.isEmpty(order.getWishes())) {
             TextView tv3 = new TextView(mContext);
             tv3.setText("礼品卡");
             tv3.setMaxEms(9);
@@ -240,19 +259,19 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
             tv4.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
             RelativeLayout r2 = new RelativeLayout(mContext);
             r2.setBackgroundColor(Color.YELLOW);
-            RelativeLayout.LayoutParams lp3=new RelativeLayout.LayoutParams(
+            RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             lp3.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            lp3.leftMargin = OrderHelper.dip2Px(2,mContext);
+            lp3.leftMargin = OrderHelper.dip2Px(2, mContext);
             tv3.setLayoutParams(lp3);
             r2.addView(tv3);
 
-            RelativeLayout.LayoutParams lp4=new RelativeLayout.LayoutParams(
+            RelativeLayout.LayoutParams lp4 = new RelativeLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             lp4.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            lp4.rightMargin = OrderHelper.dip2Px(2,mContext);
+            lp4.rightMargin = OrderHelper.dip2Px(2, mContext);
             tv4.setLayoutParams(lp4);
             r2.addView(tv4);
 
@@ -260,7 +279,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
-            lp.topMargin = OrderHelper.dip2Px(4,mContext);
+            lp.topMargin = OrderHelper.dip2Px(4, mContext);
             ll.addView(r2, lp);
         }
 
@@ -272,7 +291,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
-        lp6.topMargin = OrderHelper.dip2Px(30,mContext);
+        lp6.topMargin = OrderHelper.dip2Px(30, mContext);
         tv6.setLayoutParams(lp6);
         ll.addView(tv6, lp6);
 
@@ -286,7 +305,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
         HttpHelper.getInstance().reqFinishedTotalAmountData(new JsonCallback<XlsResponse>() {
             @Override
             public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleFinishedTotalAmountResponse(xlsResponse,call,response);
+                handleFinishedTotalAmountResponse(xlsResponse, call, response);
             }
 
         });
@@ -296,6 +315,24 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
                 handleFinishedResponse(xlsResponse, call, response);
             }
         });
+        HttpHelper.getInstance().reqServiceEffectPersent(new JsonCallback<XlsResponse>() {
+            @Override
+            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                handleServiceEffectResponse(xlsResponse, call, response);
+            }
+        });
+    }
+
+    private void handleServiceEffectResponse(XlsResponse xlsResponse, Call call, Response response) {
+        if (xlsResponse.status == 0) {
+            double goodScale = xlsResponse.data.getDouble("goodScale");
+            double passedScale = xlsResponse.data.getDouble("passedScale");
+            double fallingScale = xlsResponse.data.getDouble("fallingScale");
+            tvGood.setText((int)(goodScale*100)+"%");
+            tvPassed.setText((int)(passedScale*100)+"%");
+            tvNotPassed.setText((int)(fallingScale*100)+"%");
+            Log.d("xls", "goodScale = " + goodScale + ", passedScale = " + passedScale + ",fallingScale = " + fallingScale);
+        }
     }
 
     @Override
@@ -305,11 +342,9 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     }
 
     @Subscribe
-    public void onUpdateFinishedOrderDetailEvent(UpdateFinishedOrderDetailEvent event){
+    public void onUpdateFinishedOrderDetailEvent(UpdateFinishedOrderDetailEvent event) {
         updateDetailView(event.orderBean);
     }
-
-
 
 
     @Override
@@ -322,8 +357,8 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(mHandler!=null){
-            mHandler=null;
+        if (mHandler != null) {
+            mHandler = null;
         }
     }
 
@@ -333,14 +368,13 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     }
 
 
-
     @Override
     public void onLoadMore() {
         HttpHelper.getInstance().reqFinishedListData(finishedLastOrderId, new JsonCallback<XlsResponse>() {
             @Override
             public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
                 pullLoadMoreRecyclerView.setPullLoadMoreCompleted();
-                handleFinishedResponse(xlsResponse,call,response);
+                handleFinishedResponse(xlsResponse, call, response);
             }
 
             @Override
@@ -352,25 +386,24 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     }
 
 
-
     //处理服务器返回数据---已完成
-    private void handleFinishedResponse(XlsResponse xlsResponse,Call call,Response response){
+    private void handleFinishedResponse(XlsResponse xlsResponse, Call call, Response response) {
         Request request = call.request();
         String isLoadMore = request.header("isLoadMore");
         List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
-        if("yes".equalsIgnoreCase(isLoadMore)){
+        if ("yes".equalsIgnoreCase(isLoadMore)) {
             mAdapter.addData(orderBeans);
-            Log.d("xls","addData orderBeans.size = "+orderBeans.size());
-        }else{
-            if(isVisible){
+            Log.d("xls", "addData orderBeans.size = " + orderBeans.size());
+        } else {
+            if (isVisible) {
                 mAdapter.setData(orderBeans);
             }
-            Log.d("xls","orderBeans.size = "+orderBeans.size());
+            Log.d("xls", "orderBeans.size = " + orderBeans.size());
         }
 
-        if(mAdapter.list.size()>0){
-            finishedLastOrderId = mAdapter.list.get(mAdapter.list.size()-1).getId();
-        }else {
+        if (mAdapter.list.size() > 0) {
+            finishedLastOrderId = mAdapter.list.get(mAdapter.list.size() - 1).getId();
+        } else {
             finishedLastOrderId = 0;
         }
     }
@@ -379,22 +412,22 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     @Override
     public void onVisible() {
         super.onVisible();
-        Log.d("xls","FinishedOrderFragment  Visible");
-        if(!isResumed()){
+        Log.d("xls", "FinishedOrderFragment  Visible");
+        if (!isResumed()) {
             return;
         }
         mRunnable = new FineshedTaskRunnable();
-        mHandler.postDelayed(mRunnable,OrderHelper.DELAY_LOAD_TIME);
+        mHandler.postDelayed(mRunnable, OrderHelper.DELAY_LOAD_TIME);
 
     }
 
-    class FineshedTaskRunnable implements Runnable{
+    class FineshedTaskRunnable implements Runnable {
         @Override
         public void run() {
             HttpHelper.getInstance().reqFinishedTotalAmountData(new JsonCallback<XlsResponse>() {
                 @Override
                 public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                    handleFinishedTotalAmountResponse(xlsResponse,call,response);
+                    handleFinishedTotalAmountResponse(xlsResponse, call, response);
                 }
 
             });
@@ -404,22 +437,28 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
                     handleFinishedResponse(xlsResponse, call, response);
                 }
             });
+            HttpHelper.getInstance().reqServiceEffectPersent(new JsonCallback<XlsResponse>() {
+                @Override
+                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                    handleServiceEffectResponse(xlsResponse, call, response);
+                }
+            });
         }
     }
 
     @Override
     public void onInVisible() {
         super.onInVisible();
-        Log.d("xls","FinishedOrderFragment  InVisible");
-        if(mHandler!=null){
-            Log.d("xls","removeCallbacks finished");
+        Log.d("xls", "FinishedOrderFragment  InVisible");
+        if (mHandler != null) {
+            Log.d("xls", "removeCallbacks finished");
             mHandler.removeCallbacks(mRunnable);
         }
     }
 
     //处理服务器返回的已完成订单总单量和杯量
-    private void handleFinishedTotalAmountResponse(XlsResponse xlsResponse,Call call,Response response){
-        if(xlsResponse.status==0){
+    private void handleFinishedTotalAmountResponse(XlsResponse xlsResponse, Call call, Response response) {
+        if (xlsResponse.status == 0) {
             int ordersAmount = xlsResponse.data.getIntValue("totalOrdersAmount");
             int cupsAmount = xlsResponse.data.getIntValue("totalCupsAmount");
             orderCountText.setText(String.valueOf(ordersAmount));
@@ -428,10 +467,9 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     }
 
 
-
-    @OnClick({R.id.ll_user_remark,R.id.ll_csad_remark,R.id.ll_user_comment})
+    @OnClick({R.id.ll_user_remark, R.id.ll_csad_remark, R.id.ll_user_comment})
     void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.ll_user_remark:
                 //用户备注
                 new InfoDetailDialog(getActivity()).show(userRemarkTxt.getText().toString());
@@ -442,7 +480,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
                 break;
             case R.id.ll_user_comment:
                 //用户评价
-                new InfoDetailDialog(getActivity()).show(userCommentTagsText.getText().toString()+"\n"+userCommentContentText.getText().toString());
+                new InfoDetailDialog(getActivity()).show(userCommentTagsText.getText().toString() + "\n" + userCommentContentText.getText().toString());
                 break;
         }
     }

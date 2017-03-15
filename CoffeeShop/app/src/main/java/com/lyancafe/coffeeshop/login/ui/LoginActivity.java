@@ -1,11 +1,10 @@
 package com.lyancafe.coffeeshop.login.ui;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.widget.EditText;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.activity.BaseActivity;
+import com.lyancafe.coffeeshop.base.BaseActivity;
 import com.lyancafe.coffeeshop.login.presenter.LoginPresenter;
 import com.lyancafe.coffeeshop.login.presenter.LoginPresenterImpl;
 import com.lyancafe.coffeeshop.login.view.LoginView;

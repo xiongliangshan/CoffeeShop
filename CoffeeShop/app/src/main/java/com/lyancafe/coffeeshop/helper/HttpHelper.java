@@ -189,6 +189,18 @@ public class HttpHelper {
     }
 
     /**
+     * 请求服务时效的各阶段订单所占百分比
+     * @param callback
+     */
+    public void reqServiceEffectPersent(JsonCallback<XlsResponse> callback){
+        Log.d("xls","请求服务时效百分比");
+        String url=Urls.BASE_URL+shopId + "/orders/scaleInfo?token="+token;
+        OkGo.get(url)
+                .tag("finished")
+                .execute(callback);
+    }
+
+    /**
      * 请求评价列表
      * @param orderId
      * @param type

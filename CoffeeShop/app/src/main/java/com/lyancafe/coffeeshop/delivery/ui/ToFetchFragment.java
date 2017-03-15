@@ -1,4 +1,4 @@
-package com.lyancafe.coffeeshop.fragment;
+package com.lyancafe.coffeeshop.delivery.ui;
 
 
 import android.os.Bundle;
@@ -21,6 +21,7 @@ import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.RecallOrderEvent;
 import com.lyancafe.coffeeshop.event.UpdateDeliverFragmentTabOrderCount;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
+import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
@@ -37,22 +38,10 @@ import butterknife.Unbinder;
 import okhttp3.Call;
 import okhttp3.Response;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ToFetchFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class ToFetchFragment extends BaseFragment implements DeliverFragment.FilterOrdersListenter{
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     public List<OrderBean> allOrderList = new ArrayList<>();
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     @BindView(R.id.rv_to_fetch) RecyclerView mRecyclerView;
     private ToFetchRvAdapter mAdapter;
@@ -66,23 +55,9 @@ public class ToFetchFragment extends BaseFragment implements DeliverFragment.Fil
     }
 
 
-    public static ToFetchFragment newInstance(String param1, String param2) {
-        ToFetchFragment fragment = new ToFetchFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        Log.d("xls","ToFetchFragment-onCreate");
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
         mHandler = new Handler();
     }
 
@@ -94,11 +69,11 @@ public class ToFetchFragment extends BaseFragment implements DeliverFragment.Fil
         EventBus.getDefault().register(this);
         View contentView =  inflater.inflate(R.layout.fragment_to_fetch, container, false);
         unbinder = ButterKnife.bind(this,contentView);
-        initViews(contentView);
+        initViews();
         return contentView;
     }
 
-    private void initViews(View contentView) {
+    private void initViews() {
         mAdapter = new ToFetchRvAdapter(getActivity());
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),4,GridLayoutManager.VERTICAL,false));
         mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(4, getActivity()), false));

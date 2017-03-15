@@ -1,4 +1,4 @@
-package com.lyancafe.coffeeshop.activity;
+package com.lyancafe.coffeeshop.base;
 
 import android.app.Activity;
 import android.content.Context;

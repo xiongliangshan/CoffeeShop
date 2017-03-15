@@ -58,18 +58,18 @@
 
 
         <activity
-            android:name=".activity.BaseActivity"
+            android:name=".base.BaseActivity"
             android:label="@string/title_activity_base" >
         </activity>
         <activity
             android:name=".main.ui.HomeActivity"
-            android:parentActivityName=".activity.BaseActivity"
+            android:parentActivityName=".base.BaseActivity"
             android:screenOrientation="sensorLandscape"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:launchMode="singleTask">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.BaseActivity" />
+                android:value=".base.BaseActivity" />
         </activity>
 
         <activity
@@ -85,7 +85,7 @@
         </activity>
 
 
-        <activity android:name=".activity.PrintOrderActivity"
+        <activity android:name=".base.PrintOrderActivity"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar"/>
 

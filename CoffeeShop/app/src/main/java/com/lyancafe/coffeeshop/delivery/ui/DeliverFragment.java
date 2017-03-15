@@ -1,4 +1,4 @@
-package com.lyancafe.coffeeshop.fragment;
+package com.lyancafe.coffeeshop.delivery.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +25,8 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.base.BaseFragment;
+import com.lyancafe.coffeeshop.fragment.CourierFragment;
 import com.lyancafe.coffeeshop.produce.ui.AssignOrderActivity;
 import com.lyancafe.coffeeshop.adapter.DeliverFragmentPagerAdapter;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;

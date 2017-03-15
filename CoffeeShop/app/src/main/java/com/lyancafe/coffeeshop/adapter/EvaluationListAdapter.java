@@ -1,6 +1,5 @@
 package com.lyancafe.coffeeshop.adapter;
 
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.EvaluationBean;
-import com.lyancafe.coffeeshop.fragment.BaseFragment;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.widget.EvaluationDetailDialog;
 import com.zhy.view.flowlayout.FlowLayout;

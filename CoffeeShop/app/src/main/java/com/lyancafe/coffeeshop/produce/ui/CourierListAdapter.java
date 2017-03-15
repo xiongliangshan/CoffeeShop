@@ -1,4 +1,4 @@
-package com.lyancafe.coffeeshop.adapter;
+package com.lyancafe.coffeeshop.produce.ui;
 
 import android.content.Context;
 import android.view.LayoutInflater;

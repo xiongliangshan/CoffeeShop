@@ -15,8 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.activity.BaseActivity;
-import com.lyancafe.coffeeshop.fragment.DeliverFragment;
+import com.lyancafe.coffeeshop.base.BaseActivity;
+import com.lyancafe.coffeeshop.delivery.ui.DeliverFragment;
 import com.lyancafe.coffeeshop.produce.ui.MainProduceFragment;
 import com.lyancafe.coffeeshop.fragment.ShopFragment;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
