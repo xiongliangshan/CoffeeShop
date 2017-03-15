@@ -25,7 +25,7 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.activity.AssignOrderActivity;
+import com.lyancafe.coffeeshop.produce.ui.AssignOrderActivity;
 import com.lyancafe.coffeeshop.adapter.DeliverFragmentPagerAdapter;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;

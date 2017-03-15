@@ -21,12 +21,13 @@ import com.lyancafe.coffeeshop.event.RecallOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.fragment.BaseFragment;
-import com.lyancafe.coffeeshop.fragment.OrdersFragment;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.helper.PrintHelper;
 import com.lyancafe.coffeeshop.produce.presenter.ToProducePresenter;
 import com.lyancafe.coffeeshop.produce.presenter.ToProducePresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.ToProduceView;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
+import com.lyancafe.coffeeshop.widget.ConfirmDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -41,7 +42,7 @@ import butterknife.Unbinder;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ToProduceFragment extends BaseFragment implements OrdersFragment.FilterOrdersListenter,ToProduceView {
+public class ToProduceFragment extends BaseFragment implements MainProduceFragment.FilterOrdersListenter,ToProduceView {
 
 
     @BindView(R.id.rv_to_produce) RecyclerView mRecyclerView;
@@ -102,9 +103,25 @@ public class ToProduceFragment extends BaseFragment implements OrdersFragment.Fi
     @Override
     public void filter(String category) {
         Log.d("xls","ToProduce category = "+category);
-        mAdapter.setData(allOrderList,OrdersFragment.category);
+        mAdapter.setData(allOrderList, MainProduceFragment.category);
     }
 
+    @Override
+    public void showStartProduceConfirmDialog(final OrderBean orderBean) {
+        ConfirmDialog grabConfirmDialog = new ConfirmDialog(getActivity(), R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
+            @Override
+            public void onClickYes() {
+                //请求服务器改变该订单状态，由 待生产--生产中
+                mToProducePresenter.reqStartProduceAndPrint(getActivity(),orderBean);
+                //打印全部
+                PrintHelper.getInstance().printOrderInfo(orderBean);
+                PrintHelper.getInstance().printOrderItems(orderBean);
+            }
+        });
+        grabConfirmDialog.setContent("订单 " + orderBean.getOrderSn() + " 开始生产？");
+        grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
+        grabConfirmDialog.show();
+    }
 
     @Override
     public void onDestroyView() {
@@ -128,7 +145,7 @@ public class ToProduceFragment extends BaseFragment implements OrdersFragment.Fi
         allOrderList.clear();
         allOrderList.addAll(orders);
         if(isVisible){
-            mAdapter.setData(orders, OrdersFragment.category);
+            mAdapter.setData(orders, MainProduceFragment.category);
         }
     }
 
@@ -168,7 +185,7 @@ public class ToProduceFragment extends BaseFragment implements OrdersFragment.Fi
      */
     @Subscribe
     public void onStartProduceEvent(StartProduceEvent event){
-        mToProducePresenter.startProduceAndPrint(getActivity(),event.order);
+        showStartProduceConfirmDialog(event.order);
     }
 
     /**

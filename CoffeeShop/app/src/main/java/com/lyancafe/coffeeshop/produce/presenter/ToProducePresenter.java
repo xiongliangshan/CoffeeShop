@@ -1,7 +1,6 @@
 package com.lyancafe.coffeeshop.produce.presenter;
 
 import android.app.Activity;
-import android.content.Context;
 
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
@@ -22,7 +21,7 @@ public interface ToProducePresenter {
     void handleToProudceResponse(XlsResponse xlsResponse, Call call, Response response);
 
     //点击开始生产
-    void startProduceAndPrint(final Activity activity, final OrderBean order);
+    void reqStartProduceAndPrint(final Activity activity, final OrderBean order);
 
     //处理开始生产返回结果
     void handleStartProduceResponse(Activity activity,XlsResponse xlsResponse,Call call,Response response);

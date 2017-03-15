@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.CourierRvAdapter;
-import com.lyancafe.coffeeshop.bean.CourierBean;
 import com.lyancafe.coffeeshop.bean.DeliverBean;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;

@@ -14,14 +14,12 @@ import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
-import com.lyancafe.coffeeshop.helper.PrintHelper;
 import com.lyancafe.coffeeshop.login.model.UserBean;
 import com.lyancafe.coffeeshop.login.ui.LoginActivity;
 import com.lyancafe.coffeeshop.produce.model.ToProduceModel;
 import com.lyancafe.coffeeshop.produce.model.ToProduceModelImpl;
 import com.lyancafe.coffeeshop.produce.view.ToProduceView;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.lyancafe.coffeeshop.widget.ConfirmDialog;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -86,27 +84,14 @@ public class ToProducePresenterImpl implements ToProducePresenter,ToProduceModel
 
     }
 
-
     @Override
-    public void startProduceAndPrint(final Activity activity, final OrderBean order) {
-        ConfirmDialog grabConfirmDialog = new ConfirmDialog(activity, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
+    public void reqStartProduceAndPrint(final Activity activity, OrderBean order) {
+        HttpHelper.getInstance().reqStartProduce(order.getId(), new DialogCallback<XlsResponse>(activity) {
             @Override
-            public void onClickYes() {
-                //请求服务器改变该订单状态，由 待生产--生产中
-                HttpHelper.getInstance().reqStartProduce(order.getId(), new DialogCallback<XlsResponse>(activity) {
-                    @Override
-                    public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                        handleStartProduceResponse(activity,xlsResponse,call,response);
-                    }
-                });
-                //打印全部
-                PrintHelper.getInstance().printOrderInfo(order);
-                PrintHelper.getInstance().printOrderItems(order);
+            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
+                handleStartProduceResponse(activity,xlsResponse,call,response);
             }
         });
-        grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 开始生产？");
-        grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
-        grabConfirmDialog.show();
     }
 
     @Override

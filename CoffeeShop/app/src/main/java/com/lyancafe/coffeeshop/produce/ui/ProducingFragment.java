@@ -15,22 +15,16 @@ import android.view.ViewGroup;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.bean.XlsResponse;
-import com.lyancafe.coffeeshop.callback.DialogCallback;
-import com.lyancafe.coffeeshop.callback.JsonCallback;
-import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
-import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.RecallOrderEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
-import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
 import com.lyancafe.coffeeshop.fragment.BaseFragment;
-import com.lyancafe.coffeeshop.fragment.OrdersFragment;
-import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.produce.presenter.ProducingPresenter;
+import com.lyancafe.coffeeshop.produce.presenter.ProducingPresenterImpl;
+import com.lyancafe.coffeeshop.produce.view.ProducingView;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -42,13 +36,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import okhttp3.Call;
-import okhttp3.Response;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ProducingFragment extends BaseFragment implements OrdersFragment.FilterOrdersListenter {
+public class ProducingFragment extends BaseFragment implements MainProduceFragment.FilterOrdersListenter,ProducingView {
+
+    private ProducingPresenter mProducingPresenter;
 
     @BindView(R.id.rv_producing) RecyclerView mRecyclerView;
     private Unbinder unbinder;
@@ -74,6 +68,7 @@ public class ProducingFragment extends BaseFragment implements OrdersFragment.Fi
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mHandler = new Handler();
+        mProducingPresenter = new ProducingPresenterImpl(this,this.getContext());
     }
 
     @Override
@@ -96,6 +91,31 @@ public class ProducingFragment extends BaseFragment implements OrdersFragment.Fi
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+    @Override
+    public void addOrdersToList(List<OrderBean> orders) {
+        allOrderList.clear();
+        allOrderList.addAll(orders);
+        mAdapter.setData(orders, MainProduceFragment.category);
+    }
+
+    @Override
+    public void removeItemFromList(int id) {
+        mAdapter.removeOrderFromList(id);
+    }
+
+    @Override
+    public void showFinishProduceConfirmDialog(final OrderBean orderBean) {
+        ConfirmDialog grabConfirmDialog = new ConfirmDialog(getActivity(), R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
+            @Override
+            public void onClickYes() {
+               mProducingPresenter.reqFinishProduce(getActivity(),orderBean);
+            }
+        });
+        grabConfirmDialog.setContent("订单 " + orderBean.getOrderSn() + " 生产完成？");
+        grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
+        grabConfirmDialog.show();
     }
 
     @Override
@@ -140,7 +160,7 @@ public class ProducingFragment extends BaseFragment implements OrdersFragment.Fi
      */
     @Subscribe
     public void onFinishProduceEvent(FinishProduceEvent event){
-        finishProduce(mContext, event.order);
+        showFinishProduceConfirmDialog(event.order);
     }
 
     /**
@@ -163,72 +183,18 @@ public class ProducingFragment extends BaseFragment implements OrdersFragment.Fi
 
     }
 
-    //点击生产完成
-    public void finishProduce(final Context context,final OrderBean order){
-        ConfirmDialog grabConfirmDialog = new ConfirmDialog(context, R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
-            @Override
-            public void onClickYes() {
-                HttpHelper.getInstance().reqFinishedProduce(order.getId(), new DialogCallback<XlsResponse>(getActivity()) {
-                    @Override
-                    public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                        handleFinishedProduceResponse(xlsResponse,call,response);
-                    }
-                });
-            }
-        });
-        grabConfirmDialog.setContent("订单 " + order.getOrderSn() + " 生产完成？");
-        grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
-        grabConfirmDialog.show();
-    }
-
-
-    /**
-     * 处理生产完成动作返回的结果
-     * @param xlsResponse
-     * @param call
-     * @param response
-     */
-    private void handleFinishedProduceResponse(XlsResponse xlsResponse,Call call,Response response){
-        if(xlsResponse.status == 0){
-            ToastUtil.showToast(getActivity(), R.string.do_success);
-            int id  = xlsResponse.data.getIntValue("id");
-            mAdapter.removeOrderFromList(id);
-            EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.FINISHPRODUCE,1));
-
-        }else{
-            ToastUtil.showToast(getActivity(), xlsResponse.message);
-        }
-    }
-
-
-
-    //处理服务器返回数据---生产中
-    private void handleProudcingResponse(XlsResponse xlsResponse,Call call,Response response){
-        List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
-        EventBus.getDefault().post(new UpdateProduceFragmentTabOrderCount(1,orderBeans.size()));
-        allOrderList.clear();
-        allOrderList.addAll(orderBeans);
-        mAdapter.setData(orderBeans, OrdersFragment.category);
-    }
-
 
     @Override
     public void filter(String category) {
         Log.d("xls","Producing category = "+category);
-        mAdapter.setData(allOrderList,OrdersFragment.category);
+        mAdapter.setData(allOrderList, MainProduceFragment.category);
     }
 
 
     class ProducingTaskRunnable implements Runnable{
         @Override
         public void run() {
-            HttpHelper.getInstance().reqProducingData(new JsonCallback<XlsResponse>() {
-                @Override
-                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                    handleProudcingResponse(xlsResponse,call,response);
-                }
-
-            });
+            mProducingPresenter.loadProducingOrderList();
         }
     }
 }

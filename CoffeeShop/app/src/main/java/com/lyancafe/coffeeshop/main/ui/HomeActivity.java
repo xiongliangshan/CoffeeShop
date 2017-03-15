@@ -16,9 +16,8 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.activity.BaseActivity;
-import com.lyancafe.coffeeshop.login.model.UserBean;
 import com.lyancafe.coffeeshop.fragment.DeliverFragment;
-import com.lyancafe.coffeeshop.fragment.OrdersFragment;
+import com.lyancafe.coffeeshop.produce.ui.MainProduceFragment;
 import com.lyancafe.coffeeshop.fragment.ShopFragment;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
@@ -54,7 +53,7 @@ public class HomeActivity extends BaseActivity implements DeliverFragment.OnFrag
 
     private static final String TAG ="main";
     public List<Fragment> fragmentsList = new ArrayList<Fragment>();
-    private OrdersFragment orderFrag;
+    private MainProduceFragment orderFrag;
     private DeliverFragment deliverFragment;
     private ShopFragment shopFragment;
     private TaskService taskService;
@@ -135,7 +134,7 @@ public class HomeActivity extends BaseActivity implements DeliverFragment.OnFrag
         shopNameText.setText(LoginHelper.getLoginBean(context).getShopName());
         curVerText.setText("当前版本:" + MyUtil.getVersion(context));
 
-        orderFrag =  new OrdersFragment();
+        orderFrag =  new MainProduceFragment();
         deliverFragment = DeliverFragment.newInstance("","");
         shopFragment = new ShopFragment();
         fragmentsList.add(orderFrag);
@@ -211,7 +210,7 @@ public class HomeActivity extends BaseActivity implements DeliverFragment.OnFrag
         }
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        if(fragment instanceof OrdersFragment){
+        if(fragment instanceof MainProduceFragment){
             ft.hide(deliverFragment).hide(shopFragment).show(orderFrag);
         }else if(fragment instanceof DeliverFragment){
             ft.hide(orderFrag).hide(shopFragment).show(deliverFragment);

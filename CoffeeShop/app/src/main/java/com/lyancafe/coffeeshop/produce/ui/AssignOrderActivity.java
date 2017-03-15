@@ -1,4 +1,4 @@
-package com.lyancafe.coffeeshop.activity;
+package com.lyancafe.coffeeshop.produce.ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,11 +8,10 @@ import android.widget.Spinner;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.adapter.CourierListAdapter;
-import com.lyancafe.coffeeshop.bean.CourierBean;
-import com.lyancafe.coffeeshop.bean.XlsResponse;
-import com.lyancafe.coffeeshop.callback.JsonCallback;
-import com.lyancafe.coffeeshop.helper.HttpHelper;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
+import com.lyancafe.coffeeshop.produce.model.CourierBean;
+import com.lyancafe.coffeeshop.produce.presenter.AssignOrderPresenter;
+import com.lyancafe.coffeeshop.produce.presenter.AssignOrderPresenterImpl;
+import com.lyancafe.coffeeshop.produce.view.AssignOrderView;
 
 import java.util.List;
 
@@ -20,13 +19,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
-import okhttp3.Call;
-import okhttp3.Response;
 
 /**
  * Created by Administrator on 2016/7/19.
  */
-public class AssignOrderActivity extends Activity  {
+public class AssignOrderActivity extends Activity implements AssignOrderView{
 
     private static final String TAG = "AssignOrderActivity";
     private Context mContext;
@@ -34,6 +31,7 @@ public class AssignOrderActivity extends Activity  {
     private CourierListAdapter mAdapter;
     private CourierBean mCourier = null;
     private long mOrderId = 0;
+    private AssignOrderPresenter mAssignOrderPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,18 +40,14 @@ public class AssignOrderActivity extends Activity  {
         setContentView(R.layout.activity_assign_order);
         ButterKnife.bind(this);
         mOrderId = getIntent().getLongExtra("orderId",0);
+        mAssignOrderPresenter = new AssignOrderPresenterImpl(this,this);
         initViews();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        HttpHelper.getInstance().reqDeliverList(new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleDeliverListResponse(xlsResponse, call, response);
-            }
-        });
+        mAssignOrderPresenter.loadDelivers();
     }
 
 
@@ -75,41 +69,20 @@ public class AssignOrderActivity extends Activity  {
     void assign(){
         Log.d(TAG, "点击指派按钮");
         if (mCourier != null && mOrderId != 0) {
-            HttpHelper.getInstance().reqAssignOrder(mOrderId, mCourier.getUserId(), new JsonCallback<XlsResponse>() {
-                @Override
-                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                    handleAssignOrderResponse(xlsResponse,call,response);
-                }
-            });
+            mAssignOrderPresenter.assignOrder(mOrderId,mCourier.getUserId());
         }
+    }
+
+
+    @Override
+    public void addDeliversToList(List<CourierBean> courierBeanList) {
+        mAdapter.setData(courierBeanList);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy");
-    }
-
-
-    //处理服务器返回数据---小哥列表
-    private void handleDeliverListResponse(XlsResponse xlsResponse, Call call, Response response) {
-        if(xlsResponse.status==0){
-            List<CourierBean> courierBeanList = CourierBean.parseJsonToCouriers(xlsResponse);
-            mAdapter.setData(courierBeanList);
-        }else{
-            ToastUtil.show(this,xlsResponse.message);
-        }
-    }
-
-
-    //处理服务器返回数据---指派
-    private void handleAssignOrderResponse(XlsResponse xlsResponse,Call call,Response response){
-        if(xlsResponse.status==0){
-            ToastUtil.show(mContext,"指派成功");
-            AssignOrderActivity.this.finish();
-        }else{
-            ToastUtil.show(mContext,xlsResponse.message);
-        }
     }
 
 }

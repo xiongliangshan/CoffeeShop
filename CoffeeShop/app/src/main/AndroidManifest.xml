@@ -89,7 +89,7 @@
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar"/>
 
-        <activity android:name=".activity.AssignOrderActivity"
+        <activity android:name=".produce.ui.AssignOrderActivity"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar"/>
 

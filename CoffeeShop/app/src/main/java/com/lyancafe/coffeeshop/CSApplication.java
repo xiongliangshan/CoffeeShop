@@ -100,7 +100,7 @@ public class CSApplication extends Application {
         manager.getDefaultDisplay().getMetrics(dm);
         screenWidth = dm.widthPixels;
         screenHeight = dm.heightPixels;
-        Log.d(TAG,"screenWidth = "+screenWidth+"  , screenHeight = "+screenHeight);
+//        Log.d(TAG,"screenWidth = "+screenWidth+"  , screenHeight = "+screenHeight);
     }
 
     @Override

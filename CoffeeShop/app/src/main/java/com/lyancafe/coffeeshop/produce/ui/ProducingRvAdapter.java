@@ -78,12 +78,6 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         }
         final OrderBean order = list.get(position);
 
-       /* if(order.getDeliveryTeam()== DeliveryTeam.MEITUAN){
-            //美团订单
-            holder.firstRowLayout.setBackgroundColor(context.getResources().getColor(R.color.yellow));
-        }else{
-            holder.firstRowLayout.setBackground(null);
-        }*/
         holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
 
         //新用户订单
