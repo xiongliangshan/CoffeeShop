@@ -147,10 +147,10 @@ public class DeliverFragment extends BaseFragment implements TabLayout.OnTabSele
 
     private void initViews(View contentView) {
         List<Fragment> fragments = new ArrayList<>();
-        courierFragment = new CourierFragment();
+//        courierFragment = new CourierFragment();
         toFetchFragment = new ToFetchFragment();
         deliveringFragment = new DeliveringFragment();
-        fragments.add(courierFragment);
+//        fragments.add(courierFragment);
         fragments.add(toFetchFragment);
         fragments.add(deliveringFragment);
         mPagerAdapter = new DeliverFragmentPagerAdapter(getChildFragmentManager(),getActivity(),fragments);
