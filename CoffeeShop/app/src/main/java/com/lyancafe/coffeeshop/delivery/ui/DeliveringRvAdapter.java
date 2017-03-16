@@ -1,4 +1,4 @@
-package com.lyancafe.coffeeshop.adapter;
+package com.lyancafe.coffeeshop.delivery.ui;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -22,9 +22,6 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
-import com.lyancafe.coffeeshop.event.FinishProduceEvent;
-import com.lyancafe.coffeeshop.event.PrintOrderEvent;
-import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateDeliverOrderDetailEvent;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 
@@ -39,14 +36,14 @@ import butterknife.ButterKnife;
 /**
  * Created by Administrator on 2015/9/21.
  */
-public class ToFetchRvAdapter extends RecyclerView.Adapter<ToFetchRvAdapter.ViewHolder>{
+public class DeliveringRvAdapter extends RecyclerView.Adapter<DeliveringRvAdapter.ViewHolder>{
 
     private static final String TAG  ="OrderGridViewAdapter";
     private Context context;
     public List<OrderBean> list = new ArrayList<OrderBean>();
     public int selected = -1;
 
-    public ToFetchRvAdapter(Context context) {
+    public DeliveringRvAdapter(Context context) {
         this.context = context;
     }
 
@@ -131,8 +128,8 @@ public class ToFetchRvAdapter extends RecyclerView.Adapter<ToFetchRvAdapter.View
             holder.vipFlagIV.setImageResource(R.mipmap.flag_placeholder);
         }
 
-
         OrderHelper.showEffect(order, null, holder.effectTimeTxt);
+        fillItemListData(holder.itemContainerll, order.getItems());
         if(order.getDeliveryTeam()==DeliveryTeam.MEITUAN){
             holder.bottomText.setText("美团配送");
         }else if(order.getDeliveryTeam()==DeliveryTeam.HAIKUI){
@@ -140,7 +137,7 @@ public class ToFetchRvAdapter extends RecyclerView.Adapter<ToFetchRvAdapter.View
         }else{
             holder.bottomText.setText(OrderHelper.getTimeToService(order));
         }
-        fillItemListData(holder.itemContainerll, order.getItems());
+
         holder.cupCountText.setText(context.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
 
     }
@@ -261,6 +258,8 @@ public class ToFetchRvAdapter extends RecyclerView.Adapter<ToFetchRvAdapter.View
 
         return subList;
     }
+
+
 
 
     /**

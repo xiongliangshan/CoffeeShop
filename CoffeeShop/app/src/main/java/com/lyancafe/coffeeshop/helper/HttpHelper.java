@@ -158,6 +158,17 @@ public class HttpHelper {
     }
 
     /**
+     * 请求小哥一览
+     * @param callback
+     */
+    public void reqCourierList(JsonCallback<XlsResponse> callback){
+        String url = Urls.BASE_URL+shopId+"/couriersInfoList?token="+token;
+        OkGo.get(url)
+                .tag(this)
+                .execute(callback);
+    }
+
+    /**
      * 请求已完成列表数据
      * @param callback
      */

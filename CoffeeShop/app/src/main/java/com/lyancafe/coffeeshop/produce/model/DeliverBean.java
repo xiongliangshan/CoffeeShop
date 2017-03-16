@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2016/7/19.
  */
-public class CourierBean {
+public class DeliverBean {
 
     private long userId;     //小哥id
     private String name;    //小哥姓名
@@ -22,10 +22,10 @@ public class CourierBean {
     private int distance;    //小哥离门店的距离,单位米
     private int orderCount;   //小哥手上未完成订单数量
 
-    public CourierBean() {
+    public DeliverBean() {
     }
 
-    public CourierBean(long userId, String name, int type, boolean shopAccount, int distance, int orderCount) {
+    public DeliverBean(long userId, String name, int type, boolean shopAccount, int distance, int orderCount) {
         this.userId = userId;
         this.name = name;
         this.type = type;
@@ -95,16 +95,16 @@ public class CourierBean {
     }
 
 
-    public static List<CourierBean> parseJsonToCouriers(XlsResponse resp){
-        List<CourierBean> list = new ArrayList<>();
+    public static List<DeliverBean> parseJsonToDelivers(XlsResponse resp){
+        List<DeliverBean> list = new ArrayList<>();
         if(resp==null || resp.data==null){
             return list;
         }
         try {
             JSONArray jsonArray = resp.data.getJSONArray("couriers");
-            list = JSON.parseArray(jsonArray.toString(),CourierBean.class);
+            list = JSON.parseArray(jsonArray.toString(),DeliverBean.class);
         }catch (JSONException e){
-            Log.e("json","parseJsonToCouriers ,解析失败");
+            Log.e("json","parseJsonToDelivers ,解析失败");
         }
         return list;
     }

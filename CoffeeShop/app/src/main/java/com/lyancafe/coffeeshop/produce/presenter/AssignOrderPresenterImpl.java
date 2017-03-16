@@ -4,7 +4,7 @@ package com.lyancafe.coffeeshop.produce.presenter;
 import android.app.Activity;
 import android.content.Context;
 
-import com.lyancafe.coffeeshop.produce.model.CourierBean;
+import com.lyancafe.coffeeshop.produce.model.DeliverBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
@@ -53,7 +53,7 @@ public class AssignOrderPresenterImpl implements AssignOrderPresenter{
     @Override
     public void handleDeliverListResponse(XlsResponse xlsResponse, Call call, Response response) {
         if(xlsResponse.status==0){
-            List<CourierBean> courierBeanList = CourierBean.parseJsonToCouriers(xlsResponse);
+            List<DeliverBean> courierBeanList = DeliverBean.parseJsonToDelivers(xlsResponse);
             mAssignOrderView.addDeliversToList(courierBeanList);
         }else{
             ToastUtil.show(mContext,xlsResponse.message);

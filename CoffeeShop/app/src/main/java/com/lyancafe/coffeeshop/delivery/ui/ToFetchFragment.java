@@ -3,8 +3,6 @@ package com.lyancafe.coffeeshop.delivery.ui;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,16 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.adapter.ToFetchRvAdapter;
-import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.bean.XlsResponse;
-import com.lyancafe.coffeeshop.callback.JsonCallback;
-import com.lyancafe.coffeeshop.constant.OrderStatus;
-import com.lyancafe.coffeeshop.event.RecallOrderEvent;
-import com.lyancafe.coffeeshop.event.UpdateDeliverFragmentTabOrderCount;
-import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.base.BaseFragment;
-import com.lyancafe.coffeeshop.helper.HttpHelper;
+import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.constant.OrderStatus;
+import com.lyancafe.coffeeshop.delivery.presenter.ToFetchPresenter;
+import com.lyancafe.coffeeshop.delivery.presenter.ToFetchPresenterImpl;
+import com.lyancafe.coffeeshop.delivery.view.ToFetchView;
+import com.lyancafe.coffeeshop.event.RecallOrderEvent;
+import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 
@@ -35,11 +31,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import okhttp3.Call;
-import okhttp3.Response;
 
 
-public class ToFetchFragment extends BaseFragment implements DeliverFragment.FilterOrdersListenter{
+public class ToFetchFragment extends BaseFragment implements MainDeliverFragment.FilterOrdersListenter,ToFetchView{
 
     public List<OrderBean> allOrderList = new ArrayList<>();
 
@@ -48,10 +42,12 @@ public class ToFetchFragment extends BaseFragment implements DeliverFragment.Fil
     private Unbinder unbinder;
 
     private Handler mHandler;
-    private ToFetchTaskRunnable mRunnale;
+    private ToFetchTaskRunnable mRunnable;
+
+    private ToFetchPresenter mToFetchPresenter;
 
     public ToFetchFragment() {
-        // Required empty public constructor
+
     }
 
 
@@ -59,13 +55,13 @@ public class ToFetchFragment extends BaseFragment implements DeliverFragment.Fil
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mHandler = new Handler();
+        mToFetchPresenter = new ToFetchPresenterImpl(getContext(),this);
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d("xls","ToFetchFragment-onCreateView");
         EventBus.getDefault().register(this);
         View contentView =  inflater.inflate(R.layout.fragment_to_fetch, container, false);
         unbinder = ButterKnife.bind(this,contentView);
@@ -80,21 +76,18 @@ public class ToFetchFragment extends BaseFragment implements DeliverFragment.Fil
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        HttpHelper.getInstance().reqProducedData(new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleProudcedResponse(xlsResponse,call,response);
-            }
-        });
-    }
 
     @Override
     public void onResume() {
         super.onResume();
         Log.d("xls","ToFetchFragment-onResume");
+    }
+
+    @Override
+    public void addOrdersToList(List<OrderBean> orders) {
+        allOrderList.clear();
+        allOrderList.addAll(orders);
+        mAdapter.setData(orders, MainDeliverFragment.category);
     }
 
     @Override
@@ -119,7 +112,7 @@ public class ToFetchFragment extends BaseFragment implements DeliverFragment.Fil
 
     @Override
     public void filter(String category) {
-        mAdapter.setData(allOrderList,DeliverFragment.category);
+        mAdapter.setData(allOrderList, MainDeliverFragment.category);
     }
 
     @Override
@@ -149,35 +142,21 @@ public class ToFetchFragment extends BaseFragment implements DeliverFragment.Fil
     }
 
 
-
-    //处理服务器返回数据---已生产
-    private void handleProudcedResponse(XlsResponse xlsResponse,Call call,Response response){
-        List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
-        EventBus.getDefault().post(new UpdateDeliverFragmentTabOrderCount(0,orderBeans.size()));
-        allOrderList.clear();
-        allOrderList.addAll(orderBeans);
-        mAdapter.setData(orderBeans,DeliverFragment.category);
-    }
-
-
-
-
-
     @Override
     public void onVisible() {
         Log.d("xls","ToFetchFragment Visible");
         if(!isResumed()){
             return;
         }
-        mRunnale = new ToFetchTaskRunnable();
-        mHandler.postDelayed(mRunnale,OrderHelper.DELAY_LOAD_TIME);
+        mRunnable = new ToFetchTaskRunnable();
+        mHandler.postDelayed(mRunnable,OrderHelper.DELAY_LOAD_TIME);
     }
 
     @Override
     public void onInVisible() {
         Log.d("xls","ToFetchFragment InVisible");
         if(mHandler!=null){
-            mHandler.removeCallbacks(mRunnale);
+            mHandler.removeCallbacks(mRunnable);
         }
     }
 
@@ -185,12 +164,7 @@ public class ToFetchFragment extends BaseFragment implements DeliverFragment.Fil
     class ToFetchTaskRunnable implements Runnable{
         @Override
         public void run() {
-            HttpHelper.getInstance().reqProducedData(new JsonCallback<XlsResponse>() {
-                @Override
-                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                    handleProudcedResponse(xlsResponse,call,response);
-                }
-            });
+           mToFetchPresenter.loadToFetchOrderList();
         }
     }
 }

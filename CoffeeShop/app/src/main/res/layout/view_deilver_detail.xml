@@ -299,48 +299,14 @@
         android:layout_marginTop="8dp"
         android:gravity="bottom"
         >
-        <LinearLayout
-            android:id="@+id/ll_twobtn"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/btn_print_order"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_weight="2">
-            <Button
-                android:id="@+id/btn_finish_produce"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_produce_btn"
-                android:layout_weight="2"
-                android:textColor="@color/white_font"
-                android:textSize="16sp"
-                android:text="生产完成"
-                />
-            <Button
-                android:id="@+id/btn_print_order"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@null"
-                android:textSize="16sp"
-                android:text="打印"
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/ll_onebtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-            <Button
-                android:id="@+id/btn_produce_print"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_produce_btn"
-                android:textColor="@color/white_font"
-                android:textSize="16sp"
-                android:text="开始生产（打印）"
-                />
-        </LinearLayout>
-
+            android:background="@null"
+            android:textSize="16sp"
+            android:text="打印"
+            />
     </LinearLayout>
 
 </LinearLayout>

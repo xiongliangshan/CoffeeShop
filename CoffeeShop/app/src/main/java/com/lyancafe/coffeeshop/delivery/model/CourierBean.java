@@ -1,10 +1,20 @@
-package com.lyancafe.coffeeshop.bean;
+package com.lyancafe.coffeeshop.delivery.model;
+
+import android.util.Log;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
+import com.lyancafe.coffeeshop.bean.XlsResponse;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/3/11.
  */
 
-public class DeliverBean {
+public class CourierBean {
     //小哥id
     private int id;
 
@@ -97,7 +107,7 @@ public class DeliverBean {
 
     @Override
     public String toString() {
-        return "DeliverBean{" +
+        return "CourierBean{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", phone='" + phone + '\'' +
@@ -107,5 +117,20 @@ public class DeliverBean {
                 ", lat=" + lat +
                 ", lng=" + lng +
                 '}';
+    }
+
+
+    public static List<CourierBean> parseJsonToCouriers(XlsResponse resp){
+        List<CourierBean> list = new ArrayList<>();
+        if(resp==null || resp.data==null){
+            return list;
+        }
+        try {
+            JSONArray jsonArray = resp.data.getJSONArray("couriers");
+            list = JSON.parseArray(jsonArray.toString(),CourierBean.class);
+        }catch (JSONException e){
+            Log.e("json","parseJsonToCouriers ,解析失败");
+        }
+        return list;
     }
 }

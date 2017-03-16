@@ -1,6 +1,6 @@
 package com.lyancafe.coffeeshop.produce.view;
 
-import com.lyancafe.coffeeshop.produce.model.CourierBean;
+import com.lyancafe.coffeeshop.produce.model.DeliverBean;
 
 import java.util.List;
 
@@ -11,6 +11,6 @@ import java.util.List;
 public interface AssignOrderView{
 
     //小哥数据显示到列表
-    void addDeliversToList(List<CourierBean> courierBeanList);
+    void addDeliversToList(List<DeliverBean> courierBeanList);
 
 }

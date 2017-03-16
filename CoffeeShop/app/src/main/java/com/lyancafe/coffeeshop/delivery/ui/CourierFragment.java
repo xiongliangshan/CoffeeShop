@@ -1,6 +1,8 @@
-package com.lyancafe.coffeeshop.fragment;
+package com.lyancafe.coffeeshop.delivery.ui;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,9 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.adapter.CourierRvAdapter;
 import com.lyancafe.coffeeshop.base.BaseFragment;
-import com.lyancafe.coffeeshop.bean.DeliverBean;
+import com.lyancafe.coffeeshop.delivery.model.CourierBean;
+import com.lyancafe.coffeeshop.delivery.presenter.CourierPresenter;
+import com.lyancafe.coffeeshop.delivery.presenter.CourierPresenterImpl;
+import com.lyancafe.coffeeshop.delivery.view.CourierView;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 
@@ -22,43 +26,28 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public class CourierFragment extends BaseFragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class CourierFragment extends BaseFragment implements CourierView{
+
     @BindView(R.id.rv_courier_list)
     RecyclerView rvCourierList;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private Unbinder unbinder;
     private CourierRvAdapter mAdapter;
+
+    private CourierPresenter mCourierPresenter;
+    private CourierListRunnable mRunnable;
+    private Handler mHandler;
 
     public CourierFragment() {
 
     }
 
 
-    // TODO: Rename and change types and number of parameters
-    public static CourierFragment newInstance(String param1, String param2) {
-        CourierFragment fragment = new CourierFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        mHandler = new Handler();
+        mCourierPresenter = new CourierPresenterImpl(getContext(),this);
     }
 
     @Override
@@ -70,6 +59,17 @@ public class CourierFragment extends BaseFragment {
         return view;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mCourierPresenter.loadCouriersList();
+    }
+
+    @Override
+    public void addCouriersToList(List<CourierBean> couriers) {
+        mAdapter.setData(couriers);
+    }
+
     private void initView(){
         rvCourierList.setLayoutManager(new GridLayoutManager(getContext(),2));
         rvCourierList.setHasFixedSize(true);
@@ -78,10 +78,10 @@ public class CourierFragment extends BaseFragment {
         rvCourierList.setAdapter(mAdapter);
     }
 
-    private List<DeliverBean> createTestData() {
-        List<DeliverBean> list = new ArrayList<>();
+    private List<CourierBean> createTestData() {
+        List<CourierBean> list = new ArrayList<>();
         for(int i=0;i<5;i++){
-            DeliverBean d = new DeliverBean();
+            CourierBean d = new CourierBean();
             d.setId(i);
             d.setName("熊"+i);
             d.setPhone("13515454555");
@@ -98,5 +98,27 @@ public class CourierFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onVisible() {
+        super.onVisible();
+        if(!isResumed()){
+            return;
+        }
+        mRunnable = new CourierListRunnable();
+        mHandler.postDelayed(mRunnable,OrderHelper.DELAY_LOAD_TIME);
+    }
+
+    @Override
+    public void onInVisible() {
+        super.onInVisible();
+    }
+
+    class CourierListRunnable implements Runnable{
+        @Override
+        public void run() {
+            mCourierPresenter.loadCouriersList();
+        }
     }
 }

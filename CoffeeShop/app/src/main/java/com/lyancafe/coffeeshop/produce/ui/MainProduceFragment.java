@@ -508,6 +508,9 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
 
     @OnClick({R.id.contant_issue_feedback, R.id.btn_assign, R.id.ll_user_remark, R.id.ll_csad_remark, R.id.btn_finish_produce, R.id.btn_print_order, R.id.btn_produce_print})
     public void onClick(View view) {
+        if(mOrder==null){
+            return;
+        }
         switch (view.getId()) {
             case R.id.contant_issue_feedback:
                 //问题反馈

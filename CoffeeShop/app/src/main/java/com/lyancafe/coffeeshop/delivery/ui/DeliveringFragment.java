@@ -12,17 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.adapter.DeliveringRvAdapter;
-import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.bean.XlsResponse;
-import com.lyancafe.coffeeshop.callback.JsonCallback;
-import com.lyancafe.coffeeshop.event.UpdateDeliverFragmentTabOrderCount;
 import com.lyancafe.coffeeshop.base.BaseFragment;
-import com.lyancafe.coffeeshop.helper.HttpHelper;
+import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.delivery.presenter.DeliveringPresenter;
+import com.lyancafe.coffeeshop.delivery.presenter.DeliveringPresenterImpl;
+import com.lyancafe.coffeeshop.delivery.view.DeliveringView;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,25 +26,19 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import okhttp3.Call;
-import okhttp3.Response;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link DeliveringFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DeliveringFragment extends BaseFragment implements DeliverFragment.FilterOrdersListenter{
+public class DeliveringFragment extends BaseFragment implements MainDeliverFragment.FilterOrdersListenter,DeliveringView{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     public List<OrderBean> allOrderList = new ArrayList<>();
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     @BindView(R.id.rv_delivering)
     RecyclerView mRecyclerView;
@@ -58,37 +48,19 @@ public class DeliveringFragment extends BaseFragment implements DeliverFragment.
     private Handler mHandler;
     private DeliveringTaskRunnable mRunnable;
 
+    private DeliveringPresenter mDeliveringPresenter;
+
     public DeliveringFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DeliveringFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static DeliveringFragment newInstance(String param1, String param2) {
-        DeliveringFragment fragment = new DeliveringFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        Log.d("xls","DeliveringFragment-onCreate");
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
         mHandler = new Handler();
+        mDeliveringPresenter  =  new DeliveringPresenterImpl(getContext(),this);
     }
 
     @Override
@@ -113,8 +85,15 @@ public class DeliveringFragment extends BaseFragment implements DeliverFragment.
     }
 
     @Override
+    public void addOrdersToList(List<OrderBean> orders) {
+        allOrderList.clear();
+        allOrderList.addAll(orders);
+        mAdapter.setData(orders, MainDeliverFragment.category);
+    }
+
+    @Override
     public void filter(String category) {
-        mAdapter.setData(allOrderList,DeliverFragment.category);
+        mAdapter.setData(allOrderList, MainDeliverFragment.category);
     }
 
     @Override
@@ -136,15 +115,6 @@ public class DeliveringFragment extends BaseFragment implements DeliverFragment.
         if(mHandler!=null){
             mHandler=null;
         }
-    }
-
-    //处理服务器返回数据---配送中
-    private void handleDeliveryingResponse(XlsResponse xlsResponse,Call call,Response response){
-        List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
-        EventBus.getDefault().post(new UpdateDeliverFragmentTabOrderCount(1,orderBeans.size()));
-        allOrderList.clear();
-        allOrderList.addAll(orderBeans);
-        mAdapter.setData(orderBeans,DeliverFragment.category);
     }
 
 
@@ -170,13 +140,7 @@ public class DeliveringFragment extends BaseFragment implements DeliverFragment.
     class DeliveringTaskRunnable implements Runnable{
         @Override
         public void run() {
-            HttpHelper.getInstance().reqDeliveryingData(new JsonCallback<XlsResponse>() {
-                @Override
-                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                    handleDeliveryingResponse(xlsResponse,call,response);
-                }
-
-            });
+            mDeliveringPresenter.loadDeliveringOrderList();
         }
     }
 }

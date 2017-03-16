@@ -6,14 +6,14 @@ import okhttp3.Call;
 import okhttp3.Response;
 
 /**
- * Created by Administrator on 2017/3/15.
+ * Created by Administrator on 2017/3/16.
  */
 
-public interface ToFetchPresenter {
+public interface DeliveringPresenter {
 
     //加载待取货列表数据
-    void loadToFetchOrderList();
+    void loadDeliveringOrderList();
 
     //处理待取货列表接口返回结果
-    void handleProudcedResponse(XlsResponse xlsResponse, Call call, Response response);
+    void handleDeliveringResponse(XlsResponse xlsResponse, Call call, Response response);
 }

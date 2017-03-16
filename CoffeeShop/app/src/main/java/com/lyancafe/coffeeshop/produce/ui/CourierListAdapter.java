@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.produce.model.CourierBean;
+import com.lyancafe.coffeeshop.produce.model.DeliverBean;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.List;
 public class CourierListAdapter extends BaseAdapter{
 
     private Context mContext;
-    private List<CourierBean> courierList = new ArrayList<>();
+    private List<DeliverBean> courierList = new ArrayList<>();
 
     public CourierListAdapter(Context mContext) {
         this.mContext = mContext;
@@ -55,7 +55,7 @@ public class CourierListAdapter extends BaseAdapter{
         }else{
             holder = (CourierViewHolder) convertView.getTag();
         }
-        CourierBean courierBean = courierList.get(position);
+        DeliverBean courierBean = courierList.get(position);
         holder.courierNameText.setText(courierBean.getName());
         if(courierBean.getType()==1){
             holder.courierJobText.setText("(全职)");
@@ -74,7 +74,7 @@ public class CourierListAdapter extends BaseAdapter{
     }
 
 
-    public void setData(List<CourierBean> list){
+    public void setData(List<DeliverBean> list){
         this.courierList = list;
         notifyDataSetChanged();
     }

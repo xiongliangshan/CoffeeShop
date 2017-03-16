@@ -4,7 +4,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
@@ -16,14 +15,14 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseActivity;
-import com.lyancafe.coffeeshop.delivery.ui.DeliverFragment;
-import com.lyancafe.coffeeshop.produce.ui.MainProduceFragment;
+import com.lyancafe.coffeeshop.delivery.ui.MainDeliverFragment;
 import com.lyancafe.coffeeshop.fragment.ShopFragment;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.main.presenter.MainPresenter;
 import com.lyancafe.coffeeshop.main.presenter.MainPresenterImpl;
 import com.lyancafe.coffeeshop.main.view.MainView;
+import com.lyancafe.coffeeshop.produce.ui.MainProduceFragment;
 import com.lyancafe.coffeeshop.service.TaskService;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
@@ -49,12 +48,12 @@ import butterknife.OnClick;
 /**
  * Created by Administrator on 2015/9/18.
  */
-public class HomeActivity extends BaseActivity implements DeliverFragment.OnFragmentInteractionListener,MainView{
+public class HomeActivity extends BaseActivity implements MainView{
 
     private static final String TAG ="main";
     public List<Fragment> fragmentsList = new ArrayList<Fragment>();
     private MainProduceFragment orderFrag;
-    private DeliverFragment deliverFragment;
+    private MainDeliverFragment deliverFragment;
     private ShopFragment shopFragment;
     private TaskService taskService;
     private ServiceConnection connection;
@@ -135,7 +134,7 @@ public class HomeActivity extends BaseActivity implements DeliverFragment.OnFrag
         curVerText.setText("当前版本:" + MyUtil.getVersion(context));
 
         orderFrag =  new MainProduceFragment();
-        deliverFragment = DeliverFragment.newInstance("","");
+        deliverFragment = new MainDeliverFragment();
         shopFragment = new ShopFragment();
         fragmentsList.add(orderFrag);
         fragmentsList.add(deliverFragment);
@@ -212,7 +211,7 @@ public class HomeActivity extends BaseActivity implements DeliverFragment.OnFrag
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         if(fragment instanceof MainProduceFragment){
             ft.hide(deliverFragment).hide(shopFragment).show(orderFrag);
-        }else if(fragment instanceof DeliverFragment){
+        }else if(fragment instanceof MainDeliverFragment){
             ft.hide(orderFrag).hide(shopFragment).show(deliverFragment);
         }else{
             ft.hide(orderFrag).hide(deliverFragment).show(shopFragment);
@@ -222,9 +221,4 @@ public class HomeActivity extends BaseActivity implements DeliverFragment.OnFrag
     }
 
 
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
 }

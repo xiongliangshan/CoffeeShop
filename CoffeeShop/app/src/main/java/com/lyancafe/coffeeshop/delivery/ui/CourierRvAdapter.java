@@ -1,14 +1,13 @@
-package com.lyancafe.coffeeshop.adapter;
+package com.lyancafe.coffeeshop.delivery.ui;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.bean.DeliverBean;
+import com.lyancafe.coffeeshop.delivery.model.CourierBean;
 
 import java.util.List;
 
@@ -23,9 +22,9 @@ public class CourierRvAdapter extends RecyclerView.Adapter<CourierRvAdapter.View
 
 
 
-    private List<DeliverBean> deliverBeanList;
+    private List<CourierBean> deliverBeanList;
 
-    public CourierRvAdapter(List<DeliverBean> deliverBeanList) {
+    public CourierRvAdapter(List<CourierBean> deliverBeanList) {
         this.deliverBeanList = deliverBeanList;
     }
 
@@ -37,7 +36,7 @@ public class CourierRvAdapter extends RecyclerView.Adapter<CourierRvAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        DeliverBean deliverBean = deliverBeanList.get(position);
+        CourierBean deliverBean = deliverBeanList.get(position);
         holder.tvDistance.setText("距离门店" +deliverBean.getDistanceToShop()+"米");
         holder.tvName.setText(deliverBean.getName());
         holder.tvOrderCount.setText(String.valueOf(deliverBean.getDeliveringOrderCount()));
@@ -62,5 +61,10 @@ public class CourierRvAdapter extends RecyclerView.Adapter<CourierRvAdapter.View
             super(itemView);
             ButterKnife.bind(this,itemView);
         }
+    }
+
+    public void setData(List<CourierBean> list){
+        this.deliverBeanList = list;
+        notifyDataSetChanged();
     }
 }

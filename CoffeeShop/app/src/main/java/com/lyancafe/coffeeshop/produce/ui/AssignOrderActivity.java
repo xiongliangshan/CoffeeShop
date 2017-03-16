@@ -7,7 +7,7 @@ import android.util.Log;
 import android.widget.Spinner;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.produce.model.CourierBean;
+import com.lyancafe.coffeeshop.produce.model.DeliverBean;
 import com.lyancafe.coffeeshop.produce.presenter.AssignOrderPresenter;
 import com.lyancafe.coffeeshop.produce.presenter.AssignOrderPresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.AssignOrderView;
@@ -28,7 +28,7 @@ public class AssignOrderActivity extends Activity implements AssignOrderView{
     private Context mContext;
     @BindView(R.id.spinner_courier) Spinner courierSpinner;
     private CourierListAdapter mAdapter;
-    private CourierBean mCourier = null;
+    private DeliverBean mCourier = null;
     private long mOrderId = 0;
     private AssignOrderPresenter mAssignOrderPresenter;
 
@@ -52,7 +52,7 @@ public class AssignOrderActivity extends Activity implements AssignOrderView{
 
     @OnItemSelected(value = R.id.spinner_courier,callback = OnItemSelected.Callback.ITEM_SELECTED)
     void onItemSelected(int position){
-        mCourier = (CourierBean) mAdapter.getItem(position);
+        mCourier = (DeliverBean) mAdapter.getItem(position);
         Log.d(TAG,"选择了:"+mCourier.toString());
     }
 
@@ -74,7 +74,7 @@ public class AssignOrderActivity extends Activity implements AssignOrderView{
 
 
     @Override
-    public void addDeliversToList(List<CourierBean> courierBeanList) {
+    public void addDeliversToList(List<DeliverBean> courierBeanList) {
         mAdapter.setData(courierBeanList);
     }
 
