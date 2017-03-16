@@ -4,7 +4,6 @@ package com.lyancafe.coffeeshop.produce.presenter;
 import android.app.Activity;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.event.RecallOrderEvent;

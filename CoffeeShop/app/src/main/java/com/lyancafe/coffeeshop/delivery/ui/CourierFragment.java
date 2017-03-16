@@ -66,8 +66,13 @@ public class CourierFragment extends BaseFragment implements CourierView{
     }
 
     @Override
-    public void addCouriersToList(List<CourierBean> couriers) {
-        mAdapter.setData(couriers);
+    public void bindDataToListView(List<CourierBean> list) {
+        mAdapter.setData(list);
+    }
+
+    @Override
+    public void showToast(String promptStr) {
+
     }
 
     private void initView(){

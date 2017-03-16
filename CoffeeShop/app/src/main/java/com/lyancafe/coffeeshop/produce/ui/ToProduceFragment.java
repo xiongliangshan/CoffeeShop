@@ -27,6 +27,7 @@ import com.lyancafe.coffeeshop.produce.presenter.ToProducePresenter;
 import com.lyancafe.coffeeshop.produce.presenter.ToProducePresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.ToProduceView;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -101,6 +102,20 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
     }
 
     @Override
+    public void bindDataToListView(List<OrderBean> list) {
+        allOrderList.clear();
+        allOrderList.addAll(list);
+        if(isVisible){
+            mAdapter.setData(list, MainProduceFragment.category);
+        }
+    }
+
+    @Override
+    public void showToast(String promptStr) {
+        ToastUtil.showToast(getActivity(),promptStr);
+    }
+
+    @Override
     public void filter(String category) {
         Log.d("xls","ToProduce category = "+category);
         mAdapter.setData(allOrderList, MainProduceFragment.category);
@@ -139,15 +154,6 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
     }
 
 
-
-    @Override
-    public void addOrdersToList(List<OrderBean> orders) {
-        allOrderList.clear();
-        allOrderList.addAll(orders);
-        if(isVisible){
-            mAdapter.setData(orders, MainProduceFragment.category);
-        }
-    }
 
     @Override
     public void onVisible() {

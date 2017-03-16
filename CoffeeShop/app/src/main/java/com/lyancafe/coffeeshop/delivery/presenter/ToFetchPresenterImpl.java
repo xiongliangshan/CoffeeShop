@@ -43,7 +43,7 @@ public class ToFetchPresenterImpl implements ToFetchPresenter,ToFetchModelImpl.O
     public void handleProudcedResponse(XlsResponse xlsResponse, Call call, Response response) {
         List<OrderBean> orderBeans = OrderBean.parseJsonOrders(mContext, xlsResponse);
         EventBus.getDefault().post(new UpdateDeliverFragmentTabOrderCount(1,orderBeans.size()));
-        mToFetchView.addOrdersToList(orderBeans);
+        mToFetchView.bindDataToListView(orderBeans);
     }
 
 

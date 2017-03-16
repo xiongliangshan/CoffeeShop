@@ -25,6 +25,7 @@ import com.lyancafe.coffeeshop.produce.presenter.ProducingPresenter;
 import com.lyancafe.coffeeshop.produce.presenter.ProducingPresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.ProducingView;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -94,10 +95,15 @@ public class ProducingFragment extends BaseFragment implements MainProduceFragme
     }
 
     @Override
-    public void addOrdersToList(List<OrderBean> orders) {
+    public void bindDataToListView(List<OrderBean> list) {
         allOrderList.clear();
-        allOrderList.addAll(orders);
-        mAdapter.setData(orders, MainProduceFragment.category);
+        allOrderList.addAll(list);
+        mAdapter.setData(list, MainProduceFragment.category);
+    }
+
+    @Override
+    public void showToast(String promptStr) {
+        ToastUtil.showToast(getActivity(),promptStr);
     }
 
     @Override

@@ -8,7 +8,6 @@ import com.lyancafe.coffeeshop.delivery.model.CourierBean;
 import com.lyancafe.coffeeshop.delivery.model.CourierModel;
 import com.lyancafe.coffeeshop.delivery.model.CourierModelImpl;
 import com.lyancafe.coffeeshop.delivery.view.CourierView;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.util.List;
 
@@ -40,9 +39,9 @@ public class CourierPresenterImpl implements CourierPresenter,CourierModelImpl.O
     public void handleCourierListResponse(XlsResponse xlsResponse, Call call, Response response) {
         if(xlsResponse.status==0){
             List<CourierBean> couriers = CourierBean.parseJsonToCouriers(xlsResponse);
-            mCourierView.addCouriersToList(couriers);
+            mCourierView.bindDataToListView(couriers);
         }else{
-            ToastUtil.show(mContext,xlsResponse.message);
+            mCourierView.showToast(xlsResponse.message);
         }
     }
 

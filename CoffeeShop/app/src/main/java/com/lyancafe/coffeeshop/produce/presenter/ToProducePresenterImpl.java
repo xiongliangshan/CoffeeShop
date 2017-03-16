@@ -19,7 +19,6 @@ import com.lyancafe.coffeeshop.login.ui.LoginActivity;
 import com.lyancafe.coffeeshop.produce.model.ToProduceModel;
 import com.lyancafe.coffeeshop.produce.model.ToProduceModelImpl;
 import com.lyancafe.coffeeshop.produce.view.ToProduceView;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -55,11 +54,11 @@ public class ToProducePresenterImpl implements ToProducePresenter,ToProduceModel
         if(xlsResponse.status==0){
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(mContext, xlsResponse);
             EventBus.getDefault().post(new UpdateProduceFragmentTabOrderCount(0, orderBeans.size()));
-            mToProduceView.addOrdersToList(orderBeans);
+            mToProduceView.bindDataToListView(orderBeans);
 
         }else if(xlsResponse.status==103){
             //token 无效
-            ToastUtil.showToast(mContext, xlsResponse.message);
+            mToProduceView.showToast(xlsResponse.message);
             UserBean userBean = LoginHelper.getLoginBean(mContext);
             userBean.setToken("");
             LoginHelper.saveLoginBean(mContext, userBean);
@@ -97,12 +96,12 @@ public class ToProducePresenterImpl implements ToProducePresenter,ToProduceModel
     @Override
     public void handleStartProduceResponse(Activity activity,XlsResponse xlsResponse, Call call, Response response) {
         if(xlsResponse.status == 0){
-            ToastUtil.showToast(activity, R.string.do_success);
+            mToProduceView.showToast(mContext.getString(R.string.do_success));
             int id  = xlsResponse.data.getIntValue("id");
             mToProduceView.removeItemFromList(id);
             EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,1));
         }else{
-            ToastUtil.showToast(activity, xlsResponse.message);
+            mToProduceView.showToast(xlsResponse.message);
         }
     }
 }

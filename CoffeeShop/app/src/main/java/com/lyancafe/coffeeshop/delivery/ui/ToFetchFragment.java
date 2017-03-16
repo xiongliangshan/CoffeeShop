@@ -21,6 +21,7 @@ import com.lyancafe.coffeeshop.event.RecallOrderEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -84,10 +85,15 @@ public class ToFetchFragment extends BaseFragment implements MainDeliverFragment
     }
 
     @Override
-    public void addOrdersToList(List<OrderBean> orders) {
+    public void bindDataToListView(List<OrderBean> list) {
         allOrderList.clear();
-        allOrderList.addAll(orders);
-        mAdapter.setData(orders, MainDeliverFragment.category);
+        allOrderList.addAll(list);
+        mAdapter.setData(list, MainDeliverFragment.category);
+    }
+
+    @Override
+    public void showToast(String promptStr) {
+        ToastUtil.showToast(getActivity(),promptStr);
     }
 
     @Override

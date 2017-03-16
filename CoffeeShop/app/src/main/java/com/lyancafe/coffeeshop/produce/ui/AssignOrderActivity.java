@@ -11,6 +11,7 @@ import com.lyancafe.coffeeshop.produce.model.DeliverBean;
 import com.lyancafe.coffeeshop.produce.presenter.AssignOrderPresenter;
 import com.lyancafe.coffeeshop.produce.presenter.AssignOrderPresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.AssignOrderView;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.util.List;
 
@@ -74,8 +75,13 @@ public class AssignOrderActivity extends Activity implements AssignOrderView{
 
 
     @Override
-    public void addDeliversToList(List<DeliverBean> courierBeanList) {
-        mAdapter.setData(courierBeanList);
+    public void bindDataToListView(List<DeliverBean> list) {
+        mAdapter.setData(list);
+    }
+
+    @Override
+    public void showToast(String promptStr) {
+        ToastUtil.showToast(this,promptStr);
     }
 
     @Override

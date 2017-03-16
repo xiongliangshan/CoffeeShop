@@ -15,7 +15,6 @@ import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.produce.model.ProducingModel;
 import com.lyancafe.coffeeshop.produce.model.ProducingModelImpl;
 import com.lyancafe.coffeeshop.produce.view.ProducingView;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -49,7 +48,7 @@ public class ProducingPresenterImpl implements ProducingPresenter,ProducingModel
     public void handleProudcingResponse(XlsResponse xlsResponse, Call call, Response response) {
         List<OrderBean> orderBeans = OrderBean.parseJsonOrders(mContext, xlsResponse);
         EventBus.getDefault().post(new UpdateProduceFragmentTabOrderCount(1,orderBeans.size()));
-        mProducingView.addOrdersToList(orderBeans);
+        mProducingView.bindDataToListView(orderBeans);
     }
 
     @Override
@@ -65,13 +64,13 @@ public class ProducingPresenterImpl implements ProducingPresenter,ProducingModel
     @Override
     public void handleFinishedProduceResponse(Activity activity, XlsResponse xlsResponse, Call call, Response response) {
         if(xlsResponse.status == 0){
-            ToastUtil.showToast(activity, R.string.do_success);
+            mProducingView.showToast(mContext.getString(R.string.do_success));
             int id  = xlsResponse.data.getIntValue("id");
             mProducingView.removeItemFromList(id);
             EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.FINISHPRODUCE,1));
 
         }else{
-            ToastUtil.showToast(activity, xlsResponse.message);
+            mProducingView.showToast(xlsResponse.message);
         }
     }
 

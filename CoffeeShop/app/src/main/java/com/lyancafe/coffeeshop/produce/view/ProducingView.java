@@ -1,5 +1,6 @@
 package com.lyancafe.coffeeshop.produce.view;
 
+import com.lyancafe.coffeeshop.base.BaseView;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 
 import java.util.List;
@@ -8,11 +9,7 @@ import java.util.List;
 * Created by Administrator on 2017/03/15
 */
 
-public interface ProducingView{
-
-    //数据设置到列表显示
-    void addOrdersToList(List<OrderBean> orders);
-
+public interface ProducingView extends BaseView<OrderBean>{
 
     //从列表中删除某个item
     void removeItemFromList(int id);

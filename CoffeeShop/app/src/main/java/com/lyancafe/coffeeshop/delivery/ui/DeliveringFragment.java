@@ -19,6 +19,7 @@ import com.lyancafe.coffeeshop.delivery.presenter.DeliveringPresenterImpl;
 import com.lyancafe.coffeeshop.delivery.view.DeliveringView;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,10 +86,15 @@ public class DeliveringFragment extends BaseFragment implements MainDeliverFragm
     }
 
     @Override
-    public void addOrdersToList(List<OrderBean> orders) {
+    public void bindDataToListView(List<OrderBean> list) {
         allOrderList.clear();
-        allOrderList.addAll(orders);
-        mAdapter.setData(orders, MainDeliverFragment.category);
+        allOrderList.addAll(list);
+        mAdapter.setData(list, MainDeliverFragment.category);
+    }
+
+    @Override
+    public void showToast(String promptStr) {
+        ToastUtil.showToast(getActivity(),promptStr);
     }
 
     @Override
