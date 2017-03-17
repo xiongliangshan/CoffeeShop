@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.common.OrderHelper;
 
 /**
  * Created by Administrator on 2016/2/1.

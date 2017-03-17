@@ -13,10 +13,7 @@ import android.widget.RadioGroup;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.EvaluationBean;
-import com.lyancafe.coffeeshop.bean.XlsResponse;
-import com.lyancafe.coffeeshop.callback.JsonCallback;
-import com.lyancafe.coffeeshop.helper.HttpHelper;
-import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.shop.presenter.EvaluationPresenter;
 import com.lyancafe.coffeeshop.shop.presenter.EvaluationPresenterImpl;
 import com.lyancafe.coffeeshop.shop.view.EvaluationView;
@@ -31,9 +28,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import okhttp3.Call;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class EvaluationFragment extends BaseFragment implements EvaluationView {
 

@@ -17,12 +17,7 @@ public interface ToProducePresenter {
     //加载待生产列表
     void loadToProduceOrderList();
 
-    //处理待生产列表返回结果
-    void handleToProudceResponse(XlsResponse xlsResponse, Call call, Response response);
-
     //点击开始生产
     void reqStartProduceAndPrint(final Activity activity, final OrderBean order);
 
-    //处理开始生产返回结果
-    void handleStartProduceResponse(Activity activity,XlsResponse xlsResponse,Call call,Response response);
 }

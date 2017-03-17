@@ -23,7 +23,7 @@ import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.UpdateDeliverOrderDetailEvent;
-import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.common.OrderHelper;
 
 import org.greenrobot.eventbus.EventBus;
 

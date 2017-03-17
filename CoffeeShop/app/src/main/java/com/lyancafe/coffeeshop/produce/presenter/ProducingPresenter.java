@@ -17,12 +17,7 @@ public interface ProducingPresenter {
     //加载生产中列表
     void loadProducingOrderList();
 
-    //处理待生产列表返回结果
-    void handleProudcingResponse(XlsResponse xlsResponse, Call call, Response response);
-
     //点击生产完成发送请求
     void reqFinishProduce(final Activity activity, final OrderBean order);
 
-    //处理生产完成返回结果
-    void handleFinishedProduceResponse(Activity activity,XlsResponse xlsResponse,Call call,Response response);
 }

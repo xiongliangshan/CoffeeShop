@@ -3,7 +3,7 @@ package com.lyancafe.coffeeshop.produce.model;
 
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
-import com.lyancafe.coffeeshop.helper.HttpHelper;
+import com.lyancafe.coffeeshop.common.HttpHelper;
 
 import okhttp3.Call;
 import okhttp3.Response;

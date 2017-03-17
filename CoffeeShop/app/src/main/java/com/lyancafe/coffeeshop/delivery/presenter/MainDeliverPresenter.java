@@ -15,6 +15,4 @@ public interface MainDeliverPresenter {
     //订单撤回请求
     void reqRecallOrder(final Activity activity, final long orderId);
 
-    //处理订单撤回返回的结果
-    void handleRecallOrderResponse(Activity activity, XlsResponse xlsResponse, Call call, Response response);
 }

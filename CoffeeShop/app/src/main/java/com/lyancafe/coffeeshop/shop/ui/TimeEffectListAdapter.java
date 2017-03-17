@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.TimeEffectBean;
-import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.common.OrderHelper;
 
 import java.util.ArrayList;
 import java.util.List;

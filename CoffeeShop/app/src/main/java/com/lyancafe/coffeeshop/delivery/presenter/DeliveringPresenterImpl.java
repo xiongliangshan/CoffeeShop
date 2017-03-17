@@ -41,15 +41,10 @@ public class DeliveringPresenterImpl implements DeliveringPresenter,DeliveringMo
     }
 
     @Override
-    public void handleDeliveringResponse(XlsResponse xlsResponse, Call call, Response response) {
+    public void onDeliveringSuccess(XlsResponse xlsResponse, Call call, Response response) {
         List<OrderBean> orderBeans = OrderBean.parseJsonOrders(mContext, xlsResponse);
         EventBus.getDefault().post(new UpdateDeliverFragmentTabOrderCount(2,orderBeans.size()));
         mDeliveringView.bindDataToListView(orderBeans);
-    }
-
-    @Override
-    public void onDeliveringSuccess(XlsResponse xlsResponse, Call call, Response response) {
-        handleDeliveringResponse(xlsResponse,call,response);
     }
 
     @Override

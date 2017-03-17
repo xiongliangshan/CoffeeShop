@@ -8,9 +8,8 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.produce.model.DeliverBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
-import com.lyancafe.coffeeshop.helper.HttpHelper;
+import com.lyancafe.coffeeshop.common.HttpHelper;
 import com.lyancafe.coffeeshop.produce.view.AssignOrderView;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.util.List;
 
@@ -36,7 +35,12 @@ public class AssignOrderPresenterImpl implements AssignOrderPresenter{
         HttpHelper.getInstance().reqDeliverList(new JsonCallback<XlsResponse>() {
             @Override
             public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleDeliverListResponse(xlsResponse, call, response);
+                if(xlsResponse.status==0){
+                    List<DeliverBean> courierBeanList = DeliverBean.parseJsonToDelivers(xlsResponse);
+                    mAssignOrderView.bindDataToListView(courierBeanList);
+                }else{
+                    mAssignOrderView.showToast(xlsResponse.message);
+                }
             }
         });
     }
@@ -46,30 +50,16 @@ public class AssignOrderPresenterImpl implements AssignOrderPresenter{
         HttpHelper.getInstance().reqAssignOrder(orderId, deliverId, new JsonCallback<XlsResponse>() {
             @Override
             public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleAssignOrderResponse(xlsResponse,call,response);
+                if(xlsResponse.status==0){
+                    mAssignOrderView.showToast(mContext.getString(R.string.assign_success));
+                    if(mContext instanceof Activity){
+                        ((Activity) mContext).finish();
+                    }
+                }else{
+                    mAssignOrderView.showToast(xlsResponse.message);
+                }
             }
         });
     }
 
-    @Override
-    public void handleDeliverListResponse(XlsResponse xlsResponse, Call call, Response response) {
-        if(xlsResponse.status==0){
-            List<DeliverBean> courierBeanList = DeliverBean.parseJsonToDelivers(xlsResponse);
-            mAssignOrderView.bindDataToListView(courierBeanList);
-        }else{
-            mAssignOrderView.showToast(xlsResponse.message);
-        }
-    }
-
-    @Override
-    public void handleAssignOrderResponse(XlsResponse xlsResponse, Call call, Response response) {
-        if(xlsResponse.status==0){
-            mAssignOrderView.showToast(mContext.getString(R.string.assign_success));
-            if(mContext instanceof Activity){
-                ((Activity) mContext).finish();
-            }
-        }else{
-            mAssignOrderView.showToast(xlsResponse.message);
-        }
-    }
 }

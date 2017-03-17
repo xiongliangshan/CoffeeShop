@@ -1,4 +1,4 @@
-package com.lyancafe.coffeeshop.helper;
+package com.lyancafe.coffeeshop.common;
 
 import android.text.TextUtils;
 import android.util.Log;

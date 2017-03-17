@@ -17,9 +17,4 @@ public interface AssignOrderPresenter {
     //指派订单请求
     void assignOrder(long orderId,long deliverId);
 
-    //处理服务器返回的小哥列表
-    void handleDeliverListResponse(XlsResponse xlsResponse, Call call, Response response);
-
-    //处理服务器返回的指派结果
-    void handleAssignOrderResponse(XlsResponse xlsResponse,Call call,Response response);
 }

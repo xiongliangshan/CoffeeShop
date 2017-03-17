@@ -17,7 +17,7 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.delivery.presenter.DeliveringPresenter;
 import com.lyancafe.coffeeshop.delivery.presenter.DeliveringPresenterImpl;
 import com.lyancafe.coffeeshop.delivery.view.DeliveringView;
-import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 

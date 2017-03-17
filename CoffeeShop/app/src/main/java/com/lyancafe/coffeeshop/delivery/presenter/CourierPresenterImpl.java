@@ -35,20 +35,15 @@ public class CourierPresenterImpl implements CourierPresenter,CourierModelImpl.O
         mCourierModel.loadCouriers(this);
     }
 
+
     @Override
-    public void handleCourierListResponse(XlsResponse xlsResponse, Call call, Response response) {
+    public void onLoadCouriersSuccess(XlsResponse xlsResponse, Call call, Response response) {
         if(xlsResponse.status==0){
             List<CourierBean> couriers = CourierBean.parseJsonToCouriers(xlsResponse);
             mCourierView.bindDataToListView(couriers);
         }else{
             mCourierView.showToast(xlsResponse.message);
         }
-    }
-
-
-    @Override
-    public void onLoadCouriersSuccess(XlsResponse xlsResponse, Call call, Response response) {
-        handleCourierListResponse(xlsResponse,call,response);
     }
 
     @Override

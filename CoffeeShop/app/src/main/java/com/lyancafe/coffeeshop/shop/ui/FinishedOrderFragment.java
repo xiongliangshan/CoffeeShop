@@ -27,7 +27,7 @@ import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.event.UpdateFinishedOrderDetailEvent;
-import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.shop.presenter.FinishedPresenter;
 import com.lyancafe.coffeeshop.shop.presenter.FinishedPresenterImpl;
 import com.lyancafe.coffeeshop.shop.view.FinishedView;

@@ -41,7 +41,7 @@ import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.event.UpdatePrintStatusEvent;
 import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
 import com.lyancafe.coffeeshop.base.BaseFragment;
-import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.produce.presenter.MainProducePresenter;
 import com.lyancafe.coffeeshop.produce.presenter.MainProducePresenterImpl;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;

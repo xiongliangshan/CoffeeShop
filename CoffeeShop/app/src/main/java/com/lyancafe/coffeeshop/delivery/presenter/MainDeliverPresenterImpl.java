@@ -7,7 +7,7 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.event.RecallOrderEvent;
-import com.lyancafe.coffeeshop.helper.HttpHelper;
+import com.lyancafe.coffeeshop.common.HttpHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -26,19 +26,15 @@ public class MainDeliverPresenterImpl implements MainDeliverPresenter{
         HttpHelper.getInstance().reqRecallOrder(orderId, new DialogCallback<XlsResponse>(activity) {
             @Override
             public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleRecallOrderResponse(activity,xlsResponse, call, response);
+                if (xlsResponse.status == 0) {
+                    ToastUtil.showToast(activity, R.string.do_success);
+                    int id = xlsResponse.data.getIntValue("id");
+                    EventBus.getDefault().post(new RecallOrderEvent(10, id));
+                } else {
+                    ToastUtil.showToast(activity, xlsResponse.message);
+                }
             }
         });
     }
 
-    @Override
-    public void handleRecallOrderResponse(Activity activity, XlsResponse xlsResponse, Call call, Response response) {
-        if (xlsResponse.status == 0) {
-            ToastUtil.showToast(activity, R.string.do_success);
-            int id = xlsResponse.data.getIntValue("id");
-            EventBus.getDefault().post(new RecallOrderEvent(10, id));
-        } else {
-            ToastUtil.showToast(activity, xlsResponse.message);
-        }
-    }
 }

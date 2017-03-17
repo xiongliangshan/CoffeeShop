@@ -12,8 +12,8 @@ import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
-import com.lyancafe.coffeeshop.helper.HttpHelper;
-import com.lyancafe.coffeeshop.helper.LoginHelper;
+import com.lyancafe.coffeeshop.common.HttpHelper;
+import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.login.model.UserBean;
 import com.lyancafe.coffeeshop.login.ui.LoginActivity;
 import com.lyancafe.coffeeshop.produce.model.ToProduceModel;
@@ -49,8 +49,9 @@ public class ToProducePresenterImpl implements ToProducePresenter,ToProduceModel
     }
 
 
+
     @Override
-    public void handleToProudceResponse(XlsResponse xlsResponse, Call call, Response response) {
+    public void onToProSuccess(XlsResponse xlsResponse, Call call, Response response) {
         if(xlsResponse.status==0){
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(mContext, xlsResponse);
             EventBus.getDefault().post(new UpdateProduceFragmentTabOrderCount(0, orderBeans.size()));
@@ -72,12 +73,6 @@ public class ToProducePresenterImpl implements ToProducePresenter,ToProduceModel
         }
     }
 
-
-    @Override
-    public void onToProSuccess(XlsResponse xlsResponse, Call call, Response response) {
-        handleToProudceResponse(xlsResponse,call,response);
-    }
-
     @Override
     public void onToProFailure(Call call, Response response, Exception e) {
 
@@ -88,20 +83,16 @@ public class ToProducePresenterImpl implements ToProducePresenter,ToProduceModel
         HttpHelper.getInstance().reqStartProduce(order.getId(), new DialogCallback<XlsResponse>(activity) {
             @Override
             public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleStartProduceResponse(activity,xlsResponse,call,response);
+                if(xlsResponse.status == 0){
+                    mToProduceView.showToast(mContext.getString(R.string.do_success));
+                    int id  = xlsResponse.data.getIntValue("id");
+                    mToProduceView.removeItemFromList(id);
+                    EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,1));
+                }else{
+                    mToProduceView.showToast(xlsResponse.message);
+                }
             }
         });
     }
 
-    @Override
-    public void handleStartProduceResponse(Activity activity,XlsResponse xlsResponse, Call call, Response response) {
-        if(xlsResponse.status == 0){
-            mToProduceView.showToast(mContext.getString(R.string.do_success));
-            int id  = xlsResponse.data.getIntValue("id");
-            mToProduceView.removeItemFromList(id);
-            EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,1));
-        }else{
-            mToProduceView.showToast(xlsResponse.message);
-        }
-    }
 }

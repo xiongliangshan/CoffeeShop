@@ -15,7 +15,7 @@ import com.lyancafe.coffeeshop.delivery.model.CourierBean;
 import com.lyancafe.coffeeshop.delivery.presenter.CourierPresenter;
 import com.lyancafe.coffeeshop.delivery.presenter.CourierPresenterImpl;
 import com.lyancafe.coffeeshop.delivery.view.CourierView;
-import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 
 import java.util.ArrayList;

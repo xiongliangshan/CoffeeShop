@@ -39,17 +39,12 @@ public class ToFetchPresenterImpl implements ToFetchPresenter,ToFetchModelImpl.O
         mToFetchModel.loadToProduceOrderList(this);
     }
 
-    @Override
-    public void handleProudcedResponse(XlsResponse xlsResponse, Call call, Response response) {
-        List<OrderBean> orderBeans = OrderBean.parseJsonOrders(mContext, xlsResponse);
-        EventBus.getDefault().post(new UpdateDeliverFragmentTabOrderCount(1,orderBeans.size()));
-        mToFetchView.bindDataToListView(orderBeans);
-    }
-
 
     @Override
     public void onToFetchSuccess(XlsResponse xlsResponse, Call call, Response response) {
-        handleProudcedResponse(xlsResponse,call,response);
+        List<OrderBean> orderBeans = OrderBean.parseJsonOrders(mContext, xlsResponse);
+        EventBus.getDefault().post(new UpdateDeliverFragmentTabOrderCount(1,orderBeans.size()));
+        mToFetchView.bindDataToListView(orderBeans);
     }
 
     @Override

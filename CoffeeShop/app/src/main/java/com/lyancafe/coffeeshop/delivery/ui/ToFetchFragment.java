@@ -19,7 +19,7 @@ import com.lyancafe.coffeeshop.delivery.presenter.ToFetchPresenterImpl;
 import com.lyancafe.coffeeshop.delivery.view.ToFetchView;
 import com.lyancafe.coffeeshop.event.RecallOrderEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
-import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 

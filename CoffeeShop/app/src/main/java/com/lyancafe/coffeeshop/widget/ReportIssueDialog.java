@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
-import com.lyancafe.coffeeshop.helper.HttpHelper;
+import com.lyancafe.coffeeshop.common.HttpHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import okhttp3.Call;

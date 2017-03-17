@@ -17,15 +17,11 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.adapter.MaterialAdatapter;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.MaterialBean;
-import com.lyancafe.coffeeshop.bean.XlsResponse;
-import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.event.MaterialSelectEvent;
-import com.lyancafe.coffeeshop.helper.HttpHelper;
-import com.lyancafe.coffeeshop.helper.OrderHelper;
-import com.lyancafe.coffeeshop.helper.PrintHelper;
+import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.common.PrintHelper;
 import com.lyancafe.coffeeshop.shop.presenter.ShopManagerPresenter;
 import com.lyancafe.coffeeshop.shop.presenter.ShopManagerPresenterImpl;
 import com.lyancafe.coffeeshop.shop.view.ShopManagerView;
@@ -41,8 +37,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import okhttp3.Call;
-import okhttp3.Response;
 
 /**
  * Created by Administrator on 2015/9/1.

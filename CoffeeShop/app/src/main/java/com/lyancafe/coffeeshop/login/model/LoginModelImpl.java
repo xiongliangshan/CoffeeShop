@@ -8,7 +8,7 @@ import android.util.Log;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
-import com.lyancafe.coffeeshop.helper.HttpHelper;
+import com.lyancafe.coffeeshop.common.HttpHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,8 +16,8 @@ import java.util.Date;
 import okhttp3.Call;
 import okhttp3.Response;
 
-import static com.lyancafe.coffeeshop.helper.LoginHelper.getLoginTime;
-import static com.lyancafe.coffeeshop.helper.LoginHelper.saveCurrentDayFirstLoginTime;
+import static com.lyancafe.coffeeshop.common.LoginHelper.getLoginTime;
+import static com.lyancafe.coffeeshop.common.LoginHelper.saveCurrentDayFirstLoginTime;
 
 /**
 * Created by Administrator on 2017/03/13

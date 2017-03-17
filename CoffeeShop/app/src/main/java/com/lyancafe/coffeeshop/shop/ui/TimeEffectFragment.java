@@ -13,7 +13,7 @@ import android.widget.RadioGroup;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.TimeEffectBean;
-import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.shop.presenter.TimeEffectPresenter;
 import com.lyancafe.coffeeshop.shop.presenter.TimeEffectPresenterImpl;
 import com.lyancafe.coffeeshop.shop.view.TimeEffectView;

@@ -20,7 +20,7 @@ import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.RecallOrderEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.base.BaseFragment;
-import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.produce.presenter.ProducingPresenter;
 import com.lyancafe.coffeeshop.produce.presenter.ProducingPresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.ProducingView;

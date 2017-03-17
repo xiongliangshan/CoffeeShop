@@ -11,7 +11,7 @@ import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
-import com.lyancafe.coffeeshop.helper.HttpHelper;
+import com.lyancafe.coffeeshop.common.HttpHelper;
 import com.lyancafe.coffeeshop.produce.model.ProducingModel;
 import com.lyancafe.coffeeshop.produce.model.ProducingModelImpl;
 import com.lyancafe.coffeeshop.produce.view.ProducingView;
@@ -44,39 +44,31 @@ public class ProducingPresenterImpl implements ProducingPresenter,ProducingModel
         mProducingModel.loadProducingOrderList(this);
     }
 
-    @Override
-    public void handleProudcingResponse(XlsResponse xlsResponse, Call call, Response response) {
-        List<OrderBean> orderBeans = OrderBean.parseJsonOrders(mContext, xlsResponse);
-        EventBus.getDefault().post(new UpdateProduceFragmentTabOrderCount(1,orderBeans.size()));
-        mProducingView.bindDataToListView(orderBeans);
-    }
 
     @Override
     public void reqFinishProduce(final Activity activity, OrderBean order) {
         HttpHelper.getInstance().reqFinishedProduce(order.getId(), new DialogCallback<XlsResponse>(activity) {
             @Override
             public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleFinishedProduceResponse(activity,xlsResponse,call,response);
+                if(xlsResponse.status == 0){
+                    mProducingView.showToast(mContext.getString(R.string.do_success));
+                    int id  = xlsResponse.data.getIntValue("id");
+                    mProducingView.removeItemFromList(id);
+                    EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.FINISHPRODUCE,1));
+
+                }else{
+                    mProducingView.showToast(xlsResponse.message);
+                }
             }
         });
     }
 
-    @Override
-    public void handleFinishedProduceResponse(Activity activity, XlsResponse xlsResponse, Call call, Response response) {
-        if(xlsResponse.status == 0){
-            mProducingView.showToast(mContext.getString(R.string.do_success));
-            int id  = xlsResponse.data.getIntValue("id");
-            mProducingView.removeItemFromList(id);
-            EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.FINISHPRODUCE,1));
-
-        }else{
-            mProducingView.showToast(xlsResponse.message);
-        }
-    }
 
     @Override
     public void onProducingSuccess(XlsResponse xlsResponse, Call call, Response response) {
-        handleProudcingResponse(xlsResponse,call,response);
+        List<OrderBean> orderBeans = OrderBean.parseJsonOrders(mContext, xlsResponse);
+        EventBus.getDefault().post(new UpdateProduceFragmentTabOrderCount(1,orderBeans.size()));
+        mProducingView.bindDataToListView(orderBeans);
     }
 
     @Override
