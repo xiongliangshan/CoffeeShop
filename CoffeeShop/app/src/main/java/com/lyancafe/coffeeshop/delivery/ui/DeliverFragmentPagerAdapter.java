@@ -1,4 +1,4 @@
-package com.lyancafe.coffeeshop.adapter;
+package com.lyancafe.coffeeshop.delivery.ui;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;

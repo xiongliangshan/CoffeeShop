@@ -1,4 +1,4 @@
-package com.lyancafe.coffeeshop.fragment;
+package com.lyancafe.coffeeshop.shop.ui;
 
 import android.content.Context;
 import android.os.Bundle;

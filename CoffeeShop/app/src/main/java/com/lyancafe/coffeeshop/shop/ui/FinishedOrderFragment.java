@@ -1,4 +1,4 @@
-package com.lyancafe.coffeeshop.fragment;
+package com.lyancafe.coffeeshop.shop.ui;
 
 
 import android.content.Context;
@@ -23,16 +23,16 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.adapter.FinishedRvAdapter;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.bean.XlsResponse;
-import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.event.UpdateFinishedOrderDetailEvent;
-import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.shop.presenter.FinishedPresenter;
+import com.lyancafe.coffeeshop.shop.presenter.FinishedPresenterImpl;
+import com.lyancafe.coffeeshop.shop.view.FinishedView;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
@@ -47,14 +47,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import okhttp3.Call;
-import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreRecyclerView.PullLoadMoreListener {
+public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreRecyclerView.PullLoadMoreListener,FinishedView {
 
     @BindView(R.id.plmgv_order_list)
     PullLoadMoreRecyclerView pullLoadMoreRecyclerView;
@@ -65,7 +62,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     @BindView(R.id.tv_not_passed)
     TextView tvNotPassed;
     private FinishedRvAdapter mAdapter;
-    private long finishedLastOrderId = 0;
+    private long mLastOrderId = 0;
     private Context mContext;
 
     @BindView(R.id.tv_date)
@@ -95,10 +92,6 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     TextView userRemarkTxt;
     @BindView(R.id.csad_remark)
     TextView csadRemarkTxt;
-    @BindView(R.id.user_comment_tags)
-    TextView userCommentTagsText;
-    @BindView(R.id.user_comment_content)
-    TextView userCommentContentText;
     /**
      * 订单详情
      */
@@ -106,6 +99,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
     private Handler mHandler;
     private FineshedTaskRunnable mRunnable;
+    private FinishedPresenter mFinishedPresenter;
 
     public FinishedOrderFragment() {
 
@@ -122,6 +116,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mHandler = new Handler();
+        mFinishedPresenter = new FinishedPresenterImpl(getContext(),this);
     }
 
     @Override
@@ -152,6 +147,49 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
     }
 
+    @Override
+    public void bindDataToListView(List<OrderBean> list) {
+        mAdapter.setData(list);
+    }
+
+    @Override
+    public void appendListData(List<OrderBean> list) {
+        mAdapter.addData(list);
+    }
+
+    @Override
+    public void bindAmountDataToView(int ordersAmount, int cupsAmount) {
+        orderCountText.setText(String.valueOf(ordersAmount));
+        cupCountText.setText(String.valueOf(cupsAmount));
+    }
+
+    @Override
+    public void bindTimeEffectDataToView(double goodScale, double passedScale, double fallingScale) {
+        tvGood.setText((int)(goodScale*100)+"%");
+        tvPassed.setText((int)(passedScale*100)+"%");
+        tvNotPassed.setText((int)(fallingScale*100)+"%");
+    }
+
+
+
+    @Override
+    public void saveLastOrderId() {
+        if (mAdapter.list.size() > 0) {
+            mLastOrderId = mAdapter.list.get(mAdapter.list.size() - 1).getId();
+        } else {
+            mLastOrderId = 0;
+        }
+    }
+
+    @Override
+    public void stopLoadingProgress() {
+        pullLoadMoreRecyclerView.setPullLoadMoreCompleted();
+    }
+
+    @Override
+    public void showToast(String promptStr) {
+        ToastUtil.showToast(getActivity(),promptStr);
+    }
 
     private void updateDetailView(final OrderBean order) {
         if (order == null) {
@@ -162,8 +200,6 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
             orderDistanceText.setText("");
             userRemarkTxt.setText("");
             csadRemarkTxt.setText("");
-            userCommentTagsText.setText("");
-            userCommentContentText.setText("");
             itemsContainerLayout.removeAllViews();
         } else {
             shopOrderNumText.setText(OrderHelper.getShopOrderSn(order));
@@ -176,9 +212,6 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
             fillItemListData(itemsContainerLayout, order);
             userRemarkTxt.setText(order.getNotes());
             csadRemarkTxt.setText(order.getCsrNotes());
-            userCommentTagsText.setText(OrderHelper.getCommentTagsStr(order.getFeedbackTags()));
-            userCommentContentText.setText(order.getFeedback());
-
         }
 
     }
@@ -302,38 +335,13 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        HttpHelper.getInstance().reqFinishedTotalAmountData(new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleFinishedTotalAmountResponse(xlsResponse, call, response);
-            }
+        mFinishedPresenter.loadOrderAmounts();
+        mFinishedPresenter.loadFinishedOrders(0);
+        mFinishedPresenter.loadEffectPercent();
 
-        });
-        HttpHelper.getInstance().reqFinishedListData(0, new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleFinishedResponse(xlsResponse, call, response);
-            }
-        });
-        HttpHelper.getInstance().reqServiceEffectPersent(new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleServiceEffectResponse(xlsResponse, call, response);
-            }
-        });
+
     }
 
-    private void handleServiceEffectResponse(XlsResponse xlsResponse, Call call, Response response) {
-        if (xlsResponse.status == 0) {
-            double goodScale = xlsResponse.data.getDouble("goodScale");
-            double passedScale = xlsResponse.data.getDouble("passedScale");
-            double fallingScale = xlsResponse.data.getDouble("fallingScale");
-            tvGood.setText((int)(goodScale*100)+"%");
-            tvPassed.setText((int)(passedScale*100)+"%");
-            tvNotPassed.setText((int)(fallingScale*100)+"%");
-            Log.d("xls", "goodScale = " + goodScale + ", passedScale = " + passedScale + ",fallingScale = " + fallingScale);
-        }
-    }
 
     @Override
     public void onResume() {
@@ -370,42 +378,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
     @Override
     public void onLoadMore() {
-        HttpHelper.getInstance().reqFinishedListData(finishedLastOrderId, new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                pullLoadMoreRecyclerView.setPullLoadMoreCompleted();
-                handleFinishedResponse(xlsResponse, call, response);
-            }
-
-            @Override
-            public void onError(Call call, Response response, Exception e) {
-                super.onError(call, response, e);
-                pullLoadMoreRecyclerView.setPullLoadMoreCompleted();
-            }
-        });
-    }
-
-
-    //处理服务器返回数据---已完成
-    private void handleFinishedResponse(XlsResponse xlsResponse, Call call, Response response) {
-        Request request = call.request();
-        String isLoadMore = request.header("isLoadMore");
-        List<OrderBean> orderBeans = OrderBean.parseJsonOrders(getActivity(), xlsResponse);
-        if ("yes".equalsIgnoreCase(isLoadMore)) {
-            mAdapter.addData(orderBeans);
-            Log.d("xls", "addData orderBeans.size = " + orderBeans.size());
-        } else {
-            if (isVisible) {
-                mAdapter.setData(orderBeans);
-            }
-            Log.d("xls", "orderBeans.size = " + orderBeans.size());
-        }
-
-        if (mAdapter.list.size() > 0) {
-            finishedLastOrderId = mAdapter.list.get(mAdapter.list.size() - 1).getId();
-        } else {
-            finishedLastOrderId = 0;
-        }
+        mFinishedPresenter.loadFinishedOrders(mLastOrderId);
     }
 
 
@@ -424,25 +397,9 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     class FineshedTaskRunnable implements Runnable {
         @Override
         public void run() {
-            HttpHelper.getInstance().reqFinishedTotalAmountData(new JsonCallback<XlsResponse>() {
-                @Override
-                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                    handleFinishedTotalAmountResponse(xlsResponse, call, response);
-                }
-
-            });
-            HttpHelper.getInstance().reqFinishedListData(0, new JsonCallback<XlsResponse>() {
-                @Override
-                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                    handleFinishedResponse(xlsResponse, call, response);
-                }
-            });
-            HttpHelper.getInstance().reqServiceEffectPersent(new JsonCallback<XlsResponse>() {
-                @Override
-                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                    handleServiceEffectResponse(xlsResponse, call, response);
-                }
-            });
+            mFinishedPresenter.loadOrderAmounts();
+            mFinishedPresenter.loadFinishedOrders(0);
+            mFinishedPresenter.loadEffectPercent();
         }
     }
 
@@ -456,18 +413,8 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
         }
     }
 
-    //处理服务器返回的已完成订单总单量和杯量
-    private void handleFinishedTotalAmountResponse(XlsResponse xlsResponse, Call call, Response response) {
-        if (xlsResponse.status == 0) {
-            int ordersAmount = xlsResponse.data.getIntValue("totalOrdersAmount");
-            int cupsAmount = xlsResponse.data.getIntValue("totalCupsAmount");
-            orderCountText.setText(String.valueOf(ordersAmount));
-            cupCountText.setText(String.valueOf(cupsAmount));
-        }
-    }
 
-
-    @OnClick({R.id.ll_user_remark, R.id.ll_csad_remark, R.id.ll_user_comment})
+    @OnClick({R.id.ll_user_remark, R.id.ll_csad_remark})
     void onClick(View v) {
         switch (v.getId()) {
             case R.id.ll_user_remark:
@@ -477,10 +424,6 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
             case R.id.ll_csad_remark:
                 //客服备注
                 new InfoDetailDialog(getActivity()).show(csadRemarkTxt.getText().toString());
-                break;
-            case R.id.ll_user_comment:
-                //用户评价
-                new InfoDetailDialog(getActivity()).show(userCommentTagsText.getText().toString() + "\n" + userCommentContentText.getText().toString());
                 break;
         }
     }

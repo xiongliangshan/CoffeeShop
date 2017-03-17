@@ -1,4 +1,4 @@
-package com.lyancafe.coffeeshop.adapter;
+package com.lyancafe.coffeeshop.shop.ui;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

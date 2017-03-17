@@ -1,4 +1,4 @@
-package com.lyancafe.coffeeshop.fragment;
+package com.lyancafe.coffeeshop.shop.ui;
 
 
 import android.os.Bundle;
@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.adapter.ShopFragmentPagerAdapter;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ import butterknife.Unbinder;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ShopFragment extends BaseFragment implements TabLayout.OnTabSelectedListener{
+public class MainShopFragment extends BaseFragment implements TabLayout.OnTabSelectedListener{
 
     public static int tabIndex = 0;
     @BindView(R.id.tabLayout) TabLayout tabLayout;
@@ -37,7 +36,7 @@ public class ShopFragment extends BaseFragment implements TabLayout.OnTabSelecte
     private EvaluationFragment evaluationFragment;
     private ShopManagerFragment shopManagerFragment;
 
-    public ShopFragment() {
+    public MainShopFragment() {
     }
 
 

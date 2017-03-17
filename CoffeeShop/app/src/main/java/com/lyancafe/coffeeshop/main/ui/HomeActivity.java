@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseActivity;
 import com.lyancafe.coffeeshop.delivery.ui.MainDeliverFragment;
-import com.lyancafe.coffeeshop.fragment.ShopFragment;
+import com.lyancafe.coffeeshop.shop.ui.MainShopFragment;
 import com.lyancafe.coffeeshop.helper.LoginHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.main.presenter.MainPresenter;
@@ -54,7 +54,7 @@ public class HomeActivity extends BaseActivity implements MainView{
     public List<Fragment> fragmentsList = new ArrayList<Fragment>();
     private MainProduceFragment orderFrag;
     private MainDeliverFragment deliverFragment;
-    private ShopFragment shopFragment;
+    private MainShopFragment shopFragment;
     private TaskService taskService;
     private ServiceConnection connection;
     private Context context;
@@ -135,7 +135,7 @@ public class HomeActivity extends BaseActivity implements MainView{
 
         orderFrag =  new MainProduceFragment();
         deliverFragment = new MainDeliverFragment();
-        shopFragment = new ShopFragment();
+        shopFragment = new MainShopFragment();
         fragmentsList.add(orderFrag);
         fragmentsList.add(deliverFragment);
         fragmentsList.add(shopFragment);
