@@ -11,14 +11,17 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.adapter.EvaluationListAdapter;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.EvaluationBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
+import com.lyancafe.coffeeshop.shop.presenter.EvaluationPresenter;
+import com.lyancafe.coffeeshop.shop.presenter.EvaluationPresenterImpl;
+import com.lyancafe.coffeeshop.shop.view.EvaluationView;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lzy.okgo.OkGo;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
@@ -32,11 +35,9 @@ import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class EvaluationFragment extends BaseFragment {
+public class EvaluationFragment extends BaseFragment implements EvaluationView {
 
     private static String TAG = EvaluationFragment.class.getName();
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     @BindView(R.id.rb_all) RadioButton rbAll;
     @BindView(R.id.rb_bad_evaluation) RadioButton rbBadEvaluation;
     @BindView(R.id.rb_good_evaluation) RadioButton rbGoodEvaluation;
@@ -47,36 +48,21 @@ public class EvaluationFragment extends BaseFragment {
     private int mLastOrderId = 0;
     private int mType = 0;
 
-    private String mParam1;
-    private String mParam2;
-
     private Unbinder unbinder;
 
     private Handler mHandler;
     private EvaluationTaskRunnable mRunnable;
+    private EvaluationPresenter mEvaluationPresenter;
 
     public EvaluationFragment() {
 
     }
 
-
-    public static EvaluationFragment newInstance(String param1, String param2) {
-        EvaluationFragment fragment = new EvaluationFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
         mHandler = new Handler();
+        mEvaluationPresenter = new EvaluationPresenterImpl(getContext(),this);
     }
 
     @Override
@@ -104,58 +90,28 @@ public class EvaluationFragment extends BaseFragment {
             @Override
             public void onLoadMore() {
                 Log.d(TAG,"mLastOrderId = "+mLastOrderId);
-                HttpHelper.getInstance().reqEvaluationListData(mLastOrderId,mType, new JsonCallback<XlsResponse>() {
-                    @Override
-                    public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                        handleEvaluationListDataResponse(xlsResponse,call,response);
-                        pmrvEvaluationList.setPullLoadMoreCompleted();
-                    }
-
-                    @Override
-                    public void onError(Call call, Response response, Exception e) {
-                        super.onError(call, response, e);
-                        pmrvEvaluationList.setPullLoadMoreCompleted();
-                    }
-                });
-
-
+                mEvaluationPresenter.loadEvaluations(mLastOrderId,mType);
             }
         });
     }
 
-
-    /**
-     * 处理评论数量接口返回的数据
-     */
-    private void handleCommentCountResponse(XlsResponse xlsResponse,Call call,Response response){
-        if(xlsResponse.status==0){
-            int positive = xlsResponse.data.getIntValue("positive");
-            int negative = xlsResponse.data.getIntValue("negative");
-            Log.d(TAG,"positive = "+positive+",negative = "+negative);
-            if(rbBadEvaluation!=null && rbGoodEvaluation!=null){
-                if(positive>0){
-                    rbGoodEvaluation.setText("好评("+positive+")");
-                }
-                if(negative>0){
-                    rbBadEvaluation.setText("差评("+negative+")");
-                }
-
-            }
-
-        }
+    @Override
+    public void bindDataToListView(List<EvaluationBean> list) {
+        mAdapter.setData(list);
     }
 
-    private void handleEvaluationListDataResponse(XlsResponse xlsResponse, Call call, Response response) {
-        Log.d(TAG,"xlsponse = "+xlsResponse);
-        Request request = call.request();
-        String isLoadMore = request.header("isLoadMore");
-        List<EvaluationBean> list = EvaluationBean.parseJsonOrders(getContext(),xlsResponse);
-        if("yes".equalsIgnoreCase(isLoadMore)){
-            mAdapter.addData(list);
-        }else{
-            mAdapter.setData(list);
-        }
+    @Override
+    public void showToast(String promptStr) {
+        ToastUtil.showToast(getActivity(),promptStr);
+    }
 
+    @Override
+    public void appendListData(List<EvaluationBean> list) {
+        mAdapter.addData(list);
+    }
+
+    @Override
+    public void saveLastOrderId() {
         if(mAdapter.list.size()>0){
             mLastOrderId = mAdapter.list.get(mAdapter.list.size()-1).getOrderId();
         }else {
@@ -163,7 +119,23 @@ public class EvaluationFragment extends BaseFragment {
         }
     }
 
+    @Override
+    public void stopLoadingProgress() {
+        pmrvEvaluationList.setPullLoadMoreCompleted();
+    }
 
+    @Override
+    public void bindEvaluationAmount(int positive, int negative) {
+        if(rbBadEvaluation!=null && rbGoodEvaluation!=null){
+            if(positive>0){
+                rbGoodEvaluation.setText("好评("+positive+")");
+            }
+            if(negative>0){
+                rbBadEvaluation.setText("差评("+negative+")");
+            }
+
+        }
+    }
 
     @Override
     public void onDestroyView() {
@@ -194,12 +166,7 @@ public class EvaluationFragment extends BaseFragment {
                 mType = 4;
                 break;
         }
-        HttpHelper.getInstance().reqEvaluationListData(0, mType, new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleEvaluationListDataResponse(xlsResponse,call,response);
-            }
-        });
+        mEvaluationPresenter.loadEvaluations(0,mType);
     }
 
     @Override
@@ -226,18 +193,8 @@ public class EvaluationFragment extends BaseFragment {
     class EvaluationTaskRunnable implements Runnable{
         @Override
         public void run() {
-            HttpHelper.getInstance().reqCommentCount(new JsonCallback<XlsResponse>() {
-                @Override
-                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                    handleCommentCountResponse(xlsResponse,call,response);
-                }
-            });
-            HttpHelper.getInstance().reqEvaluationListData(0, mType, new JsonCallback<XlsResponse>() {
-                @Override
-                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                    handleEvaluationListDataResponse(xlsResponse,call,response);
-                }
-            });
+            mEvaluationPresenter.loadEvaluationAmount();
+            mEvaluationPresenter.loadEvaluations(0,mType);
         }
     }
 }

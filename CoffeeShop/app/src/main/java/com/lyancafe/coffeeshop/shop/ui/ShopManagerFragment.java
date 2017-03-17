@@ -17,7 +17,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.adapter.FragmentTabAdapter;
 import com.lyancafe.coffeeshop.adapter.MaterialAdatapter;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.MaterialBean;
@@ -27,6 +26,9 @@ import com.lyancafe.coffeeshop.event.MaterialSelectEvent;
 import com.lyancafe.coffeeshop.helper.HttpHelper;
 import com.lyancafe.coffeeshop.helper.OrderHelper;
 import com.lyancafe.coffeeshop.helper.PrintHelper;
+import com.lyancafe.coffeeshop.shop.presenter.ShopManagerPresenter;
+import com.lyancafe.coffeeshop.shop.presenter.ShopManagerPresenterImpl;
+import com.lyancafe.coffeeshop.shop.view.ShopManagerView;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -45,7 +47,7 @@ import okhttp3.Response;
 /**
  * Created by Administrator on 2015/9/1.
  */
-public class ShopManagerFragment extends BaseFragment {
+public class ShopManagerFragment extends BaseFragment implements ShopManagerView{
 
     private static final String TAG ="ShopManagerFragment";
     @BindView(R.id.rb_normal) RadioButton rbNormal;
@@ -63,7 +65,7 @@ public class ShopManagerFragment extends BaseFragment {
 
     private Handler mHandler;
     private ManagerTaskRunnable mRunnable;
-
+    private ShopManagerPresenter mShopManagerPresenter;
 
     public ShopManagerFragment() {
     }
@@ -78,6 +80,7 @@ public class ShopManagerFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mHandler = new Handler();
+        mShopManagerPresenter = new ShopManagerPresenterImpl(getContext(),this);
     }
 
 
@@ -105,6 +108,16 @@ public class ShopManagerFragment extends BaseFragment {
         ArrayList<MaterialBean> itemList = new ArrayList<>();
         materialAdatapter = new MaterialAdatapter(itemList, mContext);
         recyclerView.setAdapter(materialAdatapter);
+    }
+
+    @Override
+    public void bindDataToListView(List<MaterialBean> list) {
+        materialAdatapter.setData(list);
+    }
+
+    @Override
+    public void showToast(String promptStr) {
+        ToastUtil.showToast(getActivity(),promptStr);
     }
 
     @Subscribe
@@ -167,7 +180,6 @@ public class ShopManagerFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume--调用:" + FragmentTabAdapter.currentTab);
 
     }
 
@@ -223,24 +235,10 @@ public class ShopManagerFragment extends BaseFragment {
     }
 
 
-    private void handleMaterialListResponse(XlsResponse xlsResponse, Call call, Response response) {
-        if (xlsResponse.status == 0) {
-            List<MaterialBean> materialList = MaterialBean.parseJsonMaterials(mContext, xlsResponse);
-            materialAdatapter.setData(materialList);
-        } else {
-            ToastUtil.showToast(mContext, xlsResponse.message);
-        }
-    }
-
     private class ManagerTaskRunnable implements Runnable{
         @Override
         public void run() {
-            HttpHelper.getInstance().reqMaterialList(new JsonCallback<XlsResponse>() {
-                @Override
-                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                    handleMaterialListResponse(xlsResponse, call, response);
-                }
-            });
+          mShopManagerPresenter.loadMaterialList();
         }
     }
 }
