@@ -83,9 +83,9 @@ public class OrderHelper {
     public static String getDistanceFormat(double distance){
         DecimalFormat df   =new  DecimalFormat("#.#");
         if(distance>=1000){
-            return df.format(distance/1000.0)+"公里";
+            return df.format(distance/1000.0)+" 公里";
         }else{
-            return new DecimalFormat("#").format(distance)+"米";
+            return new DecimalFormat("#").format(distance)+" 米";
         }
 
     }

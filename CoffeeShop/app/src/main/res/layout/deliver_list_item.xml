@@ -58,6 +58,7 @@
             android:layout_height="1dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
+            android:layout_gravity="center"
             android:background="@color/bg_line_separator"/>
 
         <LinearLayout

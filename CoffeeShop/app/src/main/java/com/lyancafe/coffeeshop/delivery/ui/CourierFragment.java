@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public class CourierFragment extends BaseFragment implements CourierView{
+public class CourierFragment extends BaseFragment implements CourierView,CourierRvAdapter.MapListener{
 
     @BindView(R.id.rv_courier_list)
     RecyclerView rvCourierList;
@@ -79,8 +79,14 @@ public class CourierFragment extends BaseFragment implements CourierView{
         rvCourierList.setLayoutManager(new GridLayoutManager(getContext(),2));
         rvCourierList.setHasFixedSize(true);
         rvCourierList.addItemDecoration(new SpaceItemDecoration(2, OrderHelper.dip2Px(16, getActivity()), false));
-        mAdapter = new CourierRvAdapter(createTestData());
+        mAdapter = new CourierRvAdapter(createTestData(),this);
         rvCourierList.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void showMap(double lat, double lng) {
+        MapDialog mapDialog = MapDialog.newInstance(lat,lng);
+        mapDialog.show(getChildFragmentManager(),"map");
     }
 
     private List<CourierBean> createTestData() {

@@ -127,7 +127,9 @@ public class CourierBean {
         }
         try {
             JSONArray jsonArray = resp.data.getJSONArray("couriers");
-            list = JSON.parseArray(jsonArray.toString(),CourierBean.class);
+            if(jsonArray!=null){
+                list = JSON.parseArray(jsonArray.toString(),CourierBean.class);
+            }
         }catch (JSONException e){
             Log.e("json","parseJsonToCouriers ,解析失败");
         }
