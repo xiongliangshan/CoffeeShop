@@ -281,8 +281,8 @@ public class MainDeliverFragment extends BaseFragment implements TabLayout.OnTab
             receivePhoneTxt.setText(order.getPhone());
             receiveAddressTxt.setText(order.getAddress());
             if (order.getDeliveryTeam() == DeliveryTeam.HAIKUI) {
-                deliverNameTxt.setText("海葵配送");
-                deliverPhoneTxt.setText("");
+                deliverNameTxt.setText(order.getCourierName()+"(海葵配送)");
+                deliverPhoneTxt.setText(order.getCourierPhone());
             } else if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN) {
                 deliverNameTxt.setText("美团配送");
                 deliverPhoneTxt.setText("");
