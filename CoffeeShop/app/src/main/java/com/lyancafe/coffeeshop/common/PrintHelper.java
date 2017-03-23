@@ -105,7 +105,7 @@ public class PrintHelper {
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,i+1,4);
             bean.setCoffeeList(hotCupList.subList(i * 4, i * 4 + 4));
             bean.setOrderId(orderBean.getId());
-            bean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
+            bean.setShopOrderNo(OrderHelper.getPrintShopOrderSn(orderBean));
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
             bean.setIsGiftBox(isGiftBox);
@@ -127,7 +127,7 @@ public class PrintHelper {
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,i+1,hot_left_cup);
             bean.setCoffeeList(hotCupList.subList(i * 4, hotCupList.size()));
             bean.setOrderId(orderBean.getId());
-            bean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
+            bean.setShopOrderNo(OrderHelper.getPrintShopOrderSn(orderBean));
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
             bean.setIsGiftBox(isGiftBox);
@@ -150,7 +150,7 @@ public class PrintHelper {
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,hotBoxAmount+j+1,4);
             bean.setCoffeeList(coolCupList.subList(j * 4, j * 4 + 4));
             bean.setOrderId(orderBean.getId());
-            bean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
+            bean.setShopOrderNo(OrderHelper.getPrintShopOrderSn(orderBean));
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
             bean.setIsGiftBox(isGiftBox);
@@ -172,7 +172,7 @@ public class PrintHelper {
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,hotBoxAmount+j+1,cool_left_cup);
             bean.setCoffeeList(coolCupList.subList(j * 4, coolCupList.size()));
             bean.setOrderId(orderBean.getId());
-            bean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
+            bean.setShopOrderNo(OrderHelper.getPrintShopOrderSn(orderBean));
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
             bean.setIsGiftBox(isGiftBox);
@@ -418,7 +418,7 @@ public class PrintHelper {
               PrintCupBean printCupBean = new PrintCupBean(boxAmount,boxNumber,cupAmount,cupNumber);
               printCupBean.setLabelList(item.getRecipeFittingsList());
               printCupBean.setOrderId(orderBean.getId());
-              printCupBean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
+              printCupBean.setShopOrderNo(OrderHelper.getPrintShopOrderSn(orderBean));
               printCupBean.setInstant(orderBean.getInstant());
               printCupBean.setCoffee(item.getProduct());
               printCupBean.setColdHotProperty(item.getColdHotProperty());
@@ -439,7 +439,7 @@ public class PrintHelper {
                 PrintCupBean printCupBean = new PrintCupBean(boxAmount,boxNumber+hotBoxAmount,cupAmount,cupNumber);
                 printCupBean.setLabelList(item.getRecipeFittingsList());
                 printCupBean.setOrderId(orderBean.getId());
-                printCupBean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
+                printCupBean.setShopOrderNo(OrderHelper.getPrintShopOrderSn(orderBean));
                 printCupBean.setInstant(orderBean.getInstant());
                 printCupBean.setCoffee(item.getProduct());
                 printCupBean.setColdHotProperty(item.getColdHotProperty());

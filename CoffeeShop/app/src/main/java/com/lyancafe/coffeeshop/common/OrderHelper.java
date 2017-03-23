@@ -393,6 +393,29 @@ public class OrderHelper {
         return sb.toString();
     }
 
+    /**
+     * 打印标签上的门店单号
+     * @param orderBean
+     * @return
+     */
+    public static String getPrintShopOrderSn(OrderBean orderBean){
+        if(orderBean.getDeliveryTeam()== DeliveryTeam.MEITUAN){
+            return "美团"+orderBean.getMtShopOrderNo();
+        }
+        String shopOrderSn = "";
+        if(orderBean.getShopOrderNo()<10){
+            shopOrderSn = "00"+orderBean.getShopOrderNo();
+        }else if(orderBean.getShopOrderNo()>=10&&orderBean.getShopOrderNo()<100){
+            shopOrderSn = "0"+orderBean.getShopOrderNo();
+        }else{
+            shopOrderSn = ""+orderBean.getShopOrderNo();
+        }
+        if(orderBean.getInstant()==1){//及时单
+            return orderBean.getDeliveryTeam()== DeliveryTeam.HAIKUI?"海葵"+shopOrderSn:shopOrderSn;
+        }else{
+            return orderBean.getDeliveryTeam()== DeliveryTeam.HAIKUI?"海葵"+shopOrderSn+"约":shopOrderSn+"约";
+        }
+    }
 
     public static String getShopOrderSn(OrderBean orderBean){
         if(orderBean.getDeliveryTeam()== DeliveryTeam.MEITUAN){
