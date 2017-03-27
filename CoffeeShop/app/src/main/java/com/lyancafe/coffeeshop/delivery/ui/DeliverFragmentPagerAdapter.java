@@ -23,6 +23,7 @@ public class DeliverFragmentPagerAdapter extends FragmentPagerAdapter {
         this.fragments = fragments;
     }
 
+
     @Override
     public Fragment getItem(int position) {
         return fragments.get(position);

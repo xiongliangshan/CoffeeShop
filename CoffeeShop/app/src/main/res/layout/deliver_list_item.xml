@@ -98,15 +98,20 @@
         android:layout_marginLeft="6dp"
         android:layout_marginRight="6dp"
         android:background="@color/bg_line_separator"/>
-
-    <com.lyancafe.coffeeshop.widget.UnderLineTextView
-        android:id="@+id/tv_location"
+    <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:ems="2"
-        android:textColor="@color/bg_blue"
-        android:text="实时位置"/>
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:gravity="center">
+
+        <com.lyancafe.coffeeshop.widget.UnderLineTextView
+            android:id="@+id/tv_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/bg_blue"
+            android:text="实时位置"/>
+    </LinearLayout>
+
 
 </LinearLayout>

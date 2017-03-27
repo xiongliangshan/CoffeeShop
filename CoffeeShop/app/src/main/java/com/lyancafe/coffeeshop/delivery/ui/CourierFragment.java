@@ -78,7 +78,7 @@ public class CourierFragment extends BaseFragment implements CourierView,Courier
     private void initView(){
         rvCourierList.setLayoutManager(new GridLayoutManager(getContext(),2));
         rvCourierList.setHasFixedSize(true);
-        rvCourierList.addItemDecoration(new SpaceItemDecoration(2, OrderHelper.dip2Px(16, getActivity()), false));
+        rvCourierList.addItemDecoration(new SpaceItemDecoration(2, OrderHelper.dip2Px(48, getActivity()), false));
         mAdapter = new CourierRvAdapter(createTestData(),this);
         rvCourierList.setAdapter(mAdapter);
     }
