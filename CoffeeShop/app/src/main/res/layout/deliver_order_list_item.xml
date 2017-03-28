@@ -49,17 +49,17 @@
         android:layout_marginTop="4dp"
         >
         <ImageView
-            android:id="@+id/iv_new_user"
+            android:id="@+id/iv_reminder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/flag_new_user"
+            android:src="@mipmap/flag_reminder"
             />
 
         <ImageView
             android:id="@+id/iv_sao_flag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/iv_new_user"
+            android:layout_toRightOf="@id/iv_reminder"
             android:layout_marginLeft="4dp"
             android:src="@mipmap/flag_sao"/>
 

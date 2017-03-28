@@ -58,6 +58,8 @@ public class MyPushReceiver extends BroadcastReceiver {
             PushMessageBean pmb =  PushMessageBean.parseJsonToMB(message);
             if(pmb!=null){
                 sendNotification(context,pmb);
+            }else{
+                sendNotificationOther(context,message);
             }
 
         } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
@@ -161,6 +163,25 @@ public class MyPushReceiver extends BroadcastReceiver {
         }, 2 * 60 * 1000);
     }
 
+
+    /**
+     * 发送其他非订单通知
+     */
+    private void sendNotificationOther(Context context,String content){
+        final NotificationManager mNotificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+                .setSmallIcon(R.mipmap.app_icon)
+                .setDefaults(Notification.DEFAULT_VIBRATE|Notification.DEFAULT_LIGHTS)
+                .setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.urge_shop))
+                .setAutoCancel(true)
+                .setContentTitle("订单催单")
+                .setContentText(content);
+        Random ran =new Random(System.currentTimeMillis());
+        final int notifyId  = ran.nextInt();
+        Log.d(TAG, "notifyId = " + notifyId);
+        mNotificationManager.notify(notifyId, mBuilder.build());
+
+    }
 
 
 }

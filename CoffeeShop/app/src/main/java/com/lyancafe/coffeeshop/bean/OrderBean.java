@@ -20,7 +20,7 @@ public class OrderBean implements Serializable{
     private static final String TAG = "OrderBean";
 
     private long id;                     //订单id
-    private int groupId;                 //顺风单组的id
+    private String reminder;             //Y:催单，N:不催单
     private String orderSn;              //订单编号
     private int shopOrderNo;             //门店单号
     private boolean orderVip;           //是否是vip订单
@@ -66,12 +66,12 @@ public class OrderBean implements Serializable{
         this.id = id;
     }
 
-    public int getGroupId() {
-        return groupId;
+    public String getReminder() {
+        return reminder;
     }
 
-    public void setGroupId(int groupId) {
-        this.groupId = groupId;
+    public void setReminder(String reminder) {
+        this.reminder = reminder;
     }
 
     public String getOrderSn() {
@@ -349,7 +349,7 @@ public class OrderBean implements Serializable{
     public String toString() {
         return "OrderBean{" +
                 "id=" + id +
-                ", groupId=" + groupId +
+                ", reminder='" + reminder + '\'' +
                 ", orderSn='" + orderSn + '\'' +
                 ", shopOrderNo=" + shopOrderNo +
                 ", orderVip=" + orderVip +

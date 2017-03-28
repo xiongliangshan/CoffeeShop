@@ -76,19 +76,13 @@ public class DeliveringRvAdapter extends RecyclerView.Adapter<DeliveringRvAdapte
         }
         final OrderBean order = list.get(position);
 
-        /*if(order.getDeliveryTeam()== DeliveryTeam.MEITUAN){
-            //美团订单
-            holder.firstRowLayout.setBackgroundColor(context.getResources().getColor(R.color.yellow));
-        }else{
-            holder.firstRowLayout.setBackground(null);
-        }*/
         holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
 
-        //新用户订单
-        if(false){
-            holder.newUserOderIV.setImageResource(R.mipmap.flag_new_user);
+        //加急
+        if("Y".equalsIgnoreCase(order.getReminder())){
+            holder.reminderImg.setImageResource(R.mipmap.flag_reminder);
         }else{
-            holder.newUserOderIV.setImageResource(R.mipmap.flag_placeholder);
+            holder.reminderImg.setImageResource(R.mipmap.flag_placeholder);
         }
         //扫码下单
         if(order.isWxScan()){
@@ -206,7 +200,7 @@ public class DeliveringRvAdapter extends RecyclerView.Adapter<DeliveringRvAdapte
 
         @BindView(R.id.root_view) LinearLayout rootLayout;
         @BindView(R.id.ll_first_row) LinearLayout firstRowLayout;
-        @BindView(R.id.iv_new_user) ImageView newUserOderIV;
+        @BindView(R.id.iv_reminder) ImageView reminderImg;
         @BindView(R.id.iv_sao_flag) ImageView saoImg;
         @BindView(R.id.iv_gift) ImageView giftIV;
         @BindView(R.id.iv_label_flag) ImageView labelFlagImg;
