@@ -17,6 +17,16 @@ public class ItemContentBean implements Serializable{
     private List<String> recipeFittingsList; //个性化标签
 
 
+    public ItemContentBean(String product, String unit, int price, int quantity, int totalPrice, int coldHotProperty, List<String> recipeFittingsList) {
+        this.product = product;
+        this.unit = unit;
+        this.price = price;
+        this.quantity = quantity;
+        this.totalPrice = totalPrice;
+        this.coldHotProperty = coldHotProperty;
+        this.recipeFittingsList = recipeFittingsList;
+    }
+
     public String getProduct() {
         return product;
     }

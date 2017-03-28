@@ -12,6 +12,7 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.PrintCupBean;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
 import com.lyancafe.coffeeshop.event.UpdatePrintStatusEvent;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.utils.Urls;
 
 import org.greenrobot.eventbus.EventBus;
@@ -52,8 +53,8 @@ public class PrintHelper {
         Log.d(TAG,"PrintHelpter()");
         mPoolExecutor = new ThreadPoolExecutor(1, 5, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
         if(Urls.BASE_URL.contains("cn")||Urls.BASE_URL.contains("192.168")){
-            ip_print_order = "192.168.1.201";
-            ip_print_cup = "192.168.1.201";
+            ip_print_order = "192.168.1.202";
+            ip_print_cup = "192.168.1.202";
         }else{
             ip_print_order = "192.19.1.231";
             ip_print_cup = "192.19.1.232";
@@ -565,7 +566,6 @@ public class PrintHelper {
             try {
                 client = new Socket(host, port);
                 Writer writer = new OutputStreamWriter(client.getOutputStream(), "GBK");
-                String tempString = null;
                 writer.write(printConent);
                 writer.flush();
                 writer.close();
@@ -576,9 +576,7 @@ public class PrintHelper {
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.e(TAG, "IOException" + e.toString());
-                if(mlistener!=null){
-                    mlistener.onPrompt(MSG_EXCEPTION,"打印机"+host+"无法连接");
-                }
+                ToastUtil.showToast(CSApplication.getInstance(),"打印机"+host+"无法连接");
             } finally {
                 printerIsAvailable = true;
                 Log.i(TAG,"run  finally");

@@ -51,6 +51,22 @@
                 android:layout_marginLeft="8dp"
                 android:text="230"/>
         </RadioGroup>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/font_red"
+            android:text="更换设置需重启打印机后生效"/>
+
+
+        <Button
+            android:id="@+id/btn_print_test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="48dp"
+            android:layout_gravity="center_vertical"
+            android:text="打印测试"/>
 
     </LinearLayout>
 

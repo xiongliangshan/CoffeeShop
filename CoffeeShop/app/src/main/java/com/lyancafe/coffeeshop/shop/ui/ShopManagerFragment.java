@@ -18,7 +18,9 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
+import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.MaterialBean;
+import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.event.MaterialSelectEvent;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.common.PrintHelper;
@@ -130,7 +132,7 @@ public class ShopManagerFragment extends BaseFragment implements ShopManagerView
     }
 
 
-    @OnClick({R.id.tv_print_paster, R.id.tv_print_material})
+    @OnClick({R.id.tv_print_paster, R.id.tv_print_material,R.id.btn_print_test})
     void onClickPrint(View v) {
         switch (v.getId()) {
             case R.id.tv_print_paster:
@@ -141,6 +143,47 @@ public class ShopManagerFragment extends BaseFragment implements ShopManagerView
                 if (toPrintMaterial != null) {
                     PrintHelper.getInstance().printMaterialBig(toPrintMaterial);
                 }
+                break;
+            case R.id.btn_print_test:
+                //测试打印机
+                OrderBean order = new OrderBean();
+                order.setId(65535);
+                order.setOrderSn("2017032765535");
+                order.setShopOrderNo(666);
+                order.setOrderVip(false);
+                order.setWxScan(false);
+                order.setIsRecipeFittings(false);
+                order.setGift(1);
+                order.setWishes("");
+                order.setExpectedTime(0L);
+                order.setOrderTime(0L);
+                order.setProduceEffect(0L);
+                order.setRecipient("连咖啡");
+                order.setAddress("徐汇区古美路1515号凤凰大楼1801");
+                order.setPhone("18516152485");
+                order.setCourierName("张三");
+                order.setCourierPhone("13645781245");
+                order.setStatus(3010);
+                order.setProduceStatus(4005);
+                order.setIssueOrder(false);
+                order.setInstant(1);
+                order.setNotes("多放点糖");
+                order.setCsrNotes("");
+                order.setPlatform("微信");
+                order.setHandoverTime(0L);
+                order.setFeedbackTags(new ArrayList<String>());
+                order.setFeedback("");
+                order.setFeedbackType(0);
+                order.setDeliveryTeam(4);
+                order.setPlatformId(12);
+                order.setMtShopOrderNo(0);
+                order.setOrderDistance(1300);
+                ItemContentBean itemContentBean = new ItemContentBean("热拿铁","大杯",3000,1,3000,3,null);
+                List<ItemContentBean> list = new ArrayList<>();
+                list.add(itemContentBean);
+                order.setItems(list);
+                PrintHelper.getInstance().printOrderInfo(order);
+                PrintHelper.getInstance().printOrderItems(order);
                 break;
         }
     }
