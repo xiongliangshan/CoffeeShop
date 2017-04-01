@@ -55,12 +55,9 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
     @BindView(R.id.plmgv_order_list)
     PullLoadMoreRecyclerView pullLoadMoreRecyclerView;
-    @BindView(R.id.tv_good)
-    TextView tvGood;
-    @BindView(R.id.tv_passed)
-    TextView tvPassed;
-    @BindView(R.id.tv_not_passed)
-    TextView tvNotPassed;
+    @BindView(R.id.tv_good) TextView tvGood;
+    @BindView(R.id.tv_passed) TextView tvPassed;
+    @BindView(R.id.tv_not_passed) TextView tvNotPassed;
     private FinishedRvAdapter mAdapter;
     private long mLastOrderId = 0;
     private Context mContext;
@@ -183,7 +180,10 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
     @Override
     public void stopLoadingProgress() {
-        pullLoadMoreRecyclerView.setPullLoadMoreCompleted();
+        if(pullLoadMoreRecyclerView!=null){
+            pullLoadMoreRecyclerView.setPullLoadMoreCompleted();
+        }
+
     }
 
     @Override

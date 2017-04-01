@@ -149,10 +149,10 @@ public class ReportIssueDialog extends DialogFragment implements View.OnClickLis
                     @Override
                     public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
                         if(xlsResponse.status==0){
-                            ToastUtil.show(getContext(),"提交成功");
+                            ToastUtil.showToast(getContext(),"提交成功");
                             dismiss();
                         }else{
-                            ToastUtil.show(getContext(),xlsResponse.message);
+                            ToastUtil.showToast(getContext(),xlsResponse.message);
                         }
                     }
 
