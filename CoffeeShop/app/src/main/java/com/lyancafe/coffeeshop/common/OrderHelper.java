@@ -690,11 +690,11 @@ public class OrderHelper {
         }else{
             long bookTime = orderBean.getExpectedTime();
             long T2 = bookTime+30*60*1000;
-            if(realReachTime<=T2){
+            if(realReachTime>(bookTime-45*60*1000) && realReachTime<=T2){
                 result = "良好";
             }else if(realReachTime>T2 && realReachTime<=T2+5*60*1000){
                 result = "合格";
-            }else if(realReachTime>T2+5*60*1000){
+            }else if(realReachTime>T2+5*60*1000 || realReachTime<=(bookTime-45*60*1000)){
                 result = "不及格";
             }
         }
