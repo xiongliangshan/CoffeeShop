@@ -30,9 +30,8 @@ public class CourierRvAdapter extends RecyclerView.Adapter<CourierRvAdapter.View
     private List<CourierBean> deliverBeanList;
     private MapListener mMapListener;
 
-    public CourierRvAdapter(List<CourierBean> deliverBeanList,MapListener mapListener) {
+    public CourierRvAdapter(MapListener mapListener) {
         this.mMapListener = mapListener;
-        this.deliverBeanList = deliverBeanList;
     }
 
     @Override

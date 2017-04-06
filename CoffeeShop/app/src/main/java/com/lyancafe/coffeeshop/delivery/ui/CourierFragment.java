@@ -79,7 +79,7 @@ public class CourierFragment extends BaseFragment implements CourierView,Courier
         rvCourierList.setLayoutManager(new GridLayoutManager(getContext(),2));
         rvCourierList.setHasFixedSize(true);
         rvCourierList.addItemDecoration(new SpaceItemDecoration(2, OrderHelper.dip2Px(48, getActivity()), false));
-        mAdapter = new CourierRvAdapter(createTestData(),this);
+        mAdapter = new CourierRvAdapter(this);
         rvCourierList.setAdapter(mAdapter);
     }
 
@@ -89,20 +89,6 @@ public class CourierFragment extends BaseFragment implements CourierView,Courier
         mapDialog.show(getChildFragmentManager(),"map");
     }
 
-    private List<CourierBean> createTestData() {
-        List<CourierBean> list = new ArrayList<>();
-        for(int i=0;i<5;i++){
-            CourierBean d = new CourierBean();
-            d.setId(i);
-            d.setName("熊"+i);
-            d.setPhone("13515454555");
-            d.setDistanceToShop(10*i);
-            d.setTotalOrderCount(i*5);
-            d.setDeliveringOrderCount(i+3);
-            list.add(d);
-        }
-        return list;
-    }
 
 
     @Override
