@@ -312,7 +312,7 @@ public class MainDeliverFragment extends BaseFragment implements TabLayout.OnTab
             userRemarkTxt.setText(order.getNotes());
             csadRemarkTxt.setText(order.getCsrNotes());
 
-            if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN || order.getStatus() == OrderStatus.DELIVERING) {
+            if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN || order.getDeliveryTeam() == DeliveryTeam.HAIKUI || order.getStatus() == OrderStatus.DELIVERING) {
                 assignBtn.setVisibility(View.GONE);
             } else {
                 assignBtn.setVisibility(View.VISIBLE);
