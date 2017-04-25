@@ -32,7 +32,7 @@ public class MainShopFragment extends BaseFragment implements TabLayout.OnTabSel
     private ShopFragmentPagerAdapter mPagerAdapter;
 
     private FinishedOrderFragment finishedOrderFragment;
-    private TimeEffectFragment timeEffectFragment;
+//    private TimeEffectFragment timeEffectFragment;
     private EvaluationFragment evaluationFragment;
     private ShopManagerFragment shopManagerFragment;
 
@@ -51,11 +51,11 @@ public class MainShopFragment extends BaseFragment implements TabLayout.OnTabSel
     private void initViews() {
         List<Fragment> fragments = new ArrayList<>();
         finishedOrderFragment = new FinishedOrderFragment();
-        timeEffectFragment = new TimeEffectFragment();
+//        timeEffectFragment = new TimeEffectFragment();
         evaluationFragment = new EvaluationFragment();
         shopManagerFragment = new ShopManagerFragment();
         fragments.add(finishedOrderFragment);
-        fragments.add(timeEffectFragment);
+//        fragments.add(timeEffectFragment);
         fragments.add(evaluationFragment);
         fragments.add(shopManagerFragment);
         mPagerAdapter = new ShopFragmentPagerAdapter(getChildFragmentManager(),getActivity(),fragments);
