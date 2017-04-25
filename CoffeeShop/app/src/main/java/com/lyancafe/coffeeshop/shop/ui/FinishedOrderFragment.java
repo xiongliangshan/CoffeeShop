@@ -55,9 +55,9 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
     @BindView(R.id.plmgv_order_list)
     PullLoadMoreRecyclerView pullLoadMoreRecyclerView;
-    @BindView(R.id.tv_good) TextView tvGood;
+   /* @BindView(R.id.tv_good) TextView tvGood;
     @BindView(R.id.tv_passed) TextView tvPassed;
-    @BindView(R.id.tv_not_passed) TextView tvNotPassed;
+    @BindView(R.id.tv_not_passed) TextView tvNotPassed;*/
     private FinishedRvAdapter mAdapter;
     private long mLastOrderId = 0;
     private Context mContext;
@@ -160,12 +160,12 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
         cupCountText.setText(String.valueOf(cupsAmount));
     }
 
-    @Override
+   /* @Override
     public void bindTimeEffectDataToView(double goodScale, double passedScale, double fallingScale) {
         tvGood.setText((int)(goodScale*100)+"%");
         tvPassed.setText((int)(passedScale*100)+"%");
         tvNotPassed.setText((int)(fallingScale*100)+"%");
-    }
+    }*/
 
 
 
@@ -337,7 +337,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
         mFinishedPresenter.loadOrderAmounts();
         mFinishedPresenter.loadFinishedOrders(0);
-        mFinishedPresenter.loadEffectPercent();
+//        mFinishedPresenter.loadEffectPercent();
 
 
     }
@@ -399,7 +399,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
         public void run() {
             mFinishedPresenter.loadOrderAmounts();
             mFinishedPresenter.loadFinishedOrders(0);
-            mFinishedPresenter.loadEffectPercent();
+//            mFinishedPresenter.loadEffectPercent();
         }
     }
 

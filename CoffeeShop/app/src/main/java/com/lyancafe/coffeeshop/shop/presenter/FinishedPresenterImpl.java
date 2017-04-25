@@ -42,10 +42,10 @@ public class FinishedPresenterImpl implements FinishedPresenter ,FinishedModelIm
         mFinishedModel.loadOrderAmounts(this);
     }
 
-    @Override
+    /*@Override
     public void loadEffectPercent() {
         mFinishedModel.loadEffectPercent(this);
-    }
+    }*/
 
 
     @Override
@@ -78,7 +78,7 @@ public class FinishedPresenterImpl implements FinishedPresenter ,FinishedModelIm
         }
     }
 
-    @Override
+   /* @Override
     public void onLoadTimeEffectSuccess(XlsResponse xlsResponse, Call call, Response response) {
         if (xlsResponse.status == 0) {
             double goodScale = xlsResponse.data.getDouble("goodScale");
@@ -87,5 +87,5 @@ public class FinishedPresenterImpl implements FinishedPresenter ,FinishedModelIm
             mFinishedView.bindTimeEffectDataToView(goodScale,passedScale,fallingScale);
             Log.d("finished", "goodScale = " + goodScale + ", passedScale = " + passedScale + ",fallingScale = " + fallingScale);
         }
-    }
+    }*/
 }

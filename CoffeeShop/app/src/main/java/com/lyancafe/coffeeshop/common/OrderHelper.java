@@ -491,11 +491,12 @@ public class OrderHelper {
             return "";
         }
         String phone = orderBean.getPhone();
-        if(TextUtils.isEmpty(phone) || phone.length()<11){
+        /*if(TextUtils.isEmpty(phone) || phone.length()<11){
             return phone;
         }
 
-        return phone.substring(0,phone.length()-8)+"####"+phone.substring(phone.length()-4,phone.length());
+        return phone.substring(0,phone.length()-8)+"####"+phone.substring(phone.length()-4,phone.length());*/
+        return phone;
     }
 
 

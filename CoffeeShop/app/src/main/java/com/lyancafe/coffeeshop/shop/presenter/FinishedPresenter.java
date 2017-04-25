@@ -15,6 +15,6 @@ public interface FinishedPresenter {
     //加载单量和杯量数据
     void loadOrderAmounts();
 
-    //加载服务时效百分比
-    void loadEffectPercent();
+   /* //加载服务时效百分比
+    void loadEffectPercent();*/
 }

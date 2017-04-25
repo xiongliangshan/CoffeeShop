@@ -42,7 +42,7 @@ public class FinishedModelImpl implements FinishedModel{
         });
     }
 
-    @Override
+    /*@Override
     public void loadEffectPercent(final OnHandleResponseListener listener) {
         HttpHelper.getInstance().reqServiceEffectPersent(new JsonCallback<XlsResponse>() {
             @Override
@@ -50,12 +50,12 @@ public class FinishedModelImpl implements FinishedModel{
                 listener.onLoadTimeEffectSuccess(xlsResponse, call, response);
             }
         });
-    }
+    }*/
 
     public interface OnHandleResponseListener{
         void onLoadListSuccess(XlsResponse xlsResponse, Call call, Response response);
         void onLoadListFailed(Call call, Response response, Exception e);
         void onLoadAmountSuccess(XlsResponse xlsResponse, Call call, Response response);
-        void onLoadTimeEffectSuccess(XlsResponse xlsResponse, Call call, Response response);
+//        void onLoadTimeEffectSuccess(XlsResponse xlsResponse, Call call, Response response);
     }
 }

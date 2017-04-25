@@ -13,6 +13,6 @@ public interface FinishedModel{
     //加载单量和杯量数据
     void loadOrderAmounts(FinishedModelImpl.OnHandleResponseListener listener);
 
-    //加载服务时效百分比
-    void loadEffectPercent(FinishedModelImpl.OnHandleResponseListener listener);
+    /*//加载服务时效百分比
+    void loadEffectPercent(FinishedModelImpl.OnHandleResponseListener listener);*/
 }

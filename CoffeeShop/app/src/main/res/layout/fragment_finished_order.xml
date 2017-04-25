@@ -61,7 +61,7 @@
             android:layout_toRightOf="@id/constant_cup_count"/>
 
 
-        <TextView
+        <!--<TextView
             android:id="@+id/constant_service_effect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -123,7 +123,7 @@
             android:layout_toRightOf="@id/constant_not_passed"
             android:textSize="18sp"
             />
-
+-->
     </RelativeLayout>
 
 

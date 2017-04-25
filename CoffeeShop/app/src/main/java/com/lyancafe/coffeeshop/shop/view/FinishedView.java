@@ -24,13 +24,13 @@ public interface FinishedView extends BaseView<OrderBean>{
     void bindAmountDataToView(int ordersAmount , int cupsAmount);
 
 
-    /**
+   /* *//**
      * 绑定时效百分比数据到视图
      * @param goodScale 良好
      * @param passedScale 合格
      * @param fallingScale 不及格
-     */
-    void bindTimeEffectDataToView(double goodScale,double passedScale,double fallingScale);
+     *//*
+    void bindTimeEffectDataToView(double goodScale,double passedScale,double fallingScale);*/
 
     //保存lastOrderId
     void saveLastOrderId();
