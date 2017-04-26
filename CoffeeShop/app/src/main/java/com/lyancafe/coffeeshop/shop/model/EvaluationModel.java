@@ -10,7 +10,7 @@ public interface EvaluationModel{
     void loadEvaluations(int lastOrderId, int type, EvaluationModelImpl.OnHandleEvaluationListener listener);
 
 
-    //加载各个类型评价数量
-    void loadEvaluationAmount(EvaluationModelImpl.OnHandleEvaluationListener listener);
+    /*//加载各个类型评价数量
+    void loadEvaluationAmount(EvaluationModelImpl.OnHandleEvaluationListener listener);*/
 
 }

@@ -31,7 +31,7 @@ public class EvaluationModelImpl implements EvaluationModel{
         });
     }
 
-    @Override
+    /*@Override
     public void loadEvaluationAmount(final OnHandleEvaluationListener listener) {
         HttpHelper.getInstance().reqCommentCount(new JsonCallback<XlsResponse>() {
             @Override
@@ -39,12 +39,12 @@ public class EvaluationModelImpl implements EvaluationModel{
                 listener.onLoadTimeEffectAmountSuccess(xlsResponse,call,response);
             }
         });
-    }
+    }*/
 
     public interface OnHandleEvaluationListener{
         void onLoadEvaluationListSuccess(XlsResponse xlsResponse, Call call, Response response);
         void onLoadEvaluationListFailed(Call call, Response response, Exception e);
-        void onLoadTimeEffectAmountSuccess(XlsResponse xlsResponse, Call call, Response response);
+//        void onLoadTimeEffectAmountSuccess(XlsResponse xlsResponse, Call call, Response response);
     }
 
 }

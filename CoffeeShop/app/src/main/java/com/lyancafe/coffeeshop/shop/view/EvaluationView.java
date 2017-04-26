@@ -20,6 +20,6 @@ public interface EvaluationView extends BaseView<EvaluationBean>{
     //停止加载进度对话框
     void stopLoadingProgress();
 
-    //绑定各类型评价数量
-    void bindEvaluationAmount(int positive,int negative);
+    /*//绑定各类型评价数量
+    void bindEvaluationAmount(int positive,int negative);*/
 }

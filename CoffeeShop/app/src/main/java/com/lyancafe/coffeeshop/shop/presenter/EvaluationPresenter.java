@@ -12,6 +12,6 @@ public interface EvaluationPresenter {
     void loadEvaluations(int lastOrderId, int type);
 
 
-    //加载各个类型评价数量
-    void loadEvaluationAmount();
+  /*  //加载各个类型评价数量
+    void loadEvaluationAmount();*/
 }

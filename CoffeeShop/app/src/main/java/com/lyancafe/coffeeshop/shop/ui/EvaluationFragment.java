@@ -32,10 +32,10 @@ import butterknife.Unbinder;
 public class EvaluationFragment extends BaseFragment implements EvaluationView {
 
     private static String TAG = EvaluationFragment.class.getName();
-    @BindView(R.id.rb_all) RadioButton rbAll;
+   /* @BindView(R.id.rb_all) RadioButton rbAll;
     @BindView(R.id.rb_bad_evaluation) RadioButton rbBadEvaluation;
     @BindView(R.id.rb_good_evaluation) RadioButton rbGoodEvaluation;
-    @BindView(R.id.rg_select_condition) RadioGroup rgSelectCondition;
+    @BindView(R.id.rg_select_condition) RadioGroup rgSelectCondition;*/
     @BindView(R.id.pmrv_evaluation_list) PullLoadMoreRecyclerView pmrvEvaluationList;
 
     private EvaluationListAdapter mAdapter;
@@ -118,7 +118,7 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView {
         pmrvEvaluationList.setPullLoadMoreCompleted();
     }
 
-    @Override
+   /* @Override
     public void bindEvaluationAmount(int positive, int negative) {
         if(rbBadEvaluation!=null && rbGoodEvaluation!=null){
             if(positive>0){
@@ -129,7 +129,7 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView {
             }
 
         }
-    }
+    }*/
 
     @Override
     public void onDestroyView() {
@@ -145,7 +145,7 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView {
         }
     }
 
-    @OnClick({R.id.rb_all, R.id.rb_bad_evaluation, R.id.rb_good_evaluation})
+    /*@OnClick({R.id.rb_all, R.id.rb_bad_evaluation, R.id.rb_good_evaluation})
     public void onClick(View view) {
         rgSelectCondition.check(view.getId());
         OkGo.getInstance().cancelTag("evaluation");
@@ -161,7 +161,7 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView {
                 break;
         }
         mEvaluationPresenter.loadEvaluations(0,mType);
-    }
+    }*/
 
     @Override
     public void onVisible() {
@@ -187,7 +187,7 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView {
     class EvaluationTaskRunnable implements Runnable{
         @Override
         public void run() {
-            mEvaluationPresenter.loadEvaluationAmount();
+//            mEvaluationPresenter.loadEvaluationAmount();
             mEvaluationPresenter.loadEvaluations(0,mType);
         }
     }

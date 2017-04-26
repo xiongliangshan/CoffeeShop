@@ -6,7 +6,7 @@
     android:padding="16dp"
     >
 
-   <LinearLayout
+   <!--<LinearLayout
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:orientation="horizontal">
@@ -43,7 +43,7 @@
        </RadioGroup>
 
    </LinearLayout>
-
+-->
     <com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
         android:id="@+id/pmrv_evaluation_list"
         android:layout_width="match_parent"

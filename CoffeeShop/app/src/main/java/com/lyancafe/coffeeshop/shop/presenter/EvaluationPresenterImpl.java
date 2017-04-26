@@ -37,10 +37,10 @@ public class EvaluationPresenterImpl implements EvaluationPresenter,EvaluationMo
         mEvaluationModel.loadEvaluations(lastOrderId,type,this);
     }
 
-    @Override
+   /* @Override
     public void loadEvaluationAmount() {
         mEvaluationModel.loadEvaluationAmount(this);
-    }
+    }*/
 
     @Override
     public void onLoadEvaluationListSuccess(XlsResponse xlsResponse, Call call, Response response) {
@@ -61,7 +61,7 @@ public class EvaluationPresenterImpl implements EvaluationPresenter,EvaluationMo
         mEvaluationView.stopLoadingProgress();
     }
 
-    @Override
+   /* @Override
     public void onLoadTimeEffectAmountSuccess(XlsResponse xlsResponse, Call call, Response response) {
         if(xlsResponse.status==0){
             int positive = xlsResponse.data.getIntValue("positive");
@@ -69,5 +69,5 @@ public class EvaluationPresenterImpl implements EvaluationPresenter,EvaluationMo
             mEvaluationView.bindEvaluationAmount(positive,negative);
 
         }
-    }
+    }*/
 }
