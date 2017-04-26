@@ -43,11 +43,11 @@ public class CourierRvAdapter extends RecyclerView.Adapter<CourierRvAdapter.View
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final CourierBean deliverBean = deliverBeanList.get(position);
-        holder.tvDistance.setText("距离门店 " + OrderHelper.getDistanceFormat(deliverBean.getDistanceToShop()));
+//        holder.tvDistance.setText("距离门店 " + OrderHelper.getDistanceFormat(deliverBean.getDistanceToShop()));
         holder.tvName.setText(deliverBean.getName());
-        holder.tvOrderCount.setText(String.valueOf(deliverBean.getDeliveringOrderCount()));
+//        holder.tvOrderCount.setText(String.valueOf(deliverBean.getDeliveringOrderCount()));
         holder.tvPhone.setText(deliverBean.getPhone());
-        holder.tvTotalOrderCount.setText(String.valueOf(deliverBean.getTotalOrderCount()));
+//        holder.tvTotalOrderCount.setText(String.valueOf(deliverBean.getTotalOrderCount()));
         holder.tvLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,11 +69,11 @@ public class CourierRvAdapter extends RecyclerView.Adapter<CourierRvAdapter.View
         TextView tvName;
         @BindView(R.id.tv_phone)
         TextView tvPhone;
-        @BindView(R.id.tv_distance)
+       /* @BindView(R.id.tv_distance)
         TextView tvDistance;
         @BindView(R.id.tv_total_order_count)
         TextView tvTotalOrderCount;
-        @BindView(R.id.tv_order_count)
+        @BindView(R.id.tv_order_count)*/
         TextView tvOrderCount;
         @BindView(R.id.tv_location)
         TextView tvLocation;

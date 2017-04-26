@@ -24,14 +24,14 @@ public class CourierBean {
     //小哥手机号码
     private String phone;
 
-    //手上今天各种状态下的总单量
+  /*  //手上今天各种状态下的总单量
     private int totalOrderCount;
 
     //配送中的单量
     private int deliveringOrderCount;
 
     //距离门店的距离
-    private double distanceToShop;
+    private double distanceToShop;*/
 
     //小哥所在位置的纬度
     private double lat;
@@ -64,22 +64,6 @@ public class CourierBean {
         this.phone = phone;
     }
 
-    public int getTotalOrderCount() {
-        return totalOrderCount;
-    }
-
-    public void setTotalOrderCount(int totalOrderCount) {
-        this.totalOrderCount = totalOrderCount;
-    }
-
-    public int getDeliveringOrderCount() {
-        return deliveringOrderCount;
-    }
-
-    public void setDeliveringOrderCount(int deliveringOrderCount) {
-        this.deliveringOrderCount = deliveringOrderCount;
-    }
-
     public double getLat() {
         return lat;
     }
@@ -96,13 +80,7 @@ public class CourierBean {
         this.lng = lng;
     }
 
-    public double getDistanceToShop() {
-        return distanceToShop;
-    }
 
-    public void setDistanceToShop(double distanceToShop) {
-        this.distanceToShop = distanceToShop;
-    }
 
 
     @Override
@@ -111,9 +89,6 @@ public class CourierBean {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", phone='" + phone + '\'' +
-                ", totalOrderCount=" + totalOrderCount +
-                ", deliveringOrderCount=" + deliveringOrderCount +
-                ", distanceToShop=" + distanceToShop +
                 ", lat=" + lat +
                 ", lng=" + lng +
                 '}';
