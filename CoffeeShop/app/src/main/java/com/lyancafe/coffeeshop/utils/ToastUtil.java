@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Looper;
 import android.widget.Toast;
 
+import com.lyancafe.coffeeshop.CSApplication;
+
 public class ToastUtil {
 
 
@@ -28,14 +30,14 @@ public class ToastUtil {
 			@Override
 			public void run() {
 				Looper.prepare();
-				Toast.makeText(context, toast, Toast.LENGTH_SHORT).show();
+				Toast.makeText(CSApplication.getInstance(), toast, Toast.LENGTH_SHORT).show();
 				Looper.loop();
 			}
 		}).start();
 	}
 
 	public static void showToast(final Context context,int resId){
-		showToast(context,context.getResources().getString(resId));
+		showToast(CSApplication.getInstance(),CSApplication.getInstance().getString(resId));
 	}
 
 }

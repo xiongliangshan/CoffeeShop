@@ -110,7 +110,7 @@ public class HttpHelper {
      */
     public void reqToProduceData(JsonCallback<XlsResponse> callback){
         Log.d("xls","请求待生产列表");
-        String url = Urls.BASE_URL + shopId + "/orders/today/toproduce?token="+token;;
+        String url = Urls.BASE_URL + shopId + "/orders/today/toproduce?token="+token;
         OkGo.post(url)
                 .tag(this)
                 .execute(callback);
