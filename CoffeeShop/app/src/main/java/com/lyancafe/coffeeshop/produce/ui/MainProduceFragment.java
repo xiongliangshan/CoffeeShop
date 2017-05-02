@@ -35,6 +35,7 @@ import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.CancelOrderEvent;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
+import com.lyancafe.coffeeshop.event.NaiGaiEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
@@ -44,6 +45,7 @@ import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.produce.presenter.MainProducePresenter;
 import com.lyancafe.coffeeshop.produce.presenter.MainProducePresenterImpl;
+import com.lyancafe.coffeeshop.produce.view.MainProduceView;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
 import com.lyancafe.coffeeshop.widget.ReportIssueDialog;
 import com.lyancafe.coffeeshop.widget.UnderLineTextView;
@@ -52,7 +54,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,7 +67,7 @@ import butterknife.Unbinder;
 /**
  * Created by Administrator on 2015/9/1.
  */
-public class MainProduceFragment extends BaseFragment implements TabLayout.OnTabSelectedListener, AdapterView.OnItemSelectedListener {
+public class MainProduceFragment extends BaseFragment implements TabLayout.OnTabSelectedListener, AdapterView.OnItemSelectedListener,MainProduceView {
 
     private static final String TAG = "MainProduceFragment";
     private Context mContext;
@@ -94,6 +99,10 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     @BindView(R.id.btn_produce_print) Button produceAndPrintBtn;
     @BindView(R.id.ll_onebtn) LinearLayout oneBtnLayout;
     @BindView(R.id.contant_issue_feedback) UnderLineTextView reportIssueBtn;
+
+    @BindView(R.id.ll_naigai_layout) LinearLayout naigaiLayout;
+    @BindView(R.id.tv_amount_hongyu) TextView tvHongyu;
+    @BindView(R.id.tv_amount_moli) TextView tvMoli;
 
     private ProduceFragmentPagerAdapter mPagerAdapter;
 
@@ -171,6 +180,16 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+
+    @Override
+    public void showNaiGaiAmount(Map<String, Integer> map) {
+        if(naigaiLayout==null){
+            return;
+        }
+        tvHongyu.setText(map.get(CSApplication.getInstance().getString(R.string.coffee_hongyu))+"杯");
+        tvMoli.setText(map.get(CSApplication.getInstance().getString(R.string.coffee_moli))+"杯");
     }
 
     private void updateDetailView(final OrderBean order) {
@@ -397,6 +416,11 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
 
+    }
+
+    @Subscribe
+    public void onNaiGaiEvent(NaiGaiEvent event){
+        showNaiGaiAmount(event.map);
     }
 
     @Subscribe

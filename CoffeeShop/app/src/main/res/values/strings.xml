@@ -102,5 +102,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="assign_success">指派成功</string>
+    <string name="coffee_moli">芝士云顶茉莉</string>
+    <string name="coffee_hongyu">芝士云顶红玉</string>
 
 </resources>

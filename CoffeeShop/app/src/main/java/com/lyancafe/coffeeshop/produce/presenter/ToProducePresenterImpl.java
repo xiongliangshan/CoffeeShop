@@ -9,8 +9,10 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.DialogCallback;
+import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
+import com.lyancafe.coffeeshop.event.NaiGaiEvent;
 import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
 import com.lyancafe.coffeeshop.common.HttpHelper;
 import com.lyancafe.coffeeshop.common.LoginHelper;
@@ -56,6 +58,7 @@ public class ToProducePresenterImpl implements ToProducePresenter,ToProduceModel
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(mContext, xlsResponse);
             EventBus.getDefault().post(new UpdateProduceFragmentTabOrderCount(0, orderBeans.size()));
             mToProduceView.bindDataToListView(orderBeans);
+            EventBus.getDefault().post(new NaiGaiEvent(OrderHelper.caculateNaiGai(orderBeans)));
 
         }else if(xlsResponse.status==103){
             //token 无效

@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.EvaluationBean;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
@@ -27,6 +28,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -729,6 +731,28 @@ public class OrderHelper {
             return "("+orderSn.substring(6)+")";
         }
 
+    }
+
+    //奶盖茶数量提示
+    public static Map<String,Integer> caculateNaiGai(List<OrderBean> orders){
+        Map<String,Integer> map = new HashMap<>();
+        String moli = CSApplication.getInstance().getString(R.string.coffee_moli);
+        String hongyu = CSApplication.getInstance().getString(R.string.coffee_hongyu);
+        map.put(moli,0);
+        map.put(hongyu,0);
+        if(orders==null || orders.size()==0){
+            return map;
+        }
+        for(int i=0;i<orders.size();i++){
+             OrderBean order = orders.get(i);
+            for(int j=0;j<order.getItems().size();j++){
+                String productName = order.getItems().get(j).getProduct();
+                if(moli.equals(productName) || hongyu.equals(productName)){
+                    map.put(productName,map.get(productName)+1);
+                }
+            }
+        }
+        return map;
     }
 
 }
