@@ -18,14 +18,11 @@ public class MaterialBean {
 
     private int id;
     private String name;
+    private int overdueDays;
 
     public MaterialBean() {
     }
 
-    public MaterialBean(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
 
     public int getId() {
         return id;
@@ -43,14 +40,22 @@ public class MaterialBean {
         this.name = name;
     }
 
+    public int getOverdueDays() {
+        return overdueDays;
+    }
+
+    public void setOverdueDays(int overdueDays) {
+        this.overdueDays = overdueDays;
+    }
+
     @Override
     public String toString() {
         return "MaterialBean{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", overdueDays=" + overdueDays +
                 '}';
     }
-
 
     //解析数据
     public  static List<MaterialBean> parseJsonMaterials(Context context,XlsResponse resp){

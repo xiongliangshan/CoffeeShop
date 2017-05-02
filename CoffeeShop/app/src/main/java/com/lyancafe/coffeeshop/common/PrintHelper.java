@@ -23,9 +23,12 @@ import java.io.Writer;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,8 +56,8 @@ public class PrintHelper {
         Log.d(TAG,"PrintHelpter()");
         mPoolExecutor = new ThreadPoolExecutor(1, 5, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
         if(Urls.BASE_URL.contains("cn")||Urls.BASE_URL.contains("192.168")){
-            ip_print_order = "192.168.1.202";
-            ip_print_cup = "192.168.1.202";
+            ip_print_order = "192.168.1.222";
+            ip_print_cup = "192.168.1.222";
         }else{
             ip_print_order = "192.19.1.231";
             ip_print_cup = "192.19.1.232";
@@ -753,8 +756,16 @@ public class PrintHelper {
                         "S3"+"\n"+
                         "D8"+"\n"+
                         "A60,150,0,200,3,4,N,\""+materialBean.getName()+"\""+"\n"+
+                        "A60,280,0,200,2,2,N,\""+getOverDueDate(materialBean.getOverdueDays())+"\""+"\n"+
                         "P1"+"\n";
         return text;
+    }
+
+    private String getOverDueDate(int overdueDays) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 到期");
+        Calendar nowDate = Calendar.getInstance();
+        nowDate.add(Calendar.DAY_OF_MONTH,overdueDays);
+        return sdf.format(nowDate.getTime());
     }
 
     public String getMaterialContentNew(MaterialBean materialBean){
