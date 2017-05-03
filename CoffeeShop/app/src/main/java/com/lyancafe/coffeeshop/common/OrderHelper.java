@@ -493,12 +493,11 @@ public class OrderHelper {
             return "";
         }
         String phone = orderBean.getPhone();
-        /*if(TextUtils.isEmpty(phone) || phone.length()<11){
+        if(TextUtils.isEmpty(phone) || phone.length()<11){
             return phone;
         }
 
-        return phone.substring(0,phone.length()-8)+"####"+phone.substring(phone.length()-4,phone.length());*/
-        return phone;
+        return phone.substring(0,phone.length()-8)+"####"+phone.substring(phone.length()-4,phone.length());
     }
 
 
@@ -746,9 +745,9 @@ public class OrderHelper {
         for(int i=0;i<orders.size();i++){
              OrderBean order = orders.get(i);
             for(int j=0;j<order.getItems().size();j++){
-                String productName = order.getItems().get(j).getProduct();
-                if(moli.equals(productName) || hongyu.equals(productName)){
-                    map.put(productName,map.get(productName)+1);
+                ItemContentBean item = order.getItems().get(j);
+                if(moli.equals(item.getProduct()) || hongyu.equals(item.getProduct())){
+                    map.put(item.getProduct(),map.get(item.getProduct())+item.getQuantity());
                 }
             }
         }

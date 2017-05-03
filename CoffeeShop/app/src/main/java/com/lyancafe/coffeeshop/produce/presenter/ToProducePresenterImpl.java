@@ -58,7 +58,6 @@ public class ToProducePresenterImpl implements ToProducePresenter,ToProduceModel
             List<OrderBean> orderBeans = OrderBean.parseJsonOrders(mContext, xlsResponse);
             EventBus.getDefault().post(new UpdateProduceFragmentTabOrderCount(0, orderBeans.size()));
             mToProduceView.bindDataToListView(orderBeans);
-            EventBus.getDefault().post(new NaiGaiEvent(OrderHelper.caculateNaiGai(orderBeans)));
 
         }else if(xlsResponse.status==103){
             //token 无效

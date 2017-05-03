@@ -89,6 +89,8 @@ public class MainDeliverFragment extends BaseFragment implements TabLayout.OnTab
     TextView receivePhoneTxt;
     @BindView(R.id.receiver_address)
     TextView receiveAddressTxt;
+    @BindView(R.id.tv_deliver_team)
+    TextView deliverTeamText;
     @BindView(R.id.deliver_name)
     TextView deliverNameTxt;
     @BindView(R.id.deliver_phone)
@@ -277,6 +279,7 @@ public class MainDeliverFragment extends BaseFragment implements TabLayout.OnTab
             receiveNameTxt.setText("");
             receivePhoneTxt.setText("");
             receiveAddressTxt.setText("");
+            deliverTeamText.setText("");
             deliverNameTxt.setText("");
             deliverPhoneTxt.setText("");
             userRemarkTxt.setText("");
@@ -299,15 +302,15 @@ public class MainDeliverFragment extends BaseFragment implements TabLayout.OnTab
             receivePhoneTxt.setText(order.getPhone());
             receiveAddressTxt.setText(order.getAddress());
             if (order.getDeliveryTeam() == DeliveryTeam.HAIKUI) {
-                deliverNameTxt.setText(order.getCourierName()+"(海葵配送)");
-                deliverPhoneTxt.setText(order.getCourierPhone());
+                deliverTeamText.setText("(海葵)");
             } else if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN) {
-                deliverNameTxt.setText("美团配送");
-                deliverPhoneTxt.setText("");
+                deliverTeamText.setText("(美团)");
             } else {
-                deliverNameTxt.setText(order.getCourierName());
-                deliverPhoneTxt.setText(order.getCourierPhone());
+                deliverTeamText.setText("(自有)");
             }
+            deliverNameTxt.setText(order.getCourierName());
+            deliverPhoneTxt.setText(order.getCourierPhone());
+
             fillItemListData(itemsContainerLayout, order);
             userRemarkTxt.setText(order.getNotes());
             csadRemarkTxt.setText(order.getCsrNotes());

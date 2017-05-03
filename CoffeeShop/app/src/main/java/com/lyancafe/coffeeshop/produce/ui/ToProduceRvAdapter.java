@@ -22,6 +22,7 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
+import com.lyancafe.coffeeshop.event.NaiGaiEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
@@ -274,6 +275,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
     public void setData(List<OrderBean> list,int category){
         this.list = filterOrders(list,category);
         notifyDataSetChanged();
+        EventBus.getDefault().post(new NaiGaiEvent(OrderHelper.caculateNaiGai(list)));
         if(selected>=0 && selected<this.list.size()){
             EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
         }else{
@@ -324,7 +326,8 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
             notifyDataSetChanged();
             EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
         }
-
+        //计算奶盖数量
+        EventBus.getDefault().post(new NaiGaiEvent(OrderHelper.caculateNaiGai(list)));
 
     }
 

@@ -25,9 +25,11 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.base.PrintOrderActivity;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.constant.OrderCategory;
@@ -41,8 +43,6 @@ import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.event.UpdatePrintStatusEvent;
 import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
-import com.lyancafe.coffeeshop.base.BaseFragment;
-import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.produce.presenter.MainProducePresenter;
 import com.lyancafe.coffeeshop.produce.presenter.MainProducePresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.MainProduceView;
@@ -54,10 +54,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -84,6 +82,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     @BindView(R.id.order_time) TextView orderTimeTxt;
     @BindView(R.id.tv_whole_order_sn) TextView wholeOrderText;
     @BindView(R.id.receiver_address) TextView receiveAddressTxt;
+    @BindView(R.id.tv_deliver_team) TextView deliverTeamText;
     @BindView(R.id.deliver_name) TextView deliverNameTxt;
     @BindView(R.id.deliver_phone) TextView deliverPhoneTxt;
     @BindView(R.id.btn_assign) TextView assignBtn;
@@ -188,8 +187,16 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
         if(naigaiLayout==null){
             return;
         }
-        tvHongyu.setText(map.get(CSApplication.getInstance().getString(R.string.coffee_hongyu))+"杯");
-        tvMoli.setText(map.get(CSApplication.getInstance().getString(R.string.coffee_moli))+"杯");
+        int hongyu = map.get(CSApplication.getInstance().getString(R.string.coffee_hongyu));
+        int moli = map.get(CSApplication.getInstance().getString(R.string.coffee_moli));
+        if(hongyu==0 && moli==0){
+            naigaiLayout.setVisibility(View.GONE);
+        }else{
+            naigaiLayout.setVisibility(View.VISIBLE);
+            tvHongyu.setText(hongyu+"杯");
+            tvMoli.setText(moli+"杯");
+        }
+
     }
 
     private void updateDetailView(final OrderBean order) {
@@ -201,6 +208,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
             receiveNameTxt.setText("");
             receivePhoneTxt.setText("");
             receiveAddressTxt.setText("");
+            deliverTeamText.setText("");
             deliverNameTxt.setText("");
             deliverPhoneTxt.setText("");
             userRemarkTxt.setText("");
@@ -231,15 +239,14 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
             receivePhoneTxt.setText(order.getPhone());
             receiveAddressTxt.setText(order.getAddress());
             if (order.getDeliveryTeam() == DeliveryTeam.HAIKUI) {
-                deliverNameTxt.setText(order.getCourierName()+"(海葵配送)");
-                deliverPhoneTxt.setText(order.getCourierPhone());
+                deliverTeamText.setText("(海葵)");
             } else if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN) {
-                deliverNameTxt.setText("美团配送");
-                deliverPhoneTxt.setText("");
+                deliverTeamText.setText("(美团)");
             } else {
-                deliverNameTxt.setText(order.getCourierName());
-                deliverPhoneTxt.setText(order.getCourierPhone());
+                deliverTeamText.setText("(自有)");
             }
+            deliverNameTxt.setText(order.getCourierName());
+            deliverPhoneTxt.setText(order.getCourierPhone());
 
             fillItemListData(itemsContainerLayout, order);
 

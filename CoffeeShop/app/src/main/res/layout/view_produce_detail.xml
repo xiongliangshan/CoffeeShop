@@ -174,11 +174,19 @@
                     android:textColor="@color/font_gray"
                     />
                 <TextView
+                    android:id="@+id/tv_deliver_team"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/contant_deliver"
+                    android:layout_marginLeft="12dp"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/font_black"
+                    tools:text="(海葵)"/>
+                <TextView
                     android:id="@+id/deliver_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="12dp"
-                    android:layout_toRightOf="@id/contant_deliver"
+                    android:layout_toRightOf="@id/tv_deliver_team"
                     android:layout_centerVertical="true"
                     tools:text="二狗子"
                     android:textColor="@color/blue"
