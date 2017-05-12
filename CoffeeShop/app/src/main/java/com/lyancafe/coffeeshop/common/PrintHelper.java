@@ -777,6 +777,7 @@ public class PrintHelper {
                         "S3"+"\n"+
                         "D8"+"\n"+
                         "A60,150,0,230,3,4,N,\""+materialBean.getName()+"\""+"\n"+
+                        "A60,280,0,230,2,2,N,\""+getOverDueDate(materialBean.getOverdueDays())+"\""+"\n"+
                         "P1"+"\n";
         return text;
     }
