@@ -12,8 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
@@ -21,9 +19,9 @@ import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.MaterialBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.event.MaterialSelectEvent;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.common.PrintHelper;
+import com.lyancafe.coffeeshop.event.MaterialSelectEvent;
 import com.lyancafe.coffeeshop.shop.presenter.ShopManagerPresenter;
 import com.lyancafe.coffeeshop.shop.presenter.ShopManagerPresenterImpl;
 import com.lyancafe.coffeeshop.shop.view.ShopManagerView;
@@ -46,9 +44,6 @@ import butterknife.Unbinder;
 public class ShopManagerFragment extends BaseFragment implements ShopManagerView{
 
     private static final String TAG ="ShopManagerFragment";
-    @BindView(R.id.rb_normal) RadioButton rbNormal;
-    @BindView(R.id.rb_new) RadioButton rbNew;
-    @BindView(R.id.rg_printer) RadioGroup rgPrinter;
     @BindView(R.id.tv_print_paster) TextView printPasterText;
     @BindView(R.id.tv_print_material) TextView printMaterialText;
     @BindView(R.id.rv_material) RecyclerView recyclerView;
@@ -92,12 +87,6 @@ public class ShopManagerFragment extends BaseFragment implements ShopManagerView
     }
 
     private void initView(){
-        if(PrintHelper.getInstance().getProperty()){
-            rgPrinter.check(R.id.rb_new);
-        }else{
-            rgPrinter.check(R.id.rb_normal);
-        }
-
         recyclerView.setLayoutManager(new GridLayoutManager(mContext, 4));
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -184,20 +173,6 @@ public class ShopManagerFragment extends BaseFragment implements ShopManagerView
                 order.setItems(list);
                 PrintHelper.getInstance().printOrderInfo(order);
                 PrintHelper.getInstance().printOrderItems(order);
-                break;
-        }
-    }
-
-
-    @OnClick({R.id.rb_normal, R.id.rb_new})
-    public void onClickRadioBt(View view) {
-        rgPrinter.check(view.getId());
-        switch (view.getId()) {
-            case R.id.rb_normal:
-                PrintHelper.getInstance().saveProperty(false);
-                break;
-            case R.id.rb_new:
-                PrintHelper.getInstance().saveProperty(true);
                 break;
         }
     }
