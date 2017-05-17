@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -39,15 +40,14 @@ import java.util.concurrent.TimeUnit;
 public class PrintHelper {
 
     private static final String TAG = "PrintHelpter";
-    public static String ip_print_order = "192.19.1.231";
-    public static String ip_print_cup = "192.19.1.232";
-    public static final int MSG_PING = 66;
+    private static String ip_print_order = "192.19.1.231";
+    private static String ip_print_cup = "192.19.1.232";
+    private static final int MSG_PING = 66;
     public static final int MSG_EXCEPTION = 67;
     private static PrintHelper mInstance;
     private OnPromptListener mlistener;
     private boolean printerIsAvailable = true;
     private  ThreadPoolExecutor mPoolExecutor;
-    private static final String PREFERENCES_PRINTER = "print";
 
     private PrintHelper() {
         Log.d(TAG,"PrintHelpter()");
@@ -69,7 +69,7 @@ public class PrintHelper {
     }
 
     //根据订单的总杯数计算盒子数
-    public int getTotalBoxAmount(int totalQuantity){
+    private int getTotalBoxAmount(int totalQuantity){
         if(totalQuantity%4==0){
             return totalQuantity/4;
         }else{
@@ -91,7 +91,7 @@ public class PrintHelper {
 
 
     //计算盒子小票信息，生成打印数据模型
-    public List<PrintOrderBean> calculatePinterOrderBeanList(OrderBean orderBean){
+    private List<PrintOrderBean> calculatePinterOrderBeanList(OrderBean orderBean){
         List<PrintCupBean> hotCupList = new ArrayList<>();
         List<PrintCupBean> coolCupList = new ArrayList<>();
         calculatePinterCupBeanList(orderBean,hotCupList,coolCupList);
@@ -100,7 +100,7 @@ public class PrintHelper {
         int coolBoxAmount = getTotalBoxAmount(coolCupList.size());
         int totalBoxAmount = hotBoxAmount+coolBoxAmount; //盒子总数
         Log.i(TAG,"hotBoxAmount = "+hotBoxAmount+" | coolBoxAmount = "+coolBoxAmount+" | totalBoxAmount = "+totalBoxAmount);
-        boolean isGiftBox = orderBean.getGift()==5?true:false;
+        boolean isGiftBox = orderBean.getGift()==5;
         int i = 0;      //盒子号
         for(i=0;i<hotCupList.size()/4;i++){
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,i+1,4);
@@ -211,7 +211,7 @@ public class PrintHelper {
         EventBus.getDefault().post(new UpdatePrintStatusEvent(orderBean.getOrderSn()));
     }
     //把要打印的盒子小票信息组装成字符串
-    public String getPrintOrderContent(PrintOrderBean bean){
+    private String getPrintOrderContent(PrintOrderBean bean){
         String order1 = "",order2 = "",order3 = "",order4 = "";
         List<PrintCupBean> coffeeList = bean.getCoffeeList();
         switch (coffeeList.size()){
@@ -250,8 +250,7 @@ public class PrintHelper {
         }else{
             gift = "A480,40,0,230,2,2,N,\"\""+"\n";
         }
-        String text =
-                "N"+"\n"+
+        return  "N"+"\n"+
                 "q640"+"\n"+
                 "Q400,16"+"\n"+
                 "S3"+"\n"+
@@ -273,11 +272,10 @@ public class PrintHelper {
                 "A400,340,0,230,1,1,N,\""+bean.getDeliverName()+"\""+"\n"+
                 "P1"+"\n";
 
-        return text;
     }
 
 
-    public  void DoPrintOrder(String printContent){
+    private  void DoPrintOrder(String printContent){
         Log.i(TAG,"DoPrintOrder");
         DoPrintRunnable dpt = new DoPrintRunnable();
         dpt.setPrinterIP(ip_print_order);
@@ -308,7 +306,7 @@ public class PrintHelper {
 
 
     //计算杯子贴纸信息，生成打印数据模型
-    public int calculatePinterCupBeanList(OrderBean orderBean,List<PrintCupBean> hotCuplist,List<PrintCupBean> coolCuplist){
+    private int calculatePinterCupBeanList(OrderBean orderBean,List<PrintCupBean> hotCuplist,List<PrintCupBean> coolCuplist){
         ArrayList<ItemContentBean> hotItemList = getCoolOrHotItemList(orderBean, true);
         ArrayList<ItemContentBean> coolItemList = getCoolOrHotItemList(orderBean, false);
 
@@ -393,7 +391,7 @@ public class PrintHelper {
 
 
     //根据盒号计算当前盒中总的杯数
-    public int getCupAmountPerBox(int boxNumber,int totalQuantity,int totalBoxAmount){
+    private int getCupAmountPerBox(int boxNumber,int totalQuantity,int totalBoxAmount){
         if(totalQuantity%4==0){
             return 4;
         }else{
@@ -406,10 +404,9 @@ public class PrintHelper {
 
     }
     //把要打印的杯子小票信息组装成字符串
-    public String getPrintCupContent(PrintCupBean bean){
+    private String getPrintCupContent(PrintCupBean bean){
         String shopOrderSn = bean.getShopOrderNo();
-        String text =
-                "N"+"\n"+
+        return  "N"+"\n"+
                 "OD"+"\n"+
                 "q240"+"\n"+
                 "Q160,16"+"\n"+
@@ -420,11 +417,11 @@ public class PrintHelper {
                 "A20,70,0,230,1,1,N,\""+bean.getCoffee()+"\""+"\n"+
                 "A20,100,0,230,1,1,N,\""+OrderHelper.getLabelPrintStr(bean.getLabelList())+"\""+"\n"+
                 "P1"+"\n";
-        return text;
+
     }
 
 
-    public void DoPrintCup(String printContent){
+    private void DoPrintCup(String printContent){
         Log.d(TAG,"DoPrintCup");
         DoPrintRunnable dpt = new DoPrintRunnable();
         dpt.setPrinterIP(ip_print_cup);
@@ -432,22 +429,22 @@ public class PrintHelper {
         mPoolExecutor.execute(dpt);
     }
 
-    public class DoPrintRunnable implements Runnable {
+    private class DoPrintRunnable implements Runnable {
         private String printerIP = "";
         private String printConent = "";
 
-        public void setPrinterIP(String ip) {
+        private void setPrinterIP(String ip) {
             this.printerIP = ip;
         }
 
-        public void setPrinterContent(String content) {
+        private void setPrinterContent(String content) {
             this.printConent = content;
             Log.d(TAG,"printConent = "+printConent);
         }
         @Override
         public void run() {
             Log.i(TAG,"printerIsAvailable = "+printerIsAvailable);
-            while (printerIsAvailable == false) {
+            while (!printerIsAvailable) {
                 try {
                     Thread.sleep(300);
                     Log.i(TAG, "sleep");
@@ -510,17 +507,17 @@ public class PrintHelper {
         mPoolExecutor.execute(dpt);
     }
 
-    public class DoPingRunnable implements Runnable {
+    private class DoPingRunnable implements Runnable {
         public void run() {
             boolean pingResult = ping(ip_print_order);
-            if (pingResult == true) {
+            if (pingResult) {
                 mlistener.onPrompt(MSG_PING,ip_print_order+"在线");
             } else {
                 mlistener.onPrompt(MSG_PING, ip_print_order + "无法连接");
             }
 
             pingResult = ping(ip_print_cup);
-            if (pingResult == true) {
+            if (pingResult) {
                 mlistener.onPrompt(MSG_PING, ip_print_cup + "在线");
             } else {
                 mlistener.onPrompt(MSG_PING, ip_print_cup + "无法连接");
@@ -567,7 +564,7 @@ public class PrintHelper {
     }
 
     //生成批量打印的杯贴纸集合（按同种咖啡数量多到少排序）
-    public List<PrintCupBean> calculateBatchCupList(List<OrderBean> orderList){
+    private List<PrintCupBean> calculateBatchCupList(List<OrderBean> orderList){
         List<PrintCupBean> batchCupList = new ArrayList<>();
         for(OrderBean orderBean:orderList){
             List<PrintCupBean> hotCupList = new ArrayList<>();
@@ -581,7 +578,7 @@ public class PrintHelper {
     }
 
     //对集合按照同元素数量由多到少的顺序排序
-    public List<PrintCupBean> sortCupList(List<PrintCupBean> batchCupList){
+    private List<PrintCupBean> sortCupList(List<PrintCupBean> batchCupList){
         List<PrintCupBean> sortedCupList = new ArrayList<>();
         Map<String,Integer> map = creteCoffeeNumberMap(batchCupList);
         List<Map.Entry<String, Integer>> list_data = new ArrayList<Map.Entry<String,Integer>>(map.entrySet());
@@ -600,7 +597,7 @@ public class PrintHelper {
         return sortedCupList;
     }
     //通过咖啡名获取包含该咖啡的bean列表
-    public List<PrintCupBean> getCupListByName(String coffee,List<PrintCupBean> batchCupList){
+    private List<PrintCupBean> getCupListByName(String coffee,List<PrintCupBean> batchCupList){
         List<PrintCupBean> cupBeanList = new ArrayList<>();
         for(PrintCupBean cupBean:batchCupList){
             if(coffee.equals(cupBean.getCoffee())){
@@ -611,7 +608,7 @@ public class PrintHelper {
     }
 
     //生成合并订单的咖啡和对应数量的映射关系
-    public Map<String,Integer> creteCoffeeNumberMap(List<PrintCupBean> batchCupList){
+    private Map<String,Integer> creteCoffeeNumberMap(List<PrintCupBean> batchCupList){
         Map<String,Integer> map = new HashMap<String,Integer>();
         for(PrintCupBean cupBean:batchCupList){
             if(map.get(cupBean.getCoffee())==null){
@@ -624,7 +621,7 @@ public class PrintHelper {
         return map;
     }
 
-    public  void DoPrintMaterial(String printContent){
+    private  void DoPrintMaterial(String printContent){
         Log.d(TAG,"DoPrintMaterial");
         DoPrintRunnable dpt = new DoPrintRunnable();
         dpt.setPrinterIP(ip_print_order);
@@ -633,22 +630,21 @@ public class PrintHelper {
     }
 
     //物料内容
-    public String getMaterialContent(MaterialBean materialBean){
-        String text =
-                        "N"+"\n"+
-                        "OD"+"\n"+
-                        "q640"+"\n"+
-                        "Q400,16"+"\n"+
-                        "S3"+"\n"+
-                        "D8"+"\n"+
-                        "A60,150,0,230,3,4,N,\""+materialBean.getName()+"\""+"\n"+
-                        "A60,280,0,230,1,1,N,\""+getOverDueDate(materialBean.getOverdueDays())+"\""+"\n"+
-                        "P1"+"\n";
-        return text;
+    private String getMaterialContent(MaterialBean materialBean){
+        return  "N"+"\n"+
+                "OD"+"\n"+
+                "q640"+"\n"+
+                "Q400,16"+"\n"+
+                "S3"+"\n"+
+                "D8"+"\n"+
+                "A60,150,0,230,3,4,N,\""+materialBean.getName()+"\""+"\n"+
+                "A60,280,0,230,2,2,N,\""+getOverDueDate(materialBean.getOverdueDays())+"\""+"\n"+
+                "P1"+"\n";
+
     }
 
     private String getOverDueDate(int overdueDays) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日HH点mm分 到期");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm 到期", Locale.CHINESE);
         Calendar nowDate = Calendar.getInstance();
         nowDate.add(Calendar.DAY_OF_MONTH,overdueDays);
         return sdf.format(nowDate.getTime());
@@ -662,22 +658,20 @@ public class PrintHelper {
     }
 
     //贴纸内容
-    public String getPasterContent(){
-        String text =
-                "N"+"\n"+
-                        "OD"+"\n"+
-                        "q240"+"\n"+
-                        "Q160,16"+"\n"+
-                        "S3"+"\n"+
-                        "D8"+"\n"+
-                        "A10,19,0,230,1,1,N,\"报废时间:\""+"\n"+
-                        "A10,46,0,230,1,1,N,\"──────────────────────\""+"\n"+
-                        "A10,72,0,230,1,1,N,\"品名:\""+"\n"+
-                        "A120,72,0,230,1,1,N,\"签名:\""+"\n"+
-                        "A10,98,0,230,1,1,N,\"──────────────────────\""+"\n"+
-                        "A10,125,0,230,1,1,N,\"原始到期日:\""+"\n"+
-                        "P1"+"\n";
-        return text;
+    private String getPasterContent(){
+        return  "N"+"\n"+
+                "OD"+"\n"+
+                "q240"+"\n"+
+                "Q160,16"+"\n"+
+                "S3"+"\n"+
+                "D8"+"\n"+
+                "A10,19,0,230,1,1,N,\"报废时间:\""+"\n"+
+                "A10,46,0,230,1,1,N,\"──────────────────────\""+"\n"+
+                "A10,72,0,230,1,1,N,\"品名:\""+"\n"+
+                "A120,72,0,230,1,1,N,\"签名:\""+"\n"+
+                "A10,98,0,230,1,1,N,\"──────────────────────\""+"\n"+
+                "A10,125,0,230,1,1,N,\"原始到期日:\""+"\n"+
+                "P1"+"\n";
     }
 
 
@@ -687,7 +681,7 @@ public class PrintHelper {
         DoPrintPaster(pasterContent);
     }
 
-    public  void DoPrintPaster(String printContent){
+    private  void DoPrintPaster(String printContent){
         Log.d(TAG,"DoPrintMaterial");
         DoPrintRunnable dpt = new DoPrintRunnable();
         dpt.setPrinterIP(ip_print_cup);
@@ -696,7 +690,7 @@ public class PrintHelper {
     }
 
 
-    public String getRemarkFlag(boolean isHaveRemark){
+    private String getRemarkFlag(boolean isHaveRemark){
         if(isHaveRemark){
             return "  备";
         }else{

@@ -27,8 +27,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -110,7 +110,7 @@ public class OrderHelper {
             return "-- --";
         }
         Date d = new Date(time);
-        SimpleDateFormat sf = new SimpleDateFormat("MM-dd HH:mm");
+        SimpleDateFormat sf = new SimpleDateFormat("MM-dd HH:mm",Locale.CHINESE);
         return sf.format(d);
     }
 
@@ -119,15 +119,15 @@ public class OrderHelper {
         if(time == 0){
             return "-- --";
         }
-        SimpleDateFormat sf = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat sf = new SimpleDateFormat("HH:mm",Locale.CHINESE);
         long t2 = time+30*60*1000;
         Date d = new Date(time);
-        return new SimpleDateFormat("MM-dd").format(d)+" "+sf.format(d)+"~"+sf.format(new Date(t2));
+        return new SimpleDateFormat("MM-dd",Locale.CHINESE).format(d)+" "+sf.format(d)+"~"+sf.format(new Date(t2));
     }
 
     /*将字符串转为时间戳*/
     public static long getStringToDate(String time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.CHINESE);
         Date date = new Date();
         try{
             date = sdf.parse(time);
@@ -139,7 +139,7 @@ public class OrderHelper {
     }
 
     /*时间段毫秒转化为分钟*/
-    public static String getDateToMinutes(long time) {
+    private static String getDateToMinutes(long time) {
         String min = "";
         String sec = "";
         long minutes = time / (1000 * 60 );
@@ -191,7 +191,7 @@ public class OrderHelper {
             if(produceBtn!=null){
                 produceBtn.setBackgroundResource(R.drawable.bg_produce_btn_red);
             }
-            effectTimeTxt.setText("+"+OrderHelper.getDateToMinutes(Math.abs(mms)));
+            effectTimeTxt.setText(String.format("+%s", OrderHelper.getDateToMinutes(Math.abs(mms))));
         }else{
             if(order.getInstant()==0){
                 if(produceBtn!=null){
@@ -213,7 +213,7 @@ public class OrderHelper {
         Log.d(TAG, "mms = " + mms);
         if(mms<=0){
             effectTimeTxt.setTextColor(Color.parseColor("#e2435a"));
-            effectTimeTxt.setText("+"+OrderHelper.getDateToMinutes(Math.abs(mms)));
+            effectTimeTxt.setText(String.format("+%s", OrderHelper.getDateToMinutes(Math.abs(mms))));
         }else{
             effectTimeTxt.setTextColor(Color.parseColor("#000000"));
             effectTimeTxt.setText(OrderHelper.getDateToMinutes(mms));
@@ -228,12 +228,12 @@ public class OrderHelper {
         SharedPreferences.Editor editor  =sp.edit();
         editor.clear();
         editor.putStringSet("printedOrderList",list);
-        editor.commit();
+        editor.apply();
         Log.d(TAG,"order "+orderSn+" is added printSet");
     }
 
     //获取已打印订单的集合
-    public static Set<String> getPrintedSet(Context context){
+    private static Set<String> getPrintedSet(Context context){
         SharedPreferences sp = context.getSharedPreferences(PRINT_STATUS, Context.MODE_PRIVATE);
         return sp.getStringSet("printedOrderList",new HashSet<String>());
     }
@@ -243,11 +243,7 @@ public class OrderHelper {
         for(String order:list){
             Log.d(TAG,"set contain :"+order);
         }
-        if(list.contains(orderSn)){
-            return true;
-        }else{
-            return false;
-        }
+        return list.contains(orderSn);
     }
     //筛选出未打印的订单集合
     public static List<OrderBean> selectUnPrintList(Context context,List<OrderBean> list){
@@ -263,7 +259,7 @@ public class OrderHelper {
     //清空打印状态缓存记录
     public static void clearPrintedSet(Context context){
         SharedPreferences sp = context.getSharedPreferences(PRINT_STATUS, Context.MODE_PRIVATE);
-        sp.edit().clear().commit();
+        sp.edit().clear().apply();
         Log.d(TAG, "clear print set");
     }
 
@@ -298,7 +294,7 @@ public class OrderHelper {
     }
 
     //计算订单列表的的咖啡名和对应的杯数
-    public static void getBatchMap(List<OrderBean> orderList){
+    private static void getBatchMap(List<OrderBean> orderList){
         for(int i=0;i<orderList.size();i++){
             List<ItemContentBean> itemList = orderList.get(i).getItems();
             for(int j=0;j<itemList.size();j++){
@@ -364,10 +360,10 @@ public class OrderHelper {
         int totalQutity = getTotalQutity(order);
         if(totalQutity<=5){
             final long mms = System.currentTimeMillis() - (order.getExpectedTime() - ADVANCEDHANDLETIME * 60 * 1000);
-            return mms<0?false:true;
+            return mms>=0;
         }else{
             final long mms = System.currentTimeMillis() - (order.getExpectedTime() - (totalQutity*2+ADVANCEDHANDLETIME) * 60 * 1000);
-            return mms<0?false:true;
+            return mms>=0;
         }
 
     }
@@ -596,7 +592,7 @@ public class OrderHelper {
                 return "立即送出";
             }else{
                 //预约单
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm",Locale.CHINESE);
                 String start = sdf.format(new Date(pob.getExpectedTime()));
                 return start;
             }
@@ -606,7 +602,7 @@ public class OrderHelper {
                 return "尽快送达";
             }else{
                 //预约单
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm",Locale.CHINESE);
                 String start = sdf.format(new Date(pob.getExpectedTime()));
                 String end = sdf.format(new Date(pob.getExpectedTime()+30*60*1000));
                 return start+"~"+end;
@@ -623,7 +619,7 @@ public class OrderHelper {
                 return "立即送出";
             }else{
                 //预约单
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm",Locale.CHINESE);
                 String start = sdf.format(new Date(orderBean.getExpectedTime()));
                 return start;
             }
@@ -633,7 +629,7 @@ public class OrderHelper {
                 return "尽快送达";
             }else{
                 //预约单
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm",Locale.CHINESE);
                 String start = sdf.format(new Date(orderBean.getExpectedTime()));
                 String end = sdf.format(new Date(orderBean.getExpectedTime()+30*60*1000));
                 return start+"~"+end;
@@ -644,7 +640,7 @@ public class OrderHelper {
 
     //针对当前时间送达计算订单的服务时效
     public static String getTimeToService(OrderBean orderBean){
-        SimpleDateFormat sdf  = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat sdf  = new SimpleDateFormat("HH:mm",Locale.CHINESE);
         String result = "";
         if(orderBean.getInstant()==1){  //及时单
             long orderTime = orderBean.getOrderTime();
@@ -676,7 +672,7 @@ public class OrderHelper {
      * 实际该订单的服务时效
      */
     public static String getRealTimeToService(OrderBean orderBean){
-        SimpleDateFormat sdf  = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat sdf  = new SimpleDateFormat("HH:mm", Locale.CHINESE);
         long realReachTime = orderBean.getHandoverTime();
         String result = "";
         if(orderBean.getInstant()==1){  //及时单
@@ -712,7 +708,7 @@ public class OrderHelper {
         if(time==0){
             return "-- -- -- --";
         }
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm (MM/dd)");
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm (MM/dd)",Locale.CHINESE);
         return sdf.format(new Date(time));
     }
 

@@ -131,7 +131,7 @@ public class HomeActivity extends BaseActivity implements MainView{
 
     private void initViews(){
         shopNameText.setText(LoginHelper.getLoginBean(context).getShopName());
-        curVerText.setText("当前版本:" + MyUtil.getVersion(context));
+        curVerText.setText(String.format("当前版本:%s", MyUtil.getVersion(context)));
 
         orderFrag =  new MainProduceFragment();
         deliverFragment = new MainDeliverFragment();

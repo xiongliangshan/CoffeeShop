@@ -50,10 +50,6 @@
 
 
         <activity
-            android:name=".base.BaseActivity"
-            android:label="@string/title_activity_base" >
-        </activity>
-        <activity
             android:name=".main.ui.HomeActivity"
             android:parentActivityName=".base.BaseActivity"
             android:screenOrientation="sensorLandscape"

@@ -26,8 +26,8 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.event.UpdateFinishedOrderDetailEvent;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.event.UpdateFinishedOrderDetailEvent;
 import com.lyancafe.coffeeshop.shop.presenter.FinishedPresenter;
 import com.lyancafe.coffeeshop.shop.presenter.FinishedPresenterImpl;
 import com.lyancafe.coffeeshop.shop.view.FinishedView;
@@ -51,13 +51,15 @@ import butterknife.Unbinder;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreRecyclerView.PullLoadMoreListener,FinishedView {
+public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreRecyclerView.PullLoadMoreListener, FinishedView {
 
     @BindView(R.id.plmgv_order_list)
     PullLoadMoreRecyclerView pullLoadMoreRecyclerView;
-   /* @BindView(R.id.tv_good) TextView tvGood;
-    @BindView(R.id.tv_passed) TextView tvPassed;
-    @BindView(R.id.tv_not_passed) TextView tvNotPassed;*/
+    @BindView(R.id.tv_empty)
+    TextView tvEmpty;
+    /* @BindView(R.id.tv_good) TextView tvGood;
+     @BindView(R.id.tv_passed) TextView tvPassed;
+     @BindView(R.id.tv_not_passed) TextView tvNotPassed;*/
     private FinishedRvAdapter mAdapter;
     private long mLastOrderId = 0;
     private Context mContext;
@@ -113,7 +115,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mHandler = new Handler();
-        mFinishedPresenter = new FinishedPresenterImpl(getContext(),this);
+        mFinishedPresenter = new FinishedPresenterImpl(getContext(), this);
     }
 
     @Override
@@ -145,8 +147,24 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     }
 
     @Override
+    public void showEmpty(boolean isNeedToShow) {
+        if(isNeedToShow){
+            tvEmpty.setVisibility(View.VISIBLE);
+        }else{
+            tvEmpty.setVisibility(View.GONE);
+        }
+    }
+
+
+    @Override
     public void bindDataToListView(List<OrderBean> list) {
-        mAdapter.setData(list);
+        if(list!=null && list.size()>0){
+            showEmpty(false);
+            mAdapter.setData(list);
+        }else{
+            showEmpty(true);
+        }
+
     }
 
     @Override
@@ -168,7 +186,6 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     }*/
 
 
-
     @Override
     public void saveLastOrderId() {
         if (mAdapter.list.size() > 0) {
@@ -180,7 +197,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
     @Override
     public void stopLoadingProgress() {
-        if(pullLoadMoreRecyclerView!=null){
+        if (pullLoadMoreRecyclerView != null) {
             pullLoadMoreRecyclerView.setPullLoadMoreCompleted();
         }
 
@@ -188,7 +205,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
     @Override
     public void showToast(String promptStr) {
-        ToastUtil.showToast(getActivity(),promptStr);
+        ToastUtil.showToast(getActivity(), promptStr);
     }
 
     private void updateDetailView(final OrderBean order) {

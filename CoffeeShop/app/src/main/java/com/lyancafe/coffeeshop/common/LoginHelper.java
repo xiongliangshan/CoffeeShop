@@ -10,9 +10,6 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.login.model.UserBean;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 
 /**
  * Created by Administrator on 2015/9/22.
@@ -22,7 +19,7 @@ public class LoginHelper {
     public static final String TAG = "LoginHelper";
     public static int LOGIN_SUCCESS = 0;   //登录成功
     public static int LOGIN_FAIL = 104;    //登录失败
-    public static String PREFERENCES_USER = "user";
+    private static String PREFERENCES_USER = "user";
 
     public static boolean verifyLoginParams(Context context,String userName,String password){
         if(TextUtils.isEmpty(userName)){
@@ -39,7 +36,7 @@ public class LoginHelper {
 
     public static void saveLoginBean(Context context,UserBean userBean){
         SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
-        sp.edit().putString("login", JSON.toJSONString(userBean)).commit();
+        sp.edit().putString("login", JSON.toJSONString(userBean)).apply();
     }
 
     public static UserBean getLoginBean(Context context){
