@@ -1,6 +1,10 @@
 package com.lyancafe.coffeeshop.login.ui;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Window;
 import android.widget.EditText;
 
 import com.lyancafe.coffeeshop.R;
@@ -8,6 +12,7 @@ import com.lyancafe.coffeeshop.base.BaseActivity;
 import com.lyancafe.coffeeshop.login.presenter.LoginPresenter;
 import com.lyancafe.coffeeshop.login.presenter.LoginPresenterImpl;
 import com.lyancafe.coffeeshop.login.view.LoginView;
+import com.lyancafe.coffeeshop.main.ui.HomeActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,6 +25,7 @@ import cn.jpush.android.api.JPushInterface;
 public class LoginActivity extends BaseActivity implements LoginView{
 
     private static final String TAG = "LoginActivity";
+    private ProgressDialog dialog;
 
     @BindView(R.id.username)
     EditText userNameEdit;
@@ -41,17 +47,18 @@ public class LoginActivity extends BaseActivity implements LoginView{
 
     @Override
     public String getUserName() {
-        return userNameEdit.getText().toString();
+        return userNameEdit.getText().toString().trim();
     }
 
     @Override
     public String getPassword() {
-        return passwordEdit.getText().toString();
+        return passwordEdit.getText().toString().trim();
     }
 
     @OnClick(R.id.login_btn)
      void login(){
-       mLoginPresenter.login(this);
+//       mLoginPresenter.login(this);
+        mLoginPresenter.login();
     }
 
 
@@ -67,5 +74,33 @@ public class LoginActivity extends BaseActivity implements LoginView{
         JPushInterface.onPause(this);
     }
 
+    @Override
+    public void stepToMain() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);
 
+    }
+
+    @Override
+    public void showLoadingDlg() {
+        if(dialog==null){
+            dialog = new ProgressDialog(this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            dialog.setMessage("请求网络中...");
+        }
+        if(!dialog.isShowing()){
+            dialog.show();
+        }
+    }
+
+    @Override
+    public void dismissLoadingDlg() {
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
+    }
 }

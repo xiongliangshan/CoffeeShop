@@ -29,9 +29,9 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class UpdateService extends IntentService {
+public class DownLoadService extends IntentService {
 
-    private static final String TAG = "UpdateService";
+    private static final String TAG = "DownLoadService";
     private static final int DOWNLOADNOTIFICATIONID = 333;
     private static final int TIMEOUT = 60 * 1000;// 超时时间
     private boolean isDownloading = false;
@@ -40,8 +40,8 @@ public class UpdateService extends IntentService {
     private File mAPKDir;
     private File  mFile;
 
-    public UpdateService() {
-        super("UpdateService");
+    public DownLoadService() {
+        super("DownLoadService");
     }
 
     @Override
@@ -74,11 +74,11 @@ public class UpdateService extends IntentService {
         ApkInfoBean apkInfoBean = (ApkInfoBean) intent.getSerializableExtra("apk");
         if(!isDownloading){
             if (isNewestAPKexist(apkInfoBean)) {
-                installApk(UpdateService.this, mFile);
+                installApk(DownLoadService.this, mFile);
             } else {
                 if (createFile(mFile)) {
                     if (downloadUpdateFile(apkInfoBean.getUrl(), mFile)) {
-                        installApk(UpdateService.this, mFile);
+                        installApk(DownLoadService.this, mFile);
                     } else {
                         return;
                     }

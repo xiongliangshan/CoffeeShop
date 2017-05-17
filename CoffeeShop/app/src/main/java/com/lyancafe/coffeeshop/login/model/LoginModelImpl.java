@@ -5,16 +5,27 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
+import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.common.HttpHelper;
+import com.lyancafe.coffeeshop.http.RetrofitHttp;
+
+import org.reactivestreams.Subscriber;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.Call;
 import okhttp3.Response;
+import retrofit2.Retrofit;
 
 import static com.lyancafe.coffeeshop.common.LoginHelper.getLoginTime;
 import static com.lyancafe.coffeeshop.common.LoginHelper.saveCurrentDayFirstLoginTime;
@@ -44,6 +55,16 @@ public class LoginModelImpl implements LoginModel{
 
     }
 
+    @Override
+    public void login(String loginName, String password, Observer<BaseEntity<UserBean>> observer) {
+        Map<String,Object> params = new HashMap<>();
+        params.put("loginName",loginName);
+        params.put("password",password);
+        RetrofitHttp.getRetrofit().login(params)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
 
     @Override
     public void uploadDeviceInfo(String regId,final OnHandleUpLoadDeviceInfoListener listener) {
@@ -59,6 +80,14 @@ public class LoginModelImpl implements LoginModel{
                 listener.onUpLoadDeviceInfoFailure(call,response,e);
             }
         });
+    }
+
+    @Override
+    public void uploadDeviceInfo(int shopId,int userId,Map<String,Object> params, Consumer<BaseEntity> consumer) {
+        RetrofitHttp.getRetrofit().uploadDeviceInfo(shopId,userId,params)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(consumer);
     }
 
     @Override

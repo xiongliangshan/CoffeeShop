@@ -82,7 +82,7 @@
             android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar"/>
 
         <service android:name=".service.TaskService"/>
-        <service android:name=".service.UpdateService"/>
+        <service android:name=".service.DownLoadService"/>
 
 
         <!--极光推送配置开始-->

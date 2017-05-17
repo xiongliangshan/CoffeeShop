@@ -10,8 +10,8 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.PrintCupBean;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
 import com.lyancafe.coffeeshop.event.UpdatePrintStatusEvent;
+import com.lyancafe.coffeeshop.http.Api;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.lyancafe.coffeeshop.utils.Urls;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -52,7 +52,7 @@ public class PrintHelper {
     private PrintHelper() {
         Log.d(TAG,"PrintHelpter()");
         mPoolExecutor = new ThreadPoolExecutor(1, 5, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-        if(Urls.BASE_URL.contains("cn")||Urls.BASE_URL.contains("192.168")){
+        if(Api.BASE_URL.contains("cn")||Api.BASE_URL.contains("192.168")){
             ip_print_order = "192.168.1.222";
             ip_print_cup = "192.168.1.222";
         }else{

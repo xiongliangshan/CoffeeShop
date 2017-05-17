@@ -8,4 +8,7 @@ public interface LoginView{
 
     String getUserName();
     String getPassword();
+    void stepToMain();
+    void showLoadingDlg();
+    void dismissLoadingDlg();
 }

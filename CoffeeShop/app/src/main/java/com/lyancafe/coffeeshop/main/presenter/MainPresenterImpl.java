@@ -15,7 +15,7 @@ import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.common.HttpHelper;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.login.model.UserBean;
-import com.lyancafe.coffeeshop.service.UpdateService;
+import com.lyancafe.coffeeshop.service.DownLoadService;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
@@ -71,7 +71,7 @@ public class MainPresenterImpl implements MainPresenter{
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
                     //启动Service下载apk文件
-                    Intent intent = new Intent(mContext, UpdateService.class);
+                    Intent intent = new Intent(mContext, DownLoadService.class);
                     intent.putExtra("apk",apkInfoBean);
                     mContext.startService(intent);
                 }
@@ -106,7 +106,7 @@ public class MainPresenterImpl implements MainPresenter{
 
     @Override
     public void handleLoginOutResponse(XlsResponse xlsResponse, Call call, Response response) {
-        Intent intent_update = new Intent(mContext, UpdateService.class);
+        Intent intent_update = new Intent(mContext, DownLoadService.class);
         mContext.stopService(intent_update);
     }
 }

@@ -2,8 +2,11 @@ package com.lyancafe.coffeeshop.login.presenter;
 
 import android.app.Activity;
 
+import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
+import com.lyancafe.coffeeshop.login.model.UserBean;
 
+import io.reactivex.Observer;
 import okhttp3.Call;
 import okhttp3.Response;
 
@@ -24,4 +27,15 @@ public interface LoginPresenter {
 
     //处理上传设备返回数据
     void handleUploadDeviceInfoResponse(XlsResponse xlsResponse,Call call, Response response);
+
+    /**
+     * 登录
+     */
+    void login();
+
+    /**
+     * 上传设备信息
+     * @param token
+     */
+    void uploadDeviceInfo(int shopId,int userId,String token);
 }

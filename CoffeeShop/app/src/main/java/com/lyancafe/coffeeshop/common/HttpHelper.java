@@ -5,13 +5,13 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
 import com.lyancafe.coffeeshop.CSApplication;
-import com.lyancafe.coffeeshop.login.model.UserBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.DialogCallback;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
+import com.lyancafe.coffeeshop.http.Api;
+import com.lyancafe.coffeeshop.login.model.UserBean;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.RsaEncryptor;
-import com.lyancafe.coffeeshop.utils.Urls;
 import com.lzy.okgo.OkGo;
 
 import java.util.HashMap;
@@ -66,7 +66,7 @@ public class HttpHelper {
         }
         params.put("password", enc_pwd);
         JSONObject jsonObject = new JSONObject(params);
-        String url = Urls.BASE_URL+"token";
+        String url = Api.BASE_URL+"token";
         OkGo.post(url)
                 .tag(this)
                 .upJson(jsonObject.toString())
@@ -89,7 +89,7 @@ public class HttpHelper {
         if(userId==0){
             return;
         }
-        String url = Urls.BASE_URL+shopId+"/barista/"+userId+"/device?token="+token;
+        String url = Api.BASE_URL+shopId+"/barista/"+userId+"/device?token="+token;
         Map<String,Object> params = new HashMap<String,Object>();
         params.put("deviceId",deviceId);
         params.put("mType",mType);
@@ -110,7 +110,7 @@ public class HttpHelper {
      */
     public void reqToProduceData(JsonCallback<XlsResponse> callback){
         Log.d("xls","请求待生产列表");
-        String url = Urls.BASE_URL + shopId + "/orders/today/toproduce?token="+token;
+        String url = Api.BASE_URL + shopId + "/orders/today/toproduce?token="+token;
         OkGo.post(url)
                 .tag(this)
                 .execute(callback);
@@ -123,7 +123,7 @@ public class HttpHelper {
      */
     public void reqProducingData(JsonCallback<XlsResponse> callback){
         Log.d("xls","请求生产中列表");
-        String url = Urls.BASE_URL + shopId + "/orders/today/producing?token="+token;
+        String url = Api.BASE_URL + shopId + "/orders/today/producing?token="+token;
         OkGo.post(url)
                 .tag(this)
                 .execute(callback);
@@ -136,7 +136,7 @@ public class HttpHelper {
      */
     public void reqProducedData(JsonCallback<XlsResponse> callback){
         Log.d("xls","请求待取货列表");
-        String url = Urls.BASE_URL + shopId + "/orders/today/produced?token="+token;
+        String url = Api.BASE_URL + shopId + "/orders/today/produced?token="+token;
         OkGo.post(url)
                 .tag(this)
                 .execute(callback);
@@ -150,7 +150,7 @@ public class HttpHelper {
      */
     public void reqDeliveryingData(JsonCallback<XlsResponse> callback){
         Log.d("xls","请求配送中列表");
-        String url = Urls.BASE_URL + shopId + "/orders/today/delivering?token="+token;
+        String url = Api.BASE_URL + shopId + "/orders/today/delivering?token="+token;
         OkGo.post(url)
                 .tag(this)
                 .execute(callback);
@@ -162,7 +162,7 @@ public class HttpHelper {
      * @param callback
      */
     public void reqCourierList(JsonCallback<XlsResponse> callback){
-        String url = Urls.BASE_URL+shopId+"/couriersInfoList?token="+token;
+        String url = Api.BASE_URL+shopId+"/couriersInfoList?token="+token;
         OkGo.get(url)
                 .tag(this)
                 .execute(callback);
@@ -178,7 +178,7 @@ public class HttpHelper {
         params.put("orderId",orderId); //区分是刷新还是加载更多
         JSONObject jsonObject = new JSONObject(params);
 
-        String url = Urls.BASE_URL + shopId + "/orders/today/finished?token="+token;
+        String url = Api.BASE_URL + shopId + "/orders/today/finished?token="+token;
         OkGo.post(url)
                 .tag("finished")
                 .headers("isLoadMore", orderId == 0 ? "no" : "yes")
@@ -193,7 +193,7 @@ public class HttpHelper {
      */
     public void reqFinishedTotalAmountData(JsonCallback<XlsResponse> callback){
         Log.d("xls","请求总杯量和总单量");
-        String url=Urls.BASE_URL+shopId + "/orders/today/finishedTotal?token="+token;
+        String url=Api.BASE_URL+shopId + "/orders/today/finishedTotal?token="+token;
         OkGo.get(url)
                 .tag("finished")
                 .execute(callback);
@@ -205,7 +205,7 @@ public class HttpHelper {
      */
     public void reqServiceEffectPersent(JsonCallback<XlsResponse> callback){
         Log.d("xls","请求服务时效百分比");
-        String url=Urls.BASE_URL+shopId + "/orders/scaleInfo?token="+token;
+        String url=Api.BASE_URL+shopId + "/orders/scaleInfo?token="+token;
         OkGo.get(url)
                 .tag("finished")
                 .execute(callback);
@@ -222,7 +222,7 @@ public class HttpHelper {
         params.put("orderId",orderId);
         params.put("feedbackType",type);
         JSONObject jsonObject = new JSONObject(params);
-        String url=Urls.BASE_URL+shopId + "/orders/feedbackList?token="+token;
+        String url=Api.BASE_URL+shopId + "/orders/feedbackList?token="+token;
         OkGo.post(url)
                 .tag("evaluation")
                 .headers("isLoadMore", orderId == 0 ? "no" : "yes")
@@ -236,7 +236,7 @@ public class HttpHelper {
      * @param callback
      */
     public void reqSearchOrdersByDate(String date,JsonCallback<XlsResponse> callback){
-        String url = Urls.BASE_URL+shopId+"/orders/search/day/"+date+"?token="+token;
+        String url = Api.BASE_URL+shopId+"/orders/search/day/"+date+"?token="+token;
         OkGo.post(url)
                 .tag(this)
                 .execute(callback);
@@ -248,7 +248,7 @@ public class HttpHelper {
      * @param callback
      */
     public void reqSearchOrdersByOrderSn(String orderSn,JsonCallback<XlsResponse> callback){
-        String url = Urls.BASE_URL+shopId+"/orders/search/id/"+orderSn+"?token="+token;
+        String url = Api.BASE_URL+shopId+"/orders/search/id/"+orderSn+"?token="+token;
         OkGo.post(url)
                 .tag(this)
                 .execute(callback);
@@ -260,7 +260,7 @@ public class HttpHelper {
      */
     public void reqMaterialList(JsonCallback<XlsResponse> callback){
         Log.d("xls","请求物料");
-        String url = Urls.BASE_URL+shopId+"/supplies?token="+token;
+        String url = Api.BASE_URL+shopId+"/supplies?token="+token;
         OkGo.get(url)
                 .tag(this)
                 .execute(callback);
@@ -272,7 +272,7 @@ public class HttpHelper {
      * @param callback
      */
     public void reqRecallOrder(long orderId,JsonCallback<XlsResponse> callback){
-        String url = Urls.BASE_URL+shopId+"/order/"+orderId+"/recall?token="+token;
+        String url = Api.BASE_URL+shopId+"/order/"+orderId+"/recall?token="+token;
         OkGo.get(url)
                 .tag(this)
                 .execute(callback);
@@ -283,7 +283,7 @@ public class HttpHelper {
      * @param callback
      */
     public void reqDeliverList(JsonCallback<XlsResponse> callback){
-        String url = Urls.BASE_URL+shopId+"/couriersforassign?token="+token;
+        String url = Api.BASE_URL+shopId+"/couriersforassign?token="+token;
         OkGo.get(url)
                 .tag(this)
                 .execute(callback);
@@ -296,7 +296,7 @@ public class HttpHelper {
      * @param callback
      */
     public void reqAssignOrder(long orderId,long deliverId,JsonCallback<XlsResponse> callback){
-        String url = Urls.BASE_URL+shopId+"/order/"+orderId+"/assigntocourier?token="+token;
+        String url = Api.BASE_URL+shopId+"/order/"+orderId+"/assigntocourier?token="+token;
         HashMap<String, Object> params = new HashMap<>();
         params.put("courierId",deliverId);
         JSONObject jsonObject = new JSONObject(params);
@@ -312,7 +312,7 @@ public class HttpHelper {
      * @param callback
      */
     public void reqStartProduce(long orderId, DialogCallback<XlsResponse> callback){
-        String url = Urls.BASE_URL+shopId+"/order/"+orderId+"/beginproduce?token="+token;
+        String url = Api.BASE_URL+shopId+"/order/"+orderId+"/beginproduce?token="+token;
         OkGo.get(url)
                 .tag(this)
                 .execute(callback);
@@ -325,7 +325,7 @@ public class HttpHelper {
      * @param callback
      */
     public void reqFinishedProduce(long orderId,JsonCallback<XlsResponse> callback){
-        String url = Urls.BASE_URL+shopId+"/order/"+orderId+"/produce?token="+token;
+        String url = Api.BASE_URL+shopId+"/order/"+orderId+"/produce?token="+token;
         OkGo.get(url)
                 .tag(this)
                 .execute(callback);
@@ -337,7 +337,7 @@ public class HttpHelper {
      */
     public void reqCommentCount(JsonCallback<XlsResponse> callback){
         Log.d("xls","请求评论列表");
-        String url = Urls.BASE_URL+shopId+"/orders/feedback/count?token="+token;
+        String url = Api.BASE_URL+shopId+"/orders/feedback/count?token="+token;
         OkGo.get(url)
                 .tag(this)
                 .execute(callback);
@@ -356,7 +356,7 @@ public class HttpHelper {
         params.put("orderId",lastOrderId);
         params.put("levelType",levelType);
         JSONObject jsonObject = new JSONObject(params);
-        String url=Urls.BASE_URL+shopId + "/orders/commissionList?token="+token;
+        String url=Api.BASE_URL+shopId + "/orders/commissionList?token="+token;
         OkGo.post(url)
                 .tag("timeEffect")
                 .headers("isLoadMore", lastOrderId == 0 ? "no" : "yes")
@@ -370,7 +370,7 @@ public class HttpHelper {
      */
     public void reqTimeEffectTypeCount(JsonCallback<XlsResponse> callback){
         Log.d("xls","请求时效数量");
-        String url = Urls.BASE_URL+shopId+"/orders/commissionListCount?token="+token;
+        String url = Api.BASE_URL+shopId+"/orders/commissionListCount?token="+token;
         OkGo.get(url)
                 .tag("timeEffect")
                 .execute(callback);
@@ -383,7 +383,7 @@ public class HttpHelper {
      */
     public void reqCheckUpdate(JsonCallback<XlsResponse> callback){
         int curVersion = MyUtil.getVersionCode(CSApplication.getInstance());
-        String url = Urls.BASE_URL + "/token/"+curVersion+"/isUpdateApp?token="+token;
+        String url = Api.BASE_URL + "/token/"+curVersion+"/isUpdateApp?token="+token;
         OkGo.post(url)
                 .tag(this)
                 .execute(callback);
@@ -394,7 +394,7 @@ public class HttpHelper {
      * @param callback
      */
     public void reqLoginOut(JsonCallback<XlsResponse> callback){
-        String url = Urls.BASE_URL+"/token/delete?token="+token;
+        String url = Api.BASE_URL+"/token/delete?token="+token;
         OkGo.get(url)
                 .tag(this)
                 .execute(callback);
@@ -411,7 +411,7 @@ public class HttpHelper {
      */
 
     public void reqReportIssueOrder(long orderId, int questionType, int questionIdea, String questionDesc,JsonCallback<XlsResponse> callback){
-        String url = Urls.BASE_URL+shopId+"/order/"+orderId+"/raiseissue?token="+token;
+        String url = Api.BASE_URL+shopId+"/order/"+orderId+"/raiseissue?token="+token;
         Map<String,Object> params = new HashMap<String,Object>();
         params.put("questionType",questionType);
         params.put("handleType",questionIdea);

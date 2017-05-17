@@ -1,11 +1,15 @@
-package com.lyancafe.coffeeshop.utils;
+package com.lyancafe.coffeeshop.http;
 
 /**
- * Created by Administrator on 2016/12/28.
+ * Created by Administrator on 2017/3/30.
  */
-public class Urls {
+
+public class Api {
+
 
 //    public static String BASE_URL = "http://api.lyancafe.com/shop/v3/";
     public static String BASE_URL = "http://shop.lyancafe.cn/shop/v3/";
 //    public static String BASE_URL = "http://192.168.1.80:8080/shop/v3/";
+
+
 }
