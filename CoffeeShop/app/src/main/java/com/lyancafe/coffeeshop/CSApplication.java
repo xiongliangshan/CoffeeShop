@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.WindowManager;
 
 import com.baidu.mapapi.SDKInitializer;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.cookie.store.PersistentCookieStore;
@@ -51,8 +52,9 @@ public class CSApplication extends Application {
         CrashReport.initCrashReport(getApplicationContext(), "900027459", false);
 
         //初始化Jpush
-        JPushInterface.setDebugMode(false); 	// 设置开启日志,发布时请关闭日志
-        JPushInterface.init(this);     		// 初始化 JPush
+        JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
+        JPushInterface.init(this.getApplicationContext());     		// 初始化 JPush
+        LogUtil.d("jpush","JPush 开始初始化");
 
         //初始化百度
         SDKInitializer.initialize(getApplicationContext());

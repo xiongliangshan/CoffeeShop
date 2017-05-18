@@ -13,6 +13,7 @@ import com.lyancafe.coffeeshop.login.presenter.LoginPresenter;
 import com.lyancafe.coffeeshop.login.presenter.LoginPresenterImpl;
 import com.lyancafe.coffeeshop.login.view.LoginView;
 import com.lyancafe.coffeeshop.main.ui.HomeActivity;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,6 +43,7 @@ public class LoginActivity extends BaseActivity implements LoginView{
         mLoginPresenter.checkLoginStatus();
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+
     }
 
 
@@ -57,7 +59,6 @@ public class LoginActivity extends BaseActivity implements LoginView{
 
     @OnClick(R.id.login_btn)
      void login(){
-//       mLoginPresenter.login(this);
         mLoginPresenter.login();
     }
 

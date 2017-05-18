@@ -38,6 +38,17 @@ public class RetrofitHttp {
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.addInterceptor(interceptor);
+        builder.addInterceptor(new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request request = chain.request()
+                        .newBuilder()
+                        .addHeader("content-type","application/x-www-form-urlencoded; charset=UTF-8")
+                        .build();
+
+                return chain.proceed(request);
+            }
+        });
         builder.retryOnConnectionFailure(true);
         builder.connectTimeout(15, TimeUnit.SECONDS);
         builder.readTimeout(15,TimeUnit.SECONDS);

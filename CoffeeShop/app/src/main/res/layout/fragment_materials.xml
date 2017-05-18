@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:background="@color/white_font"
+        android:orientation="horizontal">
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/font_gray">
+            <LinearLayout
+                android:id="@+id/ll_menu_container"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/contentRV"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tv_print_paster"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="2"
+            android:lines="2"
+            android:textSize="16sp"
+            android:text="@string/print_small"
+            android:lineSpacingMultiplier="1.1"
+            android:textColor="@color/white_font"
+            android:gravity="center"
+            android:background="@drawable/bg_black_circle"/>
+
+
+        <TextView
+            android:id="@+id/tv_print_material"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:ems="2"
+            android:lines="2"
+            android:textSize="16sp"
+            android:text="@string/print_big"
+            android:layout_gravity="center_vertical"
+            android:lineSpacingMultiplier="1.1"
+            android:textColor="@color/text_black"
+            android:gravity="center"
+            android:background="@drawable/bg_white_circle"/>
+
+        <Button
+            android:id="@+id/btn_print_test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
+            android:text="打印测试"/>
+
+    </LinearLayout>
+
+</LinearLayout>

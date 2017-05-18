@@ -29,12 +29,12 @@ public class MainShopFragment extends BaseFragment implements TabLayout.OnTabSel
     @BindView(R.id.vp_container) ViewPager viewPager;
     private Unbinder unbinder;
 
-    private ShopFragmentPagerAdapter mPagerAdapter;
+    private MaterialsFragmentPagerAdapter mPagerAdapter;
 
     private FinishedOrderFragment finishedOrderFragment;
 //    private TimeEffectFragment timeEffectFragment;
     private EvaluationFragment evaluationFragment;
-    private ShopManagerFragment shopManagerFragment;
+    private MaterialsFragment shopManagerFragment;
 
     public MainShopFragment() {
     }
@@ -53,12 +53,12 @@ public class MainShopFragment extends BaseFragment implements TabLayout.OnTabSel
         finishedOrderFragment = new FinishedOrderFragment();
 //        timeEffectFragment = new TimeEffectFragment();
         evaluationFragment = new EvaluationFragment();
-        shopManagerFragment = new ShopManagerFragment();
+        shopManagerFragment = new MaterialsFragment();
         fragments.add(finishedOrderFragment);
 //        fragments.add(timeEffectFragment);
         fragments.add(evaluationFragment);
         fragments.add(shopManagerFragment);
-        mPagerAdapter = new ShopFragmentPagerAdapter(getChildFragmentManager(),getActivity(),fragments);
+        mPagerAdapter = new MaterialsFragmentPagerAdapter(getChildFragmentManager(),getActivity(),fragments);
         viewPager.setAdapter(mPagerAdapter);
         viewPager.setOffscreenPageLimit(3);
         tabLayout.setupWithViewPager(viewPager);

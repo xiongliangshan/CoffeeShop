@@ -83,6 +83,9 @@
     <string name="print_material">打印\n物料</string>
     <string name="menu_assign_order">指派订单</string>
 
+    <string name="print_small">打印\n小纸</string>
+    <string name="print_big">打印\n大纸</string>
+
     <string name="total_quantity">共计 :   x  <xliff:g id="cup_count">%d</xliff:g></string>
     <string name="sf_batch_start">批量开始</string>
     <string name="sf_batch_produced">批量完成</string>
@@ -104,5 +107,6 @@
     <string name="assign_success">指派成功</string>
     <string name="coffee_moli">芝士云顶茉莉</string>
     <string name="coffee_hongyu">芝士云顶红玉</string>
+    <string name="select_material">请选择要打印的物料</string>
 
 </resources>

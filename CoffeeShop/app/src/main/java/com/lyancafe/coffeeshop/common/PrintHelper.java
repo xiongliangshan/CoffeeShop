@@ -6,6 +6,7 @@ import android.util.Log;
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.MaterialBean;
+import com.lyancafe.coffeeshop.bean.MaterialItem;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.PrintCupBean;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
@@ -629,22 +630,10 @@ public class PrintHelper {
         mPoolExecutor.execute(dpt);
     }
 
-    //物料内容
-    private String getMaterialContent(MaterialBean materialBean){
-        return  "N"+"\n"+
-                "OD"+"\n"+
-                "q640"+"\n"+
-                "Q400,16"+"\n"+
-                "S3"+"\n"+
-                "D8"+"\n"+
-                "A60,150,0,230,3,4,N,\""+materialBean.getName()+"\""+"\n"+
-                "A60,280,0,230,2,2,N,\""+getOverDueDate(materialBean.getOverdueDays())+"\""+"\n"+
-                "P1"+"\n";
 
-    }
 
     private String getOverDueDate(int overdueDays) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm 到期", Locale.CHINESE);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINESE);
         Calendar nowDate = Calendar.getInstance();
         nowDate.add(Calendar.DAY_OF_MONTH,overdueDays);
         return sdf.format(nowDate.getTime());
@@ -652,32 +641,31 @@ public class PrintHelper {
 
 
     //打印物料（大纸）
-    public  void printMaterialBig(MaterialBean materialBean){
-        String printMaterialContent = getMaterialContent(materialBean);
+    public  void printMaterialBig(MaterialItem materialItem){
+        String printMaterialContent =  "N"+"\n"+
+                    "OD"+"\n"+
+                    "q640"+"\n"+
+                    "Q400,16"+"\n"+
+                    "S3"+"\n"+
+                    "D8"+"\n"+
+                    "A60,150,0,230,3,4,N,\""+materialItem.getName()+"\""+"\n"+
+                    "P1"+"\n";
         DoPrintMaterial(printMaterialContent);
     }
 
-    //贴纸内容
-    private String getPasterContent(){
-        return  "N"+"\n"+
-                "OD"+"\n"+
-                "q240"+"\n"+
-                "Q160,16"+"\n"+
-                "S3"+"\n"+
-                "D8"+"\n"+
-                "A10,19,0,230,1,1,N,\"报废时间:\""+"\n"+
-                "A10,46,0,230,1,1,N,\"──────────────────────\""+"\n"+
-                "A10,72,0,230,1,1,N,\"品名:\""+"\n"+
-                "A120,72,0,230,1,1,N,\"签名:\""+"\n"+
-                "A10,98,0,230,1,1,N,\"──────────────────────\""+"\n"+
-                "A10,125,0,230,1,1,N,\"原始到期日:\""+"\n"+
-                "P1"+"\n";
-    }
 
-
-    //打印贴纸（小纸）
-    public void printPasterSmall(){
-        String pasterContent = getPasterContent();
+    //打印物料（小纸）
+    public void printPasterSmall(MaterialItem materialItem){
+        String pasterContent = "N"+"\n"+
+                    "OD"+"\n"+
+                    "q240"+"\n"+
+                    "Q160,16"+"\n"+
+                    "S3"+"\n"+
+                    "D8"+"\n"+
+                    "A20,35,0,230,1,1,N,\""+materialItem.getName()+"\""+"\n"+
+                    "A20,95,0,230,1,1,N,\""+getOverDueDate(materialItem.getOverdueTime())+"\""+"\n"+
+                    "A20,120,0,230,1,1,N,\"过期\""+"\n"+
+                    "P1"+"\n";
         DoPrintPaster(pasterContent);
     }
 

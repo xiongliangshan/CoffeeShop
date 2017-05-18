@@ -11,13 +11,13 @@ import java.util.List;
  * Created by Administrator on 2017/1/19.
  */
 
-public class ShopFragmentPagerAdapter extends FragmentPagerAdapter {
+public class MaterialsFragmentPagerAdapter extends FragmentPagerAdapter {
 
     public String[] titles = new String[]{"订单一览",/*"时效详情",*/"评价详情","打印物料"};
     private List<Fragment> fragments;
     private Context mContext;
 
-    public ShopFragmentPagerAdapter(FragmentManager fm, Context mContext, List<Fragment> fragments) {
+    public MaterialsFragmentPagerAdapter(FragmentManager fm, Context mContext, List<Fragment> fragments) {
         super(fm);
         this.mContext = mContext;
         this.fragments = fragments;

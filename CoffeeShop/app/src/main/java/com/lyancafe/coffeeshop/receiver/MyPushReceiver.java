@@ -17,6 +17,7 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.PushMessageBean;
 import com.lyancafe.coffeeshop.event.CancelOrderEvent;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
@@ -48,8 +49,8 @@ public class MyPushReceiver extends BroadcastReceiver {
 
         if (JPushInterface.ACTION_REGISTRATION_ID.equals(intent.getAction())) {
             String regId = bundle.getString(JPushInterface.EXTRA_REGISTRATION_ID);
-            Log.d(TAG, "[MyReceiver] 接收Registration Id : " + regId);
-            //send the Registration Id to your server...
+            LogUtil.d(TAG, "[MyReceiver] 接收Registration Id : " + regId);
+            LogUtil.d("jpush","JPush 初始化成功,registrationId = "+regId);
             CSApplication.REG_ID = regId;
 
         } else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
