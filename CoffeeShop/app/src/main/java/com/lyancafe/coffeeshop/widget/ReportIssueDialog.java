@@ -15,13 +15,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.bean.XlsResponse;
-import com.lyancafe.coffeeshop.callback.JsonCallback;
-import com.lyancafe.coffeeshop.common.HttpHelper;
+import com.lyancafe.coffeeshop.bean.BaseEntity;
+import com.lyancafe.coffeeshop.common.LoginHelper;
+import com.lyancafe.coffeeshop.http.RetrofitHttp;
+import com.lyancafe.coffeeshop.login.model.UserBean;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
-import okhttp3.Call;
-import okhttp3.Response;
+import java.util.HashMap;
+import java.util.Map;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2017/2/18.
@@ -145,24 +151,39 @@ public class ReportIssueDialog extends DialogFragment implements View.OnClickLis
                     ToastUtil.show(getContext(),"请输入问题说明");
                     return;
                 }
-                HttpHelper.getInstance().reqReportIssueOrder(mOrderId, 17, 3, contentEdit.getText().toString(), new JsonCallback<XlsResponse>() {
-                    @Override
-                    public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                        if(xlsResponse.status==0){
-                            ToastUtil.showToast(getContext(),"提交成功");
-                            dismiss();
-                        }else{
-                            ToastUtil.showToast(getContext(),xlsResponse.message);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Call call, Response response, Exception e) {
-                        super.onError(call, response, e);
-                    }
-                });
+                reportIssue(mOrderId,17,3,contentEdit.getText().toString());
                 break;
         }
+    }
+
+
+    private void reportIssue(long orderId, int questionType, int questionIdea,String questionDesc){
+        UserBean user = LoginHelper.getUser(getContext());
+
+        Map<String,Object> params = new HashMap<String,Object>();
+        params.put("questionType",questionType);
+        params.put("handleType",questionIdea);
+        params.put("remark", questionDesc);
+
+        RetrofitHttp.getRetrofit().reportIssue(user.getShopId(),orderId,params)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<BaseEntity>() {
+                    @Override
+                    public void accept(@NonNull BaseEntity baseEntity) throws Exception {
+                        if(baseEntity.getStatus()==0){
+                            ToastUtil.showToast(getContext(),"提交成功");
+                            dismiss();
+                        }else {
+                            ToastUtil.showToast(getContext(),baseEntity.getMessage());
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+                        ToastUtil.showToast(getContext(),throwable.getMessage());
+                    }
+                });
     }
 
     @Override

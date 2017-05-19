@@ -185,4 +185,14 @@ public interface HttpInterface {
     Observable<BaseEntity> exitLogin(@Query("token") String token);
 
 
+    /**
+     * 问题订单反馈
+     * @param shopId
+     * @param orderId
+     * @param params
+     * @return
+     */
+    @POST("{shopId}/order/{orderId}/raiseissue")
+    Observable<BaseEntity> reportIssue(@Path("shopId") int shopId,@Path("orderId") long orderId,@QueryMap Map<String,Object> params);
+
 }
