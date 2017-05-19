@@ -1,10 +1,20 @@
 package com.lyancafe.coffeeshop.shop.model;
 
 
+import android.text.AndroidCharacter;
+
+import com.lyancafe.coffeeshop.bean.BaseEntity;
+import com.lyancafe.coffeeshop.bean.EvaluationBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.common.HttpHelper;
+import com.lyancafe.coffeeshop.http.RetrofitHttp;
 
+import java.util.List;
+
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.Call;
 import okhttp3.Response;
 
@@ -14,37 +24,11 @@ import okhttp3.Response;
 
 public class EvaluationModelImpl implements EvaluationModel{
 
-
     @Override
-    public void loadEvaluations(int lastOrderId, int type, final OnHandleEvaluationListener listener) {
-        HttpHelper.getInstance().reqEvaluationListData(lastOrderId, type, new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                listener.onLoadEvaluationListSuccess(xlsResponse,call,response);
-            }
-
-            @Override
-            public void onError(Call call, Response response, Exception e) {
-                super.onError(call, response, e);
-                listener.onLoadEvaluationListFailed(call,response,e);
-            }
-        });
+    public void loadEvaluations(int shopId, long orderId, int feedbackType, String token, Observer<BaseEntity<List<EvaluationBean>>> observer) {
+        RetrofitHttp.getRetrofit().loadEvaluations(shopId,orderId,feedbackType,token)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
     }
-
-    /*@Override
-    public void loadEvaluationAmount(final OnHandleEvaluationListener listener) {
-        HttpHelper.getInstance().reqCommentCount(new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                listener.onLoadTimeEffectAmountSuccess(xlsResponse,call,response);
-            }
-        });
-    }*/
-
-    public interface OnHandleEvaluationListener{
-        void onLoadEvaluationListSuccess(XlsResponse xlsResponse, Call call, Response response);
-        void onLoadEvaluationListFailed(Call call, Response response, Exception e);
-//        void onLoadTimeEffectAmountSuccess(XlsResponse xlsResponse, Call call, Response response);
-    }
-
 }

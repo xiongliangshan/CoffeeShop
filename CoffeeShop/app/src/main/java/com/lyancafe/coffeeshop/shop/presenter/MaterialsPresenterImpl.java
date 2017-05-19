@@ -6,7 +6,6 @@ import android.content.Context;
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.Material;
-import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.login.model.UserBean;
 import com.lyancafe.coffeeshop.shop.model.MaterialsModel;
@@ -19,8 +18,6 @@ import java.util.List;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
-import okhttp3.Call;
-import okhttp3.Response;
 
 /**
 * Created by Administrator on 2017/03/17
@@ -41,7 +38,7 @@ public class MaterialsPresenterImpl implements MaterialsPresenter{
 
     @Override
     public void loadMaterials() {
-        UserBean userBean = LoginHelper.getLoginBean(CSApplication.getInstance());
+        UserBean userBean = LoginHelper.getUser(CSApplication.getInstance());
         int shopId = userBean.getShopId();
         String token = userBean.getToken();
         mShopManagerModel.loadMaterials(shopId, token, new Observer<BaseEntity<List<Material>>>() {

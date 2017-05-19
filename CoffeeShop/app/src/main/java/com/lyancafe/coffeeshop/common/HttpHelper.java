@@ -37,7 +37,7 @@ public class HttpHelper {
 
     public static HttpHelper getInstance(){
         if(http==null){
-            UserBean userBean = LoginHelper.getLoginBean(CSApplication.getInstance());
+            UserBean userBean = LoginHelper.getUser(CSApplication.getInstance());
             int shopId = userBean.getShopId();
             int userId = userBean.getUserId();
             String token = userBean.getToken();

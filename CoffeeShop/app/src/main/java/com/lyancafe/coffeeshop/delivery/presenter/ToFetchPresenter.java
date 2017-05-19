@@ -12,6 +12,5 @@ import okhttp3.Response;
 public interface ToFetchPresenter {
 
     //加载待取货列表数据
-    void loadToFetchOrderList();
-
+    void loadToFetchOrders();
 }

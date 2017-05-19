@@ -1,26 +1,25 @@
 package com.lyancafe.coffeeshop.main.presenter;
 
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 
-import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.bean.ApkInfoBean;
-import com.lyancafe.coffeeshop.bean.XlsResponse;
-import com.lyancafe.coffeeshop.callback.DialogCallback;
-import com.lyancafe.coffeeshop.callback.JsonCallback;
-import com.lyancafe.coffeeshop.common.HttpHelper;
+import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.common.LoginHelper;
+import com.lyancafe.coffeeshop.http.RetrofitHttp;
 import com.lyancafe.coffeeshop.login.model.UserBean;
+import com.lyancafe.coffeeshop.main.view.MainView;
 import com.lyancafe.coffeeshop.service.DownLoadService;
 import com.lyancafe.coffeeshop.utils.MyUtil;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
 
-import okhttp3.Call;
-import okhttp3.Response;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
 * Created by Administrator on 2017/03/14
@@ -29,84 +28,82 @@ import okhttp3.Response;
 public class MainPresenterImpl implements MainPresenter{
 
     private Context mContext;
+    private MainView mMainView;
 
-    public MainPresenterImpl(Context mContext) {
+    public MainPresenterImpl(Context mContext, MainView mMainView) {
         this.mContext = mContext;
+        this.mMainView = mMainView;
     }
 
-    @Override
-    public void checkUpdate(Activity activity,boolean isBackground) {
-        if(isBackground){
-            HttpHelper.getInstance().reqCheckUpdate(new JsonCallback<XlsResponse>() {
-                @Override
-                public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                    handleCheckUpdateResponse(xlsResponse,call,response);
-                }
-            });
-        }else{
-            if (!MyUtil.isOnline(mContext)) {
-                ToastUtil.show(mContext, mContext.getResources().getString(R.string.check_internet));
-            } else {
-                HttpHelper.getInstance().reqCheckUpdate(new DialogCallback<XlsResponse>(activity) {
-                    @Override
-                    public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                        handleCheckUpdateResponse(xlsResponse, call, response);
-                    }
-                });
-            }
-        }
-    }
 
-    @Override
-    public void handleCheckUpdateResponse(XlsResponse xlsResponse, Call call, Response response) {
-        if(xlsResponse.status==0){
-            final ApkInfoBean apkInfoBean = ApkInfoBean.parseJsonToBean(xlsResponse.data.toString());
-            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-            builder.setMessage(mContext.getResources().getString(R.string.confirm_download, apkInfoBean.getAppName()));
-            builder.setTitle(mContext.getResources().getString(R.string.version_update));
-            builder.setIcon(R.mipmap.ic_launcher);
-            builder.setPositiveButton(mContext.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    //启动Service下载apk文件
-                    Intent intent = new Intent(mContext, DownLoadService.class);
-                    intent.putExtra("apk",apkInfoBean);
-                    mContext.startService(intent);
-                }
-            });
-            builder.setNegativeButton(mContext.getResources().getString(R.string.cacel), new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            builder.create().show();
-        }
-    }
-
-    @Override
-    public void resetToken() {
-        UserBean userBean = LoginHelper.getLoginBean(mContext);
+    private void resetToken() {
+        UserBean userBean = LoginHelper.getUser(mContext);
         userBean.setToken("");
-        LoginHelper.saveLoginBean(mContext, userBean);
+        LoginHelper.saveUser(mContext, userBean);
     }
 
     @Override
     public void exitLogin() {
-        HttpHelper.getInstance().reqLoginOut(new JsonCallback<XlsResponse>() {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                handleLoginOutResponse(xlsResponse,call,response);
-            }
-        });
+        UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
+        RetrofitHttp.getRetrofit().exitLogin(user.getToken())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<BaseEntity>() {
+                    @Override
+                    public void accept(@NonNull BaseEntity baseEntity) throws Exception {
+                        if(baseEntity.getStatus()==0){
+                            resetToken();
+                            Intent intent_update = new Intent(mContext, DownLoadService.class);
+                            mContext.stopService(intent_update);
+                        }
+                    }
+                });
+
+
     }
 
+
+
     @Override
-    public void handleLoginOutResponse(XlsResponse xlsResponse, Call call, Response response) {
-        Intent intent_update = new Intent(mContext, DownLoadService.class);
-        mContext.stopService(intent_update);
+    public void checkUpdate(final boolean isShowProgress) {
+        int curVersion = MyUtil.getVersionCode(CSApplication.getInstance());
+        UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
+        RetrofitHttp.getRetrofit().checkUpdate(curVersion,user.getToken())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<BaseEntity<ApkInfoBean>>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                        if(isShowProgress){
+                            mMainView.showLoading();
+                        }
+                    }
+
+                    @Override
+                    public void onNext(@NonNull BaseEntity<ApkInfoBean> apkInfoBeanBaseEntity) {
+                        if(apkInfoBeanBaseEntity.getStatus()==0){
+                            ApkInfoBean apk = apkInfoBeanBaseEntity.getData();
+                            mMainView.showUpdateConfirmDlg(apk);
+                        }else{
+                            mMainView.showToast(apkInfoBeanBaseEntity.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        if(isShowProgress){
+                            mMainView.dismissLoading();
+                        }
+                        mMainView.showToast(e.getMessage());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        if(isShowProgress){
+                            mMainView.dismissLoading();
+                        }
+                    }
+                });
     }
 }

@@ -3,7 +3,6 @@ package com.lyancafe.coffeeshop.delivery.ui;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,10 +13,10 @@ import android.view.ViewGroup;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.delivery.presenter.DeliveringPresenter;
 import com.lyancafe.coffeeshop.delivery.presenter.DeliveringPresenterImpl;
 import com.lyancafe.coffeeshop.delivery.view.DeliveringView;
-import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
@@ -28,11 +27,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link DeliveringFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
+
 public class DeliveringFragment extends BaseFragment implements MainDeliverFragment.FilterOrdersListenter,DeliveringView{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -146,7 +142,8 @@ public class DeliveringFragment extends BaseFragment implements MainDeliverFragm
     class DeliveringTaskRunnable implements Runnable{
         @Override
         public void run() {
-            mDeliveringPresenter.loadDeliveringOrderList();
+//            mDeliveringPresenter.loadDeliveringOrderList();
+            mDeliveringPresenter.loadDeliveringOrders();
         }
     }
 }

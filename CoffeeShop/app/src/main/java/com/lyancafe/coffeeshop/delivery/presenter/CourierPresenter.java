@@ -12,6 +12,6 @@ import okhttp3.Response;
 public interface CourierPresenter {
 
     //加载小哥列表数据
-    void loadCouriersList();
+    void loadCouriers();
 
 }

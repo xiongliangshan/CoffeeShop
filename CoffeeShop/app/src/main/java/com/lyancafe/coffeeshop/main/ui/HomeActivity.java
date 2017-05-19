@@ -1,7 +1,9 @@
 package com.lyancafe.coffeeshop.main.ui;
 
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -15,7 +17,9 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseActivity;
+import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 import com.lyancafe.coffeeshop.delivery.ui.MainDeliverFragment;
+import com.lyancafe.coffeeshop.service.DownLoadService;
 import com.lyancafe.coffeeshop.shop.ui.MainShopFragment;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
@@ -24,7 +28,10 @@ import com.lyancafe.coffeeshop.main.presenter.MainPresenterImpl;
 import com.lyancafe.coffeeshop.main.view.MainView;
 import com.lyancafe.coffeeshop.produce.ui.MainProduceFragment;
 import com.lyancafe.coffeeshop.service.TaskService;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.MyUtil;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
+import com.lyancafe.coffeeshop.widget.LoadingDialog;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
@@ -61,6 +68,7 @@ public class HomeActivity extends BaseActivity implements MainView{
     private int mSelectedIndex = 0;
 
     private MainPresenter mMainPresenter;
+    private LoadingDialog mLoadingDlg;
 
     @BindView(R.id.ll_produce_tab) LinearLayout tabProduceLayout;
     @BindView(R.id.ll_deliver_tab) LinearLayout tabDeliverlayout;
@@ -72,15 +80,13 @@ public class HomeActivity extends BaseActivity implements MainView{
 
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context  = HomeActivity.this;
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
-        mMainPresenter = new MainPresenterImpl(this);
+        mMainPresenter = new MainPresenterImpl(this,this);
         initViews();
         updateTab(mSelectedIndex);
         //启动service
@@ -125,12 +131,12 @@ public class HomeActivity extends BaseActivity implements MainView{
                 .build();
         ImageLoader.getInstance().init(config);
 
-        mMainPresenter.checkUpdate(this,true);
+        mMainPresenter.checkUpdate(false);
 
     }
 
     private void initViews(){
-        shopNameText.setText(LoginHelper.getLoginBean(context).getShopName());
+        shopNameText.setText(LoginHelper.getUser(context).getShopName());
         curVerText.setText(String.format("当前版本:%s", MyUtil.getVersion(context)));
 
         orderFrag =  new MainProduceFragment();
@@ -139,6 +145,56 @@ public class HomeActivity extends BaseActivity implements MainView{
         fragmentsList.add(orderFrag);
         fragmentsList.add(deliverFragment);
         fragmentsList.add(shopFragment);
+    }
+
+
+    @Override
+    public void showLoading() {
+        if(mLoadingDlg==null){
+            mLoadingDlg = new LoadingDialog(this);
+        }
+        if(!mLoadingDlg.isShowing()){
+            mLoadingDlg.show();
+        }
+    }
+
+    @Override
+    public void dismissLoading() {
+        if(mLoadingDlg!=null && mLoadingDlg.isShowing()){
+            mLoadingDlg.dismiss();
+        }
+    }
+
+    @Override
+    public void showToast(String message) {
+        ToastUtil.showToast(getApplicationContext(),message);
+    }
+
+    @Override
+    public void showUpdateConfirmDlg(final ApkInfoBean apk) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.confirm_download, apk.getAppName()));
+        builder.setTitle(getString(R.string.version_update));
+        builder.setIcon(R.mipmap.ic_launcher);
+        builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                //启动Service下载apk文件
+                Intent intent = new Intent(HomeActivity.this, DownLoadService.class);
+                intent.putExtra("apk",apk);
+                startService(intent);
+            }
+        });
+        builder.setNegativeButton(getString(R.string.cacel), new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 
     @Override
@@ -175,12 +231,11 @@ public class HomeActivity extends BaseActivity implements MainView{
         switch (v.getId()){
             case R.id.tv_check_update:
                 //系统更新
-                mMainPresenter.checkUpdate(this,false);
+                mMainPresenter.checkUpdate(true);
                 break;
             case R.id.tv_login_out:
                 //退出登录
                 mMainPresenter.exitLogin();
-                mMainPresenter.resetToken();
                 OrderHelper.batchList.clear();
                 HomeActivity.this.finish();
                 HomeActivity.this.overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);

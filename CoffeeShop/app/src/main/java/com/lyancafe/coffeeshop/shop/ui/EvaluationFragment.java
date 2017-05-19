@@ -7,8 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
@@ -19,23 +17,17 @@ import com.lyancafe.coffeeshop.shop.presenter.EvaluationPresenterImpl;
 import com.lyancafe.coffeeshop.shop.view.EvaluationView;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.lzy.okgo.OkGo;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 
 public class EvaluationFragment extends BaseFragment implements EvaluationView {
 
     private static String TAG = EvaluationFragment.class.getName();
-   /* @BindView(R.id.rb_all) RadioButton rbAll;
-    @BindView(R.id.rb_bad_evaluation) RadioButton rbBadEvaluation;
-    @BindView(R.id.rb_good_evaluation) RadioButton rbGoodEvaluation;
-    @BindView(R.id.rg_select_condition) RadioGroup rgSelectCondition;*/
     @BindView(R.id.pmrv_evaluation_list) PullLoadMoreRecyclerView pmrvEvaluationList;
 
     private EvaluationListAdapter mAdapter;
@@ -84,7 +76,7 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView {
             @Override
             public void onLoadMore() {
                 Log.d(TAG,"mLastOrderId = "+mLastOrderId);
-                mEvaluationPresenter.loadEvaluations(mLastOrderId,mType);
+                mEvaluationPresenter.loadEvaluations(mLastOrderId,mType,true);
             }
         });
     }
@@ -118,18 +110,6 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView {
         pmrvEvaluationList.setPullLoadMoreCompleted();
     }
 
-   /* @Override
-    public void bindEvaluationAmount(int positive, int negative) {
-        if(rbBadEvaluation!=null && rbGoodEvaluation!=null){
-            if(positive>0){
-                rbGoodEvaluation.setText("好评("+positive+")");
-            }
-            if(negative>0){
-                rbBadEvaluation.setText("差评("+negative+")");
-            }
-
-        }
-    }*/
 
     @Override
     public void onDestroyView() {
@@ -145,23 +125,6 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView {
         }
     }
 
-    /*@OnClick({R.id.rb_all, R.id.rb_bad_evaluation, R.id.rb_good_evaluation})
-    public void onClick(View view) {
-        rgSelectCondition.check(view.getId());
-        OkGo.getInstance().cancelTag("evaluation");
-        switch (view.getId()) {
-            case R.id.rb_all:
-                mType = 0;
-                break;
-            case R.id.rb_bad_evaluation:
-                mType = 5;
-                break;
-            case R.id.rb_good_evaluation:
-                mType = 4;
-                break;
-        }
-        mEvaluationPresenter.loadEvaluations(0,mType);
-    }*/
 
     @Override
     public void onVisible() {
@@ -187,8 +150,7 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView {
     class EvaluationTaskRunnable implements Runnable{
         @Override
         public void run() {
-//            mEvaluationPresenter.loadEvaluationAmount();
-            mEvaluationPresenter.loadEvaluations(0,mType);
+            mEvaluationPresenter.loadEvaluations(0,mType,false);
         }
     }
 }

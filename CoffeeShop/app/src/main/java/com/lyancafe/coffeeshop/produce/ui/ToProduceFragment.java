@@ -29,6 +29,7 @@ import com.lyancafe.coffeeshop.produce.view.ToProduceView;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
+import com.lyancafe.coffeeshop.widget.LoadingDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -56,6 +57,7 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
     private ToProduceTaskRunnable mRunnable;
 
     private ToProducePresenter mToProducePresenter;
+    private LoadingDialog mLoadinngDlg;
     public ToProduceFragment() {
 
     }
@@ -93,7 +95,7 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mToProducePresenter.loadToProduceOrderList();
+        mToProducePresenter.loadToProduceOrders();
     }
 
     @Override
@@ -116,6 +118,24 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
     }
 
     @Override
+    public void showLoading() {
+        if(mLoadinngDlg==null){
+            mLoadinngDlg = new LoadingDialog(getContext());
+        }
+        if(!mLoadinngDlg.isShowing()){
+            mLoadinngDlg.show();
+        }
+
+    }
+
+    @Override
+    public void dismissLoading() {
+        if(mLoadinngDlg!=null && mLoadinngDlg.isShowing()){
+            mLoadinngDlg.dismiss();
+        }
+    }
+
+    @Override
     public void filter(String category) {
         Log.d("xls","ToProduce category = "+category);
         mAdapter.setData(allOrderList, MainProduceFragment.category);
@@ -127,7 +147,7 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
             @Override
             public void onClickYes() {
                 //请求服务器改变该订单状态，由 待生产--生产中
-                mToProducePresenter.reqStartProduceAndPrint(getActivity(),orderBean);
+                mToProducePresenter.doStartProduce(orderBean.getId());
                 //打印全部
                 PrintHelper.getInstance().printOrderInfo(orderBean);
                 PrintHelper.getInstance().printOrderItems(orderBean);
@@ -143,6 +163,7 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
         EventBus.getDefault().unregister(this);
         super.onDestroyView();
         unbinder.unbind();
+        dismissLoading();
     }
 
     @Override
@@ -180,7 +201,7 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
     @Subscribe
     public void onNewOrderComing(NewOderComingEvent event){
         if(isResumed()){
-           mToProducePresenter.loadToProduceOrderList();
+            mToProducePresenter.loadToProduceOrders();
         }
 
     }
@@ -223,7 +244,7 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
     class ToProduceTaskRunnable implements Runnable{
         @Override
         public void run() {
-            mToProducePresenter.loadToProduceOrderList();
+            mToProducePresenter.loadToProduceOrders();
         }
     }
 }

@@ -17,6 +17,7 @@ import com.lyancafe.coffeeshop.delivery.presenter.CourierPresenterImpl;
 import com.lyancafe.coffeeshop.delivery.view.CourierView;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +63,7 @@ public class CourierFragment extends BaseFragment implements CourierView,Courier
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mCourierPresenter.loadCouriersList();
+        mCourierPresenter.loadCouriers();
     }
 
     @Override
@@ -72,7 +73,7 @@ public class CourierFragment extends BaseFragment implements CourierView,Courier
 
     @Override
     public void showToast(String promptStr) {
-
+        ToastUtil.showToast(getActivity(),promptStr);
     }
 
     private void initView(){
@@ -115,7 +116,7 @@ public class CourierFragment extends BaseFragment implements CourierView,Courier
     class CourierListRunnable implements Runnable{
         @Override
         public void run() {
-            mCourierPresenter.loadCouriersList();
+            mCourierPresenter.loadCouriers();
         }
     }
 }

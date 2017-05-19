@@ -27,6 +27,7 @@ import com.lyancafe.coffeeshop.produce.view.ProducingView;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
+import com.lyancafe.coffeeshop.widget.LoadingDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -54,6 +55,7 @@ public class ProducingFragment extends BaseFragment implements MainProduceFragme
 
     private Handler mHandler;
     private ProducingTaskRunnable mRunnable;
+    private LoadingDialog mLoadingDlg;
 
     public ProducingFragment() {
 
@@ -107,6 +109,23 @@ public class ProducingFragment extends BaseFragment implements MainProduceFragme
     }
 
     @Override
+    public void showLoading() {
+        if(mLoadingDlg==null){
+            mLoadingDlg = new LoadingDialog(getContext());
+        }
+        if(!mLoadingDlg.isShowing()){
+            mLoadingDlg.show();
+        }
+    }
+
+    @Override
+    public void dismissLoading() {
+        if(mLoadingDlg!=null && mLoadingDlg.isShowing()){
+            mLoadingDlg.dismiss();
+        }
+    }
+
+    @Override
     public void removeItemFromList(int id) {
         mAdapter.removeOrderFromList(id);
     }
@@ -116,7 +135,7 @@ public class ProducingFragment extends BaseFragment implements MainProduceFragme
         ConfirmDialog grabConfirmDialog = new ConfirmDialog(getActivity(), R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
             @Override
             public void onClickYes() {
-               mProducingPresenter.reqFinishProduce(getActivity(),orderBean);
+                mProducingPresenter.doFinishProduced(orderBean.getId());
             }
         });
         grabConfirmDialog.setContent("订单 " + orderBean.getOrderSn() + " 生产完成？");
@@ -129,6 +148,7 @@ public class ProducingFragment extends BaseFragment implements MainProduceFragme
         EventBus.getDefault().unregister(this);
         super.onDestroyView();
         unbinder.unbind();
+        dismissLoading();
     }
 
     @Override
@@ -200,7 +220,8 @@ public class ProducingFragment extends BaseFragment implements MainProduceFragme
     class ProducingTaskRunnable implements Runnable{
         @Override
         public void run() {
-            mProducingPresenter.loadProducingOrderList();
+//            mProducingPresenter.loadProducingOrderList();
+            mProducingPresenter.loadProducingOrders();
         }
     }
 }

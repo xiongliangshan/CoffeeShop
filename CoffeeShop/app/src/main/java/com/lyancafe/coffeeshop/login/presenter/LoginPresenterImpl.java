@@ -78,7 +78,7 @@ public class LoginPresenterImpl implements LoginPresenter{
             public void onNext(@NonNull BaseEntity<UserBean> userBeanBaseEntity) {
                 if(userBeanBaseEntity.getStatus()==LoginHelper.LOGIN_SUCCESS){
                     UserBean userBean = userBeanBaseEntity.getData();
-                    LoginHelper.saveLoginBean(mContext, userBean);
+                    LoginHelper.saveUser(mContext, userBean);
                     //如果是当天第一次登陆，就清空本地缓存的订单打印记录
                     if(mLoginModel.isCurrentDayFirstLogin(mContext)){
                         OrderHelper.clearPrintedSet(mContext);
@@ -111,7 +111,7 @@ public class LoginPresenterImpl implements LoginPresenter{
     @Override
     public void checkLoginStatus() {
         //如果已经登录过了，并且没有点退出，可以直接进入主界面
-        if(!TextUtils.isEmpty(LoginHelper.getLoginBean(mContext).getToken())){
+        if(!TextUtils.isEmpty(LoginHelper.getUser(mContext).getToken())){
             Intent intent = new Intent(mContext, HomeActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);

@@ -16,4 +16,10 @@ public interface ToProduceView extends BaseView<OrderBean>{
 
     //显示开始生产对话框
     void showStartProduceConfirmDialog(final OrderBean orderBean);
+
+    //显示加载进度对话框
+    void showLoading();
+
+    //关闭进度对话框
+    void dismissLoading();
 }

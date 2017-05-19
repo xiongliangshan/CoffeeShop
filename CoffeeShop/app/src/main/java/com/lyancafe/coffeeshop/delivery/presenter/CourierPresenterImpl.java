@@ -3,14 +3,20 @@ package com.lyancafe.coffeeshop.delivery.presenter;
 
 import android.content.Context;
 
+import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
+import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.delivery.model.CourierBean;
 import com.lyancafe.coffeeshop.delivery.model.CourierModel;
 import com.lyancafe.coffeeshop.delivery.model.CourierModelImpl;
 import com.lyancafe.coffeeshop.delivery.view.CourierView;
+import com.lyancafe.coffeeshop.login.model.UserBean;
 
 import java.util.List;
 
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 import okhttp3.Call;
 import okhttp3.Response;
 
@@ -18,7 +24,7 @@ import okhttp3.Response;
 * Created by Administrator on 2017/03/16
 */
 
-public class CourierPresenterImpl implements CourierPresenter,CourierModelImpl.OnHandleCourierListener{
+public class CourierPresenterImpl implements CourierPresenter{
 
     private Context mContext;
     private CourierView mCourierView;
@@ -30,24 +36,35 @@ public class CourierPresenterImpl implements CourierPresenter,CourierModelImpl.O
         mCourierModel = new CourierModelImpl();
     }
 
-    @Override
-    public void loadCouriersList() {
-        mCourierModel.loadCouriers(this);
-    }
-
 
     @Override
-    public void onLoadCouriersSuccess(XlsResponse xlsResponse, Call call, Response response) {
-        if(xlsResponse.status==0){
-            List<CourierBean> couriers = CourierBean.parseJsonToCouriers(xlsResponse);
-            mCourierView.bindDataToListView(couriers);
-        }else{
-            mCourierView.showToast(xlsResponse.message);
-        }
-    }
+    public void loadCouriers() {
+        UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
+        mCourierModel.loadCouriers(user.getShopId(), user.getToken(), new Observer<BaseEntity<List<CourierBean>>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
 
-    @Override
-    public void onLoadCouriersFailure(Call call, Response response, Exception e) {
+            }
 
+            @Override
+            public void onNext(@NonNull BaseEntity<List<CourierBean>> listBaseEntity) {
+                if(listBaseEntity.getStatus()==0){
+                    List<CourierBean> couriers = listBaseEntity.getData();
+                    mCourierView.bindDataToListView(couriers);
+                }else {
+                    mCourierView.showToast(listBaseEntity.getMessage());
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                mCourierView.showToast(e.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
     }
 }

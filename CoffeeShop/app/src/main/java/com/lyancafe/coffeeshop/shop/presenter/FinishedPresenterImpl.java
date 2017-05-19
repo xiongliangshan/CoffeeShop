@@ -2,25 +2,27 @@ package com.lyancafe.coffeeshop.shop.presenter;
 
 
 import android.content.Context;
-import android.util.Log;
 
+import com.google.gson.JsonObject;
+import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.bean.XlsResponse;
+import com.lyancafe.coffeeshop.common.LoginHelper;
+import com.lyancafe.coffeeshop.login.model.UserBean;
 import com.lyancafe.coffeeshop.shop.model.FinishedModel;
 import com.lyancafe.coffeeshop.shop.model.FinishedModelImpl;
 import com.lyancafe.coffeeshop.shop.view.FinishedView;
 
 import java.util.List;
 
-import okhttp3.Call;
-import okhttp3.Request;
-import okhttp3.Response;
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 
 /**
 * Created by Administrator on 2017/03/17
 */
 
-public class FinishedPresenterImpl implements FinishedPresenter ,FinishedModelImpl.OnHandleResponseListener{
+public class FinishedPresenterImpl implements FinishedPresenter {
 
     private Context mContext;
     private FinishedModel mFinishedModel;
@@ -33,59 +35,78 @@ public class FinishedPresenterImpl implements FinishedPresenter ,FinishedModelIm
     }
 
     @Override
-    public void loadFinishedOrders(long lastOrderId) {
-        mFinishedModel.loadFinishedOrders(lastOrderId,this);
+    public void loadFinishedOrders(long lastOrderId, final boolean isLoadMore) {
+        UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
+        mFinishedModel.loadFinishedOrders(user.getShopId(), lastOrderId, user.getToken(), new Observer<BaseEntity<List<OrderBean>>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(@NonNull BaseEntity<List<OrderBean>> listBaseEntity) {
+                if(listBaseEntity.getStatus()==0){
+                    List<OrderBean> finishedList = listBaseEntity.getData();
+                    if(isLoadMore){
+                        mFinishedView.appendListData(finishedList);
+                    }else{
+                        mFinishedView.bindDataToListView(finishedList);
+                    }
+                    mFinishedView.saveLastOrderId();
+                }else{
+                    mFinishedView.showToast(listBaseEntity.getMessage());
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                if(isLoadMore){
+                    mFinishedView.stopLoadingProgress();
+                }
+                mFinishedView.showToast(e.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+                if(isLoadMore){
+                    mFinishedView.stopLoadingProgress();
+                }
+            }
+        });
     }
+
+
+
 
     @Override
-    public void loadOrderAmounts() {
-        mFinishedModel.loadOrderAmounts(this);
+    public void loadOrderAmount() {
+        UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
+        mFinishedModel.loadOrderAmount(user.getShopId(), user.getToken(), new Observer<BaseEntity<JsonObject>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(@NonNull BaseEntity<JsonObject> jsonObjectBaseEntity) {
+                if(jsonObjectBaseEntity.getStatus()==0){
+                    int ordersAmount = jsonObjectBaseEntity.getData().get("totalOrdersAmount").getAsInt();
+                    int cupsAmount = jsonObjectBaseEntity.getData().get("totalCupsAmount").getAsInt();
+                    mFinishedView.bindAmountDataToView(ordersAmount,cupsAmount);
+                }else {
+                    mFinishedView.showToast(jsonObjectBaseEntity.getMessage());
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                mFinishedView.showToast(e.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
     }
-
-    /*@Override
-    public void loadEffectPercent() {
-        mFinishedModel.loadEffectPercent(this);
-    }*/
-
-
-    @Override
-    public void onLoadListSuccess(XlsResponse xlsResponse, Call call, Response response) {
-        mFinishedView.stopLoadingProgress();
-        Request request = call.request();
-        String isLoadMore = request.header("isLoadMore");
-        List<OrderBean> orderBeans = OrderBean.parseJsonOrders(mContext, xlsResponse);
-        if ("yes".equalsIgnoreCase(isLoadMore)) {
-            mFinishedView.appendListData(orderBeans);
-            Log.d("xls", "addData orderBeans.size = " + orderBeans.size());
-        } else {
-            mFinishedView.bindDataToListView(orderBeans);
-            Log.d("xls", "orderBeans.size = " + orderBeans.size());
-        }
-        mFinishedView.saveLastOrderId();
-    }
-
-    @Override
-    public void onLoadListFailed(Call call, Response response, Exception e) {
-        mFinishedView.stopLoadingProgress();
-    }
-
-    @Override
-    public void onLoadAmountSuccess(XlsResponse xlsResponse, Call call, Response response) {
-        if (xlsResponse.status == 0) {
-            int ordersAmount = xlsResponse.data.getIntValue("totalOrdersAmount");
-            int cupsAmount = xlsResponse.data.getIntValue("totalCupsAmount");
-            mFinishedView.bindAmountDataToView(ordersAmount,cupsAmount);
-        }
-    }
-
-   /* @Override
-    public void onLoadTimeEffectSuccess(XlsResponse xlsResponse, Call call, Response response) {
-        if (xlsResponse.status == 0) {
-            double goodScale = xlsResponse.data.getDouble("goodScale");
-            double passedScale = xlsResponse.data.getDouble("passedScale");
-            double fallingScale = xlsResponse.data.getDouble("fallingScale");
-            mFinishedView.bindTimeEffectDataToView(goodScale,passedScale,fallingScale);
-            Log.d("finished", "goodScale = " + goodScale + ", passedScale = " + passedScale + ",fallingScale = " + fallingScale);
-        }
-    }*/
 }

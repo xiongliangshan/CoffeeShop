@@ -34,12 +34,12 @@ public class LoginHelper {
         return true;
     }
 
-    public static void saveLoginBean(Context context,UserBean userBean){
+    public static void saveUser(Context context, UserBean userBean){
         SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
         sp.edit().putString("login", JSON.toJSONString(userBean)).apply();
     }
 
-    public static UserBean getLoginBean(Context context){
+    public static UserBean getUser(Context context){
         SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
         String strLogin = sp.getString("login", "");
         if(TextUtils.isEmpty(strLogin)){
