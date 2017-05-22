@@ -27,16 +27,18 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.delivery.presenter.MainDeliverPresenter;
 import com.lyancafe.coffeeshop.delivery.presenter.MainDeliverPresenterImpl;
+import com.lyancafe.coffeeshop.delivery.view.MainDeliverView;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
 import com.lyancafe.coffeeshop.event.UpdateDeliverFragmentTabOrderCount;
 import com.lyancafe.coffeeshop.event.UpdateDeliverOrderDetailEvent;
-import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.produce.ui.AssignOrderActivity;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
 import com.lyancafe.coffeeshop.widget.ReportIssueDialog;
 
@@ -51,10 +53,11 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class MainDeliverFragment extends BaseFragment implements TabLayout.OnTabSelectedListener, AdapterView.OnItemSelectedListener {
+public class MainDeliverFragment extends BaseFragment implements TabLayout.OnTabSelectedListener, AdapterView.OnItemSelectedListener,MainDeliverView {
 
     public static int tabIndex = 0;
     public static int category = OrderCategory.ALL;
+    private static final int REQUEST_ASSIGN = 0x1002;
 
     private Context mContext;
     private CourierFragment courierFragment;
@@ -129,7 +132,7 @@ public class MainDeliverFragment extends BaseFragment implements TabLayout.OnTab
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
-        mMainDeliverPresenter = new MainDeliverPresenterImpl(getContext());
+        mMainDeliverPresenter = new MainDeliverPresenterImpl(getContext(),this);
     }
 
     @Override
@@ -202,6 +205,15 @@ public class MainDeliverFragment extends BaseFragment implements TabLayout.OnTab
     }
 
 
+    @Override
+    public void refreshListForStatus(long orderId, int status) {
+        int currentFragmentIndex = tabLayout.getSelectedTabPosition();
+        switch (currentFragmentIndex){
+            case 1:
+                toFetchFragment.refreshListForStatus(orderId,status);
+                break;
+        }
+    }
 
     @Subscribe
     public void onUpdateDeliverFragmentTabOrderCount(UpdateDeliverFragmentTabOrderCount event) {
@@ -219,6 +231,12 @@ public class MainDeliverFragment extends BaseFragment implements TabLayout.OnTab
         mOrder = event.orderBean;
         updateDetailView(mOrder);
 
+    }
+
+    //更新详情面板
+    public void updateOrderDetail(OrderBean orderBean){
+        mOrder = orderBean;
+        updateDetailView(mOrder);
     }
 
 
@@ -468,7 +486,7 @@ public class MainDeliverFragment extends BaseFragment implements TabLayout.OnTab
                 if (mOrder.getStatus() == OrderStatus.UNASSIGNED){
                     Intent intent = new Intent(mContext, AssignOrderActivity.class);
                     intent.putExtra("orderId", mOrder.getId());
-                    mContext.startActivity(intent);
+                    startActivityForResult(intent,REQUEST_ASSIGN);
                 }else if(mOrder.getStatus() == OrderStatus.ASSIGNED){
                     mMainDeliverPresenter.doRecallOrder(mOrder.getId());
                 }
@@ -487,6 +505,15 @@ public class MainDeliverFragment extends BaseFragment implements TabLayout.OnTab
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode==REQUEST_ASSIGN && resultCode==1){
+            long orderId = data.getLongExtra("orderId",0L);
+            if(orderId!=0){
+                refreshListForStatus(orderId,OrderStatus.ASSIGNED);
+            }
+        }
+    }
 
     public interface FilterOrdersListenter {
         void filter(String category);

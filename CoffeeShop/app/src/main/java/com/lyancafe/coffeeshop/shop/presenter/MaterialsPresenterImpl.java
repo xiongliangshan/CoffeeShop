@@ -44,7 +44,7 @@ public class MaterialsPresenterImpl implements MaterialsPresenter{
         mShopManagerModel.loadMaterials(shopId, token, new Observer<BaseEntity<List<Material>>>() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
-
+                mShopManagerView.showLoading();
             }
 
             @Override
@@ -59,12 +59,13 @@ public class MaterialsPresenterImpl implements MaterialsPresenter{
 
             @Override
             public void onError(@NonNull Throwable e) {
+                mShopManagerView.dismissLoading();
                 ToastUtil.showToast(mContext.getApplicationContext(),e.getMessage());
             }
 
             @Override
             public void onComplete() {
-
+                mShopManagerView.dismissLoading();
             }
         });
     }

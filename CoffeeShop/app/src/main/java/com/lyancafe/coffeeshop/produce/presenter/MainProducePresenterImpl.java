@@ -7,13 +7,11 @@ import com.google.gson.JsonObject;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.common.LoginHelper;
-import com.lyancafe.coffeeshop.event.RecallOrderEvent;
+import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.http.RetrofitHttp;
 import com.lyancafe.coffeeshop.login.model.UserBean;
-import com.lyancafe.coffeeshop.produce.ui.MainProduceFragment;
+import com.lyancafe.coffeeshop.produce.view.MainProduceView;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-
-import org.greenrobot.eventbus.EventBus;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -28,11 +26,12 @@ import io.reactivex.schedulers.Schedulers;
 public class MainProducePresenterImpl implements MainProducePresenter{
 
     private Context mContext;
+    private MainProduceView mMainProduceView;
 
-    public MainProducePresenterImpl(Context mContext) {
+    public MainProducePresenterImpl(Context mContext, MainProduceView mMainProduceView) {
         this.mContext = mContext;
+        this.mMainProduceView = mMainProduceView;
     }
-
 
     @Override
     public void doRecallOrder(long orderId) {
@@ -51,7 +50,7 @@ public class MainProducePresenterImpl implements MainProducePresenter{
                         if(jsonObjectBaseEntity.getStatus()==0){
                             ToastUtil.showToast(mContext.getApplicationContext(), R.string.do_success);
                             int id = jsonObjectBaseEntity.getData().get("id").getAsInt();
-                            EventBus.getDefault().post(new RecallOrderEvent(MainProduceFragment.tabIndex, id));
+                            mMainProduceView.refreshListForStatus(id, OrderStatus.UNASSIGNED);
                         }else{
                             ToastUtil.showToast(mContext.getApplicationContext(), jsonObjectBaseEntity.getMessage());
                         }

@@ -216,9 +216,16 @@ public interface HttpInterface {
      * @return
      */
     @POST("{shopId}/order/{orderId}/assigntocourier")
-    Observable<BaseEntity> doAssignOrder(@Path("shopId") int shopId,@Path("orderId") long orderId,@Query("courierId") long courierId,
+    Observable<BaseEntity<JsonObject>> doAssignOrder(@Path("shopId") int shopId,@Path("orderId") long orderId,@Query("courierId") long courierId,
                                          @Query("token") String token);
 
+    /**
+     * 订单从小哥手中撤回
+     * @param shopId
+     * @param orderId
+     * @param token
+     * @return
+     */
     @GET("{shopId}/order/{orderId}/recall")
     Observable<BaseEntity<JsonObject>> doRecallOrder(@Path("shopId") int shopId,@Path("orderId") long orderId,@Query("token") String token);
 

@@ -14,15 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.constant.OrderStatus;
-import com.lyancafe.coffeeshop.event.NewOderComingEvent;
-import com.lyancafe.coffeeshop.event.RecallOrderEvent;
-import com.lyancafe.coffeeshop.event.StartProduceEvent;
-import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.base.BaseFragment;
+import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.common.PrintHelper;
+import com.lyancafe.coffeeshop.event.NewOderComingEvent;
+import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.produce.presenter.ToProducePresenter;
 import com.lyancafe.coffeeshop.produce.presenter.ToProducePresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.ToProduceView;
@@ -215,10 +212,10 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
         showStartProduceConfirmDialog(event.order);
     }
 
-    /**
+   /* *//**
      * 处理订单撤回状态刷新
      * @param event
-     */
+     *//*
     @Subscribe
     public void onRecallOrderEvent(RecallOrderEvent event){
         if(event.tabIndex==0){
@@ -233,12 +230,30 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
             }
         }
 
-    }
+    }*/
 
 
     @Override
     public void removeItemFromList(int id) {
         mAdapter.removeOrderFromList(id);
+    }
+
+    //订单状态改变后刷新列表UI
+    public void refreshListForStatus(long orderId, int status){
+        if(mAdapter==null){
+            return;
+        }
+        for(int i=0;i<mAdapter.list.size();i++) {
+            OrderBean order = mAdapter.list.get(i);
+            if (orderId == order.getId()) {
+                order.setStatus(status);
+                mAdapter.notifyItemChanged(i);
+                if(getParentFragment() instanceof MainProduceFragment){
+                    ((MainProduceFragment) getParentFragment()).updateOrderDetail(order);
+                }
+                break;
+            }
+        }
     }
 
     class ToProduceTaskRunnable implements Runnable{

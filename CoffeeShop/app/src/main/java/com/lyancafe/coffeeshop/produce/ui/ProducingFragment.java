@@ -14,13 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.constant.OrderStatus;
-import com.lyancafe.coffeeshop.event.FinishProduceEvent;
-import com.lyancafe.coffeeshop.event.RecallOrderEvent;
-import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.base.BaseFragment;
+import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.produce.presenter.ProducingPresenter;
 import com.lyancafe.coffeeshop.produce.presenter.ProducingPresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.ProducingView;
@@ -189,24 +186,24 @@ public class ProducingFragment extends BaseFragment implements MainProduceFragme
         showFinishProduceConfirmDialog(event.order);
     }
 
-    /**
-     * 处理订单撤回状态刷新
-     * @param event
-     */
-    @Subscribe
-    public void onRecallOrderEvent(RecallOrderEvent event){
-        if(event.tabIndex==1){
-            for(int i=0;i<mAdapter.list.size();i++) {
-                OrderBean order = mAdapter.list.get(i);
-                if (event.orderId == order.getId()) {
-                    order.setStatus(OrderStatus.UNASSIGNED);
-                    mAdapter.notifyItemChanged(i);
-                    EventBus.getDefault().post(new UpdateOrderDetailEvent(order));
-                    break;
+
+
+    //订单状态改变后刷新列表UI
+    public void refreshListForStatus(long orderId, int status){
+        if(mAdapter==null){
+            return;
+        }
+        for(int i=0;i<mAdapter.list.size();i++) {
+            OrderBean order = mAdapter.list.get(i);
+            if (orderId == order.getId()) {
+                order.setStatus(status);
+                mAdapter.notifyItemChanged(i);
+                if(getParentFragment() instanceof MainProduceFragment){
+                    ((MainProduceFragment) getParentFragment()).updateOrderDetail(order);
                 }
+                break;
             }
         }
-
     }
 
 

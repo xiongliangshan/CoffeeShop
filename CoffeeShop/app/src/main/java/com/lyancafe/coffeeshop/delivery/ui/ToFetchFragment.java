@@ -13,18 +13,12 @@ import android.view.ViewGroup;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.constant.OrderStatus;
+import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.delivery.presenter.ToFetchPresenter;
 import com.lyancafe.coffeeshop.delivery.presenter.ToFetchPresenterImpl;
 import com.lyancafe.coffeeshop.delivery.view.ToFetchView;
-import com.lyancafe.coffeeshop.event.RecallOrderEvent;
-import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
-import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +57,6 @@ public class ToFetchFragment extends BaseFragment implements MainDeliverFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        EventBus.getDefault().register(this);
         View contentView =  inflater.inflate(R.layout.fragment_to_fetch, container, false);
         unbinder = ButterKnife.bind(this,contentView);
         initViews();
@@ -82,6 +75,24 @@ public class ToFetchFragment extends BaseFragment implements MainDeliverFragment
     public void onResume() {
         super.onResume();
         Log.d("xls","ToFetchFragment-onResume");
+    }
+
+    //订单状态改变后刷新列表UI
+    public void refreshListForStatus(long orderId, int status){
+        if(mAdapter==null){
+            return;
+        }
+        for(int i=0;i<mAdapter.list.size();i++) {
+            OrderBean order = mAdapter.list.get(i);
+            if (orderId == order.getId()) {
+                order.setStatus(status);
+                mAdapter.notifyItemChanged(i);
+                if(getParentFragment() instanceof MainDeliverFragment){
+                    ((MainDeliverFragment) getParentFragment()).updateOrderDetail(order);
+                }
+                break;
+            }
+        }
     }
 
     @Override
@@ -123,28 +134,8 @@ public class ToFetchFragment extends BaseFragment implements MainDeliverFragment
 
     @Override
     public void onDestroyView() {
-        EventBus.getDefault().unregister(this);
         super.onDestroyView();
         unbinder.unbind();
-    }
-
-    /**
-     * 咖啡师从小哥手里撤回订单
-     * @param event
-     */
-    @Subscribe
-    public  void onRecallOrderEvent(RecallOrderEvent event){
-        if(event.tabIndex==10){
-            for(int i=0;i<mAdapter.list.size();i++) {
-                OrderBean order = mAdapter.list.get(i);
-                if (event.orderId == order.getId()) {
-                    order.setStatus(OrderStatus.UNASSIGNED);
-                    mAdapter.notifyItemChanged(i);
-                    EventBus.getDefault().post(new UpdateOrderDetailEvent(order));
-                    break;
-                }
-            }
-        }
     }
 
 

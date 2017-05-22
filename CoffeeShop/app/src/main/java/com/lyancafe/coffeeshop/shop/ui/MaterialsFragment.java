@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -42,7 +41,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
 /**
  * Created by Administrator on 2015/9/1.
@@ -60,6 +58,8 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
     ScrollView scrollView;
     @BindView(R.id.contentRV)
     RecyclerView contentRV;
+    @BindView(R.id.loadingProgressBar)
+    ContentLoadingProgressBar loadingProgressBar;
 
 
     private MaterialBean toPrintMaterial;
@@ -115,13 +115,12 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
     }
 
 
-
     private void initRV() {
         contentRV.setLayoutManager(new GridLayoutManager(mContext, 3));
         contentRV.setHasFixedSize(true);
         contentRV.setItemAnimator(new DefaultItemAnimator());
         ArrayList<MaterialItem> itemList = new ArrayList<>();
-        mAdapter= new ContentListAdapter(itemList,getContext());
+        mAdapter = new ContentListAdapter(itemList, getContext());
         contentRV.setAdapter(mAdapter);
     }
 
@@ -130,10 +129,10 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
      * 初始化左边目录
      */
     private void initCategorys(View layoutView, List<Material> materials) {
-        if(layoutView==null || materials.size()<=0){
+        if (layoutView == null || materials.size() <= 0) {
             return;
         }
-        LogUtil.d(LogUtil.TAG_SHOP,"materials size = "+materials.size());
+        LogUtil.d(LogUtil.TAG_SHOP, "materials size = " + materials.size());
         listCategorys = new String[materials.size()];
         for (int i = 0; i < materials.size(); i++) {
             listCategorys[i] = materials.get(i).getCategory();
@@ -160,9 +159,8 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
     }
 
 
-
     private void changeTextColor(int position) {
-        if(listCategorys==null){
+        if (listCategorys == null) {
             return;
         }
         for (int i = 0; i < listCategorys.length; i++) {
@@ -196,13 +194,27 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
     @Override
     public void bindDataToListView(List<Material> list) {
         this.materials = list;
-        initCategorys(contentView,materials);
+        initCategorys(contentView, materials);
         mAdapter.setList(materials.get(currentItem).getItems());
     }
 
     @Override
     public void showToast(String promptStr) {
         ToastUtil.showToast(getActivity(), promptStr);
+    }
+
+    @Override
+    public void showLoading() {
+        if(loadingProgressBar!=null ){
+            loadingProgressBar.show();
+        }
+    }
+
+    @Override
+    public void dismissLoading() {
+        if(loadingProgressBar!=null && loadingProgressBar.isShown()){
+            loadingProgressBar.hide();
+        }
     }
 
     @Subscribe
@@ -227,8 +239,8 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
             case R.id.tv_print_paster:
                 //打印小纸
                 MaterialItem itemSmall = mAdapter.getSelectedItem();
-                if(itemSmall==null){
-                    ToastUtil.showToast(getContext(),getString(R.string.select_material));
+                if (itemSmall == null) {
+                    ToastUtil.showToast(getContext(), getString(R.string.select_material));
                     return;
                 }
                 PrintHelper.getInstance().printPasterSmall(itemSmall);
@@ -236,8 +248,8 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
             case R.id.tv_print_material:
                 //打印大纸
                 MaterialItem itemBig = mAdapter.getSelectedItem();
-                if(itemBig==null){
-                    ToastUtil.showToast(getContext(),getString(R.string.select_material));
+                if (itemBig == null) {
+                    ToastUtil.showToast(getContext(), getString(R.string.select_material));
                     return;
                 }
                 PrintHelper.getInstance().printMaterialBig(itemBig);
@@ -292,7 +304,7 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
         super.onActivityCreated(savedInstanceState);
         restoreState();
         changeTextColor(currentItem);
-        if(materials!=null && materials.size()>0){
+        if (materials != null && materials.size() > 0) {
             mAdapter.setList(materials.get(currentItem).getItems());
         }
     }
@@ -323,8 +335,10 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        dismissLoading();
         EventBus.getDefault().unregister(this);
         savedState = saveState();
+
     }
 
     private void restoreState() {

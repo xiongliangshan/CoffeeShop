@@ -3,7 +3,9 @@ package com.lyancafe.coffeeshop.produce.presenter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 
+import com.google.gson.JsonObject;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.common.LoginHelper;
@@ -13,6 +15,8 @@ import com.lyancafe.coffeeshop.produce.model.DeliverBean;
 import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.callback.JsonCallback;
 import com.lyancafe.coffeeshop.common.HttpHelper;
+import com.lyancafe.coffeeshop.produce.ui.AssignOrderActivity;
+import com.lyancafe.coffeeshop.produce.ui.MainProduceFragment;
 import com.lyancafe.coffeeshop.produce.view.AssignOrderView;
 
 import java.util.List;
@@ -48,7 +52,7 @@ public class AssignOrderPresenterImpl implements AssignOrderPresenter{
                 .subscribe(new Observer<BaseEntity<List<DeliverBean>>>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {
-
+                        mAssignOrderView.showLoading();
                     }
 
                     @Override
@@ -63,12 +67,14 @@ public class AssignOrderPresenterImpl implements AssignOrderPresenter{
 
                     @Override
                     public void onError(@NonNull Throwable e) {
+                        mAssignOrderView.dismissLoading();
                         mAssignOrderView.showToast(e.getMessage());
+
                     }
 
                     @Override
                     public void onComplete() {
-
+                        mAssignOrderView.dismissLoading();
                     }
                 });
     }
@@ -80,21 +86,20 @@ public class AssignOrderPresenterImpl implements AssignOrderPresenter{
         RetrofitHttp.getRetrofit().doAssignOrder(user.getShopId(),orderId,courierId,user.getToken())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<BaseEntity>() {
+                .subscribe(new Observer<BaseEntity<JsonObject>>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(@NonNull BaseEntity baseEntity) {
-                        if(baseEntity.getStatus()==0){
+                    public void onNext(@NonNull BaseEntity<JsonObject> jsonObjectBaseEntity) {
+                        if(jsonObjectBaseEntity.getStatus()==0){
                             mAssignOrderView.showToast(mContext.getString(R.string.assign_success));
-                            if(mContext instanceof Activity){
-                                ((Activity) mContext).finish();
-                            }
+                            long id = jsonObjectBaseEntity.getData().get("id").getAsLong();
+                            mAssignOrderView.finishAndStepToBack(id);
                         }else{
-                            mAssignOrderView.showToast(baseEntity.getMessage());
+                            mAssignOrderView.showToast(jsonObjectBaseEntity.getMessage());
                         }
                     }
 
@@ -108,5 +113,6 @@ public class AssignOrderPresenterImpl implements AssignOrderPresenter{
 
                     }
                 });
+
     }
 }

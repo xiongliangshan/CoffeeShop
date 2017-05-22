@@ -10,4 +10,7 @@ import com.lyancafe.coffeeshop.bean.MaterialBean;
 
 public interface MaiterialsView extends BaseView<Material>{
 
+    void showLoading();
+
+    void dismissLoading();
 }

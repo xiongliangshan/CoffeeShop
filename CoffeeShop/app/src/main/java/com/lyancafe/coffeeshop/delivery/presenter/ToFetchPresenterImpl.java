@@ -5,7 +5,6 @@ import android.content.Context;
 
 import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.delivery.model.ToFetchModel;
 import com.lyancafe.coffeeshop.delivery.model.ToFetchModelImpl;
@@ -20,8 +19,6 @@ import java.util.List;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
-import okhttp3.Call;
-import okhttp3.Response;
 
 /**
 * Created by Administrator on 2017/03/15

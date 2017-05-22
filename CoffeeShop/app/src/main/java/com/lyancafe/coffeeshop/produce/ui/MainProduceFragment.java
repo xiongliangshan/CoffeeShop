@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -72,6 +73,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     private Context mContext;
     public static int tabIndex = 0;
     public static int category = OrderCategory.ALL;
+    private static final int REQUEST_ASSIGN = 0x1001;
 
     @BindView(R.id.tabLayout) TabLayout tabLayout;
     @BindView(R.id.spinner_category) AppCompatSpinner spinnerCategory;
@@ -125,7 +127,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
-        mMainProducePresenter = new MainProducePresenterImpl(getContext());
+        mMainProducePresenter = new MainProducePresenterImpl(getContext(),this);
     }
 
     @Override
@@ -198,6 +200,20 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
             tvMoli.setText(moli+"杯");
         }
 
+    }
+
+
+    @Override
+    public void refreshListForStatus(long orderId, int status) {
+        int currentFragmentIndex = tabLayout.getSelectedTabPosition();
+        switch (currentFragmentIndex){
+            case 0:
+                toProduceFragment.refreshListForStatus(orderId,status);
+                break;
+            case 1:
+                producingFragment.refreshListForStatus(orderId,status);
+                break;
+        }
     }
 
     private void updateDetailView(final OrderBean order) {
@@ -539,6 +555,12 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
         LogUtil.d(LogUtil.TAG_PRODUCE,"getChildFragment:"+tabLayout.getSelectedTabPosition());
     }
 
+    //更新详情面板
+    public void updateOrderDetail(OrderBean orderBean){
+        mOrder = orderBean;
+        updateDetailView(mOrder);
+    }
+
     @OnClick({R.id.contant_issue_feedback, R.id.btn_assign, R.id.ll_user_remark, R.id.ll_csad_remark, R.id.btn_finish_produce, R.id.btn_print_order, R.id.btn_produce_print})
     public void onClick(View view) {
         if(mOrder==null){
@@ -555,7 +577,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
                 if(mOrder.getStatus() == OrderStatus.UNASSIGNED){
                     Intent intent = new Intent(mContext, AssignOrderActivity.class);
                     intent.putExtra("orderId", mOrder.getId());
-                    mContext.startActivity(intent);
+                    startActivityForResult(intent,REQUEST_ASSIGN);
                 }else if(mOrder.getStatus()==OrderStatus.ASSIGNED){
                     mMainProducePresenter.doRecallOrder(mOrder.getId());
                 }
@@ -582,6 +604,15 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode==REQUEST_ASSIGN && resultCode==1){
+            long orderId = data.getLongExtra("orderId",0L);
+            if(orderId!=0){
+                refreshListForStatus(orderId,OrderStatus.ASSIGNED);
+            }
+        }
+    }
 
     //点击打印
     private void printOrder(Context context, final OrderBean order) {

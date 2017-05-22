@@ -6,4 +6,11 @@ package com.lyancafe.coffeeshop.delivery.view;
 
 public interface MainDeliverView{
 
+    /**
+     * 订单状态改变刷新列表
+     * @param orderId
+     * @param status 目标状态
+     */
+    void refreshListForStatus(long orderId,int status);
+
 }

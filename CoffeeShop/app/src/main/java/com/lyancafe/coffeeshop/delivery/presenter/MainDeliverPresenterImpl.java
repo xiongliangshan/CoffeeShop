@@ -7,12 +7,11 @@ import com.google.gson.JsonObject;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.common.LoginHelper;
-import com.lyancafe.coffeeshop.event.RecallOrderEvent;
+import com.lyancafe.coffeeshop.constant.OrderStatus;
+import com.lyancafe.coffeeshop.delivery.view.MainDeliverView;
 import com.lyancafe.coffeeshop.http.RetrofitHttp;
 import com.lyancafe.coffeeshop.login.model.UserBean;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-
-import org.greenrobot.eventbus.EventBus;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -27,11 +26,12 @@ import io.reactivex.schedulers.Schedulers;
 public class MainDeliverPresenterImpl implements MainDeliverPresenter{
 
     private Context mContext;
+    private MainDeliverView mMainDeliverView;
 
-    public MainDeliverPresenterImpl(Context mContext) {
+    public MainDeliverPresenterImpl(Context mContext, MainDeliverView mMainDeliverView) {
         this.mContext = mContext;
+        this.mMainDeliverView = mMainDeliverView;
     }
-
 
     @Override
     public void doRecallOrder(long orderId) {
@@ -49,8 +49,8 @@ public class MainDeliverPresenterImpl implements MainDeliverPresenter{
                     public void onNext(@NonNull BaseEntity<JsonObject> jsonObjectBaseEntity) {
                         if(jsonObjectBaseEntity.getStatus()==0){
                             ToastUtil.showToast(mContext.getApplicationContext(), R.string.do_success);
-                            int id = jsonObjectBaseEntity.getData().get("id").getAsInt();
-                            EventBus.getDefault().post(new RecallOrderEvent(10, id));
+                            long id = jsonObjectBaseEntity.getData().get("id").getAsLong();
+                            mMainDeliverView.refreshListForStatus(id, OrderStatus.UNASSIGNED);
                         }else{
                             ToastUtil.showToast(mContext.getApplicationContext(), jsonObjectBaseEntity.getMessage());
                         }

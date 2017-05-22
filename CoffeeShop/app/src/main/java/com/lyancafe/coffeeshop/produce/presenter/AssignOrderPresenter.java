@@ -1,10 +1,5 @@
 package com.lyancafe.coffeeshop.produce.presenter;
 
-import com.lyancafe.coffeeshop.bean.XlsResponse;
-
-import okhttp3.Call;
-import okhttp3.Response;
-
 /**
  * Created by Administrator on 2017/3/15.
  */
