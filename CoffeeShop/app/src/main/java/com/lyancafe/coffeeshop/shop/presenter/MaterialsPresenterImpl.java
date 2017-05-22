@@ -26,13 +26,13 @@ import io.reactivex.disposables.Disposable;
 public class MaterialsPresenterImpl implements MaterialsPresenter{
 
     private Context mContext;
-    private MaterialsModel mShopManagerModel;
-    private MaiterialsView mShopManagerView;
+    private MaterialsModel mMaterialModel;
+    private MaiterialsView mMaterialView;
 
     public MaterialsPresenterImpl(Context mContext, MaiterialsView mShopManagerView) {
         this.mContext = mContext;
-        this.mShopManagerView = mShopManagerView;
-        mShopManagerModel = new MaterialsModelImpl();
+        this.mMaterialView = mShopManagerView;
+        mMaterialModel = new MaterialsModelImpl();
     }
 
 
@@ -41,17 +41,17 @@ public class MaterialsPresenterImpl implements MaterialsPresenter{
         UserBean userBean = LoginHelper.getUser(CSApplication.getInstance());
         int shopId = userBean.getShopId();
         String token = userBean.getToken();
-        mShopManagerModel.loadMaterials(shopId, token, new Observer<BaseEntity<List<Material>>>() {
+        mMaterialModel.loadMaterials(shopId, token, new Observer<BaseEntity<List<Material>>>() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
-                mShopManagerView.showLoading();
+                mMaterialView.showLoading();
             }
 
             @Override
             public void onNext(@NonNull BaseEntity<List<Material>> listBaseEntity) {
                 if(listBaseEntity.getStatus()==0){
                     List<Material> materials = listBaseEntity.getData();
-                    mShopManagerView.bindDataToListView(materials);
+                    mMaterialView.bindDataToListView(materials);
                 }else{
                     ToastUtil.showToast(mContext.getApplicationContext(),listBaseEntity.getMessage());
                 }
@@ -59,13 +59,13 @@ public class MaterialsPresenterImpl implements MaterialsPresenter{
 
             @Override
             public void onError(@NonNull Throwable e) {
-                mShopManagerView.dismissLoading();
+                mMaterialView.dismissLoading();
                 ToastUtil.showToast(mContext.getApplicationContext(),e.getMessage());
             }
 
             @Override
             public void onComplete() {
-                mShopManagerView.dismissLoading();
+                mMaterialView.dismissLoading();
             }
         });
     }
