@@ -20,20 +20,15 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.Material;
-import com.lyancafe.coffeeshop.bean.MaterialBean;
 import com.lyancafe.coffeeshop.bean.MaterialItem;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.common.PrintHelper;
-import com.lyancafe.coffeeshop.event.MaterialSelectEvent;
 import com.lyancafe.coffeeshop.shop.presenter.MaterialsPresenter;
 import com.lyancafe.coffeeshop.shop.presenter.MaterialsPresenterImpl;
 import com.lyancafe.coffeeshop.shop.view.MaiterialsView;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +57,6 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
     ContentLoadingProgressBar loadingProgressBar;
 
 
-    private MaterialBean toPrintMaterial;
     private Context mContext;
 
     private Handler mHandler;
@@ -109,7 +103,6 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
         ButterKnife.bind(this, contentView);
         linflater = LayoutInflater.from(getContext());
         initRV();
-        EventBus.getDefault().register(this);
         return contentView;
 
     }
@@ -217,21 +210,6 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
         }
     }
 
-    @Subscribe
-    public void OnMessageEvent(MaterialSelectEvent event) {
-        if (event.selected >= 0) {
-            toPrintMaterial = event.materialBean;
-            printMaterialText.setEnabled(true);
-            printMaterialText.setBackground(mContext.getResources().getDrawable(R.drawable.bg_black_circle));
-            printMaterialText.setTextColor(mContext.getResources().getColor(R.color.white_font));
-        } else {
-            toPrintMaterial = null;
-            printMaterialText.setEnabled(false);
-            printMaterialText.setBackground(mContext.getResources().getDrawable(R.drawable.bg_white_circle));
-            printMaterialText.setTextColor(mContext.getResources().getColor(R.color.text_black));
-        }
-    }
-
 
     @OnClick({R.id.tv_print_paster, R.id.tv_print_material, R.id.btn_print_test})
     void onClickPrint(View v) {
@@ -336,7 +314,6 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
     public void onDestroyView() {
         super.onDestroyView();
         dismissLoading();
-        EventBus.getDefault().unregister(this);
         savedState = saveState();
 
     }

@@ -104,20 +104,4 @@ public class EvaluationBean {
                 '}';
     }
 
-    //解析数据
-    public  static List<EvaluationBean> parseJsonOrders(Context context, XlsResponse resp){
-        List<EvaluationBean> evaluationBeanList = new ArrayList<EvaluationBean>();
-        if(resp==null || resp.data==null){
-            return evaluationBeanList;
-        }
-        try{
-            com.alibaba.fastjson.JSONArray ordersArray= resp.data.getJSONArray("orders");
-            if(ordersArray!=null){
-                evaluationBeanList = JSON.parseArray(ordersArray.toString(), EvaluationBean.class);
-            }
-        }catch (JSONException e){
-            ToastUtil.showToast(context, R.string.parse_json_fail);
-        }
-        return evaluationBeanList;
-    }
 }

@@ -62,11 +62,4 @@ public class ApkInfoBean implements Serializable{
                 '}';
     }
 
-    public static ApkInfoBean parseJsonToBean(String jsonStr){
-        if(TextUtils.isEmpty(jsonStr)){
-            return null;
-        }
-        ApkInfoBean apkInfoBean = JSON.parseObject(jsonStr, ApkInfoBean.class);
-        return apkInfoBean;
-    }
 }
