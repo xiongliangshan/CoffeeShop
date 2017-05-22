@@ -47,7 +47,7 @@ public class AssignOrderActivity extends Activity implements AssignOrderView{
     @Override
     protected void onStart() {
         super.onStart();
-        mAssignOrderPresenter.loadDelivers();
+        mAssignOrderPresenter.loadDeliversForAssign();
     }
 
 
@@ -69,7 +69,7 @@ public class AssignOrderActivity extends Activity implements AssignOrderView{
     void assign(){
         Log.d(TAG, "点击指派按钮");
         if (mCourier != null && mOrderId != 0) {
-            mAssignOrderPresenter.assignOrder(mOrderId,mCourier.getUserId());
+            mAssignOrderPresenter.doAssignOrder(mOrderId,mCourier.getUserId());
         }
     }
 

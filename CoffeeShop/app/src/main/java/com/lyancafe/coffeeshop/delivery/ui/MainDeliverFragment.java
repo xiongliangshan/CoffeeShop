@@ -129,7 +129,7 @@ public class MainDeliverFragment extends BaseFragment implements TabLayout.OnTab
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
-        mMainDeliverPresenter = new MainDeliverPresenterImpl();
+        mMainDeliverPresenter = new MainDeliverPresenterImpl(getContext());
     }
 
     @Override
@@ -470,7 +470,7 @@ public class MainDeliverFragment extends BaseFragment implements TabLayout.OnTab
                     intent.putExtra("orderId", mOrder.getId());
                     mContext.startActivity(intent);
                 }else if(mOrder.getStatus() == OrderStatus.ASSIGNED){
-                    mMainDeliverPresenter.reqRecallOrder(getActivity(),mOrder.getId());
+                    mMainDeliverPresenter.doRecallOrder(mOrder.getId());
                 }
                 break;
             case R.id.ll_user_remark:

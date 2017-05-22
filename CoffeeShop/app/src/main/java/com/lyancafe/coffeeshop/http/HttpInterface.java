@@ -8,6 +8,7 @@ import com.lyancafe.coffeeshop.bean.Material;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.delivery.model.CourierBean;
 import com.lyancafe.coffeeshop.login.model.UserBean;
+import com.lyancafe.coffeeshop.produce.model.DeliverBean;
 
 import java.util.List;
 import java.util.Map;
@@ -194,5 +195,31 @@ public interface HttpInterface {
      */
     @POST("{shopId}/order/{orderId}/raiseissue")
     Observable<BaseEntity> reportIssue(@Path("shopId") int shopId,@Path("orderId") long orderId,@QueryMap Map<String,Object> params);
+
+
+    /**
+     * 可以指派的小哥列表
+     * @param shopId
+     * @param token
+     * @return
+     */
+    @GET("{shopId}/couriersforassign")
+    Observable<BaseEntity<List<DeliverBean>>> loadDeliversForAssign(@Path("shopId") int shopId,@Query("token") String token);
+
+
+    /**
+     * 指派订单
+     * @param shopId
+     * @param orderId
+     * @param courierId
+     * @param token
+     * @return
+     */
+    @POST("{shopId}/order/{orderId}/assigntocourier")
+    Observable<BaseEntity> doAssignOrder(@Path("shopId") int shopId,@Path("orderId") long orderId,@Query("courierId") long courierId,
+                                         @Query("token") String token);
+
+    @GET("{shopId}/order/{orderId}/recall")
+    Observable<BaseEntity<JsonObject>> doRecallOrder(@Path("shopId") int shopId,@Path("orderId") long orderId,@Query("token") String token);
 
 }

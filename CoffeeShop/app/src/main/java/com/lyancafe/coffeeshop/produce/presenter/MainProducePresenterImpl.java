@@ -1,20 +1,25 @@
 package com.lyancafe.coffeeshop.produce.presenter;
 
 
-import android.app.Activity;
+import android.content.Context;
 
+import com.google.gson.JsonObject;
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.bean.XlsResponse;
-import com.lyancafe.coffeeshop.callback.DialogCallback;
+import com.lyancafe.coffeeshop.bean.BaseEntity;
+import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.event.RecallOrderEvent;
-import com.lyancafe.coffeeshop.common.HttpHelper;
+import com.lyancafe.coffeeshop.http.RetrofitHttp;
+import com.lyancafe.coffeeshop.login.model.UserBean;
 import com.lyancafe.coffeeshop.produce.ui.MainProduceFragment;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
-import okhttp3.Call;
-import okhttp3.Response;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
 * Created by Administrator on 2017/03/15
@@ -22,23 +27,45 @@ import okhttp3.Response;
 
 public class MainProducePresenterImpl implements MainProducePresenter{
 
+    private Context mContext;
 
-
-    @Override
-    public void reqRecallOrder(final Activity activity,long orderId) {
-        HttpHelper.getInstance().reqRecallOrder(orderId, new DialogCallback<XlsResponse>(activity) {
-            @Override
-            public void onSuccess(XlsResponse xlsResponse, Call call, Response response) {
-                if (xlsResponse.status == 0) {
-                    ToastUtil.showToast(activity, R.string.do_success);
-                    int id = xlsResponse.data.getIntValue("id");
-                    EventBus.getDefault().post(new RecallOrderEvent(MainProduceFragment.tabIndex, id));
-                } else {
-                    ToastUtil.showToast(activity, xlsResponse.message);
-                }
-            }
-        });
+    public MainProducePresenterImpl(Context mContext) {
+        this.mContext = mContext;
     }
 
 
+    @Override
+    public void doRecallOrder(long orderId) {
+        UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
+        RetrofitHttp.getRetrofit().doRecallOrder(user.getShopId(),orderId,user.getToken())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<BaseEntity<JsonObject>>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(@NonNull BaseEntity<JsonObject> jsonObjectBaseEntity) {
+                        if(jsonObjectBaseEntity.getStatus()==0){
+                            ToastUtil.showToast(mContext.getApplicationContext(), R.string.do_success);
+                            int id = jsonObjectBaseEntity.getData().get("id").getAsInt();
+                            EventBus.getDefault().post(new RecallOrderEvent(MainProduceFragment.tabIndex, id));
+                        }else{
+                            ToastUtil.showToast(mContext.getApplicationContext(), jsonObjectBaseEntity.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        ToastUtil.showToast(mContext.getApplicationContext(), e.getMessage());
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
 }

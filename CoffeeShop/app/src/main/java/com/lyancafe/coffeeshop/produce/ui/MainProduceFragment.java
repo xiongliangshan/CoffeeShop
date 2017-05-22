@@ -46,6 +46,7 @@ import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
 import com.lyancafe.coffeeshop.produce.presenter.MainProducePresenter;
 import com.lyancafe.coffeeshop.produce.presenter.MainProducePresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.MainProduceView;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
 import com.lyancafe.coffeeshop.widget.ReportIssueDialog;
 import com.lyancafe.coffeeshop.widget.UnderLineTextView;
@@ -124,7 +125,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
-        mMainProducePresenter = new MainProducePresenterImpl();
+        mMainProducePresenter = new MainProducePresenterImpl(getContext());
     }
 
     @Override
@@ -413,6 +414,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     public void onTabSelected(TabLayout.Tab tab) {
         tabIndex = tab.getPosition();
         viewPager.setCurrentItem(tabIndex, false);
+        LogUtil.d(LogUtil.TAG_PRODUCE,"当前fragment: tabIndex ="+tabIndex);
     }
 
     @Override
@@ -534,6 +536,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     public void onUpdateOrderDetailEvent(UpdateOrderDetailEvent event) {
         mOrder = event.orderBean;
         updateDetailView(mOrder);
+        LogUtil.d(LogUtil.TAG_PRODUCE,"getChildFragment:"+tabLayout.getSelectedTabPosition());
     }
 
     @OnClick({R.id.contant_issue_feedback, R.id.btn_assign, R.id.ll_user_remark, R.id.ll_csad_remark, R.id.btn_finish_produce, R.id.btn_print_order, R.id.btn_produce_print})
@@ -554,7 +557,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
                     intent.putExtra("orderId", mOrder.getId());
                     mContext.startActivity(intent);
                 }else if(mOrder.getStatus()==OrderStatus.ASSIGNED){
-                    mMainProducePresenter.reqRecallOrder(getActivity(), mOrder.getId());
+                    mMainProducePresenter.doRecallOrder(mOrder.getId());
                 }
                 break;
             case R.id.ll_user_remark:

@@ -12,9 +12,10 @@ import okhttp3.Response;
 public interface AssignOrderPresenter {
 
     //小哥列表请求
-    void loadDelivers();
+    void loadDeliversForAssign();
 
     //指派订单请求
-    void assignOrder(long orderId,long deliverId);
+    void doAssignOrder(long orderId,long courierId);
+
 
 }

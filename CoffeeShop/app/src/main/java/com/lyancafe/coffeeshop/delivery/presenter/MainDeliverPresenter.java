@@ -13,6 +13,5 @@ import okhttp3.Response;
 
 public interface MainDeliverPresenter {
     //订单撤回请求
-    void reqRecallOrder(final Activity activity, final long orderId);
-
+    void doRecallOrder(final long orderId);
 }
