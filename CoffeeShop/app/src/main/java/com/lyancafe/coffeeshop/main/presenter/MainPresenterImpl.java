@@ -52,11 +52,16 @@ public class MainPresenterImpl implements MainPresenter{
                 .subscribe(new Consumer<BaseEntity>() {
                     @Override
                     public void accept(@NonNull BaseEntity baseEntity) throws Exception {
-                        if(baseEntity.getStatus()==0){
+                        if (baseEntity.getStatus() == 0) {
                             resetToken();
                             Intent intent_update = new Intent(mContext, DownLoadService.class);
                             mContext.stopService(intent_update);
                         }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+
                     }
                 });
 
