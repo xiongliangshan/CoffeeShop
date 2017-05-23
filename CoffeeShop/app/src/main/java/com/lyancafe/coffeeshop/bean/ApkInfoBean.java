@@ -1,9 +1,5 @@
 package com.lyancafe.coffeeshop.bean;
 
-import android.text.TextUtils;
-
-import com.alibaba.fastjson.JSON;
-
 import java.io.Serializable;
 
 /**

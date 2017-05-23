@@ -164,6 +164,7 @@ public class ReportIssueDialog extends DialogFragment implements View.OnClickLis
         params.put("questionType",questionType);
         params.put("handleType",questionIdea);
         params.put("remark", questionDesc);
+        params.put("token",user.getToken());
 
         RetrofitHttp.getRetrofit().reportIssue(user.getShopId(),orderId,params)
                 .subscribeOn(Schedulers.io())

@@ -16,27 +16,21 @@
 #   public *;
 #}
 
+-keepattributes SourceFile,LineNumberTable
+
 -dontwarn android.support.**
 -dontwarn org.apache.**
--dontwarn com.igexin.**
 -dontwarn com.alibaba.fastjson.**
 
--keep class com.igexin.**{*;}
 -keep class com.alibaba.fastjson.**{*;}
 -keep class org.apache.**{*;}
 -keep class android.support.v4.** { *; }
 -keep interface android.support.v4.app.** { *; }
 
-#baidu SDK
+#baidu map
+-keep class com.baidu.** {*;}
+-keep class vi.com.** {*;}
 -dontwarn com.baidu.**
--dontwarn vi.com.gdi.bgl.android.**
--dontwarn com.sinovoice.**
--keep class com.sinovoice.**{*;}
--keep class com.baidu.** { *; }
--keep class vi.com.gdi.bgl.android.**{*;}
--keep class com.jsytwy.**{*;}
--keep interface com.baidu.**{*;}
--keep interface com.sinovoice.**{*;}
 
 #bugly
 -keep public class com.tencent.bugly.**{*;}
@@ -46,6 +40,7 @@
 -keep class okhttp3.**{*;}
 
 -dontwarn javax.annotation.**
+-dontwarn javax.inject.**
 
 #okio
 -dontwarn okio.**
@@ -64,6 +59,7 @@
     @butterknife.* <methods>;
 }
 
+
 #jiguang
 -dontoptimize
 -dontpreverify
@@ -74,6 +70,30 @@
 -dontwarn cn.jiguang.**
 -keep class cn.jiguang.** { *; }
 
+#eventbus
+-keepattributes *Annotation*
+-keepclassmembers class ** {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+
+# Retrofit
+-dontwarn retrofit2.**
+-keep class retrofit2.** { *; }
+-keepattributes Signature-keepattributes Exceptions
+
+# RxJava RxAndroid
+-dontwarn sun.misc.**
+-keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
+    long producerIndex;
+    long consumerIndex;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode producerNode;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode consumerNode;
+}
 
 # Platform calls Class.forName on types which do not exist on Android to determine platform.
 -dontnote retrofit2.Platform
@@ -83,3 +103,10 @@
 -keepattributes Signature
 # Retain declared checked exceptions for use by a Proxy instance.
 -keepattributes Exceptions
+
+
+# Gson
+-keep class com.google.gson.stream.** { *; }
+-keepattributes EnclosingMethod
+-keep class com.lyancafe.coffeeshop.bean.**{*;}
+-keep interface java.io.Serializable.**{*;}
