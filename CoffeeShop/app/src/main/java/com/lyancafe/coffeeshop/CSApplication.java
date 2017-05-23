@@ -30,6 +30,7 @@ public class CSApplication extends Application {
     private static final String TAG  ="CSApplication";
     public static final String BASE_DIR = Environment.getExternalStorageDirectory() + File.separator+"coffeeshop"+File.separator;
     public static final String APK_DIR = BASE_DIR+"apk";
+    public static final String CACHE_DIR = BASE_DIR+"cache";
     public static final String LOG_DIR = BASE_DIR+"log"+File.separator;
     private static CSApplication application;
 

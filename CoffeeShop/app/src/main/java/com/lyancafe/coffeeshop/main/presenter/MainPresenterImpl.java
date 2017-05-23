@@ -86,7 +86,9 @@ public class MainPresenterImpl implements MainPresenter{
                             ApkInfoBean apk = apkInfoBeanBaseEntity.getData();
                             mMainView.showUpdateConfirmDlg(apk);
                         }else{
-                            mMainView.showToast(apkInfoBeanBaseEntity.getMessage());
+                            if(isShowProgress){
+                                mMainView.showToast(apkInfoBeanBaseEntity.getMessage());
+                            }
                         }
                     }
 

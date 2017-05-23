@@ -15,6 +15,7 @@ import java.util.Map;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -94,6 +95,7 @@ public interface HttpInterface {
      * @param token
      * @return
      */
+    @Headers("Cache-Control:public,max-age=30,max-stale=60")
     @GET("{shopId}/couriersInfoList")
     Observable<BaseEntity<List<CourierBean>>> loadCouriers(@Path("shopId") int shopId,@Query("token") String token);
 
@@ -157,6 +159,7 @@ public interface HttpInterface {
      * @param token
      * @return
      */
+    @Headers("Cache-Control:public,max-age=60,max-stale=1200")
     @GET("{shopId}/supplies")
     Observable<BaseEntity<List<Material>>> loadMaterials(@Path("shopId") int shopId, @Query("token") String token);
 
