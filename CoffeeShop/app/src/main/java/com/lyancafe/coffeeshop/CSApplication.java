@@ -11,14 +11,10 @@ import android.view.WindowManager;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.lyancafe.coffeeshop.utils.LogUtil;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.cache.CacheMode;
-import com.lzy.okgo.cookie.store.PersistentCookieStore;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import java.io.File;
 import java.util.List;
-import java.util.logging.Level;
 
 import cn.jpush.android.api.JPushInterface;
 
@@ -46,7 +42,7 @@ public class CSApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "onCreate() process = " + getProcessName(this, Process.myPid()));
+        LogUtil.d(TAG, "onCreate() process = " + getProcessName(this, Process.myPid()));
         application = this;
         getDeviceScreenSize();
 
@@ -55,13 +51,14 @@ public class CSApplication extends Application {
         //初始化Jpush
         JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
         JPushInterface.init(this.getApplicationContext());     		// 初始化 JPush
-        LogUtil.d("jpush","JPush 开始初始化");
+        LogUtil.d(LogUtil.TAG_JPUSH,"JPush 开始初始化");
 
         //初始化百度
         SDKInitializer.initialize(getApplicationContext());
         
-        //初始化okGo
+       /* //初始化okGo
         OkGo.init(this);
+
         try {
             //以下都不是必须的，根据需要自行选择,一般来说只需要 debug,缓存相关,cookie相关的 就可以了
             OkGo.getInstance()
@@ -90,7 +87,7 @@ public class CSApplication extends Application {
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     public static CSApplication getInstance(){
