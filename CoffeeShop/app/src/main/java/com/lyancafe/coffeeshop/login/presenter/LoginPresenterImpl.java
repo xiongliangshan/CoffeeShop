@@ -77,7 +77,7 @@ public class LoginPresenterImpl implements LoginPresenter{
             public void onNext(@NonNull BaseEntity<UserBean> userBeanBaseEntity) {
                 if(userBeanBaseEntity.getStatus()==LoginHelper.LOGIN_SUCCESS){
                     UserBean userBean = userBeanBaseEntity.getData();
-                    LogUtil.d(TAG,"userBean = "+userBean.toString());
+
                     LoginHelper.saveUser(mContext, userBean);
                     //如果是当天第一次登陆，就清空本地缓存的订单打印记录
                     if(mLoginModel.isCurrentDayFirstLogin(mContext)){
