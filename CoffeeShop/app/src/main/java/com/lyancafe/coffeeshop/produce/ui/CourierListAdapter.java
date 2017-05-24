@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.produce.model.DeliverBean;
+import com.lyancafe.coffeeshop.bean.DeliverBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 
 import java.util.ArrayList;

@@ -6,9 +6,9 @@ import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.EvaluationBean;
 import com.lyancafe.coffeeshop.bean.Material;
 import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.delivery.model.CourierBean;
-import com.lyancafe.coffeeshop.login.model.UserBean;
-import com.lyancafe.coffeeshop.produce.model.DeliverBean;
+import com.lyancafe.coffeeshop.bean.CourierBean;
+import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.bean.DeliverBean;
 
 import java.util.List;
 import java.util.Map;

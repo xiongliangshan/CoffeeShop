@@ -1,11 +1,7 @@
 package com.lyancafe.coffeeshop.produce.view;
 
-import android.content.Intent;
-
 import com.lyancafe.coffeeshop.base.BaseView;
-import com.lyancafe.coffeeshop.produce.model.DeliverBean;
-
-import java.util.List;
+import com.lyancafe.coffeeshop.bean.DeliverBean;
 
 /**
 * Created by Administrator on 2017/03/15

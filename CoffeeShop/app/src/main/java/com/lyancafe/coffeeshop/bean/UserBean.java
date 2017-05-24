@@ -1,4 +1,4 @@
-package com.lyancafe.coffeeshop.login.model;
+package com.lyancafe.coffeeshop.bean;
 
 import android.content.Context;
 
@@ -68,16 +68,6 @@ public class UserBean implements Serializable{
         this.token = token;
     }
 
-    //解析数据
-    public static UserBean parseJsonLoginBean(Context context, XlsResponse resp){
-        int shopId = resp.data.getIntValue("shopId");
-        int userId = resp.data.getIntValue("userId");
-        String shopName = resp.data.getString("shopName");
-        String token = resp.data.getString("token");
-        boolean isSFMode = resp.data.getBoolean("isSFMode");
-        UserBean userBean = new UserBean(userId,shopId,shopName,isSFMode,token);
-        return userBean;
-    }
 
     @Override
     public String toString() {

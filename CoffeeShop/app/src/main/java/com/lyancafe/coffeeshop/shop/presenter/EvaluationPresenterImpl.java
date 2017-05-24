@@ -6,7 +6,7 @@ import android.content.Context;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.EvaluationBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
-import com.lyancafe.coffeeshop.login.model.UserBean;
+import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.shop.model.EvaluationModel;
 import com.lyancafe.coffeeshop.shop.model.EvaluationModelImpl;
 import com.lyancafe.coffeeshop.shop.view.EvaluationView;

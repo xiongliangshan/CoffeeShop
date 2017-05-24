@@ -14,7 +14,7 @@ import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.login.model.LoginModel;
 import com.lyancafe.coffeeshop.login.model.LoginModelImpl;
-import com.lyancafe.coffeeshop.login.model.UserBean;
+import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.login.view.LoginView;
 import com.lyancafe.coffeeshop.main.ui.HomeActivity;
 import com.lyancafe.coffeeshop.utils.LogUtil;
@@ -29,7 +29,6 @@ import cn.jpush.android.api.JPushInterface;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 /**
 * Created by Administrator on 2017/03/13
@@ -78,6 +77,7 @@ public class LoginPresenterImpl implements LoginPresenter{
             public void onNext(@NonNull BaseEntity<UserBean> userBeanBaseEntity) {
                 if(userBeanBaseEntity.getStatus()==LoginHelper.LOGIN_SUCCESS){
                     UserBean userBean = userBeanBaseEntity.getData();
+                    LogUtil.d(TAG,"userBean = "+userBean.toString());
                     LoginHelper.saveUser(mContext, userBean);
                     //如果是当天第一次登陆，就清空本地缓存的订单打印记录
                     if(mLoginModel.isCurrentDayFirstLogin(mContext)){
@@ -144,14 +144,29 @@ public class LoginPresenterImpl implements LoginPresenter{
         params.put("regId", redId);
         params.put("token",token);
 
-        mLoginModel.uploadDeviceInfo(shopId,userId,params, new Consumer<BaseEntity>() {
+        mLoginModel.uploadDeviceInfo(shopId,userId,params,new Observer<BaseEntity>(){
             @Override
-            public void accept(@NonNull BaseEntity baseEntity) throws Exception {
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(@NonNull BaseEntity baseEntity) {
                 if(baseEntity.getStatus()==0){
                     Log.i(TAG,"上传设备信息成功:"+mType+"|"+appCode+"|"+redId);
                 }else{
                     Log.w(TAG,"上传失败:"+baseEntity.getMessage());
                 }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
             }
         });
 

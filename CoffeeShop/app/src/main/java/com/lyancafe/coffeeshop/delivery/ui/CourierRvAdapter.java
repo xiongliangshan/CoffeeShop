@@ -1,9 +1,5 @@
 package com.lyancafe.coffeeshop.delivery.ui;
 
-import android.app.Activity;
-import android.content.Context;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,14 +7,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.common.OrderHelper;
-import com.lyancafe.coffeeshop.delivery.model.CourierBean;
+import com.lyancafe.coffeeshop.bean.CourierBean;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by Administrator on 2017/3/11.

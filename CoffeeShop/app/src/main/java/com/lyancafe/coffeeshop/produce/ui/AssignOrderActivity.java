@@ -6,16 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.util.Log;
-import android.view.View;
 import android.widget.Spinner;
 
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.produce.model.DeliverBean;
+import com.lyancafe.coffeeshop.bean.DeliverBean;
 import com.lyancafe.coffeeshop.produce.presenter.AssignOrderPresenter;
 import com.lyancafe.coffeeshop.produce.presenter.AssignOrderPresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.AssignOrderView;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.lyancafe.coffeeshop.widget.LoadingDialog;
 
 import java.util.List;
 

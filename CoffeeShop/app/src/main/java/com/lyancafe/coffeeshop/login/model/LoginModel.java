@@ -3,11 +3,11 @@ package com.lyancafe.coffeeshop.login.model;
 import android.content.Context;
 
 import com.lyancafe.coffeeshop.bean.BaseEntity;
+import com.lyancafe.coffeeshop.bean.UserBean;
 
 import java.util.Map;
 
 import io.reactivex.Observer;
-import io.reactivex.functions.Consumer;
 
 /**
 * Created by Administrator on 2017/03/13
@@ -33,7 +33,7 @@ public interface LoginModel{
      * @param shopId
      * @param userId
      * @param params
-     * @param consumer
+     * @param observer
      */
-    void uploadDeviceInfo(int shopId,int userId,Map<String,Object> params, Consumer<BaseEntity> consumer);
+    void uploadDeviceInfo(int shopId,int userId,Map<String,Object> params, Observer<BaseEntity> observer);
 }

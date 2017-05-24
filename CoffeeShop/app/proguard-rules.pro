@@ -80,7 +80,6 @@
 # Retrofit
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }
--keepattributes Signature-keepattributes Exceptions
 
 # RxJava RxAndroid
 -dontwarn sun.misc.**
@@ -109,4 +108,4 @@
 -keep class com.google.gson.stream.** { *; }
 -keepattributes EnclosingMethod
 -keep class com.lyancafe.coffeeshop.bean.**{*;}
--keep interface java.io.Serializable.**{*;}
+

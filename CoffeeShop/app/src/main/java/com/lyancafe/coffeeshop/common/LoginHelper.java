@@ -5,9 +5,10 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.alibaba.fastjson.JSON;
+import com.google.gson.Gson;
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.login.model.UserBean;
+import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 
@@ -36,17 +37,20 @@ public class LoginHelper {
 
     public static void saveUser(Context context, UserBean userBean){
         SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
-        sp.edit().putString("login", JSON.toJSONString(userBean)).apply();
+        String userJson = new Gson().toJson(userBean);
+        LogUtil.d("login","存user :"+userJson);
+        sp.edit().putString("login", userJson).apply();
     }
 
     public static UserBean getUser(Context context){
         SharedPreferences sp = context.getSharedPreferences(PREFERENCES_USER, Context.MODE_PRIVATE);
         String strLogin = sp.getString("login", "");
+        LogUtil.d("login","取user :"+strLogin);
         if(TextUtils.isEmpty(strLogin)){
             Log.e("xls","getUser,userJsonStr is Empty");
             return new UserBean();
         }else{
-            return JSON.parseObject(strLogin,UserBean.class);
+            return new Gson().fromJson(strLogin,UserBean.class);
         }
 
     }

@@ -1,22 +1,15 @@
 package com.lyancafe.coffeeshop.produce.presenter;
 
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 
 import com.google.gson.JsonObject;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.http.RetrofitHttp;
-import com.lyancafe.coffeeshop.login.model.UserBean;
-import com.lyancafe.coffeeshop.produce.model.DeliverBean;
-import com.lyancafe.coffeeshop.bean.XlsResponse;
-import com.lyancafe.coffeeshop.callback.JsonCallback;
-import com.lyancafe.coffeeshop.common.HttpHelper;
-import com.lyancafe.coffeeshop.produce.ui.AssignOrderActivity;
-import com.lyancafe.coffeeshop.produce.ui.MainProduceFragment;
+import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.bean.DeliverBean;
 import com.lyancafe.coffeeshop.produce.view.AssignOrderView;
 
 import java.util.List;
@@ -26,8 +19,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.Call;
-import okhttp3.Response;
 
 /**
 * Created by Administrator on 2017/03/15

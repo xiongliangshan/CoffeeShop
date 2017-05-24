@@ -1,10 +1,7 @@
 package com.lyancafe.coffeeshop.delivery.view;
 
 import com.lyancafe.coffeeshop.base.BaseView;
-import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.delivery.model.CourierBean;
-
-import java.util.List;
+import com.lyancafe.coffeeshop.bean.CourierBean;
 
 /**
 * Created by Administrator on 2017/03/16

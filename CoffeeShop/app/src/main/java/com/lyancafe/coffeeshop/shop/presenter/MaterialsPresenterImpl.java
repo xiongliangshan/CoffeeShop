@@ -7,7 +7,7 @@ import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.Material;
 import com.lyancafe.coffeeshop.common.LoginHelper;
-import com.lyancafe.coffeeshop.login.model.UserBean;
+import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.shop.model.MaterialsModel;
 import com.lyancafe.coffeeshop.shop.model.MaterialsModelImpl;
 import com.lyancafe.coffeeshop.shop.view.MaiterialsView;

@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
-import com.lyancafe.coffeeshop.delivery.model.CourierBean;
+import com.lyancafe.coffeeshop.bean.CourierBean;
 import com.lyancafe.coffeeshop.delivery.presenter.CourierPresenter;
 import com.lyancafe.coffeeshop.delivery.presenter.CourierPresenterImpl;
 import com.lyancafe.coffeeshop.delivery.view.CourierView;
@@ -19,7 +19,6 @@ import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;

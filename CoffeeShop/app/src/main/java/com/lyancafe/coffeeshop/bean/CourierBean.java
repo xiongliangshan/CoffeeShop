@@ -1,11 +1,10 @@
-package com.lyancafe.coffeeshop.delivery.model;
+package com.lyancafe.coffeeshop.bean;
 
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
-import com.lyancafe.coffeeshop.bean.XlsResponse;
 
 import java.util.ArrayList;
 import java.util.List;

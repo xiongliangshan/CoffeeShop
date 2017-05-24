@@ -1,6 +1,7 @@
 package com.lyancafe.coffeeshop.delivery.model;
 
 import com.lyancafe.coffeeshop.bean.BaseEntity;
+import com.lyancafe.coffeeshop.bean.CourierBean;
 
 import java.util.List;
 

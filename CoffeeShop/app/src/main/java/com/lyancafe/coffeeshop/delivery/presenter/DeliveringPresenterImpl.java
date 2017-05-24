@@ -10,7 +10,7 @@ import com.lyancafe.coffeeshop.delivery.model.DeliveringModel;
 import com.lyancafe.coffeeshop.delivery.model.DeliveringModelImpl;
 import com.lyancafe.coffeeshop.delivery.view.DeliveringView;
 import com.lyancafe.coffeeshop.event.UpdateDeliverFragmentTabOrderCount;
-import com.lyancafe.coffeeshop.login.model.UserBean;
+import com.lyancafe.coffeeshop.bean.UserBean;
 
 import org.greenrobot.eventbus.EventBus;
 

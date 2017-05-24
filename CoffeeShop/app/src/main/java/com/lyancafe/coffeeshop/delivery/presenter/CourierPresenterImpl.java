@@ -4,21 +4,18 @@ package com.lyancafe.coffeeshop.delivery.presenter;
 import android.content.Context;
 
 import com.lyancafe.coffeeshop.bean.BaseEntity;
-import com.lyancafe.coffeeshop.bean.XlsResponse;
 import com.lyancafe.coffeeshop.common.LoginHelper;
-import com.lyancafe.coffeeshop.delivery.model.CourierBean;
+import com.lyancafe.coffeeshop.bean.CourierBean;
 import com.lyancafe.coffeeshop.delivery.model.CourierModel;
 import com.lyancafe.coffeeshop.delivery.model.CourierModelImpl;
 import com.lyancafe.coffeeshop.delivery.view.CourierView;
-import com.lyancafe.coffeeshop.login.model.UserBean;
+import com.lyancafe.coffeeshop.bean.UserBean;
 
 import java.util.List;
 
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
-import okhttp3.Call;
-import okhttp3.Response;
 
 /**
 * Created by Administrator on 2017/03/16
