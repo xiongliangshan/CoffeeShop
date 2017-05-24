@@ -18,32 +18,20 @@ import android.widget.TextView;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseActivity;
 import com.lyancafe.coffeeshop.bean.ApkInfoBean;
-import com.lyancafe.coffeeshop.delivery.ui.MainDeliverFragment;
-import com.lyancafe.coffeeshop.service.DownLoadService;
-import com.lyancafe.coffeeshop.shop.ui.MainShopFragment;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.delivery.ui.MainDeliverFragment;
 import com.lyancafe.coffeeshop.main.presenter.MainPresenter;
 import com.lyancafe.coffeeshop.main.presenter.MainPresenterImpl;
 import com.lyancafe.coffeeshop.main.view.MainView;
 import com.lyancafe.coffeeshop.produce.ui.MainProduceFragment;
+import com.lyancafe.coffeeshop.service.DownLoadService;
 import com.lyancafe.coffeeshop.service.TaskService;
-import com.lyancafe.coffeeshop.utils.LogUtil;
+import com.lyancafe.coffeeshop.shop.ui.MainShopFragment;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.LoadingDialog;
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
-import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
-import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.core.decode.BaseImageDecoder;
-import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
-import com.nostra13.universalimageloader.utils.StorageUtils;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,31 +93,6 @@ public class HomeActivity extends BaseActivity implements MainView{
         };
         Intent intent=new Intent(HomeActivity.this,TaskService.class);
         bindService(intent, connection, BIND_AUTO_CREATE);
-
-
-        final File cacheDir = StorageUtils.getCacheDirectory(HomeActivity.this);
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(HomeActivity.this)
-                .memoryCacheExtraOptions(800, 800) // default = device screen dimensions
-                .diskCacheExtraOptions(800, 800, null)
-//                .taskExecutor(...)
-//                .taskExecutorForCachedImages(...)
-                .threadPoolSize(3) // default
-                .threadPriority(Thread.NORM_PRIORITY - 2) // default
-                .tasksProcessingOrder(QueueProcessingType.FIFO) // default
-                .denyCacheImageMultipleSizesInMemory()
-                .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
-                .memoryCacheSize(2 * 1024 * 1024)
-                .memoryCacheSizePercentage(13) // default
-                .diskCache(new UnlimitedDiscCache(cacheDir)) // default
-                .diskCacheSize(50 * 1024 * 1024)
-                .diskCacheFileCount(100)
-                .diskCacheFileNameGenerator(new HashCodeFileNameGenerator()) // default
-                .imageDownloader(new BaseImageDownloader(this)) // default
-                .imageDecoder(new BaseImageDecoder(true)) // default
-                .defaultDisplayImageOptions(DisplayImageOptions.createSimple()) // default
-                .writeDebugLogs()
-                .build();
-        ImageLoader.getInstance().init(config);
 
         mMainPresenter.checkUpdate(false);
 

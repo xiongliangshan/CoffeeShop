@@ -50,7 +50,6 @@ dependencies {
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'org.greenrobot:eventbus:3.0.0'
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile 'com.tencent.bugly:crashreport:latest.release'
     compile 'com.wuxiaolong.pullloadmorerecyclerview:library:1.1.2'
     compile 'com.lzy.net:okgo:2.1.4'

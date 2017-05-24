@@ -93,18 +93,4 @@ public class DeliverBean {
                 '}';
     }
 
-
-    public static List<DeliverBean> parseJsonToDelivers(XlsResponse resp){
-        List<DeliverBean> list = new ArrayList<>();
-        if(resp==null || resp.data==null){
-            return list;
-        }
-        try {
-            JSONArray jsonArray = resp.data.getJSONArray("couriers");
-            list = JSON.parseArray(jsonArray.toString(),DeliverBean.class);
-        }catch (JSONException e){
-            Log.e("json","parseJsonToDelivers ,解析失败");
-        }
-        return list;
-    }
 }

@@ -94,19 +94,4 @@ public class CourierBean {
     }
 
 
-    public static List<CourierBean> parseJsonToCouriers(XlsResponse resp){
-        List<CourierBean> list = new ArrayList<>();
-        if(resp==null || resp.data==null){
-            return list;
-        }
-        try {
-            JSONArray jsonArray = resp.data.getJSONArray("couriers");
-            if(jsonArray!=null){
-                list = JSON.parseArray(jsonArray.toString(),CourierBean.class);
-            }
-        }catch (JSONException e){
-            Log.e("json","parseJsonToCouriers ,解析失败");
-        }
-        return list;
-    }
 }

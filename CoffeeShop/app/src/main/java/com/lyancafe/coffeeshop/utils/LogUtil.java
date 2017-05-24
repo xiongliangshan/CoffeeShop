@@ -11,6 +11,7 @@ public class LogUtil {
     private static boolean debug = true;
     public final static String TAG_LOGIN = "login";
     public final static String TAG_JPUSH = "jpush";
+    public final static String TAG_TIMER = "timer";
     public final static String TAG_PRODUCE = "produce";
     public final static String TAG_SHOP = "shop";
 

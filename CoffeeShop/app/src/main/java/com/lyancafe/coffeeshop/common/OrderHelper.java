@@ -13,7 +13,6 @@ import com.lyancafe.coffeeshop.bean.EvaluationBean;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
-import com.lyancafe.coffeeshop.bean.SFGroupBean;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 
@@ -496,15 +495,6 @@ public class OrderHelper {
         return phone.substring(0,phone.length()-8)+"####"+phone.substring(phone.length()-4,phone.length());
     }
 
-
-    //计算顺风单组列表的总单数
-    public static int getGroupTotalCount(List<SFGroupBean> sfGroupBeanList){
-        int sum = 0;
-        for(int i = 0;i<sfGroupBeanList.size();i++){
-            sum+=sfGroupBeanList.get(i).getItemGroup().size();
-        }
-        return sum;
-    }
 
 
     //期望送达时间段

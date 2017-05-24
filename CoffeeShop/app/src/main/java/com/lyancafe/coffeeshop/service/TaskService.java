@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -62,12 +63,13 @@ public class TaskService extends Service {
     }
 
     public void startTimer(){
+        LogUtil.d(LogUtil.TAG_TIMER, "启动 timer");
         timer  = new Timer();
         task = new TimerTask() {
             @Override
             public void run() {
-                Log.d(TAG, "请求服务器--" + (n++));
-                EventBus.getDefault().post(new NewOderComingEvent(0L));
+                LogUtil.d(LogUtil.TAG_TIMER, "请求服务器--" + (n++));
+                EventBus.getDefault().postSticky(new NewOderComingEvent(0L));
             }
         };
         timer.schedule(task, PERIOD_TIME, PERIOD_TIME);
@@ -75,6 +77,7 @@ public class TaskService extends Service {
     }
 
     public void stopTimer(){
+        LogUtil.d(LogUtil.TAG_TIMER, "关闭 timer");
         if(timer!=null){
             timer.cancel();
             timer=null;
