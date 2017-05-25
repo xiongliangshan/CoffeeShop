@@ -90,7 +90,7 @@ public class PrintHelper {
     }
 
 
-    //计算盒子小票信息，生成打印数据模型
+    //计算杯贴纸信息，生成打印数据模型
     private List<PrintOrderBean> calculatePinterOrderBeanList(OrderBean orderBean){
         List<PrintCupBean> hotCupList = new ArrayList<>();
         List<PrintCupBean> coolCupList = new ArrayList<>();
@@ -256,7 +256,7 @@ public class PrintHelper {
                 "S3"+"\n"+
                 "D8"+"\n"+
                 "A10,50,0,230,1,1,N,\"门店单号：\""+"\n"+ //订单号
-                "A120,40,0,230,2,2,N,\""+bean.getShopOrderNo()+OrderHelper.getSimpleOrderSnForPrint(bean.getOrderSn())+"  "+bean.getBoxAmount()+"-" +bean.getBoxNumber()+"|"+bean.getCupAmount()+"\""+"\n"+ //杯数盒子信息
+                "A120,40,0,230,2,2,N,\""+bean.getShopOrderNo()+OrderHelper.getSimpleOrderSnForPrint(bean.getOrderSn())+bean.getLocalStr()+"\""+"\n"+ //杯数盒子信息
                  gift +
                 "A10,100,0,230,1,1,N,\"收货人：\""+"\n"+
                 "A120,100,0,230,2,2,N,\""+bean.getReceiverName()+"\""+"\n"+

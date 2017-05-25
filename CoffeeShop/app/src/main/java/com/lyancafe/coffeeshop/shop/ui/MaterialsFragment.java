@@ -186,6 +186,9 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
 
     @Override
     public void bindDataToView(List<Material> list) {
+        if(list==null || list.size()<=0){
+            return;
+        }
         this.materials = list;
         initCategorys(contentView, materials);
         mAdapter.setList(materials.get(currentItem).getItems());

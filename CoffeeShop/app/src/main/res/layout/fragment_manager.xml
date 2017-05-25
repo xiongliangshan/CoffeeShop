@@ -93,7 +93,6 @@
                 android:minWidth="150dp"
                 android:layout_toRightOf="@id/tv_constant_shopPhone"
                 android:layout_marginLeft="16dp"
-                android:text="18217131583"
                 android:textSize="20sp"/>
 
             <ImageView

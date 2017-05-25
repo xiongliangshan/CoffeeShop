@@ -164,6 +164,10 @@ public class PrintOrderBean {
         this.coffeeList = coffeeList;
     }
 
+    public String getLocalStr(){
+        return boxAmount+"盒-第"+boxNumber+"盒 "+cupAmount+"杯";
+    }
+
     @Override
     public String toString() {
         return "PrintOrderBean{" +
