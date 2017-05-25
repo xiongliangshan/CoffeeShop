@@ -82,7 +82,7 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView {
     }
 
     @Override
-    public void bindDataToListView(List<EvaluationBean> list) {
+    public void bindDataToView(List<EvaluationBean> list) {
         mAdapter.setData(list);
     }
 

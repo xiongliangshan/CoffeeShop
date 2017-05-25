@@ -50,7 +50,7 @@ public class FinishedPresenterImpl implements FinishedPresenter {
                     if(isLoadMore){
                         mFinishedView.appendListData(finishedList);
                     }else{
-                        mFinishedView.bindDataToListView(finishedList);
+                        mFinishedView.bindDataToView(finishedList);
                     }
                     mFinishedView.saveLastOrderId();
                 }else{

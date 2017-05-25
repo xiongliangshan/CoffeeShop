@@ -50,7 +50,7 @@ public class AssignOrderPresenterImpl implements AssignOrderPresenter{
                     public void onNext(@NonNull BaseEntity<List<DeliverBean>> listBaseEntity) {
                         if(listBaseEntity.getStatus()==0){
                             List<DeliverBean> deliverList = listBaseEntity.getData();
-                            mAssignOrderView.bindDataToListView(deliverList);
+                            mAssignOrderView.bindDataToView(deliverList);
                         }else{
                             mAssignOrderView.showToast(listBaseEntity.getMessage());
                         }

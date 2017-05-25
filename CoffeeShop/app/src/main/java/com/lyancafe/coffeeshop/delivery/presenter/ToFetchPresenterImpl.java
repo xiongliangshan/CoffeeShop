@@ -52,7 +52,7 @@ public class ToFetchPresenterImpl implements ToFetchPresenter{
                 if(listBaseEntity.getStatus()==0){
                     List<OrderBean> toFetchList = listBaseEntity.getData();
                     EventBus.getDefault().post(new UpdateDeliverFragmentTabOrderCount(1,toFetchList.size()));
-                    mToFetchView.bindDataToListView(toFetchList);
+                    mToFetchView.bindDataToView(toFetchList);
                 }else {
                     mToFetchView.showToast(listBaseEntity.getMessage());
                 }

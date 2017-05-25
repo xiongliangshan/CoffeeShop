@@ -102,7 +102,7 @@ public class AssignOrderActivity extends Activity implements AssignOrderView {
     }
 
     @Override
-    public void bindDataToListView(List<DeliverBean> list) {
+    public void bindDataToView(List<DeliverBean> list) {
         mAdapter.setData(list);
     }
 

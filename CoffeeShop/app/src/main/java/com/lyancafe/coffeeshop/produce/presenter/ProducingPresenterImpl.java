@@ -54,7 +54,7 @@ public class ProducingPresenterImpl implements ProducingPresenter{
                 if(listBaseEntity.getStatus()==0){
                     List<OrderBean> producingList = listBaseEntity.getData();
                     EventBus.getDefault().post(new UpdateProduceFragmentTabOrderCount(1,producingList.size()));
-                    mProducingView.bindDataToListView(producingList);
+                    mProducingView.bindDataToView(producingList);
                 }else{
                     mProducingView.showToast(listBaseEntity.getMessage());
                 }

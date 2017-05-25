@@ -52,7 +52,7 @@ public class TimeEffectPresenterImpl implements TimeEffectPresenter,TimeEffectMo
         if("yes".equalsIgnoreCase(isLoadMore)){
             mTimeEffectView.appendListData(timeEffectBeanList);
         }else{
-            mTimeEffectView.bindDataToListView(timeEffectBeanList);
+            mTimeEffectView.bindDataToView(timeEffectBeanList);
         }
         mTimeEffectView.saveLastOrderId();
     }

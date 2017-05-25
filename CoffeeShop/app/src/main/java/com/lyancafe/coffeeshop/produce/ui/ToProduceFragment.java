@@ -101,7 +101,7 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
     }
 
     @Override
-    public void bindDataToListView(List<OrderBean> list) {
+    public void bindDataToView(List<OrderBean> list) {
         allOrderList.clear();
         allOrderList.addAll(list);
         if(isVisible){

@@ -53,6 +53,7 @@
             android:name=".main.ui.HomeActivity"
             android:parentActivityName=".base.BaseActivity"
             android:screenOrientation="sensorLandscape"
+            android:windowSoftInputMode="adjustPan"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:launchMode="singleTask">
             <meta-data

@@ -59,7 +59,7 @@ public class ToProducePresenterImpl implements ToProducePresenter{
                 if(listBaseEntity.getStatus()==0){
                     List<OrderBean> toProduceList = listBaseEntity.getData();
                     EventBus.getDefault().post(new UpdateProduceFragmentTabOrderCount(0, toProduceList.size()));
-                    mToProduceView.bindDataToListView(toProduceList);
+                    mToProduceView.bindDataToView(toProduceList);
                 }else if(listBaseEntity.getStatus()==103){
                     mToProduceView.showToast(listBaseEntity.getMessage());
                     UserBean userBean = LoginHelper.getUser(mContext);

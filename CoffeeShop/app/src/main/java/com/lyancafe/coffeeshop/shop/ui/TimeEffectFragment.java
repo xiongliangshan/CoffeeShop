@@ -96,7 +96,7 @@ public class TimeEffectFragment extends BaseFragment implements PullLoadMoreRecy
 
 
     @Override
-    public void bindDataToListView(List<TimeEffectBean> list) {
+    public void bindDataToView(List<TimeEffectBean> list) {
         mAdapter.setData(list);
     }
 

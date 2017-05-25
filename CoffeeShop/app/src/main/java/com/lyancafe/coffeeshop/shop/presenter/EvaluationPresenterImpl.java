@@ -49,7 +49,7 @@ public class EvaluationPresenterImpl implements EvaluationPresenter{
                     if(isLoadMore){
                         mEvaluationView.appendListData(evaluationsList);
                     }else{
-                        mEvaluationView.bindDataToListView(evaluationsList);
+                        mEvaluationView.bindDataToView(evaluationsList);
                     }
                     mEvaluationView.saveLastOrderId();
                 }else {

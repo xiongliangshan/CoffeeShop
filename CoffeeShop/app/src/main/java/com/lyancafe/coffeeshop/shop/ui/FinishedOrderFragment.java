@@ -154,7 +154,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
 
     @Override
-    public void bindDataToListView(List<OrderBean> list) {
+    public void bindDataToView(List<OrderBean> list) {
         if(list!=null && list.size()>0){
             showEmpty(false);
             mAdapter.setData(list);

@@ -47,7 +47,7 @@ public class CourierPresenterImpl implements CourierPresenter{
             public void onNext(@NonNull BaseEntity<List<CourierBean>> listBaseEntity) {
                 if(listBaseEntity.getStatus()==0){
                     List<CourierBean> couriers = listBaseEntity.getData();
-                    mCourierView.bindDataToListView(couriers);
+                    mCourierView.bindDataToView(couriers);
                 }else {
                     mCourierView.showToast(listBaseEntity.getMessage());
                 }

@@ -96,7 +96,7 @@ public class ToFetchFragment extends BaseFragment implements MainDeliverFragment
     }
 
     @Override
-    public void bindDataToListView(List<OrderBean> list) {
+    public void bindDataToView(List<OrderBean> list) {
         allOrderList.clear();
         allOrderList.addAll(list);
         mAdapter.setData(list, MainDeliverFragment.category);

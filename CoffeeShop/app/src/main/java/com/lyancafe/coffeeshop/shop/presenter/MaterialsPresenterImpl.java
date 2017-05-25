@@ -51,7 +51,7 @@ public class MaterialsPresenterImpl implements MaterialsPresenter{
             public void onNext(@NonNull BaseEntity<List<Material>> listBaseEntity) {
                 if(listBaseEntity.getStatus()==0){
                     List<Material> materials = listBaseEntity.getData();
-                    mMaterialView.bindDataToListView(materials);
+                    mMaterialView.bindDataToView(materials);
                 }else{
                     ToastUtil.showToast(mContext.getApplicationContext(),listBaseEntity.getMessage());
                 }

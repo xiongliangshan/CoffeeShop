@@ -7,6 +7,7 @@ import com.lyancafe.coffeeshop.bean.EvaluationBean;
 import com.lyancafe.coffeeshop.bean.Material;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.CourierBean;
+import com.lyancafe.coffeeshop.bean.ShopInfo;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.bean.DeliverBean;
 
@@ -226,4 +227,24 @@ public interface HttpInterface {
     @GET("{shopId}/order/{orderId}/recall")
     Observable<BaseEntity<JsonObject>> doRecallOrder(@Path("shopId") int shopId,@Path("orderId") long orderId,@Query("token") String token);
 
+
+    /**
+     * 获取门店基本信息
+     * @param shopId
+     * @param token
+     * @return
+     */
+    @Headers("Cache-Control:public,max-age=1,max-stale=2")
+    @GET("{shopId}/shop/info")
+    Observable<BaseEntity<ShopInfo>> loadShopInfo(@Path("shopId") int shopId,@Query("token") String token);
+
+    /**
+     * 修改门店电话号码
+     * @param shopId
+     * @param shopTelephone
+     * @param token
+     * @return
+     */
+    @POST("{shopId}/shop/update")
+    Observable<BaseEntity<JsonObject>> modifyShopTelephone(@Path("shopId") int shopId,@Query("shopTelephone") String shopTelephone,@Query("token") String token);
 }
