@@ -419,7 +419,7 @@ public class MainDeliverFragment extends BaseFragment implements TabLayout.OnTab
             lp.topMargin = OrderHelper.dip2Px(2, mContext);
             ll.addView(rl, lp);
         }
-      
+
         TextView tv6 = new TextView(mContext);
         tv6.setText(mContext.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
         tv6.setGravity(Gravity.CENTER);
