@@ -245,8 +245,6 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
                 order.setOrderVip(false);
                 order.setWxScan(false);
                 order.setIsRecipeFittings(false);
-                order.setGift(1);
-                order.setWishes("");
                 order.setExpectedTime(0L);
                 order.setOrderTime(0L);
                 order.setProduceEffect(0L);

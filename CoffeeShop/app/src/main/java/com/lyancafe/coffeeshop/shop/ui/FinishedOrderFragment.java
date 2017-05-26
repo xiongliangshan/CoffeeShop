@@ -287,41 +287,6 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
             lp.topMargin = OrderHelper.dip2Px(2, mContext);
             ll.addView(rl, lp);
         }
-        if (!TextUtils.isEmpty(order.getWishes())) {
-            TextView tv3 = new TextView(mContext);
-            tv3.setText("礼品卡");
-            tv3.setMaxEms(9);
-            tv3.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
-            tv3.setTextColor(mContext.getResources().getColor(R.color.font_black));
-            TextView tv4 = new TextView(mContext);
-            tv4.setText(order.getWishes());
-            tv4.getPaint().setFakeBoldText(true);
-            tv4.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
-            RelativeLayout r2 = new RelativeLayout(mContext);
-            r2.setBackgroundColor(Color.YELLOW);
-            RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
-            lp3.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            lp3.leftMargin = OrderHelper.dip2Px(2, mContext);
-            tv3.setLayoutParams(lp3);
-            r2.addView(tv3);
-
-            RelativeLayout.LayoutParams lp4 = new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
-            lp4.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            lp4.rightMargin = OrderHelper.dip2Px(2, mContext);
-            tv4.setLayoutParams(lp4);
-            r2.addView(tv4);
-
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            );
-            lp.topMargin = OrderHelper.dip2Px(4, mContext);
-            ll.addView(r2, lp);
-        }
 
         TextView tv6 = new TextView(mContext);
         tv6.setText(mContext.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));

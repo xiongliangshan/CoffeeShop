@@ -99,12 +99,6 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
             holder.labelFlagImg.setImageResource(R.mipmap.flag_placeholder);
         }
 
-        //礼盒订单 or 礼品卡
-        if(order.getGift()==2||order.getGift()==5){
-            holder.giftIV.setImageResource(R.mipmap.flag_li);
-        }else{
-            holder.giftIV.setImageResource(R.mipmap.flag_placeholder);
-        }
         //抢单
         if(order.getStatus()== OrderStatus.UNASSIGNED){
             holder.grabFlagIV.setImageResource(R.mipmap.flag_placeholder);
@@ -243,7 +237,6 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         @BindView(R.id.ll_first_row) LinearLayout firstRowLayout;
         @BindView(R.id.iv_reminder) ImageView reminderImg;
         @BindView(R.id.iv_sao_flag) ImageView saoImg;
-        @BindView(R.id.iv_gift) ImageView giftIV;
         @BindView(R.id.iv_label_flag) ImageView labelFlagImg;
         @BindView(R.id.item_order_id) TextView orderIdTxt;
         @BindView(R.id.item_contant_produce_effect) TextView contantEffectTimeTxt;

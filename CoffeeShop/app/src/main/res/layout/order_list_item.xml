@@ -89,20 +89,12 @@
             android:src="@mipmap/flag_vip"
             android:layout_marginLeft="4dp"/>
 
-        <ImageView
-            android:id="@+id/iv_gift"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/flag_li"
-            android:layout_toRightOf="@id/item_vip_flag"
-            android:layout_marginLeft="4dp"
-            />
 
         <ImageView
             android:id="@+id/item_grab_flag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/iv_gift"
+            android:layout_toRightOf="@id/item_vip_flag"
             android:src="@mipmap/flag_qiang"
             android:layout_marginLeft="4dp"/>
 

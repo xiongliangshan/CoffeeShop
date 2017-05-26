@@ -97,7 +97,6 @@ public class PrintHelper {
         int coolBoxAmount = getTotalBoxAmount(coolCupList.size());
         int totalBoxAmount = hotBoxAmount+coolBoxAmount; //盒子总数
         Log.i(TAG,"hotBoxAmount = "+hotBoxAmount+" | coolBoxAmount = "+coolBoxAmount+" | totalBoxAmount = "+totalBoxAmount);
-        boolean isGiftBox = orderBean.getGift()==5;
         int i = 0;      //盒子号
         for(i=0;i<hotCupList.size()/4;i++){
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,i+1,4);
@@ -106,7 +105,6 @@ public class PrintHelper {
             bean.setShopOrderNo(OrderHelper.getPrintShopOrderSn(orderBean));
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
-            bean.setIsGiftBox(isGiftBox);
             if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
                 bean.setIsHaveRemarks(false);
             }else{
@@ -128,7 +126,6 @@ public class PrintHelper {
             bean.setShopOrderNo(OrderHelper.getPrintShopOrderSn(orderBean));
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
-            bean.setIsGiftBox(isGiftBox);
             if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
                 bean.setIsHaveRemarks(false);
             }else{
@@ -151,7 +148,6 @@ public class PrintHelper {
             bean.setShopOrderNo(OrderHelper.getPrintShopOrderSn(orderBean));
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
-            bean.setIsGiftBox(isGiftBox);
             if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
                 bean.setIsHaveRemarks(false);
             }else{
@@ -173,7 +169,6 @@ public class PrintHelper {
             bean.setShopOrderNo(OrderHelper.getPrintShopOrderSn(orderBean));
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
-            bean.setIsGiftBox(isGiftBox);
             if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
                 bean.setIsHaveRemarks(false);
             }else{
@@ -231,7 +226,7 @@ public class PrintHelper {
                 break;
         }
 
-        String addressCMD, addr1, addr2,gift;
+        String addressCMD, addr1, addr2;
         Log.d(TAG, "address len: " + bean.getAddress().length());
         if (bean.getAddress().length() <= 22) {
             addressCMD = "A120,160,0,230,1,1,N,\""+bean.getAddress()+"\""+"\n";
@@ -241,19 +236,14 @@ public class PrintHelper {
             addressCMD = "A120,160,0,230,1,1,N,\""+addr1+"\""+"\n" +
                     "A90,190,0,230,1,1,N,\""+addr2+"\""+"\n";
         }
-        if(bean.isGiftBox()){
-            gift = "A480,40,0,230,2,2,N,\"礼盒\""+"\n";
-        }else{
-            gift = "A480,40,0,230,2,2,N,\"\""+"\n";
-        }
+
         return  "N"+"\n"+
                 "q640"+"\n"+
                 "Q400,16"+"\n"+
                 "S3"+"\n"+
                 "D8"+"\n"+
-                "A10,50,0,230,1,1,N,\"门店单号：\""+"\n"+ //订单号
+                "A10,50,0,230,1,1,N,\"单号：\""+"\n"+ //订单号
                 "A120,40,0,230,2,2,N,\""+bean.getShopOrderNo()+OrderHelper.getSimpleOrderSnForPrint(bean.getOrderSn())+bean.getLocalStr()+"\""+"\n"+ //杯数盒子信息
-                 gift +
                 "A10,100,0,230,1,1,N,\"收货人：\""+"\n"+
                 "A120,100,0,230,2,2,N,\""+bean.getReceiverName()+"\""+"\n"+
                 "A320,120,0,230,1,1,N,\""+bean.getReceiverPhone()+"\""+"\n"+
