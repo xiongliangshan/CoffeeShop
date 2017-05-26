@@ -212,26 +212,6 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
         showStartProduceConfirmDialog(event.order);
     }
 
-   /* *//**
-     * 处理订单撤回状态刷新
-     * @param event
-     *//*
-    @Subscribe
-    public void onRecallOrderEvent(RecallOrderEvent event){
-        if(event.tabIndex==0){
-            for(int i=0;i<mAdapter.list.size();i++) {
-                OrderBean order = mAdapter.list.get(i);
-                if (event.orderId == order.getId()) {
-                    order.setStatus(OrderStatus.UNASSIGNED);
-                    mAdapter.notifyItemChanged(i);
-                    EventBus.getDefault().post(new UpdateOrderDetailEvent(order));
-                    break;
-                }
-            }
-        }
-
-    }*/
-
 
     @Override
     public void removeItemFromList(int id) {

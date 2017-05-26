@@ -208,7 +208,7 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
 
     @Override
     public void dismissLoading() {
-        if(loadingProgressBar!=null && loadingProgressBar.isShown()){
+        if(loadingProgressBar!=null ){
             loadingProgressBar.hide();
         }
     }
