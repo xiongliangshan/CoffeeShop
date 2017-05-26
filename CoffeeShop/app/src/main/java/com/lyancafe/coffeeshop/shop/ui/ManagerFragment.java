@@ -149,13 +149,6 @@ public class ManagerFragment extends BaseFragment implements ManagerView{
         hideEdit();
     }
 
-    public boolean isPagerScrolling(){
-        Fragment fragment = getParentFragment();
-        if(fragment instanceof MainShopFragment){
-           return ((MainShopFragment) fragment).isScrolled;
-        }
-        return false;
-    }
 
     @Override
     public void onDestroyView() {

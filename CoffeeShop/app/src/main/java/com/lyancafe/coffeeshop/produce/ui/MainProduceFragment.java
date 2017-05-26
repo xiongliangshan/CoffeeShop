@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -35,14 +34,12 @@ import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
-import com.lyancafe.coffeeshop.event.CancelOrderEvent;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.NaiGaiEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
-import com.lyancafe.coffeeshop.event.UpdatePrintStatusEvent;
 import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
 import com.lyancafe.coffeeshop.produce.presenter.MainProducePresenter;
 import com.lyancafe.coffeeshop.produce.presenter.MainProducePresenterImpl;
@@ -448,12 +445,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
         showNaiGaiAmount(event.map);
     }
 
-    @Subscribe
-    public void OnUpdatePrintStatusEvent(UpdatePrintStatusEvent event) {
-        Log.d(TAG, "OnUpdatePrintStatusEvent,orderSn = " + event.orderSn);
-        //打印界面退出的时候，刷新一下打印按钮文字
 
-    }
 
     /**
      * 更新列表订单数量
@@ -472,15 +464,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
         }
     }
 
-    /**
-     * 订单被撤销
-     *
-     * @param event
-     */
-    @Subscribe
-    public void onCancelOrderEvent(CancelOrderEvent event) {
-        Log.d(TAG, "event:" + event.orderId);
-    }
+
 
 
     @Override

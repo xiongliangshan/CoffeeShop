@@ -1,9 +1,5 @@
 package com.lyancafe.coffeeshop.bean;
 
-import android.content.Context;
-
-import com.lyancafe.coffeeshop.bean.XlsResponse;
-
 import java.io.Serializable;
 
 /**

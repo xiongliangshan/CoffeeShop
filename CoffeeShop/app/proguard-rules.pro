@@ -33,6 +33,7 @@
 -dontwarn com.baidu.**
 
 #bugly
+-dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly.**{*;}
 
 #okhttp

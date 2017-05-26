@@ -1,0 +1,4 @@
+file=D:\workspace\lyanhouse\CoffeeShop\app\build\outputs\mapping\release\mapping.txt
+sha1=863d7dead40471153db5dcf244cb3307afb064ff
+appId=900027459
+
