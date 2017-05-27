@@ -1,7 +1,9 @@
 package com.lyancafe.coffeeshop.login.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
@@ -9,10 +11,12 @@ import android.widget.EditText;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseActivity;
+import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 import com.lyancafe.coffeeshop.login.presenter.LoginPresenter;
 import com.lyancafe.coffeeshop.login.presenter.LoginPresenterImpl;
 import com.lyancafe.coffeeshop.login.view.LoginView;
 import com.lyancafe.coffeeshop.main.ui.HomeActivity;
+import com.lyancafe.coffeeshop.service.DownLoadService;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import butterknife.BindView;
@@ -81,6 +85,7 @@ public class LoginActivity extends BaseActivity implements LoginView{
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);
+        LoginActivity.this.finish();
 
     }
 
@@ -103,5 +108,33 @@ public class LoginActivity extends BaseActivity implements LoginView{
         if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
+    }
+
+
+    @Override
+    public void showUpdateConfirmDlg(final ApkInfoBean apk) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.confirm_download, apk.getAppName()));
+        builder.setTitle(getString(R.string.version_update));
+        builder.setIcon(R.mipmap.ic_launcher);
+        builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                //启动Service下载apk文件
+                Intent intent = new Intent(LoginActivity.this, DownLoadService.class);
+                intent.putExtra("apk",apk);
+                startService(intent);
+            }
+        });
+        builder.setNegativeButton(getString(R.string.cacel), new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 }

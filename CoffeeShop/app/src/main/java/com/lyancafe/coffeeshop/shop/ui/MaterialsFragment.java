@@ -243,11 +243,11 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
                 //测试打印机
                 OrderBean order = new OrderBean();
                 order.setId(65535);
-                order.setOrderSn("2017032765535");
-                order.setShopOrderNo(666);
+                order.setOrderSn("20170587655354");
+                order.setShopOrderNo(888666);
                 order.setOrderVip(false);
                 order.setWxScan(false);
-                order.setIsRecipeFittings(false);
+                order.setIsRecipeFittings(true);
                 order.setExpectedTime(0L);
                 order.setOrderTime(0L);
                 order.setProduceEffect(0L);
@@ -271,7 +271,10 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
                 order.setPlatformId(12);
                 order.setMtShopOrderNo(0);
                 order.setOrderDistance(1300);
-                ItemContentBean itemContentBean = new ItemContentBean("热拿铁", "大杯", 3000, 1, 3000, 3, null);
+                List<String> customList = new ArrayList<>();
+                customList.add("半糖");
+                customList.add("常温");
+                ItemContentBean itemContentBean = new ItemContentBean("热拿铁", "大杯", 3000, 4, 3000, 3, null);
                 List<ItemContentBean> list = new ArrayList<>();
                 list.add(itemContentBean);
                 order.setItems(list);

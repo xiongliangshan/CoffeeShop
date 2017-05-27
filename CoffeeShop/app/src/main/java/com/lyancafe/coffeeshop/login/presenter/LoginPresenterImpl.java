@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
@@ -21,6 +22,7 @@ import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.RsaEncryptor;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
+import com.lyancafe.coffeeshop.utils.UpdateUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -78,7 +80,7 @@ public class LoginPresenterImpl implements LoginPresenter{
                 if(userBeanBaseEntity.getStatus()==LoginHelper.LOGIN_SUCCESS){
                     UserBean userBean = userBeanBaseEntity.getData();
 
-                    LoginHelper.saveUser(mContext, userBean);
+                    LoginHelper.saveUser(mContext.getApplicationContext(), userBean);
                     //如果是当天第一次登陆，就清空本地缓存的订单打印记录
                     if(mLoginModel.isCurrentDayFirstLogin(mContext)){
                         OrderHelper.clearPrintedSet(mContext);
@@ -118,6 +120,32 @@ public class LoginPresenterImpl implements LoginPresenter{
             if(mContext instanceof Activity){
                 ((Activity) mContext).finish();
             }
+        }else{
+            //检测版本更新
+            UpdateUtil.init().checkUpdate(new Observer<BaseEntity<ApkInfoBean>>() {
+                @Override
+                public void onSubscribe(@NonNull Disposable d) {
+
+                }
+
+                @Override
+                public void onNext(@NonNull BaseEntity<ApkInfoBean> apkInfoBeanBaseEntity) {
+                    if(apkInfoBeanBaseEntity.getStatus()==0){
+                        ApkInfoBean apk = apkInfoBeanBaseEntity.getData();
+                        mLoginView.showUpdateConfirmDlg(apk);
+                    }
+                }
+
+                @Override
+                public void onError(@NonNull Throwable e) {
+
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+            });
         }
     }
 

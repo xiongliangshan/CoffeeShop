@@ -36,4 +36,7 @@ public interface LoginModel{
      * @param observer
      */
     void uploadDeviceInfo(int shopId,int userId,Map<String,Object> params, Observer<BaseEntity> observer);
+
+
+
 }

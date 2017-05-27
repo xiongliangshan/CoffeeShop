@@ -13,6 +13,7 @@ import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.main.view.MainView;
 import com.lyancafe.coffeeshop.service.DownLoadService;
 import com.lyancafe.coffeeshop.utils.MyUtil;
+import com.lyancafe.coffeeshop.utils.UpdateUtil;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -72,45 +73,41 @@ public class MainPresenterImpl implements MainPresenter{
 
     @Override
     public void checkUpdate(final boolean isShowProgress) {
-        int curVersion = MyUtil.getVersionCode(CSApplication.getInstance());
-        UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        RetrofitHttp.getRetrofit().checkUpdate(curVersion,user.getToken())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<BaseEntity<ApkInfoBean>>() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {
-                        if(isShowProgress){
-                            mMainView.showLoading();
-                        }
-                    }
+        UpdateUtil.init().checkUpdate(new Observer<BaseEntity<ApkInfoBean>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+                if(isShowProgress){
+                    mMainView.showLoading();
+                }
+            }
 
-                    @Override
-                    public void onNext(@NonNull BaseEntity<ApkInfoBean> apkInfoBeanBaseEntity) {
-                        if(apkInfoBeanBaseEntity.getStatus()==0){
-                            ApkInfoBean apk = apkInfoBeanBaseEntity.getData();
-                            mMainView.showUpdateConfirmDlg(apk);
-                        }else{
-                            if(isShowProgress){
-                                mMainView.showToast(apkInfoBeanBaseEntity.getMessage());
-                            }
-                        }
+            @Override
+            public void onNext(@NonNull BaseEntity<ApkInfoBean> apkInfoBeanBaseEntity) {
+                if(apkInfoBeanBaseEntity.getStatus()==0){
+                    ApkInfoBean apk = apkInfoBeanBaseEntity.getData();
+                    mMainView.showUpdateConfirmDlg(apk);
+                }else{
+                    if(isShowProgress){
+                        mMainView.showToast(apkInfoBeanBaseEntity.getMessage());
                     }
+                }
+            }
 
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                        if(isShowProgress){
-                            mMainView.dismissLoading();
-                        }
-                        mMainView.showToast(e.getMessage());
-                    }
+            @Override
+            public void onError(@NonNull Throwable e) {
+                if(isShowProgress){
+                    mMainView.dismissLoading();
+                }
+                mMainView.showToast(e.getMessage());
+            }
 
-                    @Override
-                    public void onComplete() {
-                        if(isShowProgress){
-                            mMainView.dismissLoading();
-                        }
-                    }
-                });
+            @Override
+            public void onComplete() {
+                if(isShowProgress){
+                    mMainView.dismissLoading();
+                }
+            }
+        });
+
     }
 }

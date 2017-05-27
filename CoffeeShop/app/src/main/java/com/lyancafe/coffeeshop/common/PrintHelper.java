@@ -229,12 +229,12 @@ public class PrintHelper {
         String addressCMD, addr1, addr2;
         Log.d(TAG, "address len: " + bean.getAddress().length());
         if (bean.getAddress().length() <= 22) {
-            addressCMD = "A120,160,0,230,1,1,N,\""+bean.getAddress()+"\""+"\n";
+            addressCMD = "A80,160,0,230,1,1,N,\""+bean.getAddress()+"\""+"\n";
         } else {
             addr1 = bean.getAddress().substring(0, 22);
             addr2 = bean.getAddress().substring(22);
-            addressCMD = "A120,160,0,230,1,1,N,\""+addr1+"\""+"\n" +
-                    "A90,190,0,230,1,1,N,\""+addr2+"\""+"\n";
+            addressCMD = "A80,160,0,230,1,1,N,\""+addr1+"\""+"\n" +
+                    "A80,190,0,230,1,1,N,\""+addr2+"\""+"\n";
         }
 
         return  "N"+"\n"+
@@ -242,11 +242,11 @@ public class PrintHelper {
                 "Q400,16"+"\n"+
                 "S3"+"\n"+
                 "D8"+"\n"+
-                "A10,50,0,230,1,1,N,\"订单号：\""+"\n"+ //订单号
-                "A120,40,0,230,2,2,N,\""+bean.getShopOrderNo()+OrderHelper.getSimpleOrderSnForPrint(bean.getOrderSn())+"\""+"\n"+
-                "A450,50,0,230,1,1,N,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
-                "A10,110,0,230,1,1,N,\"收货人：\""+"\n"+
-                "A120,100,0,230,2,2,N,\""+bean.getReceiverName()+"\""+"\n"+
+                "A10,50,0,230,1,1,N,\"单号：\""+"\n"+ //订单号
+                "A80,40,0,230,2,2,N,\""+bean.getShopOrderNo()+OrderHelper.getSimpleOrderSnForPrint(bean.getOrderSn())+"\""+"\n"+
+                "A470,50,0,230,1,1,N,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
+                "A10,110,0,230,1,1,N,\"收货：\""+"\n"+
+                "A80,100,0,230,2,2,N,\""+bean.getReceiverName()+"\""+"\n"+
                 "A320,120,0,230,1,1,N,\""+bean.getReceiverPhone()+"\""+"\n"+
                  addressCMD +                             //配送地址
                 "A10,220,0,230,1,1,N,\"清单：\""+"\n"+
@@ -297,7 +297,6 @@ public class PrintHelper {
         ArrayList<ItemContentBean> hotItemList = getCoolOrHotItemList(orderBean, true);
         ArrayList<ItemContentBean> coolItemList = getCoolOrHotItemList(orderBean, false);
 
-        ArrayList<PrintCupBean> cupList = new ArrayList<>();
         int hotTotalQuantity = getTotalQuantity(hotItemList);
         int coolTotalQuantity = getTotalQuantity(coolItemList);
         Log.e(TAG,"hotTotalQuantity = "+hotTotalQuantity+" | coolTotalQuantity = "+coolTotalQuantity);

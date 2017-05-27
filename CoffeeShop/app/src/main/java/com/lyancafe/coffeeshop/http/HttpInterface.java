@@ -168,11 +168,10 @@ public interface HttpInterface {
     /**
      * 检测版本更新
      * @param curVersion
-     * @param token
      * @return
      */
     @POST("token/{curVersion}/isUpdateApp")
-    Observable<BaseEntity<ApkInfoBean>> checkUpdate(@Path("curVersion") int curVersion,@Query("token") String token);
+    Observable<BaseEntity<ApkInfoBean>> checkUpdate(@Path("curVersion") int curVersion);
 
 
     /**

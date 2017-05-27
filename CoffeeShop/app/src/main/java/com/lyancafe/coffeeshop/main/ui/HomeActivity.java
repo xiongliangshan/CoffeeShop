@@ -94,7 +94,6 @@ public class HomeActivity extends BaseActivity implements MainView{
         Intent intent=new Intent(HomeActivity.this,TaskService.class);
         bindService(intent, connection, BIND_AUTO_CREATE);
 
-        mMainPresenter.checkUpdate(false);
 
     }
 
