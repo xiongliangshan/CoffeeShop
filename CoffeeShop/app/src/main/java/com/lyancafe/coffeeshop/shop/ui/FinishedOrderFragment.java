@@ -171,8 +171,10 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
     @Override
     public void bindAmountDataToView(int ordersAmount, int cupsAmount) {
-        orderCountText.setText(String.valueOf(ordersAmount));
-        cupCountText.setText(String.valueOf(cupsAmount));
+        if(orderCountText!=null && cupCountText!=null){
+            orderCountText.setText(String.valueOf(ordersAmount));
+            cupCountText.setText(String.valueOf(cupsAmount));
+        }
     }
 
 
