@@ -186,7 +186,7 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
 
     @Override
     public void bindDataToView(List<Material> list) {
-        if(list==null || list.size()<=0){
+        if (list == null || list.size() <= 0) {
             return;
         }
         this.materials = list;
@@ -201,20 +201,20 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
 
     @Override
     public void showLoading() {
-        if(loadingProgressBar!=null ){
+        if (loadingProgressBar != null) {
             loadingProgressBar.show();
         }
     }
 
     @Override
     public void dismissLoading() {
-        if(loadingProgressBar!=null ){
+        if (loadingProgressBar != null) {
             loadingProgressBar.hide();
         }
     }
 
 
-    @OnClick({R.id.tv_print_paster, R.id.tv_print_material, R.id.btn_print_test})
+    @OnClick({R.id.tv_print_paster, R.id.tv_print_material, R.id.btn_print_blank,R.id.btn_print_test})
     void onClickPrint(View v) {
         switch (v.getId()) {
             case R.id.tv_print_paster:
@@ -235,6 +235,9 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
                 }
                 PrintHelper.getInstance().printMaterialBig(itemBig);
 
+                break;
+            case R.id.btn_print_blank:
+                PrintHelper.getInstance().printPasterSmallBlank();
                 break;
             case R.id.btn_print_test:
                 //测试打印机
@@ -316,7 +319,6 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
         super.onDestroyView();
         dismissLoading();
         savedState = saveState();
-
     }
 
     private void restoreState() {

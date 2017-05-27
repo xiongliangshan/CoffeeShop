@@ -655,6 +655,22 @@ public class PrintHelper {
         DoPrintPaster(pasterContent);
     }
 
+    //打印空白贴纸（小纸）
+    public void printPasterSmallBlank(){
+        String pasterContent = "N"+"\n"+
+                "OD"+"\n"+
+                "q240"+"\n"+
+                "Q160,16"+"\n"+
+                "S3"+"\n"+
+                "D8"+"\n"+
+                "A10,35,0,230,1,1,N,\"物料:\""+"\n"+
+                "A70,35,0,230,1,1,N,\"_____________\""+"\n"+
+                "A10,95,0,230,1,1,N,\"过期:\""+"\n"+
+                "A70,95,0,230,1,1,N,\"_____________\""+"\n"+
+                "P1"+"\n";
+        DoPrintPaster(pasterContent);
+    }
+
     private  void DoPrintPaster(String printContent){
         Log.d(TAG,"DoPrintMaterial");
         DoPrintRunnable dpt = new DoPrintRunnable();

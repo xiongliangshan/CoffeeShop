@@ -82,6 +82,15 @@
             android:gravity="center"
             android:background="@drawable/bg_white_circle"/>
 
+
+        <Button
+            android:id="@+id/btn_print_blank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
+            android:text="空白贴纸"/>
+
+
         <Button
             android:id="@+id/btn_print_test"
             android:layout_width="wrap_content"
