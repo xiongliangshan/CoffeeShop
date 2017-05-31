@@ -217,7 +217,7 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
     public void removeItemFromList(int id) {
         mAdapter.removeOrderFromList(id);
     }
-    
+
 
     //订单状态改变后刷新列表UI
     public void refreshListForStatus(long orderId, int status){
