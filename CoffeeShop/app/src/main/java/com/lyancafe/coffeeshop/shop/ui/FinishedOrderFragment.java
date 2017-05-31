@@ -145,11 +145,10 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
     @Override
     public void showEmpty(boolean isNeedToShow) {
-        if(isNeedToShow){
-            tvEmpty.setVisibility(View.VISIBLE);
-        }else{
-            tvEmpty.setVisibility(View.GONE);
-        }
+
+       if(tvEmpty!=null){
+           tvEmpty.setVisibility(isNeedToShow?View.VISIBLE:View.GONE);
+       }
     }
 
 
