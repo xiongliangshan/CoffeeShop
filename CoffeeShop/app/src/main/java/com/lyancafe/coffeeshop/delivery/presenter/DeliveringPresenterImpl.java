@@ -51,7 +51,7 @@ public class DeliveringPresenterImpl implements DeliveringPresenter{
             public void onNext(@NonNull BaseEntity<List<OrderBean>> listBaseEntity) {
                 if(listBaseEntity.getStatus()==0){
                     List<OrderBean> deliveringList = listBaseEntity.getData();
-                    EventBus.getDefault().post(new UpdateDeliverFragmentTabOrderCount(2,deliveringList.size()));
+                    EventBus.getDefault().post(new UpdateDeliverFragmentTabOrderCount(1,deliveringList.size()));
                     mDeliveringView.bindDataToView(deliveringList);
                 }else {
                     mDeliveringView.showToast(listBaseEntity.getMessage());

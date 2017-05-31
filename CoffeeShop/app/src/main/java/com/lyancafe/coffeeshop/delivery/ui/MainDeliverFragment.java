@@ -60,7 +60,6 @@ public class MainDeliverFragment extends BaseFragment implements TabLayout.OnTab
     private static final int REQUEST_ASSIGN = 0x1002;
 
     private Context mContext;
-    private CourierFragment courierFragment;
     private ToFetchFragment toFetchFragment;
     private DeliveringFragment deliveringFragment;
     private DeliverFragmentPagerAdapter mPagerAdapter;
@@ -73,8 +72,6 @@ public class MainDeliverFragment extends BaseFragment implements TabLayout.OnTab
     TabLayout tabLayout;
     @BindView(R.id.vp_container)
     ViewPager viewPager;
-    @BindView(R.id.layout_detail)
-    View detailLayout;
     /**
      * 订单详情页UI组件
      */
@@ -145,10 +142,8 @@ public class MainDeliverFragment extends BaseFragment implements TabLayout.OnTab
 
     private void initViews() {
         List<Fragment> fragments = new ArrayList<>();
-        courierFragment = new CourierFragment();
         toFetchFragment = new ToFetchFragment();
         deliveringFragment = new DeliveringFragment();
-        fragments.add(courierFragment);
         fragments.add(toFetchFragment);
         fragments.add(deliveringFragment);
         mPagerAdapter = new DeliverFragmentPagerAdapter(getChildFragmentManager(), getActivity(), fragments);
@@ -164,17 +159,10 @@ public class MainDeliverFragment extends BaseFragment implements TabLayout.OnTab
     @Override
     public void onResume() {
         super.onResume();
-        if (courierFragment != null) {
-            courierFragment.onVisible();
+        if (toFetchFragment != null) {
+            toFetchFragment.onVisible();
         }
-        if(detailLayout==null){
-            return;
-        }
-        if(tabIndex==0){
-            detailLayout.setVisibility(View.GONE);
-        }else{
-            detailLayout.setVisibility(View.VISIBLE);
-        }
+
     }
 
     @Override
@@ -226,6 +214,7 @@ public class MainDeliverFragment extends BaseFragment implements TabLayout.OnTab
 
     }
 
+
     @Subscribe
     public void onUpdateDeliverOrderDetailEvent(UpdateDeliverOrderDetailEvent event) {
         mOrder = event.orderBean;
@@ -270,11 +259,6 @@ public class MainDeliverFragment extends BaseFragment implements TabLayout.OnTab
         Log.d("xls","position = " + tab.getPosition());
         tabIndex = tab.getPosition();
         viewPager.setCurrentItem(tabIndex, false);
-        if(tabIndex==0){
-            detailLayout.setVisibility(View.GONE);
-        }else{
-            detailLayout.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override

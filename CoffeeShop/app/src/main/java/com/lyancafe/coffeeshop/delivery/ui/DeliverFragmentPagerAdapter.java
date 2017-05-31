@@ -13,7 +13,7 @@ import java.util.List;
 
 public class DeliverFragmentPagerAdapter extends FragmentPagerAdapter {
 
-    public String[] titles = new String[]{"小哥一览","待取货","配送中"};
+    public String[] titles = new String[]{"待取货","配送中"};
     private List<Fragment> fragments;
     private Context mContext;
 
@@ -38,6 +38,8 @@ public class DeliverFragmentPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         return titles[position];
     }
+
+
 
 
 

@@ -3,6 +3,7 @@ package com.lyancafe.coffeeshop.delivery.ui;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -53,6 +54,11 @@ public class ToFetchFragment extends BaseFragment implements MainDeliverFragment
         mToFetchPresenter = new ToFetchPresenterImpl(getContext(),this);
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mToFetchPresenter.loadToFetchOrders();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
