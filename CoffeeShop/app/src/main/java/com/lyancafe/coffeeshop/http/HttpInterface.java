@@ -3,13 +3,12 @@ package com.lyancafe.coffeeshop.http;
 import com.google.gson.JsonObject;
 import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
+import com.lyancafe.coffeeshop.bean.DeliverBean;
 import com.lyancafe.coffeeshop.bean.EvaluationBean;
 import com.lyancafe.coffeeshop.bean.Material;
 import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.bean.CourierBean;
 import com.lyancafe.coffeeshop.bean.ShopInfo;
 import com.lyancafe.coffeeshop.bean.UserBean;
-import com.lyancafe.coffeeshop.bean.DeliverBean;
 
 import java.util.List;
 import java.util.Map;
@@ -90,15 +89,7 @@ public interface HttpInterface {
     @GET("{shopId}/order/{orderId}/produce")
     Observable<BaseEntity<JsonObject>> doFinishProduced(@Path("shopId") int shopId, @Path("orderId") long orderId, @Query("token") String token);
 
-    /**
-     * 小哥列表
-     * @param shopId
-     * @param token
-     * @return
-     */
-    @Headers("Cache-Control:public,max-age=30,max-stale=60")
-    @GET("{shopId}/couriersInfoList")
-    Observable<BaseEntity<List<CourierBean>>> loadCouriers(@Path("shopId") int shopId,@Query("token") String token);
+
 
     /**
      * 待取货列表
