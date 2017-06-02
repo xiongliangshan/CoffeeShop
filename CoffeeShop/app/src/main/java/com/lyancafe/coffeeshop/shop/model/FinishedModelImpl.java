@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.http.RetrofitHttp;
+import com.lyancafe.coffeeshop.http.RxHelper;
 
 import java.util.List;
 
@@ -22,16 +23,14 @@ public class FinishedModelImpl implements FinishedModel{
     @Override
     public void loadFinishedOrders(int shopId, long orderId, String token, Observer<BaseEntity<List<OrderBean>>> observer) {
         RetrofitHttp.getRetrofit().loadFinishedOrders(shopId,orderId,token)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxHelper.<BaseEntity<List<OrderBean>>>io_main())
                 .subscribe(observer);
     }
 
     @Override
     public void loadOrderAmount(int shopId, String token, Observer<BaseEntity<JsonObject>> observer) {
         RetrofitHttp.getRetrofit().loadOrderAmount(shopId,token)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxHelper.<BaseEntity<JsonObject>>io_main())
                 .subscribe(observer);
     }
 }

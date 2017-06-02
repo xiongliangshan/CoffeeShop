@@ -6,6 +6,7 @@ import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.http.RetrofitHttp;
+import com.lyancafe.coffeeshop.http.RxHelper;
 import com.lyancafe.coffeeshop.widget.LoadingDialog;
 
 import io.reactivex.Observer;
@@ -37,8 +38,7 @@ public class UpdateUtil {
     public void checkUpdate(Observer<BaseEntity<ApkInfoBean>> observer) {
         int curVersion = MyUtil.getVersionCode(CSApplication.getInstance());
         RetrofitHttp.getRetrofit().checkUpdate(curVersion)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxHelper.<BaseEntity<ApkInfoBean>>io_main())
                 .subscribe(observer);
     }
 }

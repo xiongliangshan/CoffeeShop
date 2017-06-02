@@ -73,10 +73,12 @@ public class LoginPresenterImpl implements LoginPresenter{
             @Override
             public void onSubscribe(@NonNull Disposable d) {
                 mLoginView.showLoadingDlg();
+                LogUtil.d(LogUtil.TAG_LOGIN,"onSubscribe thread  ="+Thread.currentThread().getName());
             }
 
             @Override
             public void onNext(@NonNull BaseEntity<UserBean> userBeanBaseEntity) {
+                LogUtil.d(LogUtil.TAG_LOGIN,"onNext thread  ="+Thread.currentThread().getName());
                 if(userBeanBaseEntity.getStatus()==LoginHelper.LOGIN_SUCCESS){
                     UserBean userBean = userBeanBaseEntity.getData();
 
