@@ -1,0 +1,40 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:paddingRight="10dp"
+        android:layout_weight="20">
+
+        <TextView
+            android:id="@+id/tv_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="24sp"
+            android:textColor="@color/text_empty"
+            android:visibility="gone"
+            android:text="暂无数据"/>
+
+        <com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
+            android:id="@+id/plmgv_order_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            />
+
+    </FrameLayout>
+
+    <include
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="11"
+        layout = "@layout/view_exceptional_detail"
+        />
+</LinearLayout>
+

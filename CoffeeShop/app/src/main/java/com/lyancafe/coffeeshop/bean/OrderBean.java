@@ -19,37 +19,37 @@ public class OrderBean implements Serializable{
 
     private static final String TAG = "OrderBean";
 
-    private long id;                     //订单id
-    private String reminder;             //Y:催单，N:不催单
-    private String orderSn;              //订单编号
-    private int shopOrderNo;             //门店单号
-    private boolean orderVip;           //是否是vip订单
-    private boolean wxScan;            //是否是到店扫码的单子是否是vip订单
-    private boolean isRecipeFittings;  //是否有个性化标签
-    private long expectedTime;           //期望送达时间
-    private long orderTime;              //下单时间
-    private long produceEffect;         //计算生产时效的基准时间
-    private String recipient;            //收货人名字
-    private String address;              //收货人地址
-    private String phone;                //收货人联系电话
-    private String courierName;          //小哥名字
-    private String courierPhone;         //小哥联系电话
-    private int status;                  //订单状态
-    private int produceStatus;            //生产状态 4000:待生产  4005:生产中  4010:生产完成
-    private boolean issueOrder;          //是否是问题订单
-    private int instant;                 //0预约单 or 1尽快送达
-    private String notes;                //客户下单备注
-    private String csrNotes;             //客服备注
-    private String platform;             //下单渠道（微信，大众点评，其他）
-    private long handoverTime;           //实际送达时间
-    private List<String> feedbackTags;   //评论标签
-    private String feedback;             //评论内容
-    private int feedbackType;            // 0:没有评价，4:好评，5:差评
-    private int deliveryTeam;               //   配送团队 4:lyan 5:qusong 6:wokuaidao 7:sweets 8:美团外卖 9:海葵
-    private int platformId;                 //   订单渠道ID  29:美团   其他：我们
-    private int mtShopOrderNo;                  //   美团门店单号
-    private double orderDistance;           //订单距离
-    private List<ItemContentBean> items; //购买的咖啡内容列表
+     long id;                     //订单id
+     String reminder;             //Y:催单，N:不催单
+     String orderSn;              //订单编号
+     int shopOrderNo;             //门店单号
+     boolean orderVip;           //是否是vip订单
+     boolean wxScan;            //是否是到店扫码的单子是否是vip订单
+     boolean isRecipeFittings;  //是否有个性化标签
+     long expectedTime;           //期望送达时间
+     long orderTime;              //下单时间
+     long produceEffect;         //计算生产时效的基准时间
+     String recipient;            //收货人名字
+     String address;              //收货人地址
+     String phone;                //收货人联系电话
+     String courierName;          //小哥名字
+     String courierPhone;         //小哥联系电话
+     int status;                  //订单状态
+     int produceStatus;            //生产状态 4000:待生产  4005:生产中  4010:生产完成
+     boolean issueOrder;          //是否是问题订单
+     int instant;                 //0预约单 or 1尽快送达
+     String notes;                //客户下单备注
+     String csrNotes;             //客服备注
+     String platform;             //下单渠道（微信，大众点评，其他）
+     long handoverTime;           //实际送达时间
+     List<String> feedbackTags;   //评论标签
+     String feedback;             //评论内容
+     int feedbackType;            // 0:没有评价，4:好评，5:差评
+     int deliveryTeam;               //   配送团队 4:lyan 5:qusong 6:wokuaidao 7:sweets 8:美团外卖 9:海葵
+     int platformId;                 //   订单渠道ID  29:美团   其他：我们
+     int mtShopOrderNo;                  //   美团门店单号
+     double orderDistance;           //订单距离
+     List<ItemContentBean> items; //购买的咖啡内容列表
 
 
 

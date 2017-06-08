@@ -6,11 +6,7 @@ import com.lyancafe.coffeeshop.bean.ShopInfo;
 import com.lyancafe.coffeeshop.http.RetrofitHttp;
 import com.lyancafe.coffeeshop.http.RxHelper;
 
-import io.reactivex.Observable;
 import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.Response;
 
 /**
  * Created by Administrator on 2017/5/25.
