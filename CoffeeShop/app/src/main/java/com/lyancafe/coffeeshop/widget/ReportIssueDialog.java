@@ -19,6 +19,7 @@ import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.http.RetrofitHttp;
 import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.http.RxHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.util.HashMap;
@@ -167,8 +168,7 @@ public class ReportIssueDialog extends DialogFragment implements View.OnClickLis
         params.put("token",user.getToken());
 
         RetrofitHttp.getRetrofit().reportIssue(user.getShopId(),orderId,params)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxHelper.<BaseEntity>io_main())
                 .subscribe(new Consumer<BaseEntity>() {
                     @Override
                     public void accept(@NonNull BaseEntity baseEntity) throws Exception {

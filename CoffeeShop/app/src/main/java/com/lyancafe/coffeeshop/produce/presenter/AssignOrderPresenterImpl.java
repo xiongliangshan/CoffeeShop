@@ -10,6 +10,7 @@ import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.http.RetrofitHttp;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.bean.DeliverBean;
+import com.lyancafe.coffeeshop.http.RxHelper;
 import com.lyancafe.coffeeshop.produce.view.AssignOrderView;
 
 import java.util.List;
@@ -38,8 +39,7 @@ public class AssignOrderPresenterImpl implements AssignOrderPresenter{
     public void loadDeliversForAssign() {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
         RetrofitHttp.getRetrofit().loadDeliversForAssign(user.getShopId(),user.getToken())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxHelper.<BaseEntity<List<DeliverBean>>>io_main())
                 .subscribe(new Observer<BaseEntity<List<DeliverBean>>>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {
@@ -75,8 +75,7 @@ public class AssignOrderPresenterImpl implements AssignOrderPresenter{
     public void doAssignOrder(long orderId, long courierId) {
         UserBean user  = LoginHelper.getUser(mContext.getApplicationContext());
         RetrofitHttp.getRetrofit().doAssignOrder(user.getShopId(),orderId,courierId,user.getToken())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxHelper.<BaseEntity<JsonObject>>io_main())
                 .subscribe(new Observer<BaseEntity<JsonObject>>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {

@@ -10,6 +10,7 @@ import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.http.RetrofitHttp;
 import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.http.RxHelper;
 import com.lyancafe.coffeeshop.main.view.MainView;
 import com.lyancafe.coffeeshop.service.DownLoadService;
 import com.lyancafe.coffeeshop.utils.MyUtil;
@@ -48,8 +49,7 @@ public class MainPresenterImpl implements MainPresenter{
     public void exitLogin() {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
         RetrofitHttp.getRetrofit().exitLogin(user.getToken())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxHelper.<BaseEntity>io_main())
                 .subscribe(new Consumer<BaseEntity>() {
                     @Override
                     public void accept(@NonNull BaseEntity baseEntity) throws Exception {

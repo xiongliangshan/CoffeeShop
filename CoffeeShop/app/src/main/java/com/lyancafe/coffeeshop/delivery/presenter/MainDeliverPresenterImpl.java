@@ -11,6 +11,7 @@ import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.delivery.view.MainDeliverView;
 import com.lyancafe.coffeeshop.http.RetrofitHttp;
 import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.http.RxHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import io.reactivex.Observer;
@@ -37,8 +38,7 @@ public class MainDeliverPresenterImpl implements MainDeliverPresenter{
     public void doRecallOrder(long orderId) {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
         RetrofitHttp.getRetrofit().doRecallOrder(user.getShopId(),orderId,user.getToken())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxHelper.<BaseEntity<JsonObject>>io_main())
                 .subscribe(new Observer<BaseEntity<JsonObject>>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {

@@ -50,8 +50,8 @@ public class PrintHelper {
         Log.d(TAG,"PrintHelpter()");
         mPoolExecutor = new ThreadPoolExecutor(1, 5, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
         if(Api.BASE_URL.contains("cn")||Api.BASE_URL.contains("192.168")){
-            ip_print_order = "192.168.1.222";
-            ip_print_cup = "192.168.1.222";
+            ip_print_order = "192.168.1.229";
+            ip_print_cup = "192.168.1.229";
         }else{
             ip_print_order = "192.19.1.231";
             ip_print_cup = "192.19.1.232";
@@ -647,9 +647,11 @@ public class PrintHelper {
                     "Q160,16"+"\n"+
                     "S3"+"\n"+
                     "D8"+"\n"+
-                    "A20,35,0,230,1,1,N,\""+materialItem.getName()+"\""+"\n"+
-                    "A20,95,0,230,1,1,N,\""+getOverDueDate(materialItem.getOverdueTime())+"\""+"\n"+
-                    "A20,120,0,230,1,1,N,\"过期\""+"\n"+
+                    "A10,20,0,230,1,1,N,\""+materialItem.getName()+"\""+"\n"+
+                    "A10,55,0,230,1,1,N,\""+getOverDueDate(materialItem.getOverdueTime())+"\""+"\n"+
+                    "A10,80,0,230,1,1,N,\"过期\""+"\n"+
+                    "A10,120,0,230,1,1,N,\"原始到期:\""+"\n"+
+                    "A120,120,0,230,1,1,N,\"____________\""+"\n"+
                     "P1"+"\n";
         DoPrintPaster(pasterContent);
     }
@@ -662,10 +664,12 @@ public class PrintHelper {
                 "Q160,16"+"\n"+
                 "S3"+"\n"+
                 "D8"+"\n"+
-                "A10,35,0,230,1,1,N,\"物料:\""+"\n"+
-                "A70,35,0,230,1,1,N,\"_____________\""+"\n"+
-                "A10,95,0,230,1,1,N,\"过期:\""+"\n"+
-                "A70,95,0,230,1,1,N,\"_____________\""+"\n"+
+                "A10,25,0,230,1,1,N,\"物料:\""+"\n"+
+                "A70,25,0,230,1,1,N,\"_____________\""+"\n"+
+                "A10,70,0,230,1,1,N,\"过期:\""+"\n"+
+                "A70,70,0,230,1,1,N,\"_____________\""+"\n"+
+                "A10,120,0,230,1,1,N,\"原始到期:\""+"\n"+
+                "A120,120,0,230,1,1,N,\"____________\""+"\n"+
                 "P1"+"\n";
         DoPrintPaster(pasterContent);
     }

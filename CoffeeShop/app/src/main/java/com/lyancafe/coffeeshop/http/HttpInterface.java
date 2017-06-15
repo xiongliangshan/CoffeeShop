@@ -5,6 +5,7 @@ import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.DeliverBean;
 import com.lyancafe.coffeeshop.bean.EvaluationBean;
+import com.lyancafe.coffeeshop.bean.ExceptionalOrder;
 import com.lyancafe.coffeeshop.bean.Material;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.ShopInfo;
@@ -237,4 +238,24 @@ public interface HttpInterface {
      */
     @POST("{shopId}/shop/update")
     Observable<BaseEntity<JsonObject>> modifyShopTelephone(@Path("shopId") int shopId,@Query("shopTelephone") String shopTelephone,@Query("token") String token);
+
+    /**
+     * 获取异常订单
+     * @param shopId
+     * @param token
+     * @return
+     */
+    @GET("{shopId}/orders/today/haikuiTimeOutOrders")
+    Observable<BaseEntity<List<ExceptionalOrder>>> loadExceptionalOrders(@Path("shopId") int shopId,@Query("token") String token);
+
+    /**
+     * 重新派发订单给指定配送团队
+     * @param shopId
+     * @param orderId
+     * @param team
+     * @param token
+     * @return
+     */
+    @POST("{shopId}/order/{orderId}/{deliveryTeam}/rePushOrderToDelivery")
+    Observable<BaseEntity> doRePush(@Path("shopId") int shopId,@Path("orderId") long orderId,@Path("deliveryTeam") int team,@Query("token") String token);
 }

@@ -7,6 +7,7 @@ import android.util.Log;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.http.RetrofitHttp;
+import com.lyancafe.coffeeshop.http.RxHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -30,8 +31,7 @@ public class LoginModelImpl implements LoginModel{
     @Override
     public void login(String loginName, String password, Observer<BaseEntity<UserBean>> observer) {
         RetrofitHttp.getRetrofit().login(loginName,password)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxHelper.<BaseEntity<UserBean>>io_main())
                 .subscribe(observer);
     }
 
@@ -39,8 +39,7 @@ public class LoginModelImpl implements LoginModel{
     @Override
     public void uploadDeviceInfo(int shopId,int userId,Map<String,Object> params, Observer<BaseEntity> observer) {
         RetrofitHttp.getRetrofit().uploadDeviceInfo(shopId,userId,params)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxHelper.<BaseEntity>io_main())
                 .subscribe(observer);
     }
 
