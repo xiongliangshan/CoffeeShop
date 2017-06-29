@@ -17,6 +17,7 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.PushMessageBean;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
 import com.lyancafe.coffeeshop.utils.LogUtil;
+import com.tinkerpatch.sdk.TinkerPatch;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
@@ -58,6 +59,10 @@ public class MyPushReceiver extends BroadcastReceiver {
             PushMessageBean pmb =  PushMessageBean.parseJsonToMB(message);
             if(pmb!=null){
                 sendNotification(context,pmb);
+            }else{
+                if("hotfix".equalsIgnoreCase(message)){
+                    TinkerPatch.with().fetchPatchUpdate(true);
+                }
             }
 
         } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {

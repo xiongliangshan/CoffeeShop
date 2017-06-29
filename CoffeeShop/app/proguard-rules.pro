@@ -20,6 +20,7 @@
 -keepattributes InnerClasses
 -keepattributes Signature
 -keepattributes Exceptions
+-keepattributes EnclosingMethod
 -dontoptimize
 -dontpreverify
 
@@ -108,6 +109,6 @@
 
 # Gson
 -keep class com.google.gson.stream.** { *; }
--keepattributes EnclosingMethod
+
 -keep class com.lyancafe.coffeeshop.bean.**{*;}
 

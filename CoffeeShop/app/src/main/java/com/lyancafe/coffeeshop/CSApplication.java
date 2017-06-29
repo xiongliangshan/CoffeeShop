@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Environment;
 import android.os.Process;
+import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
@@ -12,6 +13,9 @@ import android.view.WindowManager;
 import com.baidu.mapapi.SDKInitializer;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.tencent.tinker.loader.app.ApplicationLike;
+import com.tinkerpatch.sdk.TinkerPatch;
+import com.tinkerpatch.sdk.loader.TinkerPatchApplicationLike;
 
 import java.io.File;
 import java.util.List;
@@ -29,7 +33,7 @@ public class CSApplication extends Application {
     public static final String CACHE_DIR = BASE_DIR+"cache";
     public static final String LOG_DIR = BASE_DIR+"log"+File.separator;
     private static CSApplication application;
-
+    private ApplicationLike tinkerApplicationLike;
     public static int screenWidth = 0;
     public static int screenHeight = 0;
 
@@ -40,8 +44,15 @@ public class CSApplication extends Application {
     }
 
     @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(base);
+    }
+
+    @Override
     public void onCreate() {
         super.onCreate();
+        initTinkerPatch();
         LogUtil.d(TAG, "onCreate() process = " + getProcessName(this, Process.myPid()));
         application = this;
         getDeviceScreenSize();
@@ -93,6 +104,25 @@ public class CSApplication extends Application {
             }
         }
         return null;
+    }
+
+    private void initTinkerPatch() {
+        // 我们可以从这里获得Tinker加载过程的信息
+        if (BuildConfig.TINKER_ENABLE) {
+            tinkerApplicationLike = TinkerPatchApplicationLike.getTinkerPatchApplicationLike();
+            // 初始化TinkerPatch SDK
+            TinkerPatch.init(tinkerApplicationLike)
+                    .reflectPatchLibrary()
+                    .setPatchRollbackOnScreenOff(true)
+                    .setPatchRestartOnSrceenOff(true)
+                    .setFetchPatchIntervalByHours(1);
+            // 获取当前的补丁版本
+            Log.d(TAG, "Current patch version is " + TinkerPatch.with().getPatchVersion());
+
+            // fetchPatchUpdateAndPollWithInterval 与 fetchPatchUpdate(false)
+            // 不同的是，会通过handler的方式去轮询
+            TinkerPatch.with().fetchPatchUpdateAndPollWithInterval();
+        }
     }
 
 
