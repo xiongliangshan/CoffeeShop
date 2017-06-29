@@ -35,10 +35,6 @@ android {
                 JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
         ]
 
-        /*compileOptions {
-            sourceCompatibility JavaVersion.VERSION_1_7
-            targetCompatibility JavaVersion.VERSION_1_7
-        }*/
     }
     buildTypes {
         release {
@@ -46,6 +42,11 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.mySignConfig
+        }
+        debug {
+            debuggable true
+            signingConfig signingConfigs.mySignConfig
+            minifyEnabled false
         }
     }
 
@@ -83,6 +84,6 @@ dependencies {
     compile 'com.squareup.retrofit2:adapter-rxjava2:2.2.0'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
-    compile("com.tinkerpatch.sdk:tinkerpatch-android-sdk:1.1.7")
-    compile "com.android.support:multidex:1.0.1"
+    compile 'com.tinkerpatch.sdk:tinkerpatch-android-sdk:1.1.7'
+    compile 'com.android.support:multidex:1.0.1'
 }
