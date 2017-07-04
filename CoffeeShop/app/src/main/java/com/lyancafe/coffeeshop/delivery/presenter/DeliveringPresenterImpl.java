@@ -6,6 +6,7 @@ import android.content.Context;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
+import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.delivery.model.DeliveringModel;
 import com.lyancafe.coffeeshop.delivery.model.DeliveringModelImpl;
 import com.lyancafe.coffeeshop.delivery.view.DeliveringView;
@@ -53,6 +54,7 @@ public class DeliveringPresenterImpl implements DeliveringPresenter{
                     List<OrderBean> deliveringList = listBaseEntity.getData();
                     EventBus.getDefault().post(new UpdateDeliverFragmentTabOrderCount(1,deliveringList.size()));
                     mDeliveringView.bindDataToView(deliveringList);
+                    OrderUtils.with().insertOrderList(deliveringList);
                 }else {
                     mDeliveringView.showToast(listBaseEntity.getMessage());
                 }

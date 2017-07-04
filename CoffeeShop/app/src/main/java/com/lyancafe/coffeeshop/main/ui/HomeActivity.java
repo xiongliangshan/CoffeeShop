@@ -18,8 +18,10 @@ import android.widget.TextView;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseActivity;
 import com.lyancafe.coffeeshop.bean.ApkInfoBean;
+import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.delivery.ui.MainDeliverFragment;
 import com.lyancafe.coffeeshop.main.presenter.MainPresenter;
 import com.lyancafe.coffeeshop.main.presenter.MainPresenterImpl;
@@ -28,6 +30,7 @@ import com.lyancafe.coffeeshop.produce.ui.MainProduceFragment;
 import com.lyancafe.coffeeshop.service.DownLoadService;
 import com.lyancafe.coffeeshop.service.TaskService;
 import com.lyancafe.coffeeshop.shop.ui.MainShopFragment;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.LoadingDialog;
@@ -78,7 +81,7 @@ public class HomeActivity extends BaseActivity implements MainView{
         initViews();
         updateTab(mSelectedIndex);
         //启动service
-        connection = new ServiceConnection() {
+      /*  connection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 Log.d("TaskService","onServiceConnected");
@@ -92,7 +95,9 @@ public class HomeActivity extends BaseActivity implements MainView{
             }
         };
         Intent intent=new Intent(HomeActivity.this,TaskService.class);
-        bindService(intent, connection, BIND_AUTO_CREATE);
+        bindService(intent, connection, BIND_AUTO_CREATE);*/
+        Intent intent=new Intent(HomeActivity.this,TaskService.class);
+        startService(intent);
 
 
     }
@@ -161,11 +166,8 @@ public class HomeActivity extends BaseActivity implements MainView{
 
     @Override
     protected void onDestroy() {
-        unbindService(connection);
+//        unbindService(connection);
         super.onDestroy();
-        Log.d("TaskService", "unbindService");
-
-
     }
 
 

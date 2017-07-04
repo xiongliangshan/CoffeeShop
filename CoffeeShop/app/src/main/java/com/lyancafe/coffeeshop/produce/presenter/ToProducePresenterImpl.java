@@ -11,6 +11,7 @@ import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.constant.OrderAction;
+import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
 import com.lyancafe.coffeeshop.bean.UserBean;
@@ -60,6 +61,7 @@ public class ToProducePresenterImpl implements ToProducePresenter{
                     List<OrderBean> toProduceList = listBaseEntity.getData();
                     EventBus.getDefault().post(new UpdateProduceFragmentTabOrderCount(0, toProduceList.size()));
                     mToProduceView.bindDataToView(toProduceList);
+                    OrderUtils.with().insertOrderList(toProduceList);
                 }else if(listBaseEntity.getStatus()==103){
                     mToProduceView.showToast(listBaseEntity.getMessage());
                     UserBean userBean = LoginHelper.getUser(mContext);
@@ -91,7 +93,7 @@ public class ToProducePresenterImpl implements ToProducePresenter{
 
 
     @Override
-    public void doStartProduce(long orderId) {
+    public void doStartProduce(final long orderId) {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
         mToProduceModel.doStartProduce(user.getShopId(), orderId, user.getToken(), new Observer<BaseEntity<JsonObject>>() {
             @Override
@@ -106,6 +108,7 @@ public class ToProducePresenterImpl implements ToProducePresenter{
                     int id  = jsonObjectBaseEntity.getData().get("id").getAsInt();
                     mToProduceView.removeItemFromList(id);
                     EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,1));
+                    OrderUtils.with().updateOrder(orderId,4005);
                 }else{
                     mToProduceView.showToast(jsonObjectBaseEntity.getMessage());
                 }

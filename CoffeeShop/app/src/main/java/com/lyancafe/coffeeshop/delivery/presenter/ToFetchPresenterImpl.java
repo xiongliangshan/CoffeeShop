@@ -6,6 +6,7 @@ import android.content.Context;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
+import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.delivery.model.ToFetchModel;
 import com.lyancafe.coffeeshop.delivery.model.ToFetchModelImpl;
 import com.lyancafe.coffeeshop.delivery.view.ToFetchView;
@@ -53,6 +54,7 @@ public class ToFetchPresenterImpl implements ToFetchPresenter{
                     List<OrderBean> toFetchList = listBaseEntity.getData();
                     EventBus.getDefault().post(new UpdateDeliverFragmentTabOrderCount(0,toFetchList.size()));
                     mToFetchView.bindDataToView(toFetchList);
+                    OrderUtils.with().insertOrderList(toFetchList);
                 }else {
                     mToFetchView.showToast(listBaseEntity.getMessage());
                 }

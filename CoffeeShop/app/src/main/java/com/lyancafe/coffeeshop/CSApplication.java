@@ -11,11 +11,15 @@ import android.util.Log;
 import android.view.WindowManager;
 
 import com.baidu.mapapi.SDKInitializer;
+import com.lyancafe.coffeeshop.bean.DaoMaster;
+import com.lyancafe.coffeeshop.bean.DaoSession;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.tinker.loader.app.ApplicationLike;
 import com.tinkerpatch.sdk.TinkerPatch;
 import com.tinkerpatch.sdk.loader.TinkerPatchApplicationLike;
+
+import org.greenrobot.greendao.database.Database;
 
 import java.io.File;
 import java.util.List;
@@ -42,6 +46,8 @@ public class CSApplication extends Application {
     public CSApplication() {
         Log.d(TAG,"CSApplication");
     }
+    private  DaoSession daoSession;
+
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -66,6 +72,8 @@ public class CSApplication extends Application {
 
         //初始化百度
         SDKInitializer.initialize(getApplicationContext());
+
+        setUpDatabase();
 
     }
 
@@ -125,5 +133,15 @@ public class CSApplication extends Application {
         }
     }
 
+    private void setUpDatabase() {
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this,"orders-db");
+        Database db = helper.getWritableDb();
+        daoSession = new DaoMaster(db).newSession();
+    }
+
+
+    public  DaoSession getDaoSession() {
+        return daoSession;
+    }
 
 }

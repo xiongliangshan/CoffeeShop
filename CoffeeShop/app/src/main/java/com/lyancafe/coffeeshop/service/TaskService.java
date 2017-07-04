@@ -2,15 +2,18 @@ package com.lyancafe.coffeeshop.service;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.Binder;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -21,82 +24,82 @@ public class TaskService extends Service {
 
     private static final String TAG ="TaskService";
     private Timer timer;
-    private TimerTask task;
-    private MyBinder binder = new MyBinder();
-    public static  boolean auto_flag = false;
     private static final long PERIOD_TIME = 2*60*1000;
-    private int n = 0;
+    private static final long PERIOD_CHECK = 3*60*1000;
+    private long count = 0;
 
-    //评论数量刷新定时器
-    private Timer commentTimer;
-    private TimerTask commentTask;
-    private static final long COMMENT_PERIOD_TIME = 2*60*1000;//刷新评论间隔时间
+    //Test
+    private Timer remindTimer;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d(TAG,"onCrate");
+        startTimer();
+        startRemindTimer();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand");
-        return Service.START_STICKY;
+        return START_STICKY;
     }
 
-
+    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d(TAG, "onBind");
-        startTimer();
-        return binder;
-    }
-
-    @Override
-    public boolean onUnbind(Intent intent) {
-        Log.d(TAG, "onUnbind");
-        if(auto_flag){
-            stopTimer();
-        }
-        n = 0;
-        return super.onUnbind(intent);
+        return null;
     }
 
     public void startTimer(){
-        LogUtil.d(LogUtil.TAG_TIMER, "启动 timer");
-        timer  = new Timer();
-        task = new TimerTask() {
+        LogUtil.d(TAG, "启动 timer");
+        if(timer==null){
+            timer = new Timer();
+        }
+        timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                LogUtil.d(LogUtil.TAG_TIMER, "请求服务器--" + (n++));
+                LogUtil.d(TAG, "发送新订单刷新消息--");
                 EventBus.getDefault().postSticky(new NewOderComingEvent(0L));
             }
-        };
-        timer.schedule(task, PERIOD_TIME, PERIOD_TIME);
-        auto_flag = true;
+        }, PERIOD_TIME, PERIOD_TIME);
     }
 
-    public void stopTimer(){
-        LogUtil.d(LogUtil.TAG_TIMER, "关闭 timer");
-        if(timer!=null){
-            timer.cancel();
-            timer=null;
+    private void startRemindTimer() {
+        if(remindTimer==null){
+            remindTimer = new Timer(true);
         }
-        auto_flag = false;
+        remindTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                LogUtil.i(TAG,"myTimer is running count = "+count++);
+                //检查订单超时未取的情况
+                //test
+                List<OrderBean> list = OrderUtils.with().queryAllOrders();
+                for(OrderBean order:list){
+                    LogUtil.i(TAG,"order ="+order);
+                }
+            }
+        },0,PERIOD_CHECK);
     }
+
+    private void checkOrdersForUnFetch(){
+
+    }
+
+
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy");
-    }
-
-
-    public class MyBinder extends Binder{
-
-        public TaskService getService(){
-            return TaskService.this;
+        if(timer!=null){
+            timer.cancel();
+        }
+        if(remindTimer!=null){
+            remindTimer.cancel();
         }
     }
+
 
 }

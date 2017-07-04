@@ -1,19 +1,29 @@
 package com.lyancafe.coffeeshop.bean;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.NotNull;
+import org.greenrobot.greendao.annotation.Transient;
+
 import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Administrator on 2015/9/21.
  */
+@Entity
 public class ItemContentBean implements Serializable{
 
+    private static final long serialVersionUID = 33565800L;
+
+    @NotNull
     private String product;        //咖啡名称
     private String unit;           //杯型
     private int price;             //单价,单位：分
     private int quantity;          //数量
     private int totalPrice;        //总价,单位：分
     private int coldHotProperty;   //1.冷  2.热  3.常温
+    @Transient
     private List<String> recipeFittingsList; //个性化标签
 
 
@@ -28,6 +38,16 @@ public class ItemContentBean implements Serializable{
         this.totalPrice = totalPrice;
         this.coldHotProperty = coldHotProperty;
         this.recipeFittingsList = recipeFittingsList;
+    }
+
+    @Generated(hash = 1148230342)
+    public ItemContentBean(@NotNull String product, String unit, int price, int quantity, int totalPrice, int coldHotProperty) {
+        this.product = product;
+        this.unit = unit;
+        this.price = price;
+        this.quantity = quantity;
+        this.totalPrice = totalPrice;
+        this.coldHotProperty = coldHotProperty;
     }
 
     public String getProduct() {
@@ -98,4 +118,5 @@ public class ItemContentBean implements Serializable{
                 ", recipeFittingsList=" + recipeFittingsList +
                 '}';
     }
+
 }
