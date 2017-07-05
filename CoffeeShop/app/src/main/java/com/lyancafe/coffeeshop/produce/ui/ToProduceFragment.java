@@ -23,6 +23,7 @@ import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.produce.presenter.ToProducePresenter;
 import com.lyancafe.coffeeshop.produce.presenter.ToProducePresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.ToProduceView;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
@@ -197,6 +198,7 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
     //新订单消息触发事件
     @Subscribe
     public void onNewOrderComing(NewOderComingEvent event){
+        LogUtil.d(LogUtil.TAG_PRODUCE,"onNewOrderComming : orderId = "+event.orderId);
         if(isResumed()){
             mToProducePresenter.loadToProduceOrders();
         }

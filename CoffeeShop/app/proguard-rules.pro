@@ -17,6 +17,12 @@
 #}
 
 -keepattributes SourceFile,LineNumberTable
+-keepattributes InnerClasses
+-keepattributes Signature
+-keepattributes Exceptions
+-keepattributes EnclosingMethod
+-dontoptimize
+-dontpreverify
 
 -dontwarn android.support.**
 -dontwarn org.apache.**
@@ -28,9 +34,9 @@
 -keep interface android.support.v4.app.** { *; }
 
 #baidu map
+-dontwarn com.baidu.**
 -keep class com.baidu.** {*;}
 -keep class vi.com.** {*;}
--dontwarn com.baidu.**
 
 #bugly
 -dontwarn com.tencent.bugly.**
@@ -62,8 +68,7 @@
 
 
 #jiguang
--dontoptimize
--dontpreverify
+
 
 -dontwarn cn.jpush.**
 -keep class cn.jpush.** { *; }
@@ -99,14 +104,22 @@
 -dontnote retrofit2.Platform
 # Platform used when running on Java 8 VMs. Will not be used at runtime.
 -dontwarn retrofit2.Platform$Java8
-# Retain generic type information for use by reflection by converters and adapters.
--keepattributes Signature
-# Retain declared checked exceptions for use by a Proxy instance.
--keepattributes Exceptions
+
 
 
 # Gson
 -keep class com.google.gson.stream.** { *; }
--keepattributes EnclosingMethod
+
 -keep class com.lyancafe.coffeeshop.bean.**{*;}
+
+#greenDao
+-keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
+public static java.lang.String TABLENAME;
+}
+-keep class **$Properties
+
+# If you do not use SQLCipher:
+-dontwarn org.greenrobot.greendao.database.**
+# If you do not use Rx:
+-dontwarn rx.**
 

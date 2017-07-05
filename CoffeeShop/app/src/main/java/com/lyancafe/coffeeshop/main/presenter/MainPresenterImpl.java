@@ -13,6 +13,7 @@ import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.http.RxHelper;
 import com.lyancafe.coffeeshop.main.view.MainView;
 import com.lyancafe.coffeeshop.service.DownLoadService;
+import com.lyancafe.coffeeshop.service.TaskService;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.UpdateUtil;
 
@@ -57,6 +58,8 @@ public class MainPresenterImpl implements MainPresenter{
                             resetToken();
                             Intent intent_update = new Intent(mContext, DownLoadService.class);
                             mContext.stopService(intent_update);
+                            Intent intent_task = new Intent(mContext,TaskService.class);
+                            mContext.stopService(intent_task);
                         }
                     }
                 }, new Consumer<Throwable>() {

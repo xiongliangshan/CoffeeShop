@@ -13,6 +13,7 @@ import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.login.model.LoginModel;
 import com.lyancafe.coffeeshop.login.model.LoginModelImpl;
 import com.lyancafe.coffeeshop.bean.UserBean;
@@ -86,6 +87,7 @@ public class LoginPresenterImpl implements LoginPresenter{
                     //如果是当天第一次登陆，就清空本地缓存的订单打印记录
                     if(mLoginModel.isCurrentDayFirstLogin(mContext)){
                         OrderHelper.clearPrintedSet(mContext);
+                        OrderUtils.with().clearTable();
                     }
 
                     uploadDeviceInfo(userBean.getShopId(),userBean.getUserId(),userBean.getToken());
