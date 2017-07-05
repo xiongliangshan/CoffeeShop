@@ -72,9 +72,7 @@ public class TaskService extends Service {
         remindTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                LogUtil.i(TAG,"myTimer is running count = "+count++);
                 //检查订单超时未取的情况
-                //test
                 List<OrderBean> list = OrderUtils.with().queryAllOrders();
                 for(OrderBean order:list){
                     LogUtil.i(TAG,"order ="+order);

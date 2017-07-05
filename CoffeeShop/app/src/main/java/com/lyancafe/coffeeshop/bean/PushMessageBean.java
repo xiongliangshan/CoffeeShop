@@ -1,41 +1,32 @@
 package com.lyancafe.coffeeshop.bean;
 
-import android.util.Log;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 
 /**
  * Created by Administrator on 2015/8/20.
  */
 public class PushMessageBean {
-    private String id;
-    private long orderId;
-    private int eventType;
-    private long createTime;
-    private String description;
-    private int openType;
-    private String title;
-    private int userConfirm;
+    private int id;   //消息 id;
+    private String title;  //消息标题
+    private long orderId;  //订单id（有则传，没有则传0）
+    private int eventType;   //通知事件类型 1：新订单  10:小哥上报问题 11:问题已解决 16:订单撤回 20:催单
+    private String content; //消息内容
 
-
-    public PushMessageBean(String id, long orderId, int eventType, long createTime, String description, int openType, String title, int userConfirm) {
-        this.id = id;
-        this.orderId = orderId;
-        this.eventType = eventType;
-        this.createTime = createTime;
-        this.description = description;
-        this.openType = openType;
-        this.title = title;
-        this.userConfirm = userConfirm;
-    }
-
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public long getOrderId() {
@@ -54,79 +45,31 @@ public class PushMessageBean {
         this.eventType = eventType;
     }
 
-    public long getCreateTime() {
-        return createTime;
+    public String getContent() {
+        return content;
     }
 
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public int getOpenType() {
-        return openType;
-    }
-
-    public void setOpenType(int openType) {
-        this.openType = openType;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public int getUserConfirm() {
-        return userConfirm;
-    }
-
-    public void setUserConfirm(int userConfirm) {
-        this.userConfirm = userConfirm;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     @Override
     public String toString() {
         return "PushMessageBean{" +
-                "id='" + id + '\'' +
+                "id=" + id +
+                ", title='" + title + '\'' +
                 ", orderId=" + orderId +
                 ", eventType=" + eventType +
-                ", createTime=" + createTime +
-                ", description='" + description + '\'' +
-                ", openType=" + openType +
-                ", title='" + title + '\'' +
-                ", userConfirm=" + userConfirm +
+                ", content='" + content + '\'' +
                 '}';
     }
 
-    public static PushMessageBean parseJsonToMB(String jsonStr){
-        PushMessageBean pmb = null;
-        try {
-            JSONObject obj =  new JSONObject(jsonStr);
-            JSONObject customContent = obj.optJSONObject("custom_content");
-            String id = customContent.optString("id");
-            int eventType = customContent.optInt("eventType");
-            long orderId = customContent.optLong("orderId");
-            long createTime = customContent.optLong("createTime");
-
-            String description = obj.optString("description");
-            int openType = obj.optInt("open_type");
-            String title = obj.optString("title");
-            int userConfirm = obj.optInt("user_confirm");
-            pmb = new PushMessageBean(id,orderId,eventType,createTime,description,openType,title,userConfirm);
-
-        }catch (JSONException e){
-            Log.e("getui",""+e.getMessage());
-        }
+    public static PushMessageBean convertToBean(String jsonStr){
+        LogUtil.d("gson","before : "+jsonStr);
+        Gson gson = new Gson();
+        PushMessageBean pmb  = gson.fromJson(jsonStr,PushMessageBean.class);
+        LogUtil.d("gson","after :  pmb = "+pmb.toString());
         return pmb;
     }
+
 }

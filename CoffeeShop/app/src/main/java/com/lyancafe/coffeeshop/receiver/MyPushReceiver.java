@@ -56,7 +56,7 @@ public class MyPushReceiver extends BroadcastReceiver {
         } else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
             String message = bundle.getString(JPushInterface.EXTRA_MESSAGE);
             Log.d(TAG, "[MyReceiver] 接收到推送下来的自定义消息: " + message);
-            PushMessageBean pmb =  PushMessageBean.parseJsonToMB(message);
+            PushMessageBean pmb = PushMessageBean.convertToBean(message);
             if(pmb!=null){
                 sendNotification(context,pmb);
             }else{
@@ -134,7 +134,7 @@ public class MyPushReceiver extends BroadcastReceiver {
                 .setAutoCancel(true)
                 .setContentTitle("连咖啡消息通知");
         if(pmb!=null){
-            mBuilder.setContentText(pmb.getDescription());
+            mBuilder.setContentText(pmb.getContent());
         }else{
             mBuilder.setContentText("有订单消息，数据解析错误无法显示单号");
         }

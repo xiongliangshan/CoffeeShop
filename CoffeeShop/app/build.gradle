@@ -46,7 +46,7 @@ android {
         }
         debug {
             debuggable true
-            /*signingConfig signingConfigs.mySignConfig*/
+            signingConfig signingConfigs.mySignConfig
             minifyEnabled false
         }
     }

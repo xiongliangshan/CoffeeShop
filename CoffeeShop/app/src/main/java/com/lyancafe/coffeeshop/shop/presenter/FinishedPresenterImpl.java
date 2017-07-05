@@ -8,6 +8,7 @@ import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.shop.model.FinishedModel;
 import com.lyancafe.coffeeshop.shop.model.FinishedModelImpl;
 import com.lyancafe.coffeeshop.shop.view.FinishedView;
@@ -53,6 +54,7 @@ public class FinishedPresenterImpl implements FinishedPresenter {
                         mFinishedView.bindDataToView(finishedList);
                     }
                     mFinishedView.saveLastOrderId();
+                    OrderUtils.with().insertOrderList(finishedList);
                 }else{
                     mFinishedView.showToast(listBaseEntity.getMessage());
                 }
