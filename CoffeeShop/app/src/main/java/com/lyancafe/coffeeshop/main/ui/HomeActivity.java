@@ -70,6 +70,10 @@ public class HomeActivity extends BaseActivity implements MainView{
     @BindView(R.id.tv_current_version) TextView curVerText;
 
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+     //   super.onSaveInstanceState(outState);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
