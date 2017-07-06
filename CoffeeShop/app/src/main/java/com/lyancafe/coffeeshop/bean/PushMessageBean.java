@@ -67,8 +67,14 @@ public class PushMessageBean {
     public static PushMessageBean convertToBean(String jsonStr){
         LogUtil.d("gson","before : "+jsonStr);
         Gson gson = new Gson();
-        PushMessageBean pmb  = gson.fromJson(jsonStr,PushMessageBean.class);
-        LogUtil.d("gson","after :  pmb = "+pmb.toString());
+        PushMessageBean pmb = null;
+        try {
+            pmb  = gson.fromJson(jsonStr,PushMessageBean.class);
+            LogUtil.d("gson","after :  pmb = "+pmb.toString());
+        }catch (Exception e){
+            LogUtil.e("gson",e==null?"":e.getMessage());
+        }
+
         return pmb;
     }
 
