@@ -88,13 +88,13 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
             holder.reminderImg.setImageResource(R.mipmap.flag_placeholder);
         }
         //扫码下单
-        if(order.isWxScan()){
+        if(order.getWxScan()){
             holder.saoImg.setImageResource(R.mipmap.flag_sao);
         }else {
             holder.saoImg.setImageResource(R.mipmap.flag_placeholder);
         }
         //定制
-        if(order.isRecipeFittings()){
+        if(order.getIsRecipeFittings()){
             holder.labelFlagImg.setImageResource(R.mipmap.flag_ding);
         }else{
             holder.labelFlagImg.setImageResource(R.mipmap.flag_placeholder);
@@ -111,12 +111,6 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
             holder.remarkFlagIV.setImageResource(R.mipmap.flag_placeholder);
         }else {
             holder.remarkFlagIV.setImageResource(R.mipmap.flag_bei);
-        }
-        //vip订单
-        if(order.isOrderVip()){
-            holder.vipFlagIV.setImageResource(R.mipmap.flag_vip);
-        }else{
-            holder.vipFlagIV.setImageResource(R.mipmap.flag_placeholder);
         }
 
 
@@ -247,7 +241,6 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         @BindView(R.id.item_order_id) TextView orderIdTxt;
         @BindView(R.id.item_contant_produce_effect) TextView contantEffectTimeTxt;
         @BindView(R.id.item_produce_effect) TextView effectTimeTxt;
-        @BindView(R.id.item_vip_flag) ImageView vipFlagIV;
         @BindView(R.id.item_grab_flag) ImageView grabFlagIV;
         @BindView(R.id.item_remark_flag) ImageView remarkFlagIV;
         @BindView(R.id.item_container) LinearLayout itemContainerll;
