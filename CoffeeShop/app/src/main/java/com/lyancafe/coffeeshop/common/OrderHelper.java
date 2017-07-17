@@ -390,29 +390,6 @@ public class OrderHelper {
         return sb.toString();
     }
 
-    /**
-     * 打印标签上的门店单号
-     * @param orderBean
-     * @return
-     */
-    public static String getPrintShopOrderSn(OrderBean orderBean){
-        if(orderBean.getDeliveryTeam()== DeliveryTeam.MEITUAN){
-            return "美团"+orderBean.getMtShopOrderNo();
-        }
-        String shopOrderSn = "";
-        if(orderBean.getShopOrderNo()<10){
-            shopOrderSn = "00"+orderBean.getShopOrderNo();
-        }else if(orderBean.getShopOrderNo()>=10&&orderBean.getShopOrderNo()<100){
-            shopOrderSn = "0"+orderBean.getShopOrderNo();
-        }else{
-            shopOrderSn = ""+orderBean.getShopOrderNo();
-        }
-        if(orderBean.getInstant()==1){//及时单
-            return orderBean.getDeliveryTeam()== DeliveryTeam.HAIKUI?"海葵"+shopOrderSn:shopOrderSn;
-        }else{
-            return orderBean.getDeliveryTeam()== DeliveryTeam.HAIKUI?"海葵"+shopOrderSn+"约":shopOrderSn+"约";
-        }
-    }
 
     public static String getShopOrderSn(OrderBean orderBean){
         if(orderBean.getDeliveryTeam()== DeliveryTeam.MEITUAN){
@@ -519,7 +496,7 @@ public class OrderHelper {
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm",Locale.CHINESE);
                 String start = sdf.format(new Date(pob.getExpectedTime()));
                 String end = sdf.format(new Date(pob.getExpectedTime()+30*60*1000));
-                return start+"~"+end;
+                return start+"～"+end;
             }
         }
 
@@ -626,20 +603,6 @@ public class OrderHelper {
     }
 
 
-
-    //列表显示订单尾号
-    public static String getSimpleOrderSnForPrint(String orderSn){
-        if(TextUtils.isEmpty(orderSn)){
-            return "";
-        }
-
-        if(orderSn.length()<=6){
-            return "("+orderSn+")";
-        }else {
-            return "("+orderSn.substring(6)+")";
-        }
-
-    }
 
     //奶盖茶数量提示
     public static Map<String,Integer> caculateNaiGai(List<OrderBean> orders){

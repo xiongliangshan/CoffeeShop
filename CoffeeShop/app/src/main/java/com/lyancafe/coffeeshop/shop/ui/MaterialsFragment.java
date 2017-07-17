@@ -245,7 +245,6 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
                 order.setId(65535);
                 order.setOrderSn("20170587655354");
                 order.setShopOrderNo(888666);
-                order.setOrderVip(false);
                 order.setWxScan(false);
                 order.setIsRecipeFittings(true);
                 order.setExpectedTime(0L);
@@ -262,13 +261,9 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
                 order.setInstant(1);
                 order.setNotes("多放点糖");
                 order.setCsrNotes("");
-                order.setPlatform("微信");
                 order.setHandoverTime(0L);
-                order.setFeedbackTags(new ArrayList<String>());
-                order.setFeedback("");
                 order.setFeedbackType(0);
                 order.setDeliveryTeam(4);
-                order.setPlatformId(12);
                 order.setMtShopOrderNo(0);
                 order.setOrderDistance(1300);
                 List<String> customList = new ArrayList<>();

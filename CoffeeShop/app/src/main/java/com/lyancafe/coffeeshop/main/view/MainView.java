@@ -1,6 +1,5 @@
 package com.lyancafe.coffeeshop.main.view;
 
-import com.lyancafe.coffeeshop.base.BaseView;
 import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 
 /**
