@@ -102,7 +102,7 @@ public class PrintHelper {
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,i+1,4);
             bean.setCoffeeList(hotCupList.subList(i * 4, i * 4 + 4));
             bean.setOrderId(orderBean.getId());
-            bean.setShopOrderNo(OrderHelper.getPrintShopOrderSn(orderBean));
+            bean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
             if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
@@ -123,7 +123,7 @@ public class PrintHelper {
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,i+1,hot_left_cup);
             bean.setCoffeeList(hotCupList.subList(i * 4, hotCupList.size()));
             bean.setOrderId(orderBean.getId());
-            bean.setShopOrderNo(OrderHelper.getPrintShopOrderSn(orderBean));
+            bean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
             if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
@@ -145,7 +145,7 @@ public class PrintHelper {
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,hotBoxAmount+j+1,4);
             bean.setCoffeeList(coolCupList.subList(j * 4, j * 4 + 4));
             bean.setOrderId(orderBean.getId());
-            bean.setShopOrderNo(OrderHelper.getPrintShopOrderSn(orderBean));
+            bean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
             if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
@@ -166,7 +166,7 @@ public class PrintHelper {
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,hotBoxAmount+j+1,cool_left_cup);
             bean.setCoffeeList(coolCupList.subList(j * 4, coolCupList.size()));
             bean.setOrderId(orderBean.getId());
-            bean.setShopOrderNo(OrderHelper.getPrintShopOrderSn(orderBean));
+            bean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
             if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
@@ -226,15 +226,23 @@ public class PrintHelper {
                 break;
         }
 
-        String addressCMD, addr1, addr2;
+        String addressCMD, addr1,addr2,addr3;
         Log.d(TAG, "address len: " + bean.getAddress().length());
-        if (bean.getAddress().length() <= 22) {
-            addressCMD = "A80,160,0,230,1,1,N,\""+bean.getAddress()+"\""+"\n";
-        } else {
+        int length = bean.getAddress().length();
+        if (length <= 22) {
+            addressCMD = "A100,300,0,230,1,1,N,\""+bean.getAddress()+"\""+"\n";
+        } else if(length>22 && length<43){
             addr1 = bean.getAddress().substring(0, 22);
             addr2 = bean.getAddress().substring(22);
-            addressCMD = "A80,160,0,230,1,1,N,\""+addr1+"\""+"\n" +
-                    "A80,190,0,230,1,1,N,\""+addr2+"\""+"\n";
+            addressCMD = "A100,300,0,230,1,1,N,\""+addr1+"\""+"\n" +
+                        "A100,330,0,230,1,1,N,\""+addr2+"\""+"\n";
+        }else{
+            addr1 = bean.getAddress().substring(0, 22);
+            addr2 = bean.getAddress().substring(22,43);
+            addr3 = bean.getAddress().substring(43);
+            addressCMD = "A100,300,0,230,1,1,N,\""+addr1+"\""+"\n" +
+                        "A100,330,0,230,1,1,N,\""+addr2+"\""+"\n"+
+                        "A100,360,0,230,1,1,N,\""+addr3+"\""+"\n";
         }
 
         return  "N"+"\n"+
@@ -242,21 +250,22 @@ public class PrintHelper {
                 "Q400,16"+"\n"+
                 "S3"+"\n"+
                 "D8"+"\n"+
-                "A10,50,0,230,1,1,N,\"单号：\""+"\n"+ //订单号
-                "A80,40,0,230,2,2,N,\""+bean.getShopOrderNo()+OrderHelper.getSimpleOrderSnForPrint(bean.getOrderSn())+"\""+"\n"+
-                "A470,50,0,230,1,1,N,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
-                "A10,110,0,230,1,1,N,\"收货：\""+"\n"+
-                "A80,100,0,230,2,2,N,\""+bean.getReceiverName()+"\""+"\n"+
-                "A320,120,0,230,1,1,N,\""+bean.getReceiverPhone()+"\""+"\n"+
-                 addressCMD +                             //配送地址
-                "A10,220,0,230,1,1,N,\"清单：\""+"\n"+
-                "A20,250,0,230,1,1,N,\""+order1+"\""+"\n"+
-                "A340,250,0,230,1,1,N,\""+order2+"\""+"\n"+
-                "A20,280,0,230,1,1,N,\""+order3+"\""+"\n"+
-                "A340,280,0,230,1,1,N,\""+order4+"\""+"\n"+
-                "A10,330,0,230,2,2,N,\""+OrderHelper.getPeriodOfExpectedtime(bean)+"\""+"\n"+
-                "A250,330,0,230,2,2,N,\""+getRemarkFlag(bean.isHaveRemarks())+"\""+"\n"+
-                "A400,330,0,230,2,2,N,\""+bean.getDeliverName()+"\""+"\n"+
+                "A20,30,0,230,2,2,N,\""+bean.getShopOrderNo()+"\""+"\n"+
+                "A300,30,0,230,2,2,N,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
+                "A20,100,0,230,1,1,N,\"订单编号:\""+"\n"+ //订单编号
+                "A140,100,0,230,1,1,N,\""+bean.getOrderId()+"\""+"\n"+
+                "A20,120,0,230,1,1,N,\"-------------------------------------------------- \""+"\n"+
+                "A20,150,0,230,1,1,N,\""+order1+"\""+"\n"+
+                "A320,150,0,230,1,1,N,\""+order2+"\""+"\n"+
+                "A20,200,0,230,1,1,N,\""+order3+"\""+"\n"+
+                "A320,200,0,230,1,1,N,\""+order4+"\""+"\n"+
+                "A20,230,0,230,1,1,N,\"-------------------------------------------------- \""+"\n"+
+                "A20,260,0,230,1,1,N,\"收货人 \""+"\n"+
+                "A120,260,0,230,1,1,N,\""+bean.getReceiverName()+"\""+"\n"+
+                "A300,260,0,230,1,1,N,\"送达时间 \""+"\n"+
+                "A420,260,0,230,1,1,N,\""+OrderHelper.getPeriodOfExpectedtime(bean)+"\""+"\n"+
+                "A20,300,0,230,1,1,N,\"地址 \""+"\n"+
+                addressCMD +                             //配送地址
                 "P1"+"\n";
 
     }
@@ -316,7 +325,7 @@ public class PrintHelper {
               PrintCupBean printCupBean = new PrintCupBean(boxAmount,boxNumber,cupAmount,cupNumber);
               printCupBean.setLabelList(item.getRecipeFittingsList());
               printCupBean.setOrderId(orderBean.getId());
-              printCupBean.setShopOrderNo(OrderHelper.getPrintShopOrderSn(orderBean));
+              printCupBean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
               printCupBean.setInstant(orderBean.getInstant());
               printCupBean.setCoffee(item.getProduct());
               printCupBean.setColdHotProperty(item.getColdHotProperty());
@@ -337,7 +346,7 @@ public class PrintHelper {
                 PrintCupBean printCupBean = new PrintCupBean(boxAmount,boxNumber+hotBoxAmount,cupAmount,cupNumber);
                 printCupBean.setLabelList(item.getRecipeFittingsList());
                 printCupBean.setOrderId(orderBean.getId());
-                printCupBean.setShopOrderNo(OrderHelper.getPrintShopOrderSn(orderBean));
+                printCupBean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
                 printCupBean.setInstant(orderBean.getInstant());
                 printCupBean.setCoffee(item.getProduct());
                 printCupBean.setColdHotProperty(item.getColdHotProperty());
