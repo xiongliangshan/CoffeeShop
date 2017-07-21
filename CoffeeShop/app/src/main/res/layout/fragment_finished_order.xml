@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="4dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -72,7 +72,6 @@
         <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:paddingRight="10dp"
             android:layout_weight="20">
 
 
@@ -95,12 +94,7 @@
 
         </FrameLayout>
 
-        <include
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="11"
-            layout = "@layout/view_shop_detail"
-            />
+
     </LinearLayout>
 
 </LinearLayout>

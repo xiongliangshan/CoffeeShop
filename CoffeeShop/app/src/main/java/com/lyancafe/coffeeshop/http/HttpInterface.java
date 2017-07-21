@@ -56,7 +56,7 @@ public interface HttpInterface {
      * @param token
      * @return
      */
-    @POST("{shopId}/orders/today/toproduce")
+    @POST("{shopId}/today/toproduce/orders")
     Observable<BaseEntity<List<OrderBean>>> loadToProduceOrders(@Path("shopId") int shopId,@Query("token") String token);
 
 
@@ -77,7 +77,7 @@ public interface HttpInterface {
      * @param token
      * @return
      */
-    @POST("{shopId}/orders/today/producing")
+    @POST("{shopId}/today/producing/orders")
     Observable<BaseEntity<List<OrderBean>>> loadProducingOrders(@Path("shopId") int shopId,@Query("token") String token);
 
     /**
@@ -93,12 +93,12 @@ public interface HttpInterface {
 
 
     /**
-     * 待取货列表
+     * 已生产列表
      * @param shopId
      * @param token
      * @return
      */
-    @POST("{shopId}/orders/today/produced")
+    @POST("{shopId}/today/produced/orders")
     Observable<BaseEntity<List<OrderBean>>> loadToFetchOrders(@Path("shopId") int shopId,@Query("token") String token);
 
     /**

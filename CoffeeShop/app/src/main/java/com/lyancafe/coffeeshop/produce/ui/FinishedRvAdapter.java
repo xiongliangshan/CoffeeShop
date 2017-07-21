@@ -1,4 +1,4 @@
-package com.lyancafe.coffeeshop.shop.ui;
+package com.lyancafe.coffeeshop.produce.ui;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -53,7 +53,7 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Vi
                 selected = position;
                 notifyDataSetChanged();
                 if(position>=0 && position<list.size()){
-                    EventBus.getDefault().post(new UpdateFinishedOrderDetailEvent(list.get(position)));
+                    EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
                 }
 
                 Log.d(TAG, "点击了 " + position);

@@ -1,4 +1,4 @@
-package com.lyancafe.coffeeshop.shop.presenter;
+package com.lyancafe.coffeeshop.produce.presenter;
 
 
 import android.content.Context;
@@ -9,9 +9,9 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.db.OrderUtils;
-import com.lyancafe.coffeeshop.shop.model.FinishedModel;
-import com.lyancafe.coffeeshop.shop.model.FinishedModelImpl;
-import com.lyancafe.coffeeshop.shop.view.FinishedView;
+import com.lyancafe.coffeeshop.produce.model.FinishedModel;
+import com.lyancafe.coffeeshop.produce.model.FinishedModelImpl;
+import com.lyancafe.coffeeshop.produce.view.FinishedView;
 
 import java.util.List;
 

@@ -121,6 +121,8 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         }
         OrderHelper.showEffectOnly(order,holder.effectTimeTxt);
 
+        holder.deliverStatusText.setText(OrderHelper.getStatusName(order.getStatus(),order.getWxScan()));
+
         if(OrderHelper.isPrinted(context, order.getOrderSn())){
             holder.printBtn.setText(R.string.print_again);
             holder.printBtn.setTextColor(context.getResources().getColor(R.color.text_red));
@@ -244,6 +246,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         @BindView(R.id.item_grab_flag) ImageView grabFlagIV;
         @BindView(R.id.item_remark_flag) ImageView remarkFlagIV;
         @BindView(R.id.item_container) LinearLayout itemContainerll;
+        @BindView(R.id.tv_deliver_status) TextView deliverStatusText;
         @BindView(R.id.tv_cup_count) TextView cupCountText;
         @BindView(R.id.ll_twobtn_container) LinearLayout twobtnContainerLayout;
         @BindView(R.id.ll_onebtn_container) LinearLayout onebtnContainerlayout;

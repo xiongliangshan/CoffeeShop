@@ -598,7 +598,7 @@ public class OrderHelper {
         if(time==0){
             return "-- -- -- --";
         }
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm (MM/dd)",Locale.CHINESE);
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm (MM/dd)");
         return sdf.format(new Date(time));
     }
 
@@ -626,4 +626,46 @@ public class OrderHelper {
         return map;
     }
 
+    public static String getStatusName(int status,boolean isWxScan) {
+        if(isWxScan){
+            return "无需配送";
+        }
+        String statusName;
+        switch (status){
+            case 3010:
+                statusName = "未指派骑手";
+                break;
+            case 3020:
+                statusName = "未取货";
+                break;
+            case 5000:
+                statusName = "派送中";
+                break;
+            case 6000:
+                statusName = "送达";
+                break;
+            default:
+                statusName = "未知("+status+")";
+        }
+
+        return statusName;
+    }
+
+    public static String getDeliverTeamName(int deliverTeam){
+        String teamName;
+        switch (deliverTeam){
+            case DeliveryTeam.LYAN:
+                teamName = "自有";
+                break;
+            case DeliveryTeam.HAIKUI:
+                teamName = "海葵";
+                break;
+            case DeliveryTeam.MEITUAN:
+                teamName = "美团";
+                break;
+            default:
+                teamName = "未知（"+deliverTeam+")";
+        }
+        return teamName;
+    }
 }

@@ -1,4 +1,4 @@
-package com.lyancafe.coffeeshop.shop.view;
+package com.lyancafe.coffeeshop.produce.view;
 
 import com.lyancafe.coffeeshop.base.BaseView;
 import com.lyancafe.coffeeshop.bean.OrderBean;

@@ -386,4 +386,38 @@ public class OrderBean implements Serializable{
     public void setItems(List<ItemContentBean> items) {
         this.items = items;
     }
+
+
+    @Override
+    public String toString() {
+        return "OrderBean{" +
+                "id=" + id +
+                ", reminder='" + reminder + '\'' +
+                ", orderSn='" + orderSn + '\'' +
+                ", shopOrderNo=" + shopOrderNo +
+                ", wxScan=" + wxScan +
+                ", isRecipeFittings=" + isRecipeFittings +
+                ", expectedTime=" + expectedTime +
+                ", orderTime=" + orderTime +
+                ", distributeTime=" + distributeTime +
+                ", produceEffect=" + produceEffect +
+                ", recipient='" + recipient + '\'' +
+                ", address='" + address + '\'' +
+                ", phone='" + phone + '\'' +
+                ", courierName='" + courierName + '\'' +
+                ", courierPhone='" + courierPhone + '\'' +
+                ", status=" + status +
+                ", produceStatus=" + produceStatus +
+                ", issueOrder=" + issueOrder +
+                ", instant=" + instant +
+                ", notes='" + notes + '\'' +
+                ", csrNotes='" + csrNotes + '\'' +
+                ", handoverTime=" + handoverTime +
+                ", feedbackType=" + feedbackType +
+                ", deliveryTeam=" + deliveryTeam +
+                ", mtShopOrderNo=" + mtShopOrderNo +
+                ", orderDistance=" + orderDistance +
+                ", items=" + items +
+                '}';
+    }
 }

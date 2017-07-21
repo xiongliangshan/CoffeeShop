@@ -107,7 +107,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="用户评价:"/>
+            android:text="客户评价:"/>
         <TextView
             android:id="@+id/tv_custom_evaluation"
             android:layout_width="wrap_content"

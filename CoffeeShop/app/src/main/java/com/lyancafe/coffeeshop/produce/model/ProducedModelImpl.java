@@ -1,4 +1,4 @@
-package com.lyancafe.coffeeshop.delivery.model;
+package com.lyancafe.coffeeshop.produce.model;
 
 
 import com.lyancafe.coffeeshop.bean.BaseEntity;
@@ -9,14 +9,12 @@ import com.lyancafe.coffeeshop.http.RxHelper;
 import java.util.List;
 
 import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 /**
 * Created by Administrator on 2017/03/15
 */
 
-public class ToFetchModelImpl implements ToFetchModel{
+public class ProducedModelImpl implements ProducedModel{
 
 
     @Override

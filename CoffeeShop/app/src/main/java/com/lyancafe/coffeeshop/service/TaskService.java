@@ -72,10 +72,10 @@ public class TaskService extends Service {
         remindTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                //检查订单超时未取的情况
+                //查询所有订单
                 List<OrderBean> list = OrderUtils.with().queryAllOrders();
                 for(OrderBean order:list){
-                    LogUtil.i(TAG,"order ="+order);
+                    LogUtil.i(TAG,"order ="+order.toString());
                 }
             }
         },0,PERIOD_CHECK);

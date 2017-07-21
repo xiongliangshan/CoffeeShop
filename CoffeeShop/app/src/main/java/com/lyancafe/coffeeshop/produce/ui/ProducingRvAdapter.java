@@ -115,6 +115,8 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
 
         OrderHelper.showEffect(order, holder.produceBtn, holder.effectTimeTxt);
 
+        holder.deliverStatusText.setText(OrderHelper.getStatusName(order.getStatus(),order.getWxScan()));
+
         if(OrderHelper.isPrinted(context, order.getOrderSn())){
             holder.printBtn.setText(R.string.print_again);
             holder.printBtn.setTextColor(context.getResources().getColor(R.color.text_red));
@@ -235,6 +237,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         @BindView(R.id.item_order_id) TextView orderIdTxt;
         @BindView(R.id.item_contant_produce_effect) TextView contantEffectTimeTxt;
         @BindView(R.id.item_produce_effect) TextView effectTimeTxt;
+        @BindView(R.id.tv_deliver_status) TextView deliverStatusText;
         @BindView(R.id.item_grab_flag) ImageView grabFlagIV;
         @BindView(R.id.item_remark_flag) ImageView remarkFlagIV;
         @BindView(R.id.item_container) LinearLayout itemContainerll;

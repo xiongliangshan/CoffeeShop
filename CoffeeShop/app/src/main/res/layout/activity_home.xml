@@ -96,26 +96,7 @@
                     android:textSize="24sp"
                     android:textColor="@android:color/black"/>
             </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/black"/>
-            <LinearLayout
-                android:id="@+id/ll_deliver_tab"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="配送"
-                    android:ems="1"
-                    android:textSize="24sp"
-                    android:textColor="@android:color/black"
-                    />
-            </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
