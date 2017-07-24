@@ -150,7 +150,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
         fragments.add(finishedOrderFragment);
         mPagerAdapter = new ProduceFragmentPagerAdapter(getChildFragmentManager(), getActivity(), fragments);
         viewPager.setAdapter(mPagerAdapter);
-        viewPager.setOffscreenPageLimit(1);
+        viewPager.setOffscreenPageLimit(3);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.addOnTabSelectedListener(this);
 
@@ -460,7 +460,12 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
             case OrderAction.STARTPRODUCE:
                 int tabTo = toProduceCount - event.count;
                 int tabPro = producingCount + event.count;
-                tabToproduce.setText(mPagerAdapter.getPageTitle(0) + "(" + tabTo + ")");
+                if(tabTo==0){
+                    tabToproduce.setText(mPagerAdapter.getPageTitle(0));
+                }else{
+                    tabToproduce.setText(mPagerAdapter.getPageTitle(0) + "(" + tabTo + ")");
+                }
+
                 tabProducing.setText(mPagerAdapter.getPageTitle(1) + "(" + tabPro + ")");
                 tabToproduce.setTag(tabTo);
                 tabProducing.setTag(tabPro);
@@ -468,7 +473,12 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
             case OrderAction.FINISHPRODUCE:
                 int tabProduceResult = producingCount - event.count;
                 int tabProducedResult = producedCount + event.count;
-                tabProducing.setText(mPagerAdapter.getPageTitle(1) + "(" + tabProduceResult + ")");
+                if(tabProduceResult==0){
+                    tabProducing.setText(mPagerAdapter.getPageTitle(1));
+                }else{
+                    tabProducing.setText(mPagerAdapter.getPageTitle(1) + "(" + tabProduceResult + ")");
+                }
+
                 tabProduced.setText(mPagerAdapter.getPageTitle(2)+"("+tabProducedResult+")");
                 tabProducing.setTag(tabProduceResult);
                 tabProduced.setTag(tabProducedResult);

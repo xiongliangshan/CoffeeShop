@@ -80,7 +80,7 @@ public class ProducedFragment extends BaseFragment implements ProducedView{
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("xls","ToFetchFragment-onResume");
+        Log.d("xls","ProducedFragment-onResume");
     }
 
 
@@ -99,7 +99,7 @@ public class ProducedFragment extends BaseFragment implements ProducedView{
     @Override
     public void onPause() {
         super.onPause();
-        Log.d("xls","ToFetchFragment-onPause");
+        Log.d("xls","ProducedFragment-onPause");
     }
 
     @Override
@@ -113,7 +113,7 @@ public class ProducedFragment extends BaseFragment implements ProducedView{
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.d("xls","ToFetchFragment-onDetach");
+        Log.d("xls","ProducedFragment-onDetach");
     }
 
 
@@ -126,7 +126,7 @@ public class ProducedFragment extends BaseFragment implements ProducedView{
 
     @Override
     public void onVisible() {
-        Log.d("xls","ToFetchFragment Visible");
+        Log.d("xls","ProducedFragment Visible");
         if(!isResumed()){
             return;
         }
@@ -136,7 +136,7 @@ public class ProducedFragment extends BaseFragment implements ProducedView{
 
     @Override
     public void onInVisible() {
-        Log.d("xls","ToFetchFragment InVisible");
+        Log.d("xls","ProducedFragment InVisible");
         if(mHandler!=null){
             mHandler.removeCallbacks(mRunnable);
         }
