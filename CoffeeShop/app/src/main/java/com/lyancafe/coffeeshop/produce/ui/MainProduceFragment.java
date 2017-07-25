@@ -2,7 +2,6 @@ package com.lyancafe.coffeeshop.produce.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -36,7 +35,6 @@ import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
-import com.lyancafe.coffeeshop.event.NaiGaiEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
@@ -54,7 +52,6 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -75,12 +72,12 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     @BindView(R.id.tabLayout) TabLayout tabLayout;
     @BindView(R.id.spinner_category) AppCompatSpinner spinnerCategory;
     @BindView(R.id.vp_container) ViewPager viewPager;
-    @BindView(R.id.order_id) TextView orderIdTxt;
+    @BindView(R.id.order_id) TextView shopOrderNoText;
     @BindView(R.id.reach_time) TextView reachTimeTxt;
     @BindView(R.id.receiver_name) TextView receiveNameTxt;
     @BindView(R.id.receiver_phone) TextView receivePhoneTxt;
     @BindView(R.id.order_time) TextView orderTimeTxt;
-    @BindView(R.id.tv_whole_order_sn) TextView wholeOrderText;
+    @BindView(R.id.tv_whole_order_sn) TextView orderIdText;
     @BindView(R.id.receiver_address) TextView receiveAddressTxt;
     @BindView(R.id.tv_deliver_team) TextView deliverTeamText;
     @BindView(R.id.deliver_name) TextView deliverNameTxt;
@@ -202,8 +199,8 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
 
     private void updateDetailView(final OrderBean order) {
         if (order == null) {
-            orderIdTxt.setText("");
-            wholeOrderText.setText("");
+            shopOrderNoText.setText("");
+            orderIdText.setText("");
             orderTimeTxt.setText("");
             reachTimeTxt.setText("");
             receiveNameTxt.setText("");
@@ -227,8 +224,8 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
             finishProduceBtn.setEnabled(true);
             printOrderBtn.setEnabled(true);
 
-            orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
-            wholeOrderText.setText(order.getOrderSn());
+            shopOrderNoText.setText(OrderHelper.getShopOrderSn(order));
+            orderIdText.setText(String.valueOf(order.getId()));
             orderTimeTxt.setText(OrderHelper.getDateToString(order.getOrderTime()));
             if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN) {
                 reachTimeTxt.setText(order.getInstant() == 1 ? "立即送出" : OrderHelper.getDateToString(order.getExpectedTime()));
@@ -274,10 +271,10 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
                 finishProduceBtn.setVisibility(View.VISIBLE);
                 if (OrderHelper.isPrinted(mContext, order.getOrderSn())) {
                     printOrderBtn.setText(R.string.print_again);
-                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_red));
+                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.red1));
                 } else {
                     printOrderBtn.setText(R.string.print);
-                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_black));
+                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.white1));
                 }
             } else if(order.getProduceStatus() == OrderStatus.PRODUCED){
                 twoBtnLayout.setVisibility(View.VISIBLE);

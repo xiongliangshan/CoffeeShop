@@ -197,10 +197,16 @@ public class HomeActivity extends BaseActivity implements MainView{
     }
 
     private void updateTab(int selectedIndex){
-        tabProduceLayout.setBackground(null);
-        tabShopLayout.setBackground(null);
-        if(tabList!=null){
-            tabList.get(selectedIndex).setBackgroundColor(context.getResources().getColor(R.color.tab_orange));
+        for(int i=0;i<tabList.size();i++){
+            LinearLayout linearLayout = tabList.get(i);
+            View childView = linearLayout.getChildAt(0);
+            if(selectedIndex==i){
+                linearLayout.setBackgroundColor(context.getResources().getColor(R.color.black1));
+                ((TextView)childView).setTextColor(context.getResources().getColor(R.color.yellow1));
+            }else{
+                linearLayout.setBackgroundColor(context.getResources().getColor(R.color.gray4));
+                ((TextView)childView).setTextColor(context.getResources().getColor(R.color.gray5));
+            }
         }
         switchFragment(selectedIndex);
     }

@@ -61,9 +61,9 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Vi
         });
 
         if(selected==position){
-            holder.rootLayout.setBackgroundResource(R.drawable.bg_finished_order_selected);
+            holder.rootLayout.setBackgroundResource(R.drawable.bg_order_selected);
         }else{
-            holder.rootLayout.setBackgroundResource(R.drawable.bg_finished_order);
+            holder.rootLayout.setBackgroundResource(R.drawable.bg_order);
         }
         final OrderBean order = list.get(position);
 

@@ -25,8 +25,9 @@
                 android:id="@+id/tv_shop_order_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textColor="@color/font_black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/black1"
                 android:text="001"/>
 
             <TextView
@@ -34,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textColor="@color/font_black"
                 android:text="良好"/>
         </RelativeLayout>

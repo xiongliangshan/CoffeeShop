@@ -82,48 +82,46 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
 
         //加急
         if("Y".equalsIgnoreCase(order.getReminder())){
+            holder.reminderImg.setVisibility(View.VISIBLE);
             holder.reminderImg.setImageResource(R.mipmap.flag_reminder);
         }else{
-            holder.reminderImg.setImageResource(R.mipmap.flag_placeholder);
+            holder.reminderImg.setVisibility(View.GONE);
         }
         //扫码下单
         if(order.getWxScan()){
+            holder.saoImg.setVisibility(View.VISIBLE);
             holder.saoImg.setImageResource(R.mipmap.flag_sao);
         }else {
-            holder.saoImg.setImageResource(R.mipmap.flag_placeholder);
+            holder.saoImg.setVisibility(View.GONE);
         }
         //定制
         if(order.getIsRecipeFittings()){
+            holder.labelFlagImg.setVisibility(View.VISIBLE);
             holder.labelFlagImg.setImageResource(R.mipmap.flag_ding);
         }else{
-            holder.labelFlagImg.setImageResource(R.mipmap.flag_placeholder);
+            holder.labelFlagImg.setVisibility(View.GONE);
         }
 
         //抢单
         if(order.getStatus()== OrderStatus.UNASSIGNED){
-            holder.grabFlagIV.setImageResource(R.mipmap.flag_placeholder);
+            holder.grabFlagIV.setVisibility(View.GONE);
         }else{
+            holder.grabFlagIV.setVisibility(View.VISIBLE);
             holder.grabFlagIV.setImageResource(R.mipmap.flag_qiang);
         }
         //备注
         if(TextUtils.isEmpty(order.getNotes()) && TextUtils.isEmpty(order.getCsrNotes())){
-            holder.remarkFlagIV.setImageResource(R.mipmap.flag_placeholder);
+            holder.remarkFlagIV.setVisibility(View.GONE);
         }else {
+            holder.remarkFlagIV.setVisibility(View.VISIBLE);
             holder.remarkFlagIV.setImageResource(R.mipmap.flag_bei);
         }
 
-
-        OrderHelper.showEffect(order, holder.produceBtn, holder.effectTimeTxt);
+        OrderHelper.showEffectOnly(order,holder.effectTimeTxt);
 
         holder.deliverStatusText.setText(OrderHelper.getStatusName(order.getStatus(),order.getWxScan()));
 
-        if(OrderHelper.isPrinted(context, order.getOrderSn())){
-            holder.printBtn.setText(R.string.print_again);
-            holder.printBtn.setTextColor(context.getResources().getColor(R.color.text_red));
-        }else{
-            holder.printBtn.setText(R.string.print);
-            holder.printBtn.setTextColor(context.getResources().getColor(R.color.text_black));
-        }
+
         fillItemListData(holder.itemContainerll, order.getItems());
         holder.cupCountText.setText(context.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
         if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
@@ -147,22 +145,11 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
                     EventBus.getDefault().post(new FinishProduceEvent(order));
                 }
             });
-            holder.printBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    EventBus.getDefault().post(new PrintOrderEvent(order));
-                }
-            });
+
         }else{
             holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
             holder.onebtnContainerlayout.setVisibility(View.GONE);
             holder.produceBtn.setVisibility(View.GONE);
-            holder.printBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    EventBus.getDefault().post(new PrintOrderEvent(order));
-                }
-            });
         }
 
     }
@@ -246,7 +233,6 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         @BindView(R.id.ll_onebtn_container) LinearLayout onebtnContainerlayout;
         @BindView(R.id.item_produce_and_print) TextView produceAndPrintBtn;
         @BindView(R.id.item_produce) TextView produceBtn;
-        @BindView(R.id.item_print) TextView printBtn;
 
 
         public ViewHolder(View itemView) {

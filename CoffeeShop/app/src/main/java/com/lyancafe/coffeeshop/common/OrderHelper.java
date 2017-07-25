@@ -140,22 +140,22 @@ public class OrderHelper {
     /*时间段毫秒转化为分钟*/
     private static String getDateToMinutes(long time) {
         String min = "";
-        String sec = "";
+//        String sec = "";
         long minutes = time / (1000 * 60 );
-        long seconds = (time % (1000 * 60)) / 1000;
+//        long seconds = (time % (1000 * 60)) / 1000;
         if(minutes==0){
             min = "00";
         }else{
             min = minutes+"";
         }
 
-        if(seconds<=9){
-            sec = "0"+seconds;
-        }else{
-            sec = seconds+"";
-        }
+//        if(seconds<=9){
+//            sec = "0"+seconds;
+//        }else{
+//            sec = seconds+"";
+//        }
 
-        return  min+":"+sec;
+        return  min;
     }
 
     //计算某个订单的总杯数
@@ -212,7 +212,7 @@ public class OrderHelper {
         Log.d(TAG, "mms = " + mms);
         if(mms<=0){
             effectTimeTxt.setTextColor(Color.parseColor("#e2435a"));
-            effectTimeTxt.setText(String.format("+%s", OrderHelper.getDateToMinutes(Math.abs(mms))));
+            effectTimeTxt.setText(String.format("超%s", OrderHelper.getDateToMinutes(Math.abs(mms))));
         }else{
             effectTimeTxt.setTextColor(Color.parseColor("#000000"));
             effectTimeTxt.setText(OrderHelper.getDateToMinutes(mms));
