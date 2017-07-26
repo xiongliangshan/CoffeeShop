@@ -357,6 +357,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
             lp.topMargin = OrderHelper.dip2Px(2, mContext);
+            lp.bottomMargin = OrderHelper.dip2Px(4,mContext);
             ll.addView(rl, lp);
         }
 
@@ -456,7 +457,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
         switch (event.action) {
             case OrderAction.STARTPRODUCE:
                 int tabTo = toProduceCount - event.count;
-                int tabPro = producingCount + event.count;
+                int tabPro = event.isQrCode?producingCount:producingCount + event.count;
                 if(tabTo==0){
                     tabToproduce.setText(mPagerAdapter.getPageTitle(0));
                 }else{

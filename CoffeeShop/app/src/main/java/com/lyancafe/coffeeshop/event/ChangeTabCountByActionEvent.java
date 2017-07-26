@@ -9,8 +9,17 @@ public class ChangeTabCountByActionEvent {
 
     public int count;
 
+    public boolean isQrCode;
+
+    public ChangeTabCountByActionEvent(int action, int count, boolean isQrCode) {
+        this.action = action;
+        this.count = count;
+        this.isQrCode = isQrCode;
+    }
+
     public ChangeTabCountByActionEvent(int action, int count) {
         this.action = action;
         this.count = count;
+        this.isQrCode = false;
     }
 }

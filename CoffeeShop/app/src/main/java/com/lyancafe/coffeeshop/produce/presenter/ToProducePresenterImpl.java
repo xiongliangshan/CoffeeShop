@@ -93,7 +93,7 @@ public class ToProducePresenterImpl implements ToProducePresenter{
 
 
     @Override
-    public void doStartProduce(final long orderId) {
+    public void doStartProduce(final long orderId,final  boolean isScanCode) {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
         mToProduceModel.doStartProduce(user.getShopId(), orderId, user.getToken(), new Observer<BaseEntity<JsonObject>>() {
             @Override
@@ -107,7 +107,7 @@ public class ToProducePresenterImpl implements ToProducePresenter{
                     mToProduceView.showToast(mContext.getString(R.string.do_success));
                     int id  = jsonObjectBaseEntity.getData().get("id").getAsInt();
                     mToProduceView.removeItemFromList(id);
-                    EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,1));
+                    EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,1,isScanCode));
                     OrderUtils.with().updateOrder(orderId,4005);
                 }else{
                     mToProduceView.showToast(jsonObjectBaseEntity.getMessage());
