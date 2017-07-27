@@ -458,26 +458,16 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
             case OrderAction.STARTPRODUCE:
                 int tabTo = toProduceCount - event.count;
                 int tabPro = event.isQrCode?producingCount:producingCount + event.count;
-                if(tabTo==0){
-                    tabToproduce.setText(mPagerAdapter.getPageTitle(0));
-                }else{
-                    tabToproduce.setText(mPagerAdapter.getPageTitle(0) + "(" + tabTo + ")");
-                }
-
-                tabProducing.setText(mPagerAdapter.getPageTitle(1) + "(" + tabPro + ")");
+                tabToproduce.setText(tabTo==0?mPagerAdapter.getPageTitle(0):mPagerAdapter.getPageTitle(0) + "(" + tabTo + ")");
+                tabProducing.setText(tabPro==0?mPagerAdapter.getPageTitle(1):mPagerAdapter.getPageTitle(1) + "(" + tabPro + ")");
                 tabToproduce.setTag(tabTo);
                 tabProducing.setTag(tabPro);
                 break;
             case OrderAction.FINISHPRODUCE:
                 int tabProduceResult = producingCount - event.count;
                 int tabProducedResult = producedCount + event.count;
-                if(tabProduceResult==0){
-                    tabProducing.setText(mPagerAdapter.getPageTitle(1));
-                }else{
-                    tabProducing.setText(mPagerAdapter.getPageTitle(1) + "(" + tabProduceResult + ")");
-                }
-
-                tabProduced.setText(mPagerAdapter.getPageTitle(2)+"("+tabProducedResult+")");
+                tabProducing.setText(tabProduceResult==0?mPagerAdapter.getPageTitle(1):mPagerAdapter.getPageTitle(1) + "(" + tabProduceResult + ")");
+                tabProduced.setText(tabProducedResult==0?mPagerAdapter.getPageTitle(2):mPagerAdapter.getPageTitle(2)+"("+tabProducedResult+")");
                 tabProducing.setTag(tabProduceResult);
                 tabProduced.setTag(tabProducedResult);
                 break;
