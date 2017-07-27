@@ -28,4 +28,21 @@
 
 	<color name="milk_white">#F5F5F5</color>
 
+	<!--颜色定义-->
+	<color name="gray1">#F1F1F3</color>
+	<color name="gray2">#999999</color>
+	<color name="gray3">#666666</color>
+	<color name="gray4">#403E4A</color>
+	<color name="gray5">#CCCCCC</color>
+
+	<color name="black1">#111111</color>
+
+	<color name="white1">#FFFFFF</color>
+
+	<color name="yellow1">#FF9900</color>
+	<color name="yellow2">#FFFFCA</color>
+
+	<color name="red1">#CC0000</color>
+
+
 </resources>  

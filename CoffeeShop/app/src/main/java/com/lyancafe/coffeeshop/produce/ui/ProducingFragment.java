@@ -83,7 +83,7 @@ public class ProducingFragment extends BaseFragment implements MainProduceFragme
     private void initViews() {
         mAdapter = new ProducingRvAdapter(getActivity());
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),4,GridLayoutManager.VERTICAL,false));
-        mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(4, getActivity()), false));
+        mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(12, getActivity()), false));
         mRecyclerView.setAdapter(mAdapter);
     }
 

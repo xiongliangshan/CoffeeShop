@@ -1,4 +1,4 @@
-package com.lyancafe.coffeeshop.shop.model;
+package com.lyancafe.coffeeshop.produce.model;
 
 import com.google.gson.JsonObject;
 import com.lyancafe.coffeeshop.bean.BaseEntity;

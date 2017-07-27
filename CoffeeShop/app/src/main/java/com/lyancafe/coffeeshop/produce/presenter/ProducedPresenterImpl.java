@@ -1,17 +1,18 @@
-package com.lyancafe.coffeeshop.delivery.presenter;
+package com.lyancafe.coffeeshop.produce.presenter;
 
 
 import android.content.Context;
 
 import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.db.OrderUtils;
-import com.lyancafe.coffeeshop.delivery.model.ToFetchModel;
-import com.lyancafe.coffeeshop.delivery.model.ToFetchModelImpl;
-import com.lyancafe.coffeeshop.delivery.view.ToFetchView;
 import com.lyancafe.coffeeshop.event.UpdateDeliverFragmentTabOrderCount;
-import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
+import com.lyancafe.coffeeshop.produce.model.ProducedModel;
+import com.lyancafe.coffeeshop.produce.model.ProducedModelImpl;
+import com.lyancafe.coffeeshop.produce.view.ProducedView;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -25,24 +26,24 @@ import io.reactivex.disposables.Disposable;
 * Created by Administrator on 2017/03/15
 */
 
-public class ToFetchPresenterImpl implements ToFetchPresenter{
+public class ProducedPresenterImpl implements ProducedPresenter{
 
     private Context mContext;
-    private ToFetchView mToFetchView;
-    private ToFetchModel mToFetchModel;
+    private ProducedView mProducedView;
+    private ProducedModel mProduceModel;
 
 
-    public ToFetchPresenterImpl(Context mContext, ToFetchView mToFetchView) {
+    public ProducedPresenterImpl(Context mContext, ProducedView producedView) {
         this.mContext = mContext;
-        this.mToFetchView = mToFetchView;
-        mToFetchModel = new ToFetchModelImpl();
+        this.mProducedView = producedView;
+        mProduceModel = new ProducedModelImpl();
     }
 
 
     @Override
     public void loadToFetchOrders() {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        mToFetchModel.loadToFetchOrders(user.getShopId(), user.getToken(), new Observer<BaseEntity<List<OrderBean>>>() {
+        mProduceModel.loadToFetchOrders(user.getShopId(), user.getToken(), new Observer<BaseEntity<List<OrderBean>>>() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
 
@@ -52,17 +53,17 @@ public class ToFetchPresenterImpl implements ToFetchPresenter{
             public void onNext(@NonNull BaseEntity<List<OrderBean>> listBaseEntity) {
                 if(listBaseEntity.getStatus()==0){
                     List<OrderBean> toFetchList = listBaseEntity.getData();
-                    EventBus.getDefault().post(new UpdateDeliverFragmentTabOrderCount(0,toFetchList.size()));
-                    mToFetchView.bindDataToView(toFetchList);
+                    EventBus.getDefault().post(new UpdateProduceFragmentTabOrderCount(2,toFetchList.size()));
+                    mProducedView.bindDataToView(toFetchList);
                     OrderUtils.with().insertOrderList(toFetchList);
                 }else {
-                    mToFetchView.showToast(listBaseEntity.getMessage());
+                    mProducedView.showToast(listBaseEntity.getMessage());
                 }
             }
 
             @Override
             public void onError(@NonNull Throwable e) {
-                mToFetchView.showToast(e.getMessage());
+                mProducedView.showToast(e.getMessage());
             }
 
             @Override

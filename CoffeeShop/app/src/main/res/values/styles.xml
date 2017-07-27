@@ -103,4 +103,16 @@
         <item name="android:textSize">@dimen/tab_text</item>
     </style>
 
+    <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabIndicatorHeight">0dp</item>
+        <item name="tabBackground">@drawable/tab_background</item>
+        <item name="tabMode">scrollable</item>
+        <item name="tabSelectedTextColor">@color/white1</item>
+        <item name="tabTextAppearance">@style/MyCustomTabTextAppearance</item>
+    </style>
+    <style name="MyCustomTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/white1</item>
+        <item name="textAllCaps">true</item>
+    </style>
 </resources>

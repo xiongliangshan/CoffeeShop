@@ -1,8 +1,9 @@
-package com.lyancafe.coffeeshop.delivery.ui;
+package com.lyancafe.coffeeshop.produce.ui;
 
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,9 +15,9 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
-import com.lyancafe.coffeeshop.delivery.presenter.DeliveringPresenter;
-import com.lyancafe.coffeeshop.delivery.presenter.DeliveringPresenterImpl;
-import com.lyancafe.coffeeshop.delivery.view.DeliveringView;
+import com.lyancafe.coffeeshop.produce.presenter.ProducedPresenter;
+import com.lyancafe.coffeeshop.produce.presenter.ProducedPresenterImpl;
+import com.lyancafe.coffeeshop.produce.view.ProducedView;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
@@ -28,64 +29,66 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-
-public class DeliveringFragment extends BaseFragment implements MainDeliverFragment.FilterOrdersListenter,DeliveringView{
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class ProducedFragment extends BaseFragment implements ProducedView{
 
     public List<OrderBean> allOrderList = new ArrayList<>();
 
-    @BindView(R.id.rv_delivering)
-    RecyclerView mRecyclerView;
-    private DeliveringRvAdapter mAdapter;
+    @BindView(R.id.rv_to_fetch) RecyclerView mRecyclerView;
+    private ProducedRvAdapter mAdapter;
     private Unbinder unbinder;
 
     private Handler mHandler;
-    private DeliveringTaskRunnable mRunnable;
+    private ToFetchTaskRunnable mRunnable;
 
-    private DeliveringPresenter mDeliveringPresenter;
+    private ProducedPresenter mProducedPresenter;
 
-    public DeliveringFragment() {
-        // Required empty public constructor
+    public ProducedFragment() {
+
     }
-
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mHandler = new Handler();
-        mDeliveringPresenter  =  new DeliveringPresenterImpl(getContext(),this);
+        mProducedPresenter = new ProducedPresenterImpl(getContext(),this);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mProducedPresenter.loadToFetchOrders();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View contentView = inflater.inflate(R.layout.fragment_delivering, container, false);
+        View contentView =  inflater.inflate(R.layout.fragment_produced, container, false);
         unbinder = ButterKnife.bind(this,contentView);
         initViews();
         return contentView;
     }
 
     private void initViews() {
-        mAdapter = new DeliveringRvAdapter(getActivity());
+        mAdapter = new ProducedRvAdapter(getActivity());
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),4,GridLayoutManager.VERTICAL,false));
         mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(4, getActivity()), false));
         mRecyclerView.setAdapter(mAdapter);
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
+        Log.d("xls","ProducedFragment-onResume");
     }
+
 
     @Override
     public void bindDataToView(List<OrderBean> list) {
         allOrderList.clear();
         allOrderList.addAll(list);
-        mAdapter.setData(list, MainDeliverFragment.category);
+        mAdapter.setData(list, MainProduceFragment.category);
     }
 
     @Override
@@ -94,22 +97,10 @@ public class DeliveringFragment extends BaseFragment implements MainDeliverFragm
     }
 
     @Override
-    public void filter(String category) {
-        mAdapter.setData(allOrderList, MainDeliverFragment.category);
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
-        Log.d("xls","DeliveringFragment-onPause");
+        Log.d("xls","ProducedFragment-onPause");
     }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
-
 
     @Override
     public void onDestroy() {
@@ -119,31 +110,43 @@ public class DeliveringFragment extends BaseFragment implements MainDeliverFragm
         }
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d("xls","ProducedFragment-onDetach");
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
 
     @Override
     public void onVisible() {
-        Log.d("xls","Delivering onVisible");
+        Log.d("xls","ProducedFragment Visible");
         if(!isResumed()){
             return;
         }
-        mRunnable = new DeliveringTaskRunnable();
+        mRunnable = new ToFetchTaskRunnable();
         mHandler.postDelayed(mRunnable,OrderHelper.DELAY_LOAD_TIME);
-
     }
 
     @Override
     public void onInVisible() {
-        Log.d("xls","Delivering onInVisible");
+        Log.d("xls","ProducedFragment InVisible");
         if(mHandler!=null){
             mHandler.removeCallbacks(mRunnable);
         }
     }
 
-    class DeliveringTaskRunnable implements Runnable{
+
+    class ToFetchTaskRunnable implements Runnable{
         @Override
         public void run() {
-//            mDeliveringPresenter.loadDeliveringOrderList();
-            mDeliveringPresenter.loadDeliveringOrders();
+            mProducedPresenter.loadToFetchOrders();
         }
     }
 }

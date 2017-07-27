@@ -10,76 +10,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusableInTouchMode="true"
-        android:layout_marginLeft="12dp">
+        android:padding="8dp"
+        android:background="@color/gray2">
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            app:tabTextAppearance="@style/MyTab"
-            app:tabMode="scrollable"
-            app:tabIndicatorColor="@color/tab_orange"
-            app:tabSelectedTextColor="@color/tab_orange"
-            >
-
-            <android.support.design.widget.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="待生产"/>
-
-            <android.support.design.widget.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="生产中"/>
-
-        </android.support.design.widget.TabLayout>
-
-
-        <LinearLayout
-            android:id="@+id/ll_naigai_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_toRightOf="@id/tabLayout"
-            android:padding="16dp"
-            android:layout_marginLeft="16dp"
-            android:visibility="gone">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text = "芝士云顶红玉"/>
-            <TextView
-                android:id="@+id/tv_amount_hongyu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                tools:text="15杯"/>
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="6dp"
-                android:layout_marginRight="6dp"
-                android:background="@color/bg_line_separator"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text = "芝士云顶茉莉"/>
-            <TextView
-                android:id="@+id/tv_amount_moli"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                tools:text="8杯"/>
-        </LinearLayout>
+            style="@style/MyCustomTabLayout"
+            />
 
         <TextView
             android:id="@+id/tv_constant_order_select"
@@ -160,19 +100,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:background="@color/gray3">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/vp_container"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="5" />
+            android:layout_weight="2"
+            android:paddingRight="12dp"/>
 
         <include
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:layout_marginLeft="8dp"
+            android:layout_weight="1"
             layout = "@layout/view_produce_detail"
             />
 

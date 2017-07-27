@@ -33,7 +33,7 @@ public class MainShopFragment extends BaseFragment implements TabLayout.OnTabSel
 
     private ShopFragmentPagerAdapter mPagerAdapter;
 
-    private FinishedOrderFragment finishedOrderFragment;
+
     private EvaluationFragment evaluationFragment;
     private MaterialsFragment materialFragment;
     private ManagerFragment managerFragment;
@@ -53,12 +53,10 @@ public class MainShopFragment extends BaseFragment implements TabLayout.OnTabSel
 
     private void initViews() {
         List<Fragment> fragments = new ArrayList<>();
-        finishedOrderFragment = new FinishedOrderFragment();
         evaluationFragment = new EvaluationFragment();
         materialFragment = new MaterialsFragment();
         managerFragment = new ManagerFragment();
         exceptionalListFragment = new ExceptionalFragment();
-        fragments.add(finishedOrderFragment);
         fragments.add(evaluationFragment);
         fragments.add(materialFragment);
         fragments.add(managerFragment);
@@ -73,9 +71,6 @@ public class MainShopFragment extends BaseFragment implements TabLayout.OnTabSel
     @Override
     public void onResume() {
         super.onResume();
-        if(finishedOrderFragment!=null){
-            finishedOrderFragment.onVisible();
-        }
     }
 
     @Override

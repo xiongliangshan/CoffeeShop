@@ -44,7 +44,7 @@ public class OrderHelper {
     public static List<OrderBean> batchList = new ArrayList<>();
     public static Map<String,Integer> contentMap = new HashMap<>();
 
-    public static long DELAY_LOAD_TIME = 300;  //单位 ms
+    public static long DELAY_LOAD_TIME = 200;  //单位 ms
 
     public static final int GOOD_COMMENT = 4;  //好评
     public static final int BAD_COMMENT = 5;   //差评
@@ -140,22 +140,22 @@ public class OrderHelper {
     /*时间段毫秒转化为分钟*/
     private static String getDateToMinutes(long time) {
         String min = "";
-        String sec = "";
+//        String sec = "";
         long minutes = time / (1000 * 60 );
-        long seconds = (time % (1000 * 60)) / 1000;
+//        long seconds = (time % (1000 * 60)) / 1000;
         if(minutes==0){
             min = "00";
         }else{
             min = minutes+"";
         }
 
-        if(seconds<=9){
-            sec = "0"+seconds;
-        }else{
-            sec = seconds+"";
-        }
+//        if(seconds<=9){
+//            sec = "0"+seconds;
+//        }else{
+//            sec = seconds+"";
+//        }
 
-        return  min+":"+sec;
+        return  min;
     }
 
     //计算某个订单的总杯数
@@ -212,7 +212,7 @@ public class OrderHelper {
         Log.d(TAG, "mms = " + mms);
         if(mms<=0){
             effectTimeTxt.setTextColor(Color.parseColor("#e2435a"));
-            effectTimeTxt.setText(String.format("+%s", OrderHelper.getDateToMinutes(Math.abs(mms))));
+            effectTimeTxt.setText(String.format("超%s", OrderHelper.getDateToMinutes(Math.abs(mms))));
         }else{
             effectTimeTxt.setTextColor(Color.parseColor("#000000"));
             effectTimeTxt.setText(OrderHelper.getDateToMinutes(mms));
@@ -598,7 +598,7 @@ public class OrderHelper {
         if(time==0){
             return "-- -- -- --";
         }
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm (MM/dd)",Locale.CHINESE);
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm (MM/dd)");
         return sdf.format(new Date(time));
     }
 
@@ -626,4 +626,46 @@ public class OrderHelper {
         return map;
     }
 
+    public static String getStatusName(int status,boolean isWxScan) {
+        if(isWxScan){
+            return "无需配送";
+        }
+        String statusName;
+        switch (status){
+            case 3010:
+                statusName = "未指派骑手";
+                break;
+            case 3020:
+                statusName = "未取货";
+                break;
+            case 5000:
+                statusName = "派送中";
+                break;
+            case 6000:
+                statusName = "送达";
+                break;
+            default:
+                statusName = "未知("+status+")";
+        }
+
+        return statusName;
+    }
+
+    public static String getDeliverTeamName(int deliverTeam){
+        String teamName;
+        switch (deliverTeam){
+            case DeliveryTeam.LYAN:
+                teamName = "自有";
+                break;
+            case DeliveryTeam.HAIKUI:
+                teamName = "海葵";
+                break;
+            case DeliveryTeam.MEITUAN:
+                teamName = "美团";
+                break;
+            default:
+                teamName = "未知（"+deliverTeam+")";
+        }
+        return teamName;
+    }
 }

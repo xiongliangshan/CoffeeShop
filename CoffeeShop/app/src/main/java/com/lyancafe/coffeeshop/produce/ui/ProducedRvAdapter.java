@@ -1,4 +1,4 @@
-package com.lyancafe.coffeeshop.delivery.ui;
+package com.lyancafe.coffeeshop.produce.ui;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -19,11 +19,12 @@ import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.UpdateDeliverOrderDetailEvent;
-import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -36,20 +37,20 @@ import butterknife.ButterKnife;
 /**
  * Created by Administrator on 2015/9/21.
  */
-public class DeliveringRvAdapter extends RecyclerView.Adapter<DeliveringRvAdapter.ViewHolder>{
+public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.ViewHolder>{
 
     private static final String TAG  ="OrderGridViewAdapter";
     private Context context;
     public List<OrderBean> list = new ArrayList<OrderBean>();
     public int selected = -1;
 
-    public DeliveringRvAdapter(Context context) {
+    public ProducedRvAdapter(Context context) {
         this.context = context;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.deliver_order_list_item, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.produced_list_item, parent, false);
         return new ViewHolder(v);
     }
 
@@ -62,7 +63,7 @@ public class DeliveringRvAdapter extends RecyclerView.Adapter<DeliveringRvAdapte
                 selected = position;
                 notifyDataSetChanged();
                 if(position>=0 && position<list.size()){
-                    EventBus.getDefault().post(new UpdateDeliverOrderDetailEvent(list.get(position)));
+                    EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
                 }
 
                 Log.d(TAG, "点击了 " + position);
@@ -76,50 +77,14 @@ public class DeliveringRvAdapter extends RecyclerView.Adapter<DeliveringRvAdapte
         }
         final OrderBean order = list.get(position);
 
-        holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
+        holder.shopOrderIdText.setText(OrderHelper.getShopOrderSn(order));
+        holder.deliverStatusText.setText(OrderHelper.getStatusName(order.getStatus(),order.getWxScan()));
+        holder.deliverTeamText.setText(OrderHelper.getDeliverTeamName(order.getDeliveryTeam()));
+        holder.deliverNameText.setText(order.getCourierName());
+        holder.deliverPhoneText.setText(order.getCourierPhone());
+        holder.orderIdText.setText(String.valueOf(order.getId()));
+        holder.serviceEffectText.setText(OrderHelper.getTimeToService(order));
 
-        //加急
-        if("Y".equalsIgnoreCase(order.getReminder())){
-            holder.reminderImg.setImageResource(R.mipmap.flag_reminder);
-        }else{
-            holder.reminderImg.setImageResource(R.mipmap.flag_placeholder);
-        }
-        //扫码下单
-        if(order.getWxScan()){
-            holder.saoImg.setImageResource(R.mipmap.flag_sao);
-        }else {
-            holder.saoImg.setImageResource(R.mipmap.flag_placeholder);
-        }
-        //定制
-        if(order.getIsRecipeFittings()){
-            holder.labelFlagImg.setImageResource(R.mipmap.flag_ding);
-        }else{
-            holder.labelFlagImg.setImageResource(R.mipmap.flag_placeholder);
-        }
-        //抢单
-        if(order.getStatus()== OrderStatus.UNASSIGNED){
-            holder.grabFlagIV.setImageResource(R.mipmap.flag_placeholder);
-        }else{
-            holder.grabFlagIV.setImageResource(R.mipmap.flag_qiang);
-        }
-        //备注
-        if(TextUtils.isEmpty(order.getNotes()) && TextUtils.isEmpty(order.getCsrNotes())){
-            holder.remarkFlagIV.setImageResource(R.mipmap.flag_placeholder);
-        }else {
-            holder.remarkFlagIV.setImageResource(R.mipmap.flag_bei);
-        }
-
-        OrderHelper.showEffect(order, null, holder.effectTimeTxt);
-        fillItemListData(holder.itemContainerll, order.getItems());
-        if(order.getDeliveryTeam()==DeliveryTeam.MEITUAN){
-            holder.bottomText.setText("美团配送");
-        }else if(order.getDeliveryTeam()==DeliveryTeam.HAIKUI){
-            holder.bottomText.setText("海葵配送");
-        }else{
-            holder.bottomText.setText(OrderHelper.getTimeToService(order));
-        }
-
-        holder.cupCountText.setText(context.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
 
     }
 
@@ -185,20 +150,16 @@ public class DeliveringRvAdapter extends RecyclerView.Adapter<DeliveringRvAdapte
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
+
         @BindView(R.id.root_view) LinearLayout rootLayout;
         @BindView(R.id.ll_first_row) LinearLayout firstRowLayout;
-        @BindView(R.id.iv_reminder) ImageView reminderImg;
-        @BindView(R.id.iv_sao_flag) ImageView saoImg;
-        @BindView(R.id.iv_label_flag) ImageView labelFlagImg;
-        @BindView(R.id.item_order_id) TextView orderIdTxt;
-        @BindView(R.id.item_contant_produce_effect) TextView contantEffectTimeTxt;
-        @BindView(R.id.item_produce_effect) TextView effectTimeTxt;
-        @BindView(R.id.item_grab_flag) ImageView grabFlagIV;
-        @BindView(R.id.item_remark_flag) ImageView remarkFlagIV;
-        @BindView(R.id.item_container) LinearLayout itemContainerll;
-        @BindView(R.id.tv_cup_count) TextView cupCountText;
-        @BindView(R.id.tv_item_bottom) TextView bottomText;
-
+        @BindView(R.id.tv_shop_order_id) TextView shopOrderIdText;
+        @BindView(R.id.tv_service_effect) TextView serviceEffectText;
+        @BindView(R.id.tv_deliver_status) TextView deliverStatusText;
+        @BindView(R.id.tv_deliver_team) TextView deliverTeamText;
+        @BindView(R.id.tv_deliver_name) TextView deliverNameText;
+        @BindView(R.id.tv_deliver_phone) TextView deliverPhoneText;
+        @BindView(R.id.tv_order_id) TextView orderIdText;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -237,8 +198,6 @@ public class DeliveringRvAdapter extends RecyclerView.Adapter<DeliveringRvAdapte
 
         return subList;
     }
-
-
 
 
     /**

@@ -14,14 +14,14 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textSize="24sp"
-            android:textColor="@color/font_black"
+            android:textColor="@color/white1"
             android:text="基础管理" />
 
         <View
             android:layout_width="match_parent"
             android:layout_marginTop="10dp"
             android:layout_height="1dp"
-            android:background="@color/font_black"/>
+            android:textColor="@color/white1"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -32,7 +32,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/font_black"
+                android:textColor="@color/white1"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:text="门店名称"/>
@@ -42,6 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
+                android:textColor="@color/white1"
                 android:textSize="20sp"/>
 
 
@@ -56,7 +57,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/font_black"
+                android:textColor="@color/white1"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:text="门店地址"/>
@@ -66,6 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
+                android:textColor="@color/white1"
                 android:textSize="20sp"/>
 
 
@@ -81,7 +83,7 @@
                 android:id="@+id/tv_constant_shopPhone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/font_black"
+                android:textColor="@color/white1"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:text="门店电话"/>
@@ -93,6 +95,7 @@
                 android:minWidth="150dp"
                 android:layout_toRightOf="@id/tv_constant_shopPhone"
                 android:layout_marginLeft="16dp"
+                android:textColor="@color/white1"
                 android:textSize="20sp"/>
 
             <ImageView

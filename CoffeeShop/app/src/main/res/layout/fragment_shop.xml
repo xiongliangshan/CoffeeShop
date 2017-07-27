@@ -7,33 +7,16 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp">
+        android:padding="8dp"
+        android:background="@color/gray2">
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            app:tabTextAppearance="@style/MyTab"
-            app:tabMode="scrollable"
-            app:tabIndicatorColor="@color/tab_orange"
-            app:tabSelectedTextColor="@color/tab_orange"
-            >
-
-            <android.support.design.widget.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="订单一览"/>
-
-
-            <android.support.design.widget.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="门店管理"/>
-
-        </android.support.design.widget.TabLayout>
-
-
+            style="@style/MyCustomTabLayout"
+            />
 
         <TextView
             android:layout_width="wrap_content"
@@ -89,5 +72,6 @@
         android:id="@+id/vp_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/gray3"
         />
 </LinearLayout>

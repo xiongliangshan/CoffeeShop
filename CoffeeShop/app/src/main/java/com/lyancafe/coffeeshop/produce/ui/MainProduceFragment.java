@@ -2,7 +2,6 @@ package com.lyancafe.coffeeshop.produce.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -36,7 +35,6 @@ import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
-import com.lyancafe.coffeeshop.event.NaiGaiEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
@@ -54,7 +52,6 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -75,12 +72,12 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     @BindView(R.id.tabLayout) TabLayout tabLayout;
     @BindView(R.id.spinner_category) AppCompatSpinner spinnerCategory;
     @BindView(R.id.vp_container) ViewPager viewPager;
-    @BindView(R.id.order_id) TextView orderIdTxt;
+    @BindView(R.id.order_id) TextView shopOrderNoText;
     @BindView(R.id.reach_time) TextView reachTimeTxt;
     @BindView(R.id.receiver_name) TextView receiveNameTxt;
     @BindView(R.id.receiver_phone) TextView receivePhoneTxt;
     @BindView(R.id.order_time) TextView orderTimeTxt;
-    @BindView(R.id.tv_whole_order_sn) TextView wholeOrderText;
+    @BindView(R.id.tv_whole_order_sn) TextView orderIdText;
     @BindView(R.id.receiver_address) TextView receiveAddressTxt;
     @BindView(R.id.tv_deliver_team) TextView deliverTeamText;
     @BindView(R.id.deliver_name) TextView deliverNameTxt;
@@ -99,14 +96,14 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     @BindView(R.id.ll_onebtn) LinearLayout oneBtnLayout;
     @BindView(R.id.contant_issue_feedback) UnderLineTextView reportIssueBtn;
 
-    @BindView(R.id.ll_naigai_layout) LinearLayout naigaiLayout;
-    @BindView(R.id.tv_amount_hongyu) TextView tvHongyu;
-    @BindView(R.id.tv_amount_moli) TextView tvMoli;
+
 
     private ProduceFragmentPagerAdapter mPagerAdapter;
 
     private ToProduceFragment toProduceFragment;
     private ProducingFragment producingFragment;
+    private ProducedFragment producedFragment;
+    private FinishedOrderFragment finishedOrderFragment;
 
     private OrderBean mOrder = null;
     private Unbinder unbinder;
@@ -142,11 +139,15 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
         List<Fragment> fragments = new ArrayList<>();
         toProduceFragment = new ToProduceFragment();
         producingFragment = new ProducingFragment();
+        producedFragment = new ProducedFragment();
+        finishedOrderFragment = new FinishedOrderFragment();
         fragments.add(toProduceFragment);
         fragments.add(producingFragment);
+        fragments.add(producedFragment);
+        fragments.add(finishedOrderFragment);
         mPagerAdapter = new ProduceFragmentPagerAdapter(getChildFragmentManager(), getActivity(), fragments);
         viewPager.setAdapter(mPagerAdapter);
-        viewPager.setOffscreenPageLimit(1);
+        viewPager.setOffscreenPageLimit(3);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.addOnTabSelectedListener(this);
 
@@ -182,23 +183,6 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     }
 
 
-    @Override
-    public void showNaiGaiAmount(Map<String, Integer> map) {
-        if(naigaiLayout==null){
-            return;
-        }
-        int hongyu = map.get(CSApplication.getInstance().getString(R.string.coffee_hongyu));
-        int moli = map.get(CSApplication.getInstance().getString(R.string.coffee_moli));
-        if(hongyu==0 && moli==0){
-            naigaiLayout.setVisibility(View.GONE);
-        }else{
-            naigaiLayout.setVisibility(View.VISIBLE);
-            tvHongyu.setText(hongyu+"杯");
-            tvMoli.setText(moli+"杯");
-        }
-
-    }
-
 
     @Override
     public void refreshListForStatus(long orderId, int status) {
@@ -215,8 +199,8 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
 
     private void updateDetailView(final OrderBean order) {
         if (order == null) {
-            orderIdTxt.setText("");
-            wholeOrderText.setText("");
+            shopOrderNoText.setText("");
+            orderIdText.setText("");
             orderTimeTxt.setText("");
             reachTimeTxt.setText("");
             receiveNameTxt.setText("");
@@ -240,8 +224,8 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
             finishProduceBtn.setEnabled(true);
             printOrderBtn.setEnabled(true);
 
-            orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
-            wholeOrderText.setText(order.getOrderSn());
+            shopOrderNoText.setText(OrderHelper.getShopOrderSn(order));
+            orderIdText.setText(String.valueOf(order.getId()));
             orderTimeTxt.setText(OrderHelper.getDateToString(order.getOrderTime()));
             if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN) {
                 reachTimeTxt.setText(order.getInstant() == 1 ? "立即送出" : OrderHelper.getDateToString(order.getExpectedTime()));
@@ -266,7 +250,8 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
 
             userRemarkTxt.setText(order.getNotes());
             csadRemarkTxt.setText(order.getCsrNotes());
-            if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN || order.getDeliveryTeam() == DeliveryTeam.HAIKUI) {
+            if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN || order.getDeliveryTeam() == DeliveryTeam.HAIKUI
+                    || order.getStatus()>=6000) {
                 assignBtn.setVisibility(View.GONE);
             } else {
                 assignBtn.setVisibility(View.VISIBLE);
@@ -286,12 +271,12 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
                 finishProduceBtn.setVisibility(View.VISIBLE);
                 if (OrderHelper.isPrinted(mContext, order.getOrderSn())) {
                     printOrderBtn.setText(R.string.print_again);
-                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_red));
+                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.red1));
                 } else {
                     printOrderBtn.setText(R.string.print);
-                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_black));
+                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.white1));
                 }
-            } else {
+            } else if(order.getProduceStatus() == OrderStatus.PRODUCED){
                 twoBtnLayout.setVisibility(View.VISIBLE);
                 oneBtnLayout.setVisibility(View.GONE);
                 finishProduceBtn.setVisibility(View.GONE);
@@ -302,6 +287,9 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
                     printOrderBtn.setText(R.string.print);
                     printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_black));
                 }
+            } else{
+                twoBtnLayout.setVisibility(View.GONE);
+                oneBtnLayout.setVisibility(View.GONE);
             }
 
         }
@@ -369,6 +357,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
             lp.topMargin = OrderHelper.dip2Px(2, mContext);
+            lp.bottomMargin = OrderHelper.dip2Px(4,mContext);
             ll.addView(rl, lp);
         }
 
@@ -403,11 +392,6 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
 
-    }
-
-    @Subscribe
-    public void onNaiGaiEvent(NaiGaiEvent event){
-        showNaiGaiAmount(event.map);
     }
 
 
@@ -466,21 +450,26 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     public void onChangeTabCountByActionEvent(ChangeTabCountByActionEvent event) {
         TabLayout.Tab tabToproduce = tabLayout.getTabAt(0);
         TabLayout.Tab tabProducing = tabLayout.getTabAt(1);
+        TabLayout.Tab tabProduced = tabLayout.getTabAt(2);
         int toProduceCount = ((Integer) tabToproduce.getTag()).intValue();
         int producingCount = ((Integer) tabProducing.getTag()).intValue();
+        int producedCount = ((Integer) tabProduced.getTag()).intValue();
         switch (event.action) {
             case OrderAction.STARTPRODUCE:
                 int tabTo = toProduceCount - event.count;
-                int tabPro = producingCount + event.count;
-                tabToproduce.setText(mPagerAdapter.getPageTitle(0) + "(" + tabTo + ")");
-                tabProducing.setText(mPagerAdapter.getPageTitle(1) + "(" + tabPro + ")");
+                int tabPro = event.isQrCode?producingCount:producingCount + event.count;
+                tabToproduce.setText(tabTo==0?mPagerAdapter.getPageTitle(0):mPagerAdapter.getPageTitle(0) + "(" + tabTo + ")");
+                tabProducing.setText(tabPro==0?mPagerAdapter.getPageTitle(1):mPagerAdapter.getPageTitle(1) + "(" + tabPro + ")");
                 tabToproduce.setTag(tabTo);
                 tabProducing.setTag(tabPro);
                 break;
             case OrderAction.FINISHPRODUCE:
                 int tabProduceResult = producingCount - event.count;
-                tabProducing.setText(mPagerAdapter.getPageTitle(1) + "(" + tabProduceResult + ")");
+                int tabProducedResult = producedCount + event.count;
+                tabProducing.setText(tabProduceResult==0?mPagerAdapter.getPageTitle(1):mPagerAdapter.getPageTitle(1) + "(" + tabProduceResult + ")");
+                tabProduced.setText(tabProducedResult==0?mPagerAdapter.getPageTitle(2):mPagerAdapter.getPageTitle(2)+"("+tabProducedResult+")");
                 tabProducing.setTag(tabProduceResult);
+                tabProduced.setTag(tabProducedResult);
                 break;
         }
     }

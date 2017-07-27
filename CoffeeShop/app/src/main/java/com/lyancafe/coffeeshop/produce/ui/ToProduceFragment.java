@@ -12,12 +12,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.common.PrintHelper;
+import com.lyancafe.coffeeshop.event.NaiGaiEvent;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.produce.presenter.ToProducePresenter;
@@ -34,6 +38,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,6 +51,9 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
 
 
     @BindView(R.id.rv_to_produce) RecyclerView mRecyclerView;
+    @BindView(R.id.ll_naigai_layout) LinearLayout naigaiLayout;
+    @BindView(R.id.tv_amount_hongyu) TextView tvHongyu;
+    @BindView(R.id.tv_amount_moli) TextView tvMoli;
 
     private Unbinder unbinder;
     private ToProduceRvAdapter mAdapter;
@@ -86,7 +94,7 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
     private void initViews() {
         mAdapter = new ToProduceRvAdapter(getActivity());
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),4,GridLayoutManager.VERTICAL,false));
-        mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(4, getActivity()), false));
+        mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(12, getActivity()), false));
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -99,6 +107,28 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+    @Subscribe
+    public void onNaiGaiEvent(NaiGaiEvent event){
+        showNaiGaiAmount(event.map);
+    }
+
+    @Override
+    public void showNaiGaiAmount(Map<String, Integer> map) {
+        if(naigaiLayout==null){
+            return;
+        }
+        int hongyu = map.get(CSApplication.getInstance().getString(R.string.coffee_hongyu));
+        int moli = map.get(CSApplication.getInstance().getString(R.string.coffee_moli));
+        if(hongyu==0 && moli==0){
+            naigaiLayout.setVisibility(View.GONE);
+        }else{
+            naigaiLayout.setVisibility(View.VISIBLE);
+            tvHongyu.setText(hongyu+"杯");
+            tvMoli.setText(moli+"杯");
+        }
+
     }
 
     @Override
@@ -145,7 +175,7 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
             @Override
             public void onClickYes() {
                 //请求服务器改变该订单状态，由 待生产--生产中
-                mToProducePresenter.doStartProduce(orderBean.getId());
+                mToProducePresenter.doStartProduce(orderBean.getId(),orderBean.getWxScan());
                 //打印全部
                 PrintHelper.getInstance().printOrderInfo(orderBean);
                 PrintHelper.getInstance().printOrderItems(orderBean);

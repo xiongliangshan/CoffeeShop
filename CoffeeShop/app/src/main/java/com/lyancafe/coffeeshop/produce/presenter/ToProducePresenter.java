@@ -10,6 +10,6 @@ public interface ToProducePresenter {
     void loadToProduceOrders();
 
     //点击开始生产
-    void doStartProduce(long orderId);
+    void doStartProduce(long orderId,boolean isScanCode);
 
 }

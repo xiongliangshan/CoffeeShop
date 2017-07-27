@@ -83,51 +83,46 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
 
         //加急
         if("Y".equalsIgnoreCase(order.getReminder())){
+            holder.reminderImg.setVisibility(View.VISIBLE);
             holder.reminderImg.setImageResource(R.mipmap.flag_reminder);
         }else{
-            holder.reminderImg.setImageResource(R.mipmap.flag_placeholder);
+            holder.reminderImg.setVisibility(View.GONE);
         }
         //扫码下单
         if(order.getWxScan()){
+            holder.saoImg.setVisibility(View.VISIBLE);
             holder.saoImg.setImageResource(R.mipmap.flag_sao);
         }else {
-            holder.saoImg.setImageResource(R.mipmap.flag_placeholder);
+            holder.saoImg.setVisibility(View.GONE);
         }
         //定制
         if(order.getIsRecipeFittings()){
+            holder.labelFlagImg.setVisibility(View.VISIBLE);
             holder.labelFlagImg.setImageResource(R.mipmap.flag_ding);
         }else{
-            holder.labelFlagImg.setImageResource(R.mipmap.flag_placeholder);
+            holder.labelFlagImg.setVisibility(View.GONE);
         }
 
         //抢单
         if(order.getStatus()== OrderStatus.UNASSIGNED){
-            holder.grabFlagIV.setImageResource(R.mipmap.flag_placeholder);
+            holder.grabFlagIV.setVisibility(View.GONE);
         }else{
+            holder.grabFlagIV.setVisibility(View.VISIBLE);
             holder.grabFlagIV.setImageResource(R.mipmap.flag_qiang);
         }
         //备注
         if(TextUtils.isEmpty(order.getNotes()) && TextUtils.isEmpty(order.getCsrNotes())){
-            holder.remarkFlagIV.setImageResource(R.mipmap.flag_placeholder);
+            holder.remarkFlagIV.setVisibility(View.GONE);
         }else {
+            holder.remarkFlagIV.setVisibility(View.VISIBLE);
             holder.remarkFlagIV.setImageResource(R.mipmap.flag_bei);
         }
 
 
-        if(order.getInstant()==0){
-            holder.produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
-        }else{
-            holder.produceAndPrintBtn.setBackgroundResource(R.drawable.bg_produce_btn);
-        }
         OrderHelper.showEffectOnly(order,holder.effectTimeTxt);
 
-        if(OrderHelper.isPrinted(context, order.getOrderSn())){
-            holder.printBtn.setText(R.string.print_again);
-            holder.printBtn.setTextColor(context.getResources().getColor(R.color.text_red));
-        }else{
-            holder.printBtn.setText(R.string.print);
-            holder.printBtn.setTextColor(context.getResources().getColor(R.color.text_black));
-        }
+        holder.deliverStatusText.setText(OrderHelper.getStatusName(order.getStatus(),order.getWxScan()));
+
         fillItemListData(holder.itemContainerll, order.getItems());
         holder.cupCountText.setText(context.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
         if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
@@ -151,22 +146,12 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
                     EventBus.getDefault().post(new FinishProduceEvent(order));
                 }
             });
-            holder.printBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    EventBus.getDefault().post(new PrintOrderEvent(order));
-                }
-            });
+
         }else{
             holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
             holder.onebtnContainerlayout.setVisibility(View.GONE);
             holder.produceBtn.setVisibility(View.GONE);
-            holder.printBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    EventBus.getDefault().post(new PrintOrderEvent(order));
-                }
-            });
+
         }
 
     }
@@ -244,12 +229,12 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         @BindView(R.id.item_grab_flag) ImageView grabFlagIV;
         @BindView(R.id.item_remark_flag) ImageView remarkFlagIV;
         @BindView(R.id.item_container) LinearLayout itemContainerll;
+        @BindView(R.id.tv_deliver_status) TextView deliverStatusText;
         @BindView(R.id.tv_cup_count) TextView cupCountText;
         @BindView(R.id.ll_twobtn_container) LinearLayout twobtnContainerLayout;
         @BindView(R.id.ll_onebtn_container) LinearLayout onebtnContainerlayout;
         @BindView(R.id.item_produce_and_print) TextView produceAndPrintBtn;
         @BindView(R.id.item_produce) TextView produceBtn;
-        @BindView(R.id.item_print) TextView printBtn;
 
 
         public ViewHolder(View itemView) {
