@@ -8,8 +8,9 @@ public class Api {
 
 
 //    public static final String BASE_URL = "https://api.lyancafe.com/shop/v3/";
-    public static final String BASE_URL = "https://apiqa.lyancafe.cn/shop/v3/";
-//    public static final String BASE_URL = "http://192.168.0.155/shop/v3/";
+//    public static final String BASE_URL = "https://apiqa.lyancafe.cn/shop/v3/";
+    public static final String BASE_URL = "http://192.168.0.194:8080/shop/v3/";
+
 
 
 

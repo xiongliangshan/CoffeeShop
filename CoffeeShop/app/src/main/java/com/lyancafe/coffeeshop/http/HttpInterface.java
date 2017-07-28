@@ -101,6 +101,16 @@ public interface HttpInterface {
     @POST("{shopId}/today/produced/orders")
     Observable<BaseEntity<List<OrderBean>>> loadToFetchOrders(@Path("shopId") int shopId,@Query("token") String token);
 
+
+    /**
+     * 明日订单列表
+     * @param shopId
+     * @param token
+     * @return
+     */
+    @POST("{shopId}/orders/tomorrow")
+    Observable<BaseEntity<List<OrderBean>>> loadTomorrowOrders(@Path("shopId") int shopId,@Query("token") String token);
+
     /**
      * 配送中列表
      * @param shopId

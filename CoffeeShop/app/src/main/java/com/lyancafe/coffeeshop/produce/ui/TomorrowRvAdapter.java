@@ -19,13 +19,13 @@ import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
-import com.lyancafe.coffeeshop.event.PrintOrderEvent;
+import com.lyancafe.coffeeshop.event.NaiGaiEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
-import com.lyancafe.coffeeshop.common.OrderHelper;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -38,14 +38,14 @@ import butterknife.ButterKnife;
 /**
  * Created by Administrator on 2015/9/21.
  */
-public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.ViewHolder>{
+public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.ViewHolder>{
 
     private static final String TAG  ="OrderGridViewAdapter";
     private Context context;
     public List<OrderBean> list = new ArrayList<OrderBean>();
     public int selected = -1;
 
-    public ProducingRvAdapter(Context context) {
+    public TomorrowRvAdapter(Context context) {
         this.context = context;
     }
 
@@ -117,10 +117,10 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
             holder.remarkFlagIV.setImageResource(R.mipmap.flag_bei);
         }
 
+
         OrderHelper.showEffectOnly(order,holder.effectTimeTxt);
 
         holder.deliverStatusText.setText(OrderHelper.getStatusName(order.getStatus(),order.getWxScan()));
-
 
         fillItemListData(holder.itemContainerll, order.getItems());
         holder.cupCountText.setText(context.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
@@ -150,6 +150,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
             holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
             holder.onebtnContainerlayout.setVisibility(View.GONE);
             holder.produceBtn.setVisibility(View.GONE);
+
         }
 
     }
@@ -226,10 +227,10 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         @BindView(R.id.item_order_id) TextView orderIdTxt;
         @BindView(R.id.item_contant_produce_effect) TextView contantEffectTimeTxt;
         @BindView(R.id.item_produce_effect) TextView effectTimeTxt;
-        @BindView(R.id.tv_deliver_status) TextView deliverStatusText;
         @BindView(R.id.item_grab_flag) ImageView grabFlagIV;
         @BindView(R.id.item_remark_flag) ImageView remarkFlagIV;
         @BindView(R.id.item_container) LinearLayout itemContainerll;
+        @BindView(R.id.tv_deliver_status) TextView deliverStatusText;
         @BindView(R.id.tv_cup_count) TextView cupCountText;
         @BindView(R.id.ll_twobtn_container) LinearLayout twobtnContainerLayout;
         @BindView(R.id.ll_onebtn_container) LinearLayout onebtnContainerlayout;
@@ -243,8 +244,8 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         }
     }
 
-    public void setData(List<OrderBean> list,int category){
-        this.list = filterOrders(list,category);
+    public void setData(List<OrderBean> list){
+        this.list = list;
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
             EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
@@ -256,7 +257,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
 
     private List<OrderBean> filterOrders(List<OrderBean> list,int category){
         List<OrderBean> subList = new ArrayList<>();
-        if(category==OrderCategory.MEITUN){
+        if(category== OrderCategory.MEITUN){
             for(OrderBean orderBean:list){
                 if(orderBean.getDeliveryTeam()==8){
                     subList.add(orderBean);
@@ -296,7 +297,8 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
             notifyDataSetChanged();
             EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
         }
-
+        //计算奶盖数量
+        EventBus.getDefault().post(new NaiGaiEvent(OrderHelper.caculateNaiGai(list)));
 
     }
 

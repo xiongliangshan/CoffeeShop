@@ -42,10 +42,12 @@ import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
 import com.lyancafe.coffeeshop.produce.presenter.MainProducePresenter;
 import com.lyancafe.coffeeshop.produce.presenter.MainProducePresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.MainProduceView;
+import com.lyancafe.coffeeshop.produce.view.TomorrowView;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
 import com.lyancafe.coffeeshop.widget.ReportIssueDialog;
 import com.lyancafe.coffeeshop.widget.UnderLineTextView;
+import com.lyancafe.coffeeshop.widget.ZoomOutPageTransformer;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -104,6 +106,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     private ProducingFragment producingFragment;
     private ProducedFragment producedFragment;
     private FinishedOrderFragment finishedOrderFragment;
+    private TomorrowFragment tomorrowFragment;
 
     private OrderBean mOrder = null;
     private Unbinder unbinder;
@@ -141,13 +144,16 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
         producingFragment = new ProducingFragment();
         producedFragment = new ProducedFragment();
         finishedOrderFragment = new FinishedOrderFragment();
+        tomorrowFragment = new TomorrowFragment();
         fragments.add(toProduceFragment);
         fragments.add(producingFragment);
         fragments.add(producedFragment);
         fragments.add(finishedOrderFragment);
+        fragments.add(tomorrowFragment);
         mPagerAdapter = new ProduceFragmentPagerAdapter(getChildFragmentManager(), getActivity(), fragments);
         viewPager.setAdapter(mPagerAdapter);
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(4);
+        viewPager.setPageTransformer(true,new ZoomOutPageTransformer());
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.addOnTabSelectedListener(this);
 
@@ -308,12 +314,13 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
             tv1.setText(item.getProduct());
             tv1.setMaxEms(9);
             tv1.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
-            tv1.setTextColor(mContext.getResources().getColor(R.color.font_black));
+            tv1.setTextColor(mContext.getResources().getColor(R.color.black2));
             TextView tv2 = new TextView(mContext);
             tv2.setId(R.id.item_num);
             tv2.setText("x  " + item.getQuantity());
             tv2.getPaint().setFakeBoldText(true);
             tv2.setTextSize(mContext.getResources().getDimension(R.dimen.content_item_text_size));
+            tv2.setTextColor(mContext.getResources().getColor(R.color.black2));
 
             RelativeLayout rl = new RelativeLayout(mContext);
             RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(
