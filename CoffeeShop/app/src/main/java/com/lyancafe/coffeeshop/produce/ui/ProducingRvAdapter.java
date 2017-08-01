@@ -63,16 +63,15 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
                 //通知详情板块内容变更
                 selected = position;
                 notifyDataSetChanged();
-                if(position>=0 && position<list.size()){
-                    EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
-                }
-
                 Log.d(TAG, "点击了 " + position);
             }
         });
 
         if(selected==position){
             holder.rootLayout.setBackgroundResource(R.drawable.bg_order_selected);
+            if(position>=0 && position<list.size()){
+                EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
+            }
         }else{
             holder.rootLayout.setBackgroundResource(R.drawable.bg_order);
         }

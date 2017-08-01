@@ -20,6 +20,7 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.common.PrintHelper;
 import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
@@ -51,7 +52,7 @@ public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.Vi
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_list_item, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.tomorrow_list_item, parent, false);
         return new ViewHolder(v);
     }
 
@@ -79,6 +80,7 @@ public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.Vi
         final OrderBean order = list.get(position);
 
         holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
+        holder.expectedTimeText.setText(OrderHelper.getPeriodOfExpectedtime(order));
 
         //加急
         if("Y".equalsIgnoreCase(order.getReminder())){
@@ -118,40 +120,30 @@ public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.Vi
         }
 
 
-        OrderHelper.showEffectOnly(order,holder.effectTimeTxt);
+//        OrderHelper.showEffectOnly(order,holder.effectTimeTxt);
 
         holder.deliverStatusText.setText(OrderHelper.getStatusName(order.getStatus(),order.getWxScan()));
 
         fillItemListData(holder.itemContainerll, order.getItems());
         holder.cupCountText.setText(context.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
-        if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
-            holder.twobtnContainerLayout.setVisibility(View.GONE);
-            holder.onebtnContainerlayout.setVisibility(View.VISIBLE);
-            holder.produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //点击开始生产（打印）按钮
-                    EventBus.getDefault().post(new StartProduceEvent(order));
-                }
-            });
-        }else if(order.getProduceStatus() == OrderStatus.PRODUCING){
-            holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
-            holder.onebtnContainerlayout.setVisibility(View.GONE);
-            holder.produceBtn.setVisibility(View.VISIBLE);
-            holder.produceBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //生产完成
-                    EventBus.getDefault().post(new FinishProduceEvent(order));
-                }
-            });
 
-        }else{
-            holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
-            holder.onebtnContainerlayout.setVisibility(View.GONE);
-            holder.produceBtn.setVisibility(View.GONE);
+        holder.advancePrintBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //点击预打印按钮
+                PrintHelper.getInstance().printOrderInfo(order);
+                PrintHelper.getInstance().printOrderItems(order);
+                notifyDataSetChanged();
+            }
+        });
 
+        if (OrderHelper.isPrinted(context, order.getOrderSn())) {
+            holder.advancePrintBtn.setText(R.string.print_again);
+
+        } else {
+            holder.advancePrintBtn.setText(R.string.print);
         }
+
 
     }
 
@@ -225,17 +217,14 @@ public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.Vi
         @BindView(R.id.iv_sao_flag) ImageView saoImg;
         @BindView(R.id.iv_label_flag) ImageView labelFlagImg;
         @BindView(R.id.item_order_id) TextView orderIdTxt;
-        @BindView(R.id.item_contant_produce_effect) TextView contantEffectTimeTxt;
-        @BindView(R.id.item_produce_effect) TextView effectTimeTxt;
+//        @BindView(R.id.item_produce_effect) TextView effectTimeTxt;
+        @BindView(R.id.tv_expected_time) TextView expectedTimeText;
         @BindView(R.id.item_grab_flag) ImageView grabFlagIV;
         @BindView(R.id.item_remark_flag) ImageView remarkFlagIV;
         @BindView(R.id.item_container) LinearLayout itemContainerll;
         @BindView(R.id.tv_deliver_status) TextView deliverStatusText;
         @BindView(R.id.tv_cup_count) TextView cupCountText;
-        @BindView(R.id.ll_twobtn_container) LinearLayout twobtnContainerLayout;
-        @BindView(R.id.ll_onebtn_container) LinearLayout onebtnContainerlayout;
-        @BindView(R.id.item_produce_and_print) TextView produceAndPrintBtn;
-        @BindView(R.id.item_produce) TextView produceBtn;
+        @BindView(R.id.tv_advance_print) TextView advancePrintBtn;
 
 
         public ViewHolder(View itemView) {

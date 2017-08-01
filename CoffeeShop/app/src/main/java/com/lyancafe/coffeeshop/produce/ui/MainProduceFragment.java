@@ -271,6 +271,11 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
             if (order.getProduceStatus() == OrderStatus.UNPRODUCED) {
                 twoBtnLayout.setVisibility(View.GONE);
                 oneBtnLayout.setVisibility(View.VISIBLE);
+                if(OrderHelper.isTomorrowOrder(order)){
+                    produceAndPrintBtn.setVisibility(View.GONE);
+                }else{
+                    produceAndPrintBtn.setVisibility(View.VISIBLE);
+                }
             } else if (order.getProduceStatus() == OrderStatus.PRODUCING) {
                 twoBtnLayout.setVisibility(View.VISIBLE);
                 oneBtnLayout.setVisibility(View.GONE);

@@ -20,6 +20,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -667,5 +668,21 @@ public class OrderHelper {
                 teamName = "未知（"+deliverTeam+")";
         }
         return teamName;
+    }
+
+    public static boolean isTomorrowOrder(OrderBean orderBean){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        int day_current = calendar.get(Calendar.DAY_OF_MONTH);
+
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.setTime(new Date(orderBean.getExpectedTime()));
+        int day_order = calendar1.get(Calendar.DAY_OF_MONTH);
+
+        if(day_order>day_current){
+            return true;
+        }else{
+            return false;
+        }
     }
 }
