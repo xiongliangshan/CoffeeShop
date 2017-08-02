@@ -63,16 +63,15 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
                 //通知详情板块内容变更
                 selected = position;
                 notifyDataSetChanged();
-                if(position>=0 && position<list.size()){
-                    EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
-                }
-
                 Log.d(TAG, "点击了 " + position);
             }
         });
 
         if(selected==position){
             holder.rootLayout.setBackgroundResource(R.drawable.bg_order_selected);
+            if(position>=0 && position<list.size()){
+                EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
+            }
         }else{
             holder.rootLayout.setBackgroundResource(R.drawable.bg_order);
         }
@@ -175,6 +174,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
             tv1.setText(item.getProduct());
             tv1.setMaxEms(6);
             tv1.setTextSize(context.getResources().getDimension(R.dimen.content_item_text_size));
+            tv1.setTextColor(context.getResources().getColor(R.color.black2));
             if(!TextUtils.isEmpty(OrderHelper.getLabelStr(item.getRecipeFittingsList()))){
                 Drawable drawable = ContextCompat.getDrawable(CSApplication.getInstance(),R.mipmap.flag_ding);
                 drawable.setBounds(0,1,OrderHelper.dip2Px(12,context),OrderHelper.dip2Px(12,context));
@@ -184,6 +184,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
             TextView tv2 = new TextView(context);
             tv2.setText("x  " + item.getQuantity());
             tv2.setTextSize(context.getResources().getDimension(R.dimen.content_item_text_size));
+            tv2.setTextColor(context.getResources().getColor(R.color.black2));
             TextPaint tp = tv2.getPaint();
             tp.setFakeBoldText(true);
             RelativeLayout rl = new RelativeLayout(context);

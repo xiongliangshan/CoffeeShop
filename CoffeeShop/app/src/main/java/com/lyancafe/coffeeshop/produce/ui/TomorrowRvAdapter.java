@@ -19,14 +19,14 @@ import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.common.PrintHelper;
 import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.NaiGaiEvent;
-import com.lyancafe.coffeeshop.event.PrintOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
-import com.lyancafe.coffeeshop.common.OrderHelper;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -39,20 +39,20 @@ import butterknife.ButterKnife;
 /**
  * Created by Administrator on 2015/9/21.
  */
-public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.ViewHolder>{
+public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.ViewHolder>{
 
     private static final String TAG  ="OrderGridViewAdapter";
     private Context context;
     public List<OrderBean> list = new ArrayList<OrderBean>();
     public int selected = -1;
 
-    public ToProduceRvAdapter(Context context) {
+    public TomorrowRvAdapter(Context context) {
         this.context = context;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_list_item, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.tomorrow_list_item, parent, false);
         return new ViewHolder(v);
     }
 
@@ -80,6 +80,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         final OrderBean order = list.get(position);
 
         holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
+        holder.expectedTimeText.setText(OrderHelper.getPeriodOfExpectedtime(order));
 
         //加急
         if("Y".equalsIgnoreCase(order.getReminder())){
@@ -119,40 +120,30 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         }
 
 
-        OrderHelper.showEffectOnly(order,holder.effectTimeTxt);
+//        OrderHelper.showEffectOnly(order,holder.effectTimeTxt);
 
         holder.deliverStatusText.setText(OrderHelper.getStatusName(order.getStatus(),order.getWxScan()));
 
         fillItemListData(holder.itemContainerll, order.getItems());
         holder.cupCountText.setText(context.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
-        if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
-            holder.twobtnContainerLayout.setVisibility(View.GONE);
-            holder.onebtnContainerlayout.setVisibility(View.VISIBLE);
-            holder.produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //点击开始生产（打印）按钮
-                    EventBus.getDefault().post(new StartProduceEvent(order));
-                }
-            });
-        }else if(order.getProduceStatus() == OrderStatus.PRODUCING){
-            holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
-            holder.onebtnContainerlayout.setVisibility(View.GONE);
-            holder.produceBtn.setVisibility(View.VISIBLE);
-            holder.produceBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //生产完成
-                    EventBus.getDefault().post(new FinishProduceEvent(order));
-                }
-            });
 
-        }else{
-            holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
-            holder.onebtnContainerlayout.setVisibility(View.GONE);
-            holder.produceBtn.setVisibility(View.GONE);
+        holder.advancePrintBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //点击预打印按钮
+                PrintHelper.getInstance().printOrderInfo(order);
+                PrintHelper.getInstance().printOrderItems(order);
+                notifyDataSetChanged();
+            }
+        });
 
+        if (OrderHelper.isPrinted(context, order.getOrderSn())) {
+            holder.advancePrintBtn.setText(R.string.print_again);
+
+        } else {
+            holder.advancePrintBtn.setText(R.string.print);
         }
+
 
     }
 
@@ -226,17 +217,14 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         @BindView(R.id.iv_sao_flag) ImageView saoImg;
         @BindView(R.id.iv_label_flag) ImageView labelFlagImg;
         @BindView(R.id.item_order_id) TextView orderIdTxt;
-        @BindView(R.id.item_contant_produce_effect) TextView contantEffectTimeTxt;
-        @BindView(R.id.item_produce_effect) TextView effectTimeTxt;
+//        @BindView(R.id.item_produce_effect) TextView effectTimeTxt;
+        @BindView(R.id.tv_expected_time) TextView expectedTimeText;
         @BindView(R.id.item_grab_flag) ImageView grabFlagIV;
         @BindView(R.id.item_remark_flag) ImageView remarkFlagIV;
         @BindView(R.id.item_container) LinearLayout itemContainerll;
         @BindView(R.id.tv_deliver_status) TextView deliverStatusText;
         @BindView(R.id.tv_cup_count) TextView cupCountText;
-        @BindView(R.id.ll_twobtn_container) LinearLayout twobtnContainerLayout;
-        @BindView(R.id.ll_onebtn_container) LinearLayout onebtnContainerlayout;
-        @BindView(R.id.item_produce_and_print) TextView produceAndPrintBtn;
-        @BindView(R.id.item_produce) TextView produceBtn;
+        @BindView(R.id.tv_advance_print) TextView advancePrintBtn;
 
 
         public ViewHolder(View itemView) {
@@ -245,10 +233,9 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         }
     }
 
-    public void setData(List<OrderBean> list,int category){
-        this.list = filterOrders(list,category);
+    public void setData(List<OrderBean> list){
+        this.list = list;
         notifyDataSetChanged();
-        EventBus.getDefault().post(new NaiGaiEvent(OrderHelper.caculateNaiGai(list)));
         if(selected>=0 && selected<this.list.size()){
             EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
         }else{

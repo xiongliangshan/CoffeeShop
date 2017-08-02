@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
+import com.lyancafe.coffeeshop.widget.DepthPageTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +65,7 @@ public class MainShopFragment extends BaseFragment implements TabLayout.OnTabSel
         mPagerAdapter = new ShopFragmentPagerAdapter(getChildFragmentManager(),getActivity(),fragments);
         viewPager.setAdapter(mPagerAdapter);
         viewPager.setOffscreenPageLimit(4);
+        viewPager.setPageTransformer(true,new DepthPageTransformer());
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.addOnTabSelectedListener(this);
     }
