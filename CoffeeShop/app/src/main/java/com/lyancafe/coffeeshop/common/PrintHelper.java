@@ -207,22 +207,22 @@ public class PrintHelper {
         List<PrintCupBean> coffeeList = bean.getCoffeeList();
         switch (coffeeList.size()){
             case 1:
-                order1 = coffeeList.get(0).getCoffee()+","+OrderHelper.getLabelStr(coffeeList.get(0).getLabelList());
+                order1 = coffeeList.get(0).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(0).getLabelList());
                 break;
             case 2:
-                order1 = coffeeList.get(0).getCoffee()+","+OrderHelper.getLabelStr(coffeeList.get(0).getLabelList());
-                order2 = coffeeList.get(1).getCoffee()+","+OrderHelper.getLabelStr(coffeeList.get(1).getLabelList());
+                order1 = coffeeList.get(0).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(0).getLabelList());
+                order2 = coffeeList.get(1).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(1).getLabelList());
                 break;
             case 3:
-                order1 = coffeeList.get(0).getCoffee()+","+OrderHelper.getLabelStr(coffeeList.get(0).getLabelList());
-                order2 = coffeeList.get(1).getCoffee()+","+OrderHelper.getLabelStr(coffeeList.get(1).getLabelList());
-                order3 = coffeeList.get(2).getCoffee()+","+OrderHelper.getLabelStr(coffeeList.get(2).getLabelList());
+                order1 = coffeeList.get(0).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(0).getLabelList());
+                order2 = coffeeList.get(1).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(1).getLabelList());
+                order3 = coffeeList.get(2).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(2).getLabelList());
                 break;
             case 4:
-                order1 = coffeeList.get(0).getCoffee()+","+OrderHelper.getLabelStr(coffeeList.get(0).getLabelList());
-                order2 = coffeeList.get(1).getCoffee()+","+OrderHelper.getLabelStr(coffeeList.get(1).getLabelList());
-                order3 = coffeeList.get(2).getCoffee()+","+OrderHelper.getLabelStr(coffeeList.get(2).getLabelList());
-                order4 = coffeeList.get(3).getCoffee()+","+OrderHelper.getLabelStr(coffeeList.get(3).getLabelList());
+                order1 = coffeeList.get(0).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(0).getLabelList());
+                order2 = coffeeList.get(1).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(1).getLabelList());
+                order3 = coffeeList.get(2).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(2).getLabelList());
+                order4 = coffeeList.get(3).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(3).getLabelList());
                 break;
         }
 
@@ -254,6 +254,7 @@ public class PrintHelper {
                 "A300,30,0,230,2,2,N,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
                 "A20,100,0,230,1,1,N,\"订单编号:\""+"\n"+ //订单编号
                 "A140,100,0,230,1,1,N,\""+bean.getOrderId()+"\""+"\n"+
+                "A450,100,0,230,1,1,N,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
                 "A20,120,0,230,1,1,N,\"-------------------------------------------------- \""+"\n"+
                 "A20,150,0,230,1,1,N,\""+order1+"\""+"\n"+
                 "A320,150,0,230,1,1,N,\""+order2+"\""+"\n"+

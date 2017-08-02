@@ -67,7 +67,7 @@ public class OrderBean implements Serializable{
 
     private int feedbackType;            // 0:没有评价，4:好评，5:差评
 
-    private int deliveryTeam;               //   配送团队 4:lyan 5:qusong 6:wokuaidao 7:sweets 8:美团外卖 9:海葵
+    private int deliveryTeam;               //   配送团队 -1:无配送 4:lyan 5:qusong 6:wokuaidao 7:sweets 8:美团外卖 9:海葵 100:仓库发货
 
     private int mtShopOrderNo;                  //   美团门店单号
 

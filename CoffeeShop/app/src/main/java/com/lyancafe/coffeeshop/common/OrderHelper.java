@@ -679,10 +679,15 @@ public class OrderHelper {
         calendar1.setTime(new Date(orderBean.getExpectedTime()));
         int day_order = calendar1.get(Calendar.DAY_OF_MONTH);
 
+
         if(day_order>day_current){
             return true;
         }else{
             return false;
         }
+    }
+
+    public static String getPrintFlag(String orderSn) {
+        return isPrinted(CSApplication.getInstance(),orderSn)?"重复打印":"";
     }
 }
