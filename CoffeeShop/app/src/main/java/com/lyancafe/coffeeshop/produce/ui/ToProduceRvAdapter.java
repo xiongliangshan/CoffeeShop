@@ -3,6 +3,7 @@ package com.lyancafe.coffeeshop.produce.ui;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SearchViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextPaint;
 import android.text.TextUtils;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -31,7 +33,9 @@ import com.lyancafe.coffeeshop.common.OrderHelper;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,9 +49,15 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
     private Context context;
     public List<OrderBean> list = new ArrayList<OrderBean>();
     public int selected = -1;
+    public ListMode curMode;
+    private List<OrderBean> batchOrders;
+    public Map<Integer,Boolean> selectMap;
 
     public ToProduceRvAdapter(Context context) {
         this.context = context;
+        curMode = ListMode.NORMAL;
+        batchOrders = new ArrayList<>();
+        selectMap = new HashMap<>();
     }
 
     @Override
@@ -57,7 +67,20 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        if(curMode==ListMode.SELECT){
+            holder.selectView.setVisibility(View.VISIBLE);
+            holder.selectView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.checkBox.setChecked(!holder.checkBox.isChecked());
+                    selectMap.put(position,holder.checkBox.isChecked());
+                }
+            });
+        }else {
+            holder.selectView.setVisibility(View.GONE);
+        }
+
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -216,10 +239,23 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         ll.invalidate();
     }
 
+    public List<OrderBean> getBatchOrders() {
+        List<OrderBean> batchOrders = new ArrayList<>();
+        for(int i= 0;i<list.size();i++){
+            Boolean isChecked = selectMap.get(i);
+            if(isChecked!=null && isChecked.booleanValue()){
+                batchOrders.add(list.get(i));
+            }
+        }
+        return batchOrders;
+    }
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.rl_select_view) RelativeLayout selectView;
+        @BindView(R.id.checkbox)
+        CheckBox checkBox;
         @BindView(R.id.root_view) LinearLayout rootLayout;
         @BindView(R.id.ll_first_row) LinearLayout firstRowLayout;
         @BindView(R.id.iv_reminder) ImageView reminderImg;
@@ -237,6 +273,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         @BindView(R.id.ll_onebtn_container) LinearLayout onebtnContainerlayout;
         @BindView(R.id.item_produce_and_print) TextView produceAndPrintBtn;
         @BindView(R.id.item_produce) TextView produceBtn;
+
 
 
         public ViewHolder(View itemView) {

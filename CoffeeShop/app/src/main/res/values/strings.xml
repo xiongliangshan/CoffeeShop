@@ -108,5 +108,7 @@
     <string name="coffee_moli">芝士云顶茉莉</string>
     <string name="coffee_hongyu">芝士云顶红玉</string>
     <string name="select_material">请选择要打印的物料</string>
+    <string name="batch_start">批量开始</string>
+    <string name="batch_select">批量选择</string>
 
 </resources>

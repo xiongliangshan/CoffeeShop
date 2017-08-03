@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -44,9 +45,11 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
     private Context context;
     public List<OrderBean> list = new ArrayList<OrderBean>();
     public int selected = -1;
+    public ListMode curMode;
 
     public ProducingRvAdapter(Context context) {
         this.context = context;
+        curMode = ListMode.NORMAL;
     }
 
     @Override
@@ -56,7 +59,18 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        if(curMode==ListMode.SELECT){
+            holder.selectView.setVisibility(View.VISIBLE);
+            holder.selectView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.checkBox.setChecked(!holder.checkBox.isChecked());
+                }
+            });
+        }else {
+            holder.selectView.setVisibility(View.GONE);
+        }
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -217,6 +231,9 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.rl_select_view) RelativeLayout selectView;
+        @BindView(R.id.checkbox)
+        CheckBox checkBox;
         @BindView(R.id.root_view) LinearLayout rootLayout;
         @BindView(R.id.ll_first_row) LinearLayout firstRowLayout;
         @BindView(R.id.iv_reminder) ImageView reminderImg;

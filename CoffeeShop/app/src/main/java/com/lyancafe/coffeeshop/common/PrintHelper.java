@@ -8,8 +8,10 @@ import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.MaterialItem;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.PrintCupBean;
+import com.lyancafe.coffeeshop.bean.PrintObject;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
 import com.lyancafe.coffeeshop.http.Api;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.io.IOException;
@@ -24,9 +26,11 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Observable;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class PrintHelper {
 
-    private static final String TAG = "PrintHelpter";
+    private static final String TAG = "PrintHelper";
     private static String ip_print_order = "192.19.1.231";
     private static String ip_print_cup = "192.19.1.232";
     private static final int MSG_PING = 66;
@@ -693,11 +697,46 @@ public class PrintHelper {
     }
 
 
+    //打印汇总
+    private  void doPrintBatchInfo(String printContent){
+        Log.d("xls","DoPrintBatchInfo ="+printContent);
+        DoPrintRunnable dpt = new DoPrintRunnable();
+        dpt.setPrinterIP(ip_print_order);
+        dpt.setPrinterContent(printContent);
+        mPoolExecutor.execute(dpt);
+    }
+
+
     private String getRemarkFlag(boolean isHaveRemark){
         if(isHaveRemark){
             return "  备";
         }else{
             return "";
+        }
+    }
+
+
+    public void printBatchInfo(List<OrderBean> batchOrders){
+        Map<String,Integer> coffeeMap = new HashMap<>();
+        for(OrderBean order:batchOrders){
+            List<ItemContentBean> items = order.getItems();
+            for(ItemContentBean item:items){
+                if(!coffeeMap.containsKey(item.getProduct())){
+                    coffeeMap.put(item.getProduct(),item.getQuantity());
+                }else{
+                    coffeeMap.put(item.getProduct(),coffeeMap.get(item.getProduct())+item.getQuantity());
+                }
+            }
+        }
+        List<PrintObject> printObjects = PrintObject.transformPrintObjects(coffeeMap);
+        LogUtil.d("xls","printObject size = "+printObjects.size());
+        for(int i=0;i<printObjects.size();i++){
+            doPrintBatchInfo(printObjects.get(i).getPrintContent());
+        }
+       Iterator<String> iterator = coffeeMap.keySet().iterator();
+        while (iterator.hasNext()){
+            String name = iterator.next();
+            LogUtil.d(TAG,name+" x "+coffeeMap.get(name));
         }
     }
 

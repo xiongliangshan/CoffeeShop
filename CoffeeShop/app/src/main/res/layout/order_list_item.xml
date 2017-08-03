@@ -6,6 +6,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardElevation="8dp"
     app:cardMaxElevation="10dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <LinearLayout
         android:id="@+id/root_view"
         android:layout_width="match_parent"
@@ -202,4 +206,23 @@
         </LinearLayout>
 
     </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_select_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_select_mode">
+
+            <CheckBox
+                android:id="@+id/checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:button="@drawable/bg_check"
+                android:gravity="center"
+                android:clickable="false"
+                />
+
+        </RelativeLayout>
+    </FrameLayout>
 </android.support.v7.widget.CardView>

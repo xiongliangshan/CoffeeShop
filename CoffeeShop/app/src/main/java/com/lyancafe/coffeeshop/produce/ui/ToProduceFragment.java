@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.CSApplication;
@@ -37,23 +38,35 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ToProduceFragment extends BaseFragment implements MainProduceFragment.FilterOrdersListenter,ToProduceView {
+public class ToProduceFragment extends BaseFragment implements MainProduceFragment.FilterOrdersListenter, ToProduceView {
 
 
-    @BindView(R.id.rv_to_produce) RecyclerView mRecyclerView;
-    @BindView(R.id.ll_naigai_layout) LinearLayout naigaiLayout;
-    @BindView(R.id.tv_amount_hongyu) TextView tvHongyu;
-    @BindView(R.id.tv_amount_moli) TextView tvMoli;
+    @BindView(R.id.rv_to_produce)
+    RecyclerView mRecyclerView;
+    @BindView(R.id.ll_naigai_layout)
+    ConstraintLayout naigaiLayout;
+    @BindView(R.id.tv_amount_hongyu)
+    TextView tvHongyu;
+    @BindView(R.id.tv_amount_moli)
+    TextView tvMoli;
+    @BindView(R.id.cl_batch_layout)
+    ConstraintLayout batchLayout;
+    @BindView(R.id.btn_batch_select)
+    Button batchSelectBtn;
+    @BindView(R.id.btn_cancel)
+    Button cancelBtn;
 
     private Unbinder unbinder;
     private ToProduceRvAdapter mAdapter;
@@ -64,6 +77,7 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
 
     private ToProducePresenter mToProducePresenter;
     private LoadingDialog mLoadinngDlg;
+
     public ToProduceFragment() {
 
     }
@@ -78,14 +92,14 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mHandler = new Handler();
-        mToProducePresenter = new ToProducePresenterImpl(this.getContext(),this);
+        mToProducePresenter = new ToProducePresenterImpl(this.getContext(), this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         EventBus.getDefault().register(this);
         View contentView = inflater.inflate(R.layout.fragment_to_produce, container, false);
-        unbinder = ButterKnife.bind(this,contentView);
+        unbinder = ButterKnife.bind(this, contentView);
         initViews();
         return contentView;
     }
@@ -93,7 +107,7 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
 
     private void initViews() {
         mAdapter = new ToProduceRvAdapter(getActivity());
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),4,GridLayoutManager.VERTICAL,false));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4, GridLayoutManager.VERTICAL, false));
         mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(12, getActivity()), false));
         mRecyclerView.setAdapter(mAdapter);
     }
@@ -110,47 +124,52 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
     }
 
     @Subscribe
-    public void onNaiGaiEvent(NaiGaiEvent event){
+    public void onNaiGaiEvent(NaiGaiEvent event) {
         showNaiGaiAmount(event.map);
     }
 
     @Override
     public void showNaiGaiAmount(Map<String, Integer> map) {
-        if(naigaiLayout==null){
+        if (naigaiLayout == null) {
             return;
         }
         int hongyu = map.get(CSApplication.getInstance().getString(R.string.coffee_hongyu));
         int moli = map.get(CSApplication.getInstance().getString(R.string.coffee_moli));
-        if(hongyu==0 && moli==0){
+        if (hongyu == 0 && moli == 0) {
             naigaiLayout.setVisibility(View.GONE);
-        }else{
+        } else {
             naigaiLayout.setVisibility(View.VISIBLE);
-            tvHongyu.setText(hongyu+"杯");
-            tvMoli.setText(moli+"杯");
+            tvHongyu.setText(hongyu + "杯");
+            tvMoli.setText(moli + "杯");
         }
 
     }
 
     @Override
     public void bindDataToView(List<OrderBean> list) {
+        if (list != null && list.size() > 1) {
+            batchLayout.setVisibility(View.VISIBLE);
+        } else {
+            batchLayout.setVisibility(View.GONE);
+        }
         allOrderList.clear();
         allOrderList.addAll(list);
-        if(isVisible){
+        if (isVisible) {
             mAdapter.setData(list, MainProduceFragment.category);
         }
     }
 
     @Override
     public void showToast(String promptStr) {
-        ToastUtil.showToast(getActivity(),promptStr);
+        ToastUtil.showToast(getActivity(), promptStr);
     }
 
     @Override
     public void showLoading() {
-        if(mLoadinngDlg==null){
+        if (mLoadinngDlg == null) {
             mLoadinngDlg = new LoadingDialog(getContext());
         }
-        if(!mLoadinngDlg.isShowing()){
+        if (!mLoadinngDlg.isShowing()) {
             mLoadinngDlg.show();
         }
 
@@ -158,14 +177,14 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
 
     @Override
     public void dismissLoading() {
-        if(mLoadinngDlg!=null && mLoadinngDlg.isShowing()){
+        if (mLoadinngDlg != null && mLoadinngDlg.isShowing()) {
             mLoadinngDlg.dismiss();
         }
     }
 
     @Override
     public void filter(String category) {
-        Log.d("xls","ToProduce category = "+category);
+        Log.d("xls", "ToProduce category = " + category);
         mAdapter.setData(allOrderList, MainProduceFragment.category);
     }
 
@@ -175,9 +194,9 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
             @Override
             public void onClickYes() {
                 //请求服务器改变该订单状态，由 待生产--生产中
-                mToProducePresenter.doStartProduce(orderBean.getId(),orderBean.getWxScan());
+                mToProducePresenter.doStartProduce(orderBean.getId(), orderBean.getWxScan());
                 //打印全部，如果是扫码单则不打印
-                if(!orderBean.getWxScan()){
+                if (!orderBean.getWxScan()) {
                     PrintHelper.getInstance().printOrderInfo(orderBean);
                     PrintHelper.getInstance().printOrderItems(orderBean);
                 }
@@ -200,39 +219,38 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(mHandler!=null){
-            mHandler=null;
+        if (mHandler != null) {
+            mHandler = null;
         }
     }
-
 
 
     @Override
     public void onVisible() {
         super.onVisible();
-        Log.d("xls","ToproduceFragment is Visible");
-        if(!isResumed()){
+        Log.d("xls", "ToproduceFragment is Visible");
+        if (!isResumed()) {
             return;
         }
         mRunnable = new ToProduceTaskRunnable();
-        mHandler.postDelayed(mRunnable,OrderHelper.DELAY_LOAD_TIME);
+        mHandler.postDelayed(mRunnable, OrderHelper.DELAY_LOAD_TIME);
 
     }
 
     @Override
     public void onInVisible() {
         super.onInVisible();
-        Log.d("xls","ToproduceFragment is InVisible");
-        if(mHandler!=null){
+        Log.d("xls", "ToproduceFragment is InVisible");
+        if (mHandler != null) {
             mHandler.removeCallbacks(mRunnable);
         }
     }
 
     //新订单消息触发事件
     @Subscribe
-    public void onNewOrderComing(NewOderComingEvent event){
-        LogUtil.d(LogUtil.TAG_PRODUCE,"onNewOrderComming : orderId = "+event.orderId);
-        if(isResumed()){
+    public void onNewOrderComing(NewOderComingEvent event) {
+        LogUtil.d(LogUtil.TAG_PRODUCE, "onNewOrderComming : orderId = " + event.orderId);
+        if (isResumed()) {
             mToProducePresenter.loadToProduceOrders();
         }
 
@@ -240,10 +258,11 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
 
     /**
      * 点击开始生产按钮事件
+     *
      * @param event
      */
     @Subscribe
-    public void onStartProduceEvent(StartProduceEvent event){
+    public void onStartProduceEvent(StartProduceEvent event) {
         showStartProduceConfirmDialog(event.order);
     }
 
@@ -255,16 +274,16 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
 
 
     //订单状态改变后刷新列表UI
-    public void refreshListForStatus(long orderId, int status){
-        if(mAdapter==null){
+    public void refreshListForStatus(long orderId, int status) {
+        if (mAdapter == null) {
             return;
         }
-        for(int i=0;i<mAdapter.list.size();i++) {
+        for (int i = 0; i < mAdapter.list.size(); i++) {
             OrderBean order = mAdapter.list.get(i);
             if (orderId == order.getId()) {
                 order.setStatus(status);
                 mAdapter.notifyItemChanged(i);
-                if(getParentFragment() instanceof MainProduceFragment){
+                if (getParentFragment() instanceof MainProduceFragment) {
                     ((MainProduceFragment) getParentFragment()).updateOrderDetail(order);
                 }
                 break;
@@ -272,7 +291,38 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
         }
     }
 
-    class ToProduceTaskRunnable implements Runnable{
+    @OnClick({R.id.btn_batch_select, R.id.btn_cancel})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.btn_batch_select:
+                if(getString(R.string.batch_select).equals(batchSelectBtn.getText().toString())){
+                    //点击批量选择
+                    mAdapter.curMode = ListMode.SELECT;
+                    mAdapter.selectMap.clear();
+                    mAdapter.notifyDataSetChanged();
+                    cancelBtn.setVisibility(cancelBtn.getVisibility()!=View.VISIBLE?View.VISIBLE:View.GONE);
+                    batchSelectBtn.setText(R.string.batch_start);
+                }else{
+                    //点击批量开始
+                    LogUtil.d("xls","被选中的订单:");
+                    List<OrderBean> selectedList = mAdapter.getBatchOrders();
+                    PrintHelper.getInstance().printBatchInfo(selectedList);
+                    /*for(OrderBean orderBean:selectedList){
+                        LogUtil.d("xls",orderBean.getShopOrderNo()+"");
+                    }*/
+                }
+
+                break;
+            case R.id.btn_cancel:
+                mAdapter.curMode = ListMode.NORMAL;
+                mAdapter.notifyDataSetChanged();
+                cancelBtn.setVisibility(View.GONE);
+                batchSelectBtn.setText(R.string.batch_select);
+                break;
+        }
+    }
+
+    class ToProduceTaskRunnable implements Runnable {
         @Override
         public void run() {
             mToProducePresenter.loadToProduceOrders();
