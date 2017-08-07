@@ -34,6 +34,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -77,6 +78,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
                     selectMap.put(position,holder.checkBox.isChecked());
                 }
             });
+            holder.checkBox.setChecked(selectMap.get(position)==null?false:selectMap.get(position));
         }else {
             holder.selectView.setVisibility(View.GONE);
         }
@@ -191,6 +193,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
     public long getItemId(int position) {
         return position;
     }
+
 
     //填充item数据
     private void fillItemListData(LinearLayout ll,List<ItemContentBean> items){

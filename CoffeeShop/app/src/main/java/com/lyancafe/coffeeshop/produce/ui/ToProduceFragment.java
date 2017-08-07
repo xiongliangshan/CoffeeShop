@@ -308,8 +308,14 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
                     List<OrderBean> selectedList = mAdapter.getBatchOrders();
                     PrintHelper.getInstance().printBatchInfo(selectedList);
                     /*for(OrderBean orderBean:selectedList){
-                        LogUtil.d("xls",orderBean.getShopOrderNo()+"");
+                        mToProducePresenter.doStartProduce(orderBean.getId(), orderBean.getWxScan());
+                        //打印全部，如果是扫码单则不打印
+                        if (!orderBean.getWxScan()) {
+                            PrintHelper.getInstance().printOrderInfo(orderBean);
+                            PrintHelper.getInstance().printOrderItems(orderBean);
+                        }
                     }*/
+
                 }
 
                 break;

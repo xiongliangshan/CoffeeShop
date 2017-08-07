@@ -3,6 +3,7 @@ package com.lyancafe.coffeeshop.common;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.baidu.mapapi.map.Text;
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.MaterialItem;
@@ -718,6 +719,7 @@ public class PrintHelper {
 
     public void printBatchInfo(List<OrderBean> batchOrders){
         Map<String,Integer> coffeeMap = new HashMap<>();
+        Map<String,Map<String,Integer>> recipeFittingsMap = new HashMap<>();
         for(OrderBean order:batchOrders){
             List<ItemContentBean> items = order.getItems();
             for(ItemContentBean item:items){
@@ -726,18 +728,37 @@ public class PrintHelper {
                 }else{
                     coffeeMap.put(item.getProduct(),coffeeMap.get(item.getProduct())+item.getQuantity());
                 }
+
+                //个性化口味
+                String fittings = item.getRecipeFittings();
+                if(!TextUtils.isEmpty(fittings)){
+                    Map<String,Integer> fittingsMap = null;
+                    if(recipeFittingsMap.containsKey(item.getProduct())){
+                        fittingsMap = recipeFittingsMap.get(item.getProduct());
+                    }else{
+                        fittingsMap = new HashMap<>();
+                        recipeFittingsMap.put(item.getProduct(),fittingsMap);
+                    }
+
+                    if(fittingsMap.containsKey(fittings)){
+                        fittingsMap.put(fittings,fittingsMap.get(fittings)+1);
+                    }else{
+                        fittingsMap.put(fittings,1);
+                    }
+
+                }
+
             }
         }
-        List<PrintObject> printObjects = PrintObject.transformPrintObjects(coffeeMap);
+        List<PrintObject> printObjects = PrintObject.transformPrintObjects(coffeeMap,recipeFittingsMap);
+        LogUtil.d("xls","recipeFittingsMap size = "+recipeFittingsMap.size());
         LogUtil.d("xls","printObject size = "+printObjects.size());
-        for(int i=0;i<printObjects.size();i++){
-            doPrintBatchInfo(printObjects.get(i).getPrintContent());
+        if(printObjects.size()>0){
+            for(int i=printObjects.size()-1;i>=0;i--){
+                doPrintBatchInfo(printObjects.get(i).getPrintContent());
+            }
         }
-       Iterator<String> iterator = coffeeMap.keySet().iterator();
-        while (iterator.hasNext()){
-            String name = iterator.next();
-            LogUtil.d(TAG,name+" x "+coffeeMap.get(name));
-        }
+
     }
 
 

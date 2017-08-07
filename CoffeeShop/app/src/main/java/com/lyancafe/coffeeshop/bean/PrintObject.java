@@ -33,14 +33,17 @@ public class PrintObject {
         this.content = printObject.getContent();
     }
 
-    public static List<PrintObject> transformPrintObjects(Map<String,Integer> coffeeMap) {
+    public static List<PrintObject> transformPrintObjects(Map<String,Integer> coffeeMap, Map<String,Map<String,Integer>> recipeFittingsMap) {
 
         List<PrintObject> printObjects = new ArrayList<>();
         if(coffeeMap.size()==0){
             return printObjects;
         }
         Iterator<String> iterator = coffeeMap.keySet().iterator();
-        int size = coffeeMap.size()%6==0?coffeeMap.size()/6:coffeeMap.size()/6+1;
+        int coffeeSize = coffeeMap.size();
+        int fittingSize = getMapSize(recipeFittingsMap);
+        int totalSize = coffeeSize+fittingSize;
+        int size = totalSize%6==0?totalSize/6:totalSize/6+1;
         for(int i=0;i<size;i++){
             printObjects.add(new PrintObject());
         }
@@ -50,15 +53,51 @@ public class PrintObject {
         while (iterator.hasNext()){
             String name = iterator.next();
             LogUtil.d("xls",name+" x "+coffeeMap.get(name));
-            printObjects.get(i/6).getContent().add("A"+l+","+t+",0,230,1,1,N,\""+name+"    x "+coffeeMap.get(name)+"\""+"\n");
-            t+=50;
+            printObjects.get(i/6).getContent().add("A"+l+","+t+",0,230,2,2,N,\""+name+" x "+coffeeMap.get(name)+"\""+"\n");
+            t+=60;
             i++;
             if(i%6==0){
                 l = 30;
                 t = 30;
             }
+
+            Map<String ,Integer> fittingsMap = recipeFittingsMap.get(name);
+            if(fittingsMap!=null){
+                Iterator<String> iterator1 = fittingsMap.keySet().iterator();
+                while (iterator1.hasNext()){
+
+                    String fitting = iterator1.next();
+                    printObjects.get(i/6).getContent().add("A"+(l+150)+","+t+",0,230,1,1,N,\""+fitting+" x "+fittingsMap.get(fitting)+"\""+"\n");
+                    t+=60;
+                    i++;
+                    if(i%6==0){
+                        l = 30;
+                        t = 30;
+                    }
+                }
+            }
+
+
         }
+
+        //构造头和尾
+        PrintObject start = new PrintObject();
+        start.getContent().add("A0,200,0,230,2,2,N,\"----------生产汇总------------ \""+"\n");
+        PrintObject end = new PrintObject();
+        end.getContent().add("A0,200,0,230,2,2,N,\"----------生产汇总------------ \""+"\n");
+        printObjects.add(0,start);
+        printObjects.add(end);
         return printObjects;
+    }
+
+    public static int getMapSize(Map<String,Map<String,Integer>> map){
+        int sum = 0;
+        Iterator<String> iterator = map.keySet().iterator();
+        while (iterator.hasNext()){
+            String key = iterator.next();
+            sum+=map.get(key).size();
+        }
+        return sum;
     }
 
     public String getPrintContent(){
