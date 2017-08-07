@@ -432,7 +432,7 @@ public class OrderHelper {
 
 
 
-    //拼接个性化标签
+   /* //拼接个性化标签
     public static String getLabelStr(List<String> list){
         if(list==null || list.size()<=0){
             return "";
@@ -444,7 +444,7 @@ public class OrderHelper {
         }
         sb.deleteCharAt(sb.length()-1);
         return sb.toString();
-    }
+    }*/
 
     public static String getLabelPrintStr(List<String> list){
         if(list==null || list.size()<=0){

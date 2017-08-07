@@ -344,7 +344,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
             tv2.setLayoutParams(lp2);
             rl.addView(tv2);
 
-            String dingzhi = OrderHelper.getLabelStr(item.getRecipeFittingsList());
+            String dingzhi = item.getRecipeFittings();
             if (!TextUtils.isEmpty(dingzhi)) {
                 TextView tv5 = new TextView(mContext);
                 tv5.setId(R.id.item_flag);

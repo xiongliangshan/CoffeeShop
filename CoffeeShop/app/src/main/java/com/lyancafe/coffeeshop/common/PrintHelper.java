@@ -211,22 +211,22 @@ public class PrintHelper {
         List<PrintCupBean> coffeeList = bean.getCoffeeList();
         switch (coffeeList.size()){
             case 1:
-                order1 = coffeeList.get(0).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(0).getLabelList());
+                order1 = coffeeList.get(0).getCoffee()+" "+coffeeList.get(0).getLabel();
                 break;
             case 2:
-                order1 = coffeeList.get(0).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(0).getLabelList());
-                order2 = coffeeList.get(1).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(1).getLabelList());
+                order1 = coffeeList.get(0).getCoffee()+" "+coffeeList.get(0).getLabel();
+                order2 = coffeeList.get(1).getCoffee()+" "+coffeeList.get(1).getLabel();
                 break;
             case 3:
-                order1 = coffeeList.get(0).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(0).getLabelList());
-                order2 = coffeeList.get(1).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(1).getLabelList());
-                order3 = coffeeList.get(2).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(2).getLabelList());
+                order1 = coffeeList.get(0).getCoffee()+" "+coffeeList.get(0).getLabel();
+                order2 = coffeeList.get(1).getCoffee()+" "+coffeeList.get(1).getLabel();
+                order3 = coffeeList.get(2).getCoffee()+" "+coffeeList.get(2).getLabel();
                 break;
             case 4:
-                order1 = coffeeList.get(0).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(0).getLabelList());
-                order2 = coffeeList.get(1).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(1).getLabelList());
-                order3 = coffeeList.get(2).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(2).getLabelList());
-                order4 = coffeeList.get(3).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(3).getLabelList());
+                order1 = coffeeList.get(0).getCoffee()+" "+coffeeList.get(0).getLabel();
+                order2 = coffeeList.get(1).getCoffee()+" "+coffeeList.get(1).getLabel();
+                order3 = coffeeList.get(2).getCoffee()+" "+coffeeList.get(2).getLabel();
+                order4 = coffeeList.get(3).getCoffee()+" "+coffeeList.get(3).getLabel();
                 break;
         }
 
@@ -328,7 +328,7 @@ public class PrintHelper {
               int cupAmount = getCupAmountPerBox(boxNumber,hotTotalQuantity,hotBoxAmount);  //当前盒中总杯数
 
               PrintCupBean printCupBean = new PrintCupBean(boxAmount,boxNumber,cupAmount,cupNumber);
-              printCupBean.setLabelList(item.getRecipeFittingsList());
+                printCupBean.setLabel(item.getRecipeFittings());
               printCupBean.setOrderId(orderBean.getId());
               printCupBean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
               printCupBean.setInstant(orderBean.getInstant());
@@ -349,7 +349,7 @@ public class PrintHelper {
             int cupAmount = getCupAmountPerBox(boxNumber,coolTotalQuantity,coolBoxAmount);
 
                 PrintCupBean printCupBean = new PrintCupBean(boxAmount,boxNumber+hotBoxAmount,cupAmount,cupNumber);
-                printCupBean.setLabelList(item.getRecipeFittingsList());
+                printCupBean.setLabel(item.getRecipeFittings());
                 printCupBean.setOrderId(orderBean.getId());
                 printCupBean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
                 printCupBean.setInstant(orderBean.getInstant());
@@ -415,7 +415,7 @@ public class PrintHelper {
                 "A20,40,0,230,1,1,N,\""+shopOrderSn+"\""+"\n"+
                 "A110,40,0,230,1,1,N,\""+bean.getBoxAmount()+"-"+bean.getBoxNumber()+"|"+bean.getCupAmount()+"-" +bean.getCupNumber()+"\""+"\n"+ //杯数盒子信息
                 "A20,70,0,230,1,1,N,\""+bean.getCoffee()+"\""+"\n"+
-                "A20,100,0,230,1,1,N,\""+OrderHelper.getLabelPrintStr(bean.getLabelList())+"\""+"\n"+
+                "A20,100,0,230,1,1,N,\""+bean.getLabel()+"\""+"\n"+
                 "P1"+"\n";
 
     }
