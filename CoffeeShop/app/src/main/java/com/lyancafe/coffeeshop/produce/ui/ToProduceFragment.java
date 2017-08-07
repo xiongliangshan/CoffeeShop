@@ -196,10 +196,8 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
                 //请求服务器改变该订单状态，由 待生产--生产中
                 mToProducePresenter.doStartProduce(orderBean.getId(), orderBean.getWxScan());
                 //打印全部，如果是扫码单则不打印
-                if (!orderBean.getWxScan()) {
-                    PrintHelper.getInstance().printOrderInfo(orderBean);
-                    PrintHelper.getInstance().printOrderItems(orderBean);
-                }
+                PrintHelper.getInstance().printOrderInfo(orderBean);
+                PrintHelper.getInstance().printOrderItems(orderBean);
 
             }
         });

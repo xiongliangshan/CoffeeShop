@@ -108,6 +108,7 @@ public class PrintHelper {
             bean.setCoffeeList(hotCupList.subList(i * 4, i * 4 + 4));
             bean.setOrderId(orderBean.getId());
             bean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
+            bean.setWxScan(orderBean.getWxScan());
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
             if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
@@ -129,6 +130,7 @@ public class PrintHelper {
             bean.setCoffeeList(hotCupList.subList(i * 4, hotCupList.size()));
             bean.setOrderId(orderBean.getId());
             bean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
+            bean.setWxScan(orderBean.getWxScan());
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
             if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
@@ -151,6 +153,7 @@ public class PrintHelper {
             bean.setCoffeeList(coolCupList.subList(j * 4, j * 4 + 4));
             bean.setOrderId(orderBean.getId());
             bean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
+            bean.setWxScan(orderBean.getWxScan());
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
             if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
@@ -172,6 +175,7 @@ public class PrintHelper {
             bean.setCoffeeList(coolCupList.subList(j * 4, coolCupList.size()));
             bean.setOrderId(orderBean.getId());
             bean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
+            bean.setWxScan(orderBean.getWxScan());
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
             if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
@@ -258,7 +262,7 @@ public class PrintHelper {
                 "A20,30,0,230,2,2,N,\""+bean.getShopOrderNo()+"\""+"\n"+
                 "A300,30,0,230,2,2,N,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
                 "A20,100,0,230,1,1,N,\"订单编号:\""+"\n"+ //订单编号
-                "A140,100,0,230,1,1,N,\""+bean.getOrderId()+"\""+"\n"+
+                "A140,100,0,230,1,1,N,\""+bean.getOrderId()+OrderHelper.getWxScanStrForPrint(bean)+"\""+"\n"+
                 "A450,100,0,230,1,1,N,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
                 "A20,120,0,230,1,1,N,\"-------------------------------------------------- \""+"\n"+
                 "A20,150,0,230,1,1,N,\""+order1+"\""+"\n"+

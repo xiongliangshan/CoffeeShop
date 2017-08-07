@@ -446,6 +446,10 @@ public class OrderHelper {
         return sb.toString();
     }*/
 
+   public static String getWxScanStrForPrint(PrintOrderBean printOrderBean){
+       return printOrderBean.isWxScan()?"(到店扫)":"";
+   }
+
     public static String getLabelPrintStr(List<String> list){
         if(list==null || list.size()<=0){
             return "";
