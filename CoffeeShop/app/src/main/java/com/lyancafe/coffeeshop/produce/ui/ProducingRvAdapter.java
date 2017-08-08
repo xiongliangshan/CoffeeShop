@@ -20,6 +20,7 @@ import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
@@ -27,10 +28,12 @@ import com.lyancafe.coffeeshop.event.PrintOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.utils.OrderSortComparator;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -130,7 +133,12 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
             holder.remarkFlagIV.setImageResource(R.mipmap.flag_bei);
         }
 
-        OrderHelper.showEffectOnly(order,holder.effectTimeTxt);
+//        OrderHelper.showEffectOnly(order,holder.effectTimeTxt);
+        if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN) {
+            holder.expectedTimeText.setText(order.getInstant() == 1 ? "立即送出" : OrderHelper.getFormatTimeToStr(order.getExpectedTime()));
+        } else {
+            holder.expectedTimeText.setText(order.getInstant() == 1 ? "尽快送达" : OrderHelper.getFormatPeriodTimeStr(order.getExpectedTime()));
+        }
 
         holder.deliverStatusText.setText(OrderHelper.getStatusName(order.getStatus(),order.getWxScan()));
 
@@ -240,8 +248,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         @BindView(R.id.iv_sao_flag) ImageView saoImg;
         @BindView(R.id.iv_label_flag) ImageView labelFlagImg;
         @BindView(R.id.item_order_id) TextView orderIdTxt;
-        @BindView(R.id.item_contant_produce_effect) TextView contantEffectTimeTxt;
-        @BindView(R.id.item_produce_effect) TextView effectTimeTxt;
+        @BindView(R.id.item_expected_time) TextView expectedTimeText;
         @BindView(R.id.tv_deliver_status) TextView deliverStatusText;
         @BindView(R.id.item_grab_flag) ImageView grabFlagIV;
         @BindView(R.id.item_remark_flag) ImageView remarkFlagIV;
@@ -261,6 +268,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
 
     public void setData(List<OrderBean> list,int category){
         this.list = filterOrders(list,category);
+        Collections.sort(this.list,new OrderSortComparator());
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
             EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));

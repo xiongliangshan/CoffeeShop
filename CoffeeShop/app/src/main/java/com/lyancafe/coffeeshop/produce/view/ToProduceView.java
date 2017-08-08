@@ -2,6 +2,7 @@ package com.lyancafe.coffeeshop.produce.view;
 
 import com.lyancafe.coffeeshop.base.BaseView;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.produce.ui.ListMode;
 
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,9 @@ public interface ToProduceView extends BaseView<OrderBean>{
     //从列表中删除某个item
     void removeItemFromList(int id);
 
+    //从列表中删除一个N个item
+    void removeItemsFromList(List<Long> ids);
+
     //显示开始生产对话框
     void showStartProduceConfirmDialog(final OrderBean orderBean);
 
@@ -27,4 +31,7 @@ public interface ToProduceView extends BaseView<OrderBean>{
 
     //显示奶盖茶数量提示
     void showNaiGaiAmount(Map<String,Integer> map);
+
+    //设定模式
+    void setMode(ListMode mode);
 }

@@ -27,10 +27,12 @@ import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.NaiGaiEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
+import com.lyancafe.coffeeshop.utils.OrderSortComparator;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -235,6 +237,7 @@ public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.Vi
 
     public void setData(List<OrderBean> list){
         this.list = list;
+        Collections.sort(this.list,new OrderSortComparator());
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
             EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));

@@ -32,12 +32,12 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@color/black1"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 android:text="003约"
                 />
 
-            <TextView
+           <!-- <TextView
                 android:id="@+id/item_contant_produce_effect"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -45,11 +45,12 @@
                 android:textSize="10sp"
                 android:textColor="@color/font_gray"
                 android:layout_marginRight="4dp"
-                />
+                />-->
             <TextView
-                android:id="@+id/item_produce_effect"
+                android:id="@+id/item_expected_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/black1"
                 android:textSize="18sp"
                 android:text="08:36"
                 />
@@ -64,12 +65,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/font_gray"
+                android:textSize="15sp"
                 android:text="配送状态:"/>
 
             <TextView
                 android:id="@+id/tv_deliver_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="15sp"
                 android:textColor="@color/font_black"
                 android:layout_marginLeft="8dp"/>
 

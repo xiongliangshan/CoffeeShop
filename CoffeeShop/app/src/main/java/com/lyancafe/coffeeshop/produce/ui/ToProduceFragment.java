@@ -38,7 +38,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +45,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+
+import static com.lyancafe.coffeeshop.produce.ui.ListMode.NORMAL;
+import static com.lyancafe.coffeeshop.produce.ui.ListMode.SELECT;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -195,7 +197,6 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
             public void onClickYes() {
                 //请求服务器改变该订单状态，由 待生产--生产中
                 mToProducePresenter.doStartProduce(orderBean.getId(), orderBean.getWxScan());
-                //打印全部，如果是扫码单则不打印
                 PrintHelper.getInstance().printOrderInfo(orderBean);
                 PrintHelper.getInstance().printOrderItems(orderBean);
 
@@ -270,6 +271,10 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
         mAdapter.removeOrderFromList(id);
     }
 
+    @Override
+    public void removeItemsFromList(List<Long> ids) {
+        mAdapter.removeOrdersFromList(ids);
+    }
 
     //订单状态改变后刷新列表UI
     public void refreshListForStatus(long orderId, int status) {
@@ -289,37 +294,47 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
         }
     }
 
+    @Override
+    public void setMode(ListMode mode) {
+        mAdapter.curMode = mode;
+        mAdapter.notifyDataSetChanged();
+        switch (mode){
+            case NORMAL:
+                batchSelectBtn.setText(R.string.batch_select);
+                cancelBtn.setVisibility(View.GONE);
+                break;
+            case SELECT:
+                batchSelectBtn.setText(R.string.batch_start);
+                cancelBtn.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
+
     @OnClick({R.id.btn_batch_select, R.id.btn_cancel})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_batch_select:
                 if(getString(R.string.batch_select).equals(batchSelectBtn.getText().toString())){
                     //点击批量选择
-                    mAdapter.curMode = ListMode.SELECT;
                     mAdapter.selectMap.clear();
-                    mAdapter.notifyDataSetChanged();
-                    cancelBtn.setVisibility(cancelBtn.getVisibility()!=View.VISIBLE?View.VISIBLE:View.GONE);
-                    batchSelectBtn.setText(R.string.batch_start);
+                    setMode(SELECT);
+
                 }else{
                     //点击批量开始
                     LogUtil.d("xls","被选中的订单:");
                     List<OrderBean> selectedList = mAdapter.getBatchOrders();
                     PrintHelper.getInstance().printBatchInfo(selectedList);
-                    /*for(OrderBean orderBean:selectedList){
-                        mToProducePresenter.doStartProduce(orderBean.getId(), orderBean.getWxScan());
-                        //打印全部，如果是扫码单则不打印
-                        if (!orderBean.getWxScan()) {
-                            PrintHelper.getInstance().printOrderInfo(orderBean);
-                            PrintHelper.getInstance().printOrderItems(orderBean);
-                        }
-                    }*/
+                    PrintHelper.getInstance().printBatchBoxes(selectedList);
+                    PrintHelper.getInstance().printBatchCups(selectedList);
+                    List<Long> orderIds = OrderHelper.getIdsFromOrders(selectedList);
+                    mToProducePresenter.doStartBatchProduce(orderIds);
+
 
                 }
 
                 break;
             case R.id.btn_cancel:
-                mAdapter.curMode = ListMode.NORMAL;
-                mAdapter.notifyDataSetChanged();
+                setMode(NORMAL);
                 cancelBtn.setVisibility(View.GONE);
                 batchSelectBtn.setText(R.string.batch_select);
                 break;
