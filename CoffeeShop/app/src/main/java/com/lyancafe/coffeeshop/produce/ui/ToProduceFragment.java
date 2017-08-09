@@ -323,6 +323,10 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
                     //点击批量开始
                     LogUtil.d("xls","被选中的订单:");
                     List<OrderBean> selectedList = mAdapter.getBatchOrders();
+                    if(selectedList.size()==0){
+                        showToast("未选中订单");
+                        return;
+                    }
                     PrintHelper.getInstance().printBatchInfo(selectedList);
                     PrintHelper.getInstance().printBatchBoxes(selectedList);
                     PrintHelper.getInstance().printBatchCups(selectedList);
