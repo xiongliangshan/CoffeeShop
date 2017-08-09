@@ -16,6 +16,7 @@ import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
 import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.http.BaseObserver;
 import com.lyancafe.coffeeshop.login.ui.LoginActivity;
 import com.lyancafe.coffeeshop.produce.model.ToProduceModel;
 import com.lyancafe.coffeeshop.produce.model.ToProduceModelImpl;
@@ -49,7 +50,7 @@ public class ToProducePresenterImpl implements ToProducePresenter{
 
 
 
-    @Override
+   /* @Override
     public void loadToProduceOrders() {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
         mToProduceModel.loadToProduceOrders(user.getShopId(), user.getToken(), new Observer<BaseEntity<List<OrderBean>>>() {
@@ -91,9 +92,21 @@ public class ToProducePresenterImpl implements ToProducePresenter{
 
             }
         });
+    }*/
+
+    @Override
+    public void loadToProduceOrders() {
+        UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
+        mToProduceModel.loadToProduceOrders(user.getShopId(), user.getToken(), new BaseObserver<List<OrderBean>>(mContext) {
+            @Override
+            protected void onHandleSuccess(List<OrderBean> orderBeanList) {
+                List<OrderBean> toProduceList = orderBeanList;
+                EventBus.getDefault().post(new UpdateProduceFragmentTabOrderCount(0, toProduceList.size()));
+                mToProduceView.bindDataToView(toProduceList);
+                OrderUtils.with().insertOrderList(toProduceList);
+            }
+        });
     }
-
-
 
     @Override
     public void doStartProduce(final long orderId,final  boolean isScanCode) {
