@@ -22,8 +22,8 @@ android {
         applicationId "com.lyancafe.coffeeshop"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 52
-        versionName "3.3.0"
+        versionCode 53
+        versionName "3.3.1"
         multiDexEnabled true
         ndk {
             // 设置支持的SO库架构
@@ -66,7 +66,7 @@ android {
 }
 
 greendao {
-    schemaVersion 2
+    schemaVersion 3
 }
 
 dependencies {
