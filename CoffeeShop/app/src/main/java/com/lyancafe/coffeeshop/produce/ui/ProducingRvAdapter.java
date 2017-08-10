@@ -81,6 +81,9 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
                 selected = position;
                 notifyDataSetChanged();
                 Log.d(TAG, "点击了 " + position);
+                if(position>=0 && position<list.size()){
+                    EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
+                }
             }
         });
 
