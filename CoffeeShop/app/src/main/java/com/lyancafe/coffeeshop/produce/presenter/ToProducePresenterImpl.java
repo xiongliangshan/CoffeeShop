@@ -13,7 +13,7 @@ import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
-import com.lyancafe.coffeeshop.http.BaseObserver;
+import com.lyancafe.coffeeshop.http.CustomObserver;
 import com.lyancafe.coffeeshop.produce.model.ToProduceModel;
 import com.lyancafe.coffeeshop.produce.model.ToProduceModelImpl;
 import com.lyancafe.coffeeshop.produce.ui.ListMode;
@@ -44,7 +44,7 @@ public class ToProducePresenterImpl implements ToProducePresenter{
     @Override
     public void loadToProduceOrders() {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        mToProduceModel.loadToProduceOrders(user.getShopId(), user.getToken(), new BaseObserver<List<OrderBean>>(mContext) {
+        mToProduceModel.loadToProduceOrders(user.getShopId(), user.getToken(), new CustomObserver<List<OrderBean>>(mContext) {
             @Override
             protected void onHandleSuccess(List<OrderBean> orderBeanList) {
                 List<OrderBean> toProduceList = orderBeanList;
@@ -59,7 +59,7 @@ public class ToProducePresenterImpl implements ToProducePresenter{
     @Override
     public void doStartProduce(final long orderId, final boolean isScanCode) {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        mToProduceModel.doStartProduce(user.getShopId(), orderId, user.getToken(), new BaseObserver<JsonObject>(mContext,true) {
+        mToProduceModel.doStartProduce(user.getShopId(), orderId, user.getToken(), new CustomObserver<JsonObject>(mContext,true) {
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
                 mToProduceView.showToast(mContext.getString(R.string.do_success));
@@ -76,7 +76,7 @@ public class ToProducePresenterImpl implements ToProducePresenter{
     @Override
     public void doStartBatchProduce(final List<Long> orderIds) {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        mToProduceModel.doStartBatchProduce(user.getShopId(), orderIds, user.getToken(), new BaseObserver<JsonObject>(mContext,true) {
+        mToProduceModel.doStartBatchProduce(user.getShopId(), orderIds, user.getToken(), new CustomObserver<JsonObject>(mContext,true) {
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
                 mToProduceView.showToast(mContext.getString(R.string.do_success));

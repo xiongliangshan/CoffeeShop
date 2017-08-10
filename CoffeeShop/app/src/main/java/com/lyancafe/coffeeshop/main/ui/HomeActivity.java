@@ -75,22 +75,6 @@ public class HomeActivity extends BaseActivity implements MainView{
         mMainPresenter = new MainPresenterImpl(this,this);
         initViews();
         updateTab(mSelectedIndex);
-        //启动service
-      /*  connection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                Log.d("TaskService","onServiceConnected");
-                TaskService.MyBinder myBinder = (TaskService.MyBinder)service;
-                taskService = myBinder.getService();
-            }
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                Log.d("TaskService","onServiceDisconnected");
-                taskService = null;
-            }
-        };
-        Intent intent=new Intent(HomeActivity.this,TaskService.class);
-        bindService(intent, connection, BIND_AUTO_CREATE);*/
         Intent intent=new Intent(HomeActivity.this,TaskService.class);
         startService(intent);
 
@@ -159,7 +143,6 @@ public class HomeActivity extends BaseActivity implements MainView{
 
     @Override
     protected void onDestroy() {
-//        unbindService(connection);
         super.onDestroy();
     }
 

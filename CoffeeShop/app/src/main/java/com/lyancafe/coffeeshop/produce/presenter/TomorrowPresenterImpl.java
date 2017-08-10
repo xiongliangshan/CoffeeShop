@@ -7,7 +7,7 @@ import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
-import com.lyancafe.coffeeshop.http.BaseObserver;
+import com.lyancafe.coffeeshop.http.CustomObserver;
 import com.lyancafe.coffeeshop.produce.model.TomorrowModel;
 import com.lyancafe.coffeeshop.produce.model.TomorrowModelImpl;
 import com.lyancafe.coffeeshop.produce.view.TomorrowView;
@@ -36,7 +36,7 @@ public class TomorrowPresenterImpl implements TomorrowPresenter {
     @Override
     public void loadTomorrowOrders() {
         UserBean user = LoginHelper.getUser(mContext);
-        mTomorrowModel.loadTomorrowOrders(user.getShopId(), user.getToken(), new BaseObserver<List<OrderBean>>(mContext) {
+        mTomorrowModel.loadTomorrowOrders(user.getShopId(), user.getToken(), new CustomObserver<List<OrderBean>>(mContext) {
             @Override
             protected void onHandleSuccess(List<OrderBean> orderBeanList) {
                 List<OrderBean> tomorrowList = orderBeanList;

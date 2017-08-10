@@ -124,7 +124,7 @@ public class ExceptionalFragment extends BaseFragment implements ExceptionalView
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mExceptionalPresenter = new ExceptionalPresenterImpl(this);
+        mExceptionalPresenter = new ExceptionalPresenterImpl(getContext(),this);
         mHandler = new Handler();
     }
 

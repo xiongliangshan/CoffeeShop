@@ -22,20 +22,20 @@ import io.reactivex.disposables.Disposable;
  * Created by Administrator on 2017/6/9.
  */
 
-public abstract class BaseObserver<T> implements Observer<BaseEntity<T>> {
+public abstract class CustomObserver<T> implements Observer<BaseEntity<T>> {
 
-    private static final String TAG = "BaseObserver";
+    private static final String TAG = "CustomObserver";
     private Context mContext;
     private boolean isShowProgress;
     private LoadingDialog mLoadinngDlg;
 
-    public BaseObserver(Context context) {
+    public CustomObserver(Context context) {
         this.mContext = context;
         this.isShowProgress = false;
         initDialogProgress();
     }
 
-    public BaseObserver(Context mContext, boolean isShowProgress) {
+    public CustomObserver(Context mContext, boolean isShowProgress) {
         this.mContext = mContext;
         this.isShowProgress = isShowProgress;
         initDialogProgress();
