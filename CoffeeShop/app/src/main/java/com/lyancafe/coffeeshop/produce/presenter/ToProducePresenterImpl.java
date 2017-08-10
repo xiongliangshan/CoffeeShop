@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
@@ -15,10 +16,13 @@ import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
 import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.http.BaseObserver;
 import com.lyancafe.coffeeshop.login.ui.LoginActivity;
 import com.lyancafe.coffeeshop.produce.model.ToProduceModel;
 import com.lyancafe.coffeeshop.produce.model.ToProduceModelImpl;
+import com.lyancafe.coffeeshop.produce.ui.ListMode;
 import com.lyancafe.coffeeshop.produce.view.ToProduceView;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -46,7 +50,7 @@ public class ToProducePresenterImpl implements ToProducePresenter{
 
 
 
-    @Override
+   /* @Override
     public void loadToProduceOrders() {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
         mToProduceModel.loadToProduceOrders(user.getShopId(), user.getToken(), new Observer<BaseEntity<List<OrderBean>>>() {
@@ -88,9 +92,21 @@ public class ToProducePresenterImpl implements ToProducePresenter{
 
             }
         });
+    }*/
+
+    @Override
+    public void loadToProduceOrders() {
+        UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
+        mToProduceModel.loadToProduceOrders(user.getShopId(), user.getToken(), new BaseObserver<List<OrderBean>>(mContext) {
+            @Override
+            protected void onHandleSuccess(List<OrderBean> orderBeanList) {
+                List<OrderBean> toProduceList = orderBeanList;
+                EventBus.getDefault().post(new UpdateProduceFragmentTabOrderCount(0, toProduceList.size()));
+                mToProduceView.bindDataToView(toProduceList);
+                OrderUtils.with().insertOrderList(toProduceList);
+            }
+        });
     }
-
-
 
     @Override
     public void doStartProduce(final long orderId,final  boolean isScanCode) {
@@ -109,6 +125,42 @@ public class ToProducePresenterImpl implements ToProducePresenter{
                     mToProduceView.removeItemFromList(id);
                     EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,1,isScanCode));
                     OrderUtils.with().updateOrder(orderId,4005);
+                }else{
+                    mToProduceView.showToast(jsonObjectBaseEntity.getMessage());
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                mToProduceView.dismissLoading();
+                mToProduceView.showToast(e.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+                mToProduceView.dismissLoading();
+            }
+        });
+    }
+
+    @Override
+    public void doStartBatchProduce(final List<Long> orderIds) {
+        UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
+        mToProduceModel.doStartBatchProduce(user.getShopId(), orderIds, user.getToken(), new Observer<BaseEntity<JsonObject>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+                mToProduceView.showLoading();
+            }
+
+            @Override
+            public void onNext(@NonNull BaseEntity<JsonObject> jsonObjectBaseEntity) {
+                if(jsonObjectBaseEntity.getStatus()==0){
+                    mToProduceView.showToast(mContext.getString(R.string.do_success));
+                    mToProduceView.setMode(ListMode.NORMAL);
+                    JsonArray jsonArray = jsonObjectBaseEntity.getData().get("orderIds").getAsJsonArray();
+                    mToProduceView.removeItemsFromList(orderIds);
+                    EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,orderIds.size(),false));
+                    OrderUtils.with().updateBatchOrder(orderIds,4005);
                 }else{
                     mToProduceView.showToast(jsonObjectBaseEntity.getMessage());
                 }

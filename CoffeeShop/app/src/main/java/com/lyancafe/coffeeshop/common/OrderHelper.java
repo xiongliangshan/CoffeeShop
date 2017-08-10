@@ -114,6 +114,15 @@ public class OrderHelper {
         return sf.format(d);
     }
 
+    public static String getFormatTimeToStr(long time) {
+        if(time == 0){
+            return "-- --";
+        }
+        Date d = new Date(time);
+        SimpleDateFormat sf = new SimpleDateFormat("HH:mm",Locale.CHINESE);
+        return sf.format(d);
+    }
+
     /*时间戳转换成字符窜*/
     public static String getDateToMonthDay(long time) {
         if(time == 0){
@@ -123,6 +132,17 @@ public class OrderHelper {
         long t2 = time+30*60*1000;
         Date d = new Date(time);
         return new SimpleDateFormat("MM-dd",Locale.CHINESE).format(d)+" "+sf.format(d)+"~"+sf.format(new Date(t2));
+    }
+
+    /*时间戳转换成字符窜*/
+    public static String getFormatPeriodTimeStr(long time) {
+        if(time == 0){
+            return "-- --";
+        }
+        SimpleDateFormat sf = new SimpleDateFormat("HH:mm",Locale.CHINESE);
+        long t2 = time+30*60*1000;
+        Date d = new Date(time);
+        return sf.format(d)+"~"+sf.format(new Date(t2));
     }
 
     /*将字符串转为时间戳*/
@@ -432,7 +452,7 @@ public class OrderHelper {
 
 
 
-    //拼接个性化标签
+   /* //拼接个性化标签
     public static String getLabelStr(List<String> list){
         if(list==null || list.size()<=0){
             return "";
@@ -444,7 +464,11 @@ public class OrderHelper {
         }
         sb.deleteCharAt(sb.length()-1);
         return sb.toString();
-    }
+    }*/
+
+   public static String getWxScanStrForPrint(PrintOrderBean printOrderBean){
+       return printOrderBean.isWxScan()?"(到店扫)":"";
+   }
 
     public static String getLabelPrintStr(List<String> list){
         if(list==null || list.size()<=0){
@@ -689,5 +713,13 @@ public class OrderHelper {
 
     public static String getPrintFlag(String orderSn) {
         return isPrinted(CSApplication.getInstance(),orderSn)?"重复打印":"";
+    }
+
+    public static List<Long> getIdsFromOrders(List<OrderBean> selectedList) {
+        List<Long> orderIds = new ArrayList<>();
+        for(OrderBean order:selectedList){
+            orderIds.add(order.getId());
+        }
+        return orderIds;
     }
 }

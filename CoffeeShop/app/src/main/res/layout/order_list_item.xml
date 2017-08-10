@@ -6,6 +6,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardElevation="8dp"
     app:cardMaxElevation="10dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <LinearLayout
         android:id="@+id/root_view"
         android:layout_width="match_parent"
@@ -28,12 +32,12 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@color/black1"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 android:text="003约"
                 />
 
-            <TextView
+           <!-- <TextView
                 android:id="@+id/item_contant_produce_effect"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -41,11 +45,12 @@
                 android:textSize="10sp"
                 android:textColor="@color/font_gray"
                 android:layout_marginRight="4dp"
-                />
+                />-->
             <TextView
-                android:id="@+id/item_produce_effect"
+                android:id="@+id/item_expected_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/black1"
                 android:textSize="18sp"
                 android:text="08:36"
                 />
@@ -60,12 +65,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/font_gray"
+                android:textSize="15sp"
                 android:text="配送状态:"/>
 
             <TextView
                 android:id="@+id/tv_deliver_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="15sp"
                 android:textColor="@color/font_black"
                 android:layout_marginLeft="8dp"/>
 
@@ -202,4 +209,23 @@
         </LinearLayout>
 
     </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_select_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_select_mode">
+
+            <CheckBox
+                android:id="@+id/checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:button="@drawable/bg_check"
+                android:gravity="center"
+                android:clickable="false"
+                />
+
+        </RelativeLayout>
+    </FrameLayout>
 </android.support.v7.widget.CardView>

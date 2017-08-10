@@ -70,6 +70,15 @@ public interface HttpInterface {
     @GET("{shopId}/order/{orderId}/beginproduce")
     Observable<BaseEntity<JsonObject>> doStartProduce(@Path("shopId") int shopId, @Path("orderId") long orderId, @Query("token") String token);
 
+    /**
+     * 批量生产接口
+     * @param shopId
+     * @param orderIds
+     * @param token
+     * @return
+     */
+    @POST("{shopId}/order/batchBeginProduce")
+    Observable<BaseEntity<JsonObject>> doStartBatchProduce(@Path("shopId") int shopId, @Query("orderIds") List<Long> orderIds, @Query("token") String token);
 
     /**
      * 生产中订单列表
@@ -111,15 +120,15 @@ public interface HttpInterface {
     @POST("{shopId}/orders/tomorrow")
     Observable<BaseEntity<List<OrderBean>>> loadTomorrowOrders(@Path("shopId") int shopId,@Query("token") String token);
 
-    /**
+   /* *//**
      * 配送中列表
      * @param shopId
      * @param token
      * @return
-     */
+     *//*
     @POST("{shopId}/orders/today/delivering")
     Observable<BaseEntity<List<OrderBean>>> loadDeliveringOrders(@Path("shopId") int shopId,@Query("token") String token);
-
+*/
 
     /**
      * 已完成订单列表

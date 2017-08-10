@@ -27,10 +27,12 @@ import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.NaiGaiEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
+import com.lyancafe.coffeeshop.utils.OrderSortComparator;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -169,7 +171,7 @@ public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.Vi
             tv1.setMaxEms(6);
             tv1.setTextSize(context.getResources().getDimension(R.dimen.content_item_text_size));
             tv1.setTextColor(context.getResources().getColor(R.color.black2));
-            if(!TextUtils.isEmpty(OrderHelper.getLabelStr(item.getRecipeFittingsList()))){
+            if(!TextUtils.isEmpty(item.getRecipeFittings())){
                 Drawable drawable = ContextCompat.getDrawable(CSApplication.getInstance(),R.mipmap.flag_ding);
                 drawable.setBounds(0,1,OrderHelper.dip2Px(12,context),OrderHelper.dip2Px(12,context));
                 tv1.setCompoundDrawablePadding(OrderHelper.dip2Px(4,context));
@@ -235,6 +237,7 @@ public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.Vi
 
     public void setData(List<OrderBean> list){
         this.list = list;
+        Collections.sort(this.list,new OrderSortComparator());
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
             EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));

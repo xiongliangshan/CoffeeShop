@@ -23,31 +23,24 @@ public class ItemContentBean implements Serializable{
     private int quantity;          //数量
     private int totalPrice;        //总价,单位：分
     private int coldHotProperty;   //1.冷  2.热  3.常温
-    @Transient
-    private List<String> recipeFittingsList; //个性化标签
+    private String recipeFittings; //个性化标签
+//    @Transient
+//    private List<String> recipeFittingsList; //个性化标签
 
 
     public ItemContentBean() {
     }
 
-    public ItemContentBean(String product, String unit, int price, int quantity, int totalPrice, int coldHotProperty, List<String> recipeFittingsList) {
-        this.product = product;
-        this.unit = unit;
-        this.price = price;
-        this.quantity = quantity;
-        this.totalPrice = totalPrice;
-        this.coldHotProperty = coldHotProperty;
-        this.recipeFittingsList = recipeFittingsList;
-    }
 
-    @Generated(hash = 1148230342)
-    public ItemContentBean(@NotNull String product, String unit, int price, int quantity, int totalPrice, int coldHotProperty) {
+    @Generated(hash = 792276889)
+    public ItemContentBean(@NotNull String product, String unit, int price, int quantity, int totalPrice, int coldHotProperty, String recipeFittings) {
         this.product = product;
         this.unit = unit;
         this.price = price;
         this.quantity = quantity;
         this.totalPrice = totalPrice;
         this.coldHotProperty = coldHotProperty;
+        this.recipeFittings = recipeFittings;
     }
 
     public String getProduct() {
@@ -98,12 +91,12 @@ public class ItemContentBean implements Serializable{
         this.coldHotProperty = coldHotProperty;
     }
 
-    public List<String> getRecipeFittingsList() {
-        return recipeFittingsList;
+    public String getRecipeFittings() {
+        return recipeFittings;
     }
 
-    public void setRecipeFittingsList(List<String> recipeFittingsList) {
-        this.recipeFittingsList = recipeFittingsList;
+    public void setRecipeFittings(String recipeFittings) {
+        this.recipeFittings = recipeFittings;
     }
 
     @Override
@@ -115,8 +108,7 @@ public class ItemContentBean implements Serializable{
                 ", quantity=" + quantity +
                 ", totalPrice=" + totalPrice +
                 ", coldHotProperty=" + coldHotProperty +
-                ", recipeFittingsList=" + recipeFittingsList +
+                ", recipeFittings='" + recipeFittings + '\'' +
                 '}';
     }
-
 }

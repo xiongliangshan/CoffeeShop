@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -19,6 +20,7 @@ import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
@@ -26,10 +28,12 @@ import com.lyancafe.coffeeshop.event.PrintOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.utils.OrderSortComparator;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -44,9 +48,11 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
     private Context context;
     public List<OrderBean> list = new ArrayList<OrderBean>();
     public int selected = -1;
+    public ListMode curMode;
 
     public ProducingRvAdapter(Context context) {
         this.context = context;
+        curMode = ListMode.NORMAL;
     }
 
     @Override
@@ -56,7 +62,18 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        if(curMode==ListMode.SELECT){
+            holder.selectView.setVisibility(View.VISIBLE);
+            holder.selectView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.checkBox.setChecked(!holder.checkBox.isChecked());
+                }
+            });
+        }else {
+            holder.selectView.setVisibility(View.GONE);
+        }
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,7 +133,12 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
             holder.remarkFlagIV.setImageResource(R.mipmap.flag_bei);
         }
 
-        OrderHelper.showEffectOnly(order,holder.effectTimeTxt);
+//        OrderHelper.showEffectOnly(order,holder.effectTimeTxt);
+        if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN) {
+            holder.expectedTimeText.setText(order.getInstant() == 1 ? "立即送出" : OrderHelper.getFormatTimeToStr(order.getExpectedTime()));
+        } else {
+            holder.expectedTimeText.setText(order.getInstant() == 1 ? "尽快送达" : OrderHelper.getFormatPeriodTimeStr(order.getExpectedTime()));
+        }
 
         holder.deliverStatusText.setText(OrderHelper.getStatusName(order.getStatus(),order.getWxScan()));
 
@@ -175,7 +197,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
             tv1.setMaxEms(6);
             tv1.setTextSize(context.getResources().getDimension(R.dimen.content_item_text_size));
             tv1.setTextColor(context.getResources().getColor(R.color.black2));
-            if(!TextUtils.isEmpty(OrderHelper.getLabelStr(item.getRecipeFittingsList()))){
+            if(!TextUtils.isEmpty(item.getRecipeFittings())){
                 Drawable drawable = ContextCompat.getDrawable(CSApplication.getInstance(),R.mipmap.flag_ding);
                 drawable.setBounds(0,1,OrderHelper.dip2Px(12,context),OrderHelper.dip2Px(12,context));
                 tv1.setCompoundDrawablePadding(OrderHelper.dip2Px(4,context));
@@ -217,14 +239,16 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.rl_select_view) RelativeLayout selectView;
+        @BindView(R.id.checkbox)
+        CheckBox checkBox;
         @BindView(R.id.root_view) LinearLayout rootLayout;
         @BindView(R.id.ll_first_row) LinearLayout firstRowLayout;
         @BindView(R.id.iv_reminder) ImageView reminderImg;
         @BindView(R.id.iv_sao_flag) ImageView saoImg;
         @BindView(R.id.iv_label_flag) ImageView labelFlagImg;
         @BindView(R.id.item_order_id) TextView orderIdTxt;
-        @BindView(R.id.item_contant_produce_effect) TextView contantEffectTimeTxt;
-        @BindView(R.id.item_produce_effect) TextView effectTimeTxt;
+        @BindView(R.id.item_expected_time) TextView expectedTimeText;
         @BindView(R.id.tv_deliver_status) TextView deliverStatusText;
         @BindView(R.id.item_grab_flag) ImageView grabFlagIV;
         @BindView(R.id.item_remark_flag) ImageView remarkFlagIV;
@@ -244,6 +268,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
 
     public void setData(List<OrderBean> list,int category){
         this.list = filterOrders(list,category);
+        Collections.sort(this.list,new OrderSortComparator());
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
             EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));

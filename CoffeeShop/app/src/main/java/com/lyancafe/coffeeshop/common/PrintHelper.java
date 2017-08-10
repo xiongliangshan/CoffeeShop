@@ -3,13 +3,16 @@ package com.lyancafe.coffeeshop.common;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.baidu.mapapi.map.Text;
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.MaterialItem;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.PrintCupBean;
+import com.lyancafe.coffeeshop.bean.PrintObject;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
 import com.lyancafe.coffeeshop.http.Api;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.io.IOException;
@@ -24,9 +27,11 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Observable;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +41,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class PrintHelper {
 
-    private static final String TAG = "PrintHelpter";
+    private static final String TAG = "PrintHelper";
     private static String ip_print_order = "192.19.1.231";
     private static String ip_print_cup = "192.19.1.232";
     private static final int MSG_PING = 66;
@@ -49,7 +54,7 @@ public class PrintHelper {
     private PrintHelper() {
         Log.d(TAG,"PrintHelpter()");
         mPoolExecutor = new ThreadPoolExecutor(1, 5, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-        if(Api.BASE_URL.contains("cn")||Api.BASE_URL.contains("192.168")){
+        if(Api.BASE_URL.contains("cn")||Api.BASE_URL.contains("192.168")||"滴水湖".equals(LoginHelper.getUser(CSApplication.getInstance()).getShopName())){
             ip_print_order = "192.168.1.229";
             ip_print_cup = "192.168.1.229";
         }else{
@@ -103,6 +108,7 @@ public class PrintHelper {
             bean.setCoffeeList(hotCupList.subList(i * 4, i * 4 + 4));
             bean.setOrderId(orderBean.getId());
             bean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
+            bean.setWxScan(orderBean.getWxScan());
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
             if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
@@ -124,6 +130,7 @@ public class PrintHelper {
             bean.setCoffeeList(hotCupList.subList(i * 4, hotCupList.size()));
             bean.setOrderId(orderBean.getId());
             bean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
+            bean.setWxScan(orderBean.getWxScan());
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
             if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
@@ -146,6 +153,7 @@ public class PrintHelper {
             bean.setCoffeeList(coolCupList.subList(j * 4, j * 4 + 4));
             bean.setOrderId(orderBean.getId());
             bean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
+            bean.setWxScan(orderBean.getWxScan());
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
             if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
@@ -167,6 +175,7 @@ public class PrintHelper {
             bean.setCoffeeList(coolCupList.subList(j * 4, coolCupList.size()));
             bean.setOrderId(orderBean.getId());
             bean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
+            bean.setWxScan(orderBean.getWxScan());
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
             if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
@@ -207,22 +216,22 @@ public class PrintHelper {
         List<PrintCupBean> coffeeList = bean.getCoffeeList();
         switch (coffeeList.size()){
             case 1:
-                order1 = coffeeList.get(0).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(0).getLabelList());
+                order1 = coffeeList.get(0).getCoffee()+" "+coffeeList.get(0).getLabel();
                 break;
             case 2:
-                order1 = coffeeList.get(0).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(0).getLabelList());
-                order2 = coffeeList.get(1).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(1).getLabelList());
+                order1 = coffeeList.get(0).getCoffee()+" "+coffeeList.get(0).getLabel();
+                order2 = coffeeList.get(1).getCoffee()+" "+coffeeList.get(1).getLabel();
                 break;
             case 3:
-                order1 = coffeeList.get(0).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(0).getLabelList());
-                order2 = coffeeList.get(1).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(1).getLabelList());
-                order3 = coffeeList.get(2).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(2).getLabelList());
+                order1 = coffeeList.get(0).getCoffee()+" "+coffeeList.get(0).getLabel();
+                order2 = coffeeList.get(1).getCoffee()+" "+coffeeList.get(1).getLabel();
+                order3 = coffeeList.get(2).getCoffee()+" "+coffeeList.get(2).getLabel();
                 break;
             case 4:
-                order1 = coffeeList.get(0).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(0).getLabelList());
-                order2 = coffeeList.get(1).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(1).getLabelList());
-                order3 = coffeeList.get(2).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(2).getLabelList());
-                order4 = coffeeList.get(3).getCoffee()+" "+OrderHelper.getLabelStr(coffeeList.get(3).getLabelList());
+                order1 = coffeeList.get(0).getCoffee()+" "+coffeeList.get(0).getLabel();
+                order2 = coffeeList.get(1).getCoffee()+" "+coffeeList.get(1).getLabel();
+                order3 = coffeeList.get(2).getCoffee()+" "+coffeeList.get(2).getLabel();
+                order4 = coffeeList.get(3).getCoffee()+" "+coffeeList.get(3).getLabel();
                 break;
         }
 
@@ -253,7 +262,7 @@ public class PrintHelper {
                 "A20,30,0,230,2,2,N,\""+bean.getShopOrderNo()+"\""+"\n"+
                 "A300,30,0,230,2,2,N,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
                 "A20,100,0,230,1,1,N,\"订单编号:\""+"\n"+ //订单编号
-                "A140,100,0,230,1,1,N,\""+bean.getOrderId()+"\""+"\n"+
+                "A140,100,0,230,1,1,N,\""+bean.getOrderId()+OrderHelper.getWxScanStrForPrint(bean)+"\""+"\n"+
                 "A450,100,0,230,1,1,N,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
                 "A20,120,0,230,1,1,N,\"-------------------------------------------------- \""+"\n"+
                 "A20,150,0,230,1,1,N,\""+order1+"\""+"\n"+
@@ -324,7 +333,7 @@ public class PrintHelper {
               int cupAmount = getCupAmountPerBox(boxNumber,hotTotalQuantity,hotBoxAmount);  //当前盒中总杯数
 
               PrintCupBean printCupBean = new PrintCupBean(boxAmount,boxNumber,cupAmount,cupNumber);
-              printCupBean.setLabelList(item.getRecipeFittingsList());
+                printCupBean.setLabel(item.getRecipeFittings());
               printCupBean.setOrderId(orderBean.getId());
               printCupBean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
               printCupBean.setInstant(orderBean.getInstant());
@@ -345,7 +354,7 @@ public class PrintHelper {
             int cupAmount = getCupAmountPerBox(boxNumber,coolTotalQuantity,coolBoxAmount);
 
                 PrintCupBean printCupBean = new PrintCupBean(boxAmount,boxNumber+hotBoxAmount,cupAmount,cupNumber);
-                printCupBean.setLabelList(item.getRecipeFittingsList());
+                printCupBean.setLabel(item.getRecipeFittings());
                 printCupBean.setOrderId(orderBean.getId());
                 printCupBean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
                 printCupBean.setInstant(orderBean.getInstant());
@@ -411,7 +420,7 @@ public class PrintHelper {
                 "A20,40,0,230,1,1,N,\""+shopOrderSn+"\""+"\n"+
                 "A110,40,0,230,1,1,N,\""+bean.getBoxAmount()+"-"+bean.getBoxNumber()+"|"+bean.getCupAmount()+"-" +bean.getCupNumber()+"\""+"\n"+ //杯数盒子信息
                 "A20,70,0,230,1,1,N,\""+bean.getCoffee()+"\""+"\n"+
-                "A20,100,0,230,1,1,N,\""+OrderHelper.getLabelPrintStr(bean.getLabelList())+"\""+"\n"+
+                "A20,100,0,230,1,1,N,\""+bean.getLabel()+"\""+"\n"+
                 "P1"+"\n";
 
     }
@@ -693,12 +702,67 @@ public class PrintHelper {
     }
 
 
+    //打印汇总
+    private  void doPrintBatchInfo(String printContent){
+        Log.d("xls","DoPrintBatchInfo ="+printContent);
+        DoPrintRunnable dpt = new DoPrintRunnable();
+        dpt.setPrinterIP(ip_print_order);
+        dpt.setPrinterContent(printContent);
+        mPoolExecutor.execute(dpt);
+    }
+
+
     private String getRemarkFlag(boolean isHaveRemark){
         if(isHaveRemark){
             return "  备";
         }else{
             return "";
         }
+    }
+
+
+    public void printBatchInfo(List<OrderBean> batchOrders){
+        Map<String,Integer> coffeeMap = new HashMap<>();
+        Map<String,Map<String,Integer>> recipeFittingsMap = new HashMap<>();
+        for(OrderBean order:batchOrders){
+            List<ItemContentBean> items = order.getItems();
+            for(ItemContentBean item:items){
+                if(!coffeeMap.containsKey(item.getProduct())){
+                    coffeeMap.put(item.getProduct(),item.getQuantity());
+                }else{
+                    coffeeMap.put(item.getProduct(),coffeeMap.get(item.getProduct())+item.getQuantity());
+                }
+
+                //个性化口味
+                String fittings = item.getRecipeFittings();
+                if(!TextUtils.isEmpty(fittings)){
+                    Map<String,Integer> fittingsMap = null;
+                    if(recipeFittingsMap.containsKey(item.getProduct())){
+                        fittingsMap = recipeFittingsMap.get(item.getProduct());
+                    }else{
+                        fittingsMap = new HashMap<>();
+                        recipeFittingsMap.put(item.getProduct(),fittingsMap);
+                    }
+
+                    if(fittingsMap.containsKey(fittings)){
+                        fittingsMap.put(fittings,fittingsMap.get(fittings)+1);
+                    }else{
+                        fittingsMap.put(fittings,1);
+                    }
+
+                }
+
+            }
+        }
+        List<PrintObject> printObjects = PrintObject.transformPrintObjects(coffeeMap,recipeFittingsMap);
+        LogUtil.d("xls","recipeFittingsMap size = "+recipeFittingsMap.size());
+        LogUtil.d("xls","printObject size = "+printObjects.size());
+        if(printObjects.size()>0){
+            for(int i=printObjects.size()-1;i>=0;i--){
+                doPrintBatchInfo(printObjects.get(i).getPrintContent());
+            }
+        }
+
     }
 
 

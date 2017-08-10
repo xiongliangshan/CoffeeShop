@@ -10,6 +10,7 @@ public class PrintOrderBean {
 
     private long orderId;     //订单号
     private String shopOrderNo;  //门店单号
+    private boolean isWxScan;  //是否是到店扫
     private boolean isHaveRemarks; //是否有备注
     private int deliveryTeam; //配送团队
     private String orderSn;
@@ -48,6 +49,14 @@ public class PrintOrderBean {
 
     public void setShopOrderNo(String shopOrderNo) {
         this.shopOrderNo = shopOrderNo;
+    }
+
+    public boolean isWxScan() {
+        return isWxScan;
+    }
+
+    public void setWxScan(boolean wxScan) {
+        isWxScan = wxScan;
     }
 
     public boolean isHaveRemarks() {
@@ -164,7 +173,9 @@ public class PrintOrderBean {
         return "PrintOrderBean{" +
                 "orderId=" + orderId +
                 ", shopOrderNo='" + shopOrderNo + '\'' +
+                ", isWxScan=" + isWxScan +
                 ", isHaveRemarks=" + isHaveRemarks +
+                ", deliveryTeam=" + deliveryTeam +
                 ", orderSn='" + orderSn + '\'' +
                 ", instant=" + instant +
                 ", boxAmount=" + boxAmount +

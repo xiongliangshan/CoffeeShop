@@ -68,6 +68,18 @@ public class OrderUtils {
         LogUtil.i(TAG,"更新订单 "+orderId+" 生产状态到 "+produceStatus);
     }
 
+    //批量更新订单的生产状态
+    public void updateBatchOrder(final List<Long> orderIds, final int produceStatus){
+        tpl.execute(new Runnable() {
+            @Override
+            public void run() {
+                for(int i=0;i<orderIds.size();i++){
+                    updateOrder(orderIds.get(i),produceStatus);
+                }
+            }
+        });
+    }
+
 
     //更新问题订单的状态
     public void updateIssueOrder(OrderBean orderBean, boolean isIssueOrder){

@@ -17,7 +17,7 @@ public class PrintCupBean {
     private String coffee; //咖啡名称
     private String posStr; //编号位置，如 "1-1|2-2",可以作为此杯在本订单中的唯一标识
     private int coldHotProperty;   //1.冷  2.热  3.常温
-    private List<String> labelList;
+    private String label;    //个性化
 
 
     public PrintCupBean() {
@@ -112,19 +112,20 @@ public class PrintCupBean {
         this.coldHotProperty = coldHotProperty;
     }
 
-    public List<String> getLabelList() {
-        return labelList;
+    public String getLabel() {
+        return label;
     }
 
-    public void setLabelList(List<String> labelList) {
-        this.labelList = labelList;
+    public void setLabel(String label) {
+        this.label = label;
     }
+
 
     @Override
     public String toString() {
         return "PrintCupBean{" +
                 "orderId=" + orderId +
-                ", shopOrderNo=" + shopOrderNo +
+                ", shopOrderNo='" + shopOrderNo + '\'' +
                 ", instant=" + instant +
                 ", boxAmount=" + boxAmount +
                 ", boxNumber=" + boxNumber +
@@ -133,7 +134,7 @@ public class PrintCupBean {
                 ", coffee='" + coffee + '\'' +
                 ", posStr='" + posStr + '\'' +
                 ", coldHotProperty=" + coldHotProperty +
-                ", labelList=" + labelList +
+                ", label='" + label + '\'' +
                 '}';
     }
 }
