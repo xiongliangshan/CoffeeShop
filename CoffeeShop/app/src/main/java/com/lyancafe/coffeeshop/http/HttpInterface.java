@@ -267,5 +267,5 @@ public interface HttpInterface {
      * @return
      */
     @POST("{shopId}/order/{orderId}/{deliveryTeam}/rePushOrderToDelivery")
-    Observable<BaseEntity> doRePush(@Path("shopId") int shopId,@Path("orderId") long orderId,@Path("deliveryTeam") int team,@Query("token") String token);
+    Observable<BaseEntity<JsonObject>> doRePush(@Path("shopId") int shopId,@Path("orderId") long orderId,@Path("deliveryTeam") int team,@Query("token") String token);
 }

@@ -11,12 +11,15 @@ import android.widget.TextView;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.EvaluationBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.utils.EvaluationListSortComparator;
+import com.lyancafe.coffeeshop.utils.FinishedOrderSortComparator;
 import com.lyancafe.coffeeshop.widget.EvaluationDetailDialog;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -94,11 +97,13 @@ public class EvaluationListAdapter extends RecyclerView.Adapter<EvaluationListAd
 
     public void setData(List<EvaluationBean> evaluationBeanList){
         this.list = evaluationBeanList;
+        Collections.sort(this.list,new EvaluationListSortComparator());
         notifyDataSetChanged();
     }
 
     public void addData(List<EvaluationBean> list){
         this.list.addAll(list);
+        Collections.sort(this.list,new EvaluationListSortComparator());
         notifyDataSetChanged();
     }
 }

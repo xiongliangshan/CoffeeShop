@@ -1,11 +1,8 @@
 package com.lyancafe.coffeeshop.shop.model;
 
 import com.google.gson.JsonObject;
-import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.ShopInfo;
-
-import io.reactivex.Observable;
-import io.reactivex.Observer;
+import com.lyancafe.coffeeshop.http.CustomObserver;
 
 /**
  * Created by Administrator on 2017/5/25.
@@ -19,7 +16,7 @@ public interface ManagerModel {
      * @param token
      * @param observer
      */
-    void loadShopInfo(int shopId, String token, Observer<BaseEntity<ShopInfo>> observer);
+    void loadShopInfo(int shopId, String token, CustomObserver<ShopInfo> observer);
 
 
     /**
@@ -29,5 +26,5 @@ public interface ManagerModel {
      * @param token
      * @param observer
      */
-    void modifyShopTelephone(int shopId, String phoneNubmer, String token, Observer<BaseEntity<JsonObject>> observer);
+    void modifyShopTelephone(int shopId, String phoneNubmer, String token, CustomObserver<JsonObject> observer);
 }

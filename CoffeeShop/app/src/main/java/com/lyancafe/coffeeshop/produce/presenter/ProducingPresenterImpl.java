@@ -12,7 +12,7 @@ import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
-import com.lyancafe.coffeeshop.http.BaseObserver;
+import com.lyancafe.coffeeshop.http.CustomObserver;
 import com.lyancafe.coffeeshop.produce.model.ProducingModel;
 import com.lyancafe.coffeeshop.produce.model.ProducingModelImpl;
 import com.lyancafe.coffeeshop.produce.view.ProducingView;
@@ -41,7 +41,7 @@ public class ProducingPresenterImpl implements ProducingPresenter{
     @Override
     public void loadProducingOrders() {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        mProducingModel.loadProducingOrders(user.getShopId(), user.getToken(), new BaseObserver<List<OrderBean>>(mContext) {
+        mProducingModel.loadProducingOrders(user.getShopId(), user.getToken(), new CustomObserver<List<OrderBean>>(mContext) {
             @Override
             protected void onHandleSuccess(List<OrderBean> orderBeanList) {
                 List<OrderBean> producingList = orderBeanList;
@@ -57,7 +57,7 @@ public class ProducingPresenterImpl implements ProducingPresenter{
     @Override
     public void doFinishProduced(final long orderId) {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        mProducingModel.dodoFinishProduced(user.getShopId(), orderId, user.getToken(), new BaseObserver<JsonObject>(mContext,true) {
+        mProducingModel.dodoFinishProduced(user.getShopId(), orderId, user.getToken(), new CustomObserver<JsonObject>(mContext,true) {
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
                 mProducingView.showToast(mContext.getString(R.string.do_success));

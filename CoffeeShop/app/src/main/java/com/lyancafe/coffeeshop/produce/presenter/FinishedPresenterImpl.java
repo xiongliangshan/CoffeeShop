@@ -8,7 +8,7 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.db.OrderUtils;
-import com.lyancafe.coffeeshop.http.BaseObserver;
+import com.lyancafe.coffeeshop.http.CustomObserver;
 import com.lyancafe.coffeeshop.produce.model.FinishedModel;
 import com.lyancafe.coffeeshop.produce.model.FinishedModelImpl;
 import com.lyancafe.coffeeshop.produce.view.FinishedView;
@@ -37,7 +37,7 @@ public class FinishedPresenterImpl implements FinishedPresenter {
     @Override
     public void loadFinishedOrders(long lastOrderId, final boolean isLoadMore) {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        mFinishedModel.loadFinishedOrders(user.getShopId(), lastOrderId, user.getToken(), new BaseObserver<List<OrderBean>>(mContext) {
+        mFinishedModel.loadFinishedOrders(user.getShopId(), lastOrderId, user.getToken(), new CustomObserver<List<OrderBean>>(mContext) {
             @Override
             protected void onHandleSuccess(List<OrderBean> orderBeanList) {
                 List<OrderBean> finishedList = orderBeanList;
@@ -72,7 +72,7 @@ public class FinishedPresenterImpl implements FinishedPresenter {
     @Override
     public void loadOrderAmount() {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        mFinishedModel.loadOrderAmount(user.getShopId(), user.getToken(), new BaseObserver<JsonObject>(mContext) {
+        mFinishedModel.loadOrderAmount(user.getShopId(), user.getToken(), new CustomObserver<JsonObject>(mContext) {
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
                 int ordersAmount = jsonObject.get("totalOrdersAmount").getAsInt();

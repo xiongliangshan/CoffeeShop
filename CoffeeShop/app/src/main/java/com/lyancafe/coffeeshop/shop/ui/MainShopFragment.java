@@ -64,7 +64,7 @@ public class MainShopFragment extends BaseFragment implements TabLayout.OnTabSel
         fragments.add(exceptionalListFragment);
         mPagerAdapter = new ShopFragmentPagerAdapter(getChildFragmentManager(),getActivity(),fragments);
         viewPager.setAdapter(mPagerAdapter);
-        viewPager.setOffscreenPageLimit(4);
+        viewPager.setOffscreenPageLimit(3);
         viewPager.setPageTransformer(true,new DepthPageTransformer());
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.addOnTabSelectedListener(this);
@@ -73,6 +73,9 @@ public class MainShopFragment extends BaseFragment implements TabLayout.OnTabSel
     @Override
     public void onResume() {
         super.onResume();
+        if(evaluationFragment!=null){
+            evaluationFragment.onVisible();
+        }
     }
 
     @Override

@@ -4,18 +4,16 @@ package com.lyancafe.coffeeshop.shop.presenter;
 import android.content.Context;
 
 import com.lyancafe.coffeeshop.CSApplication;
-import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.Material;
-import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.common.LoginHelper;
+import com.lyancafe.coffeeshop.http.CustomObserver;
 import com.lyancafe.coffeeshop.shop.model.MaterialsModel;
 import com.lyancafe.coffeeshop.shop.model.MaterialsModelImpl;
 import com.lyancafe.coffeeshop.shop.view.MaiterialsView;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.util.List;
 
-import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 
@@ -38,33 +36,29 @@ public class MaterialsPresenterImpl implements MaterialsPresenter{
 
     @Override
     public void loadMaterials() {
-        UserBean userBean = LoginHelper.getUser(CSApplication.getInstance());
-        int shopId = userBean.getShopId();
-        String token = userBean.getToken();
-        mMaterialModel.loadMaterials(shopId, token, new Observer<BaseEntity<List<Material>>>() {
+        UserBean user = LoginHelper.getUser(CSApplication.getInstance());
+        mMaterialModel.loadMaterials(user.getShopId(), user.getToken(), new CustomObserver<List<Material>>(mContext) {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
+                super.onSubscribe(d);
                 mMaterialView.showLoading();
             }
 
             @Override
-            public void onNext(@NonNull BaseEntity<List<Material>> listBaseEntity) {
-                if(listBaseEntity.getStatus()==0){
-                    List<Material> materials = listBaseEntity.getData();
-                    mMaterialView.bindDataToView(materials);
-                }else{
-                    ToastUtil.showToast(mContext.getApplicationContext(),listBaseEntity.getMessage());
-                }
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-                mMaterialView.dismissLoading();
-                ToastUtil.showToast(mContext.getApplicationContext(),e.getMessage());
+            protected void onHandleSuccess(List<Material> materialList) {
+                List<Material> materials = materialList;
+                mMaterialView.bindDataToView(materials);
             }
 
             @Override
             public void onComplete() {
+                super.onComplete();
+                mMaterialView.dismissLoading();
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                super.onError(e);
                 mMaterialView.dismissLoading();
             }
         });
