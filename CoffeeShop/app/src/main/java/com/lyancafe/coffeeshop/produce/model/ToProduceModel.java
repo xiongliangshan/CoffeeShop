@@ -20,10 +20,10 @@ public interface ToProduceModel{
 
 
     //开始生产
-    void doStartProduce(int shopId, long orderId, String token, Observer<BaseEntity<JsonObject>> observer);
+    void doStartProduce(int shopId, long orderId, String token, BaseObserver<JsonObject> observer);
 
 
     //批量开始生产
-    void doStartBatchProduce(int shopId,List<Long> orderIds,String token,Observer<BaseEntity<JsonObject>> observer);
+    void doStartBatchProduce(int shopId,List<Long> orderIds,String token,BaseObserver<JsonObject> observer);
 
 }
