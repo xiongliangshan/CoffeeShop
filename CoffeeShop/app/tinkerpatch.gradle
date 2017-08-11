@@ -34,9 +34,9 @@ tinkerpatchSupport {
     def pathPrefix = "${bakPath}/${baseInfo}/${variantName}/"
     def name = "${project.name}-${variantName}"
 
-    baseApkFile = "D:/base_for_patch/QA/CoffeeShop07061525QA.apk"
-    baseProguardMappingFile = "D:/base_for_patch/QA/CoffeeShop07061525QA-mapping.txt"
-    baseResourceRFile = "D:/base_for_patch/QA/CoffeeShop07061525QA-R.txt"
+    baseApkFile = "D:/base_for_patch/CoffeeShop08101905OL.apk"
+    baseProguardMappingFile = "D:/base_for_patch/CoffeeShop08101905OL-mapping.txt"
+    baseResourceRFile = "D:/base_for_patch/CoffeeShop08101905OL-R.txt"
 
     /**
      *  若有编译多flavors需求, 可以参照： https://github.com/TinkerPatch/tinkerpatch-flavors-sample
