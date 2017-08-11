@@ -145,7 +145,7 @@ public class MyPushReceiver extends BroadcastReceiver {
             mBuilder.setDefaults(Notification.DEFAULT_ALL);
         }else if(pmb.getEventType()==11){   //问题已经解决
             mBuilder.setDefaults(Notification.DEFAULT_ALL);
-        }else if(pmb.getEventType()==16){   //订单撤销
+        }else if(pmb.getEventType()==16){   //订单撤回
             mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.order_undo));
         }else if(pmb.getEventType()==20){   //订单催单
             mBuilder.setContentTitle(pmb.getTitle());

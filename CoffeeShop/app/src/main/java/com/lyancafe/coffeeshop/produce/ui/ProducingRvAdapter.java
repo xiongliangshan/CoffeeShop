@@ -89,9 +89,6 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
 
         if(selected==position){
             holder.rootLayout.setBackgroundResource(R.drawable.bg_order_selected);
-            if(position>=0 && position<list.size()){
-                EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
-            }
         }else{
             holder.rootLayout.setBackgroundResource(R.drawable.bg_order);
         }
