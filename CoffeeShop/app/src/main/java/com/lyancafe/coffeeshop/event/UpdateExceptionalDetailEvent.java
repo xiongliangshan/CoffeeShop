@@ -5,11 +5,11 @@ import com.lyancafe.coffeeshop.bean.ExceptionalOrder;
 /**
  * Created by Administrator on 2016/7/29.
  */
-public class UpdateExceptionalOrderDetailEvent {
+public class UpdateExceptionalDetailEvent {
 
     public ExceptionalOrder exceptionalOrder;
 
-    public UpdateExceptionalOrderDetailEvent(ExceptionalOrder exceptionalOrder) {
+    public UpdateExceptionalDetailEvent(ExceptionalOrder exceptionalOrder) {
         this.exceptionalOrder = exceptionalOrder;
     }
 }

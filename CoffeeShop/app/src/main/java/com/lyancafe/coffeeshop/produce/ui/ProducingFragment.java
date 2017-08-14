@@ -18,6 +18,7 @@ import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
+import com.lyancafe.coffeeshop.event.RevokeEvent;
 import com.lyancafe.coffeeshop.produce.presenter.ProducingPresenter;
 import com.lyancafe.coffeeshop.produce.presenter.ProducingPresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.ProducingView;
@@ -184,6 +185,13 @@ public class ProducingFragment extends BaseFragment implements MainProduceFragme
     @Subscribe
     public void onFinishProduceEvent(FinishProduceEvent event){
         showFinishProduceConfirmDialog(event.order);
+    }
+
+
+    //订单撤销事件
+    @Subscribe
+    public void onRevokeEvent(RevokeEvent event){
+        removeItemFromList((int) event.orderId);
     }
 
 

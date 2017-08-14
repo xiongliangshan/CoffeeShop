@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.CSApplication;
@@ -15,8 +14,7 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ExceptionalOrder;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
-import com.lyancafe.coffeeshop.event.UpdateExceptionalOrderDetailEvent;
-import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
+import com.lyancafe.coffeeshop.event.UpdateExceptionalDetailEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -55,7 +53,7 @@ public class ExceptionalRvAdapter extends RecyclerView.Adapter<ExceptionalRvAdap
                 selected = position;
                 notifyDataSetChanged();
                 if (position >= 0 && position < list.size()) {
-                    EventBus.getDefault().post(new UpdateExceptionalOrderDetailEvent(list.get(position)));
+                    EventBus.getDefault().post(new UpdateExceptionalDetailEvent(list.get(position)));
                 }
 
                 Log.d(TAG, "点击了 " + position);
@@ -150,9 +148,9 @@ public class ExceptionalRvAdapter extends RecyclerView.Adapter<ExceptionalRvAdap
         this.list = list;
         notifyDataSetChanged();
         if (selected >= 0 && selected < this.list.size()) {
-            EventBus.getDefault().post(new UpdateExceptionalOrderDetailEvent(this.list.get(selected)));
+            EventBus.getDefault().post(new UpdateExceptionalDetailEvent(this.list.get(selected)));
         } else {
-            EventBus.getDefault().post(new UpdateExceptionalOrderDetailEvent(null));
+            EventBus.getDefault().post(new UpdateExceptionalDetailEvent(null));
         }
 
     }
@@ -161,9 +159,9 @@ public class ExceptionalRvAdapter extends RecyclerView.Adapter<ExceptionalRvAdap
         this.list.addAll(list);
         notifyDataSetChanged();
         if (selected >= 0 && selected < this.list.size()) {
-            EventBus.getDefault().post(new UpdateExceptionalOrderDetailEvent(this.list.get(selected)));
+            EventBus.getDefault().post(new UpdateExceptionalDetailEvent(this.list.get(selected)));
         } else {
-            EventBus.getDefault().post(new UpdateExceptionalOrderDetailEvent(null));
+            EventBus.getDefault().post(new UpdateExceptionalDetailEvent(null));
         }
     }
 
@@ -183,11 +181,11 @@ public class ExceptionalRvAdapter extends RecyclerView.Adapter<ExceptionalRvAdap
         if (list.size() > 0) {
             selected = 0;
             notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateExceptionalOrderDetailEvent(list.get(selected)));
+            EventBus.getDefault().post(new UpdateExceptionalDetailEvent(list.get(selected)));
         } else {
             selected = -1;
             notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateExceptionalOrderDetailEvent(null));
+            EventBus.getDefault().post(new UpdateExceptionalDetailEvent(null));
         }
 
 

@@ -25,6 +25,7 @@ import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
+import com.lyancafe.coffeeshop.event.RemoveItemEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.common.OrderHelper;
@@ -308,6 +309,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         for(int i=list.size()-1;i>=0;i--){
             if(list.get(i).getId()==orderId){
                 list.remove(i);
+                EventBus.getDefault().postSticky(new RemoveItemEvent(1,orderId));
                 break;
             }
         }

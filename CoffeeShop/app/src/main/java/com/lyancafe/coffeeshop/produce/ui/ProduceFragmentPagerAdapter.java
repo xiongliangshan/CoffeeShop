@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ProduceFragmentPagerAdapter extends FragmentPagerAdapter {
 
-    public String[] titles = new String[]{"待生产","生产中","已生产","已完成","明日预定"};
+    public String[] titles = new String[]{"待生产","生产中","已生产","已完成","被撤回","明日预定"};
     private List<Fragment> fragments;
     private Context mContext;
 

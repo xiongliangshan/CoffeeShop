@@ -20,7 +20,7 @@ import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.OrderCategory;
-import com.lyancafe.coffeeshop.event.UpdateDeliverOrderDetailEvent;
+import com.lyancafe.coffeeshop.event.UpdateProducedDetailEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
 
@@ -171,9 +171,9 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
         Collections.sort(this.list,new OrderSortComparator());
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
-            EventBus.getDefault().post(new UpdateDeliverOrderDetailEvent(this.list.get(selected)));
+            EventBus.getDefault().post(new UpdateProducedDetailEvent(this.list.get(selected)));
         }else{
-            EventBus.getDefault().post(new UpdateDeliverOrderDetailEvent(null));
+            EventBus.getDefault().post(new UpdateProducedDetailEvent(null));
         }
 
     }
@@ -214,11 +214,11 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
         if(list.size()>0){
             selected=0;
             notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateDeliverOrderDetailEvent(list.get(selected)));
+            EventBus.getDefault().post(new UpdateProducedDetailEvent(list.get(selected)));
         }else{
             selected = -1;
             notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateDeliverOrderDetailEvent(null));
+            EventBus.getDefault().post(new UpdateProducedDetailEvent(null));
         }
 
 

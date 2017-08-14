@@ -7,7 +7,7 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.db.OrderUtils;
-import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
+import com.lyancafe.coffeeshop.event.UpdateTabCount;
 import com.lyancafe.coffeeshop.http.CustomObserver;
 import com.lyancafe.coffeeshop.produce.model.ProducedModel;
 import com.lyancafe.coffeeshop.produce.model.ProducedModelImpl;
@@ -42,7 +42,7 @@ public class ProducedPresenterImpl implements ProducedPresenter{
             @Override
             protected void onHandleSuccess(List<OrderBean> orderBeanList) {
                 List<OrderBean> toFetchList = orderBeanList;
-                EventBus.getDefault().post(new UpdateProduceFragmentTabOrderCount(2,toFetchList.size()));
+                EventBus.getDefault().post(new UpdateTabCount(2,toFetchList.size()));
                 mProducedView.bindDataToView(toFetchList);
                 OrderUtils.with().insertOrderList(toFetchList);
             }

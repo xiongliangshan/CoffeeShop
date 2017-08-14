@@ -24,6 +24,7 @@ import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.common.PrintHelper;
 import com.lyancafe.coffeeshop.event.NaiGaiEvent;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
+import com.lyancafe.coffeeshop.event.RevokeEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.produce.presenter.ToProducePresenter;
 import com.lyancafe.coffeeshop.produce.presenter.ToProducePresenterImpl;
@@ -124,6 +125,7 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
     public void onResume() {
         super.onResume();
     }
+
 
     @Subscribe
     public void onNaiGaiEvent(NaiGaiEvent event) {
@@ -253,6 +255,12 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
             mToProducePresenter.loadToProduceOrders();
         }
 
+    }
+
+    //订单撤销事件
+    @Subscribe
+    public void onRevokeEvent(RevokeEvent event){
+        removeItemFromList((int) event.orderId);
     }
 
     /**

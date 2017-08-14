@@ -181,7 +181,7 @@ public class OrderHelper {
 
     //计算某个订单的总杯数
     public static int getTotalQutity(OrderBean orderBean){
-        if(orderBean.getItems().size()<=0){
+        if(orderBean.getItems()==null || orderBean.getItems().size()<=0){
             return 0;
         }
         int sum = 0;

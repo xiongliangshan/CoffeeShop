@@ -1,40 +1,38 @@
 package com.lyancafe.coffeeshop.bean;
 
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.NotNull;
-import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.Serializable;
-import java.util.List;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * Created by Administrator on 2015/9/21.
  */
-@Entity
+@Entity(indexes = {
+        @Index(value = "product,orderId ASC", unique = true)
+})
 public class ItemContentBean implements Serializable{
 
     private static final long serialVersionUID = 33565800L;
 
     @NotNull
     private String product;        //咖啡名称
+    private long orderId;          //对应订单的id
     private String unit;           //杯型
     private int price;             //单价,单位：分
     private int quantity;          //数量
     private int totalPrice;        //总价,单位：分
     private int coldHotProperty;   //1.冷  2.热  3.常温
     private String recipeFittings; //个性化标签
-//    @Transient
-//    private List<String> recipeFittingsList; //个性化标签
-
-
-    public ItemContentBean() {
-    }
-
-
-    @Generated(hash = 792276889)
-    public ItemContentBean(@NotNull String product, String unit, int price, int quantity, int totalPrice, int coldHotProperty, String recipeFittings) {
+    @Generated(hash = 976611957)
+    public ItemContentBean(@NotNull String product, long orderId, String unit,
+            int price, int quantity, int totalPrice, int coldHotProperty,
+            String recipeFittings) {
         this.product = product;
+        this.orderId = orderId;
         this.unit = unit;
         this.price = price;
         this.quantity = quantity;
@@ -42,59 +40,55 @@ public class ItemContentBean implements Serializable{
         this.coldHotProperty = coldHotProperty;
         this.recipeFittings = recipeFittings;
     }
-
-    public String getProduct() {
-        return product;
+    @Generated(hash = 1975170859)
+    public ItemContentBean() {
     }
-
+   
+    public String getProduct() {
+        return this.product;
+    }
     public void setProduct(String product) {
         this.product = product;
     }
-
-    public String getUnit() {
-        return unit;
+    public long getOrderId() {
+        return this.orderId;
     }
-
+    public void setOrderId(long orderId) {
+        this.orderId = orderId;
+    }
+    public String getUnit() {
+        return this.unit;
+    }
     public void setUnit(String unit) {
         this.unit = unit;
     }
-
     public int getPrice() {
-        return price;
+        return this.price;
     }
-
     public void setPrice(int price) {
         this.price = price;
     }
-
     public int getQuantity() {
-        return quantity;
+        return this.quantity;
     }
-
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
-
     public int getTotalPrice() {
-        return totalPrice;
+        return this.totalPrice;
     }
-
     public void setTotalPrice(int totalPrice) {
         this.totalPrice = totalPrice;
     }
-
     public int getColdHotProperty() {
-        return coldHotProperty;
+        return this.coldHotProperty;
     }
-
     public void setColdHotProperty(int coldHotProperty) {
         this.coldHotProperty = coldHotProperty;
     }
-
     public String getRecipeFittings() {
-        return recipeFittings;
+        return this.recipeFittings;
     }
-
     public void setRecipeFittings(String recipeFittings) {
         this.recipeFittings = recipeFittings;
     }
@@ -102,7 +96,8 @@ public class ItemContentBean implements Serializable{
     @Override
     public String toString() {
         return "ItemContentBean{" +
-                "product='" + product + '\'' +
+                ", product='" + product + '\'' +
+                ", orderId=" + orderId +
                 ", unit='" + unit + '\'' +
                 ", price=" + price +
                 ", quantity=" + quantity +

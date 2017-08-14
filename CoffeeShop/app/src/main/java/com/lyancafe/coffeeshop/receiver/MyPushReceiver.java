@@ -15,7 +15,9 @@ import android.util.Log;
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.PushMessageBean;
+import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
+import com.lyancafe.coffeeshop.event.RevokeEvent;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.tinkerpatch.sdk.TinkerPatch;
 
@@ -147,6 +149,8 @@ public class MyPushReceiver extends BroadcastReceiver {
             mBuilder.setDefaults(Notification.DEFAULT_ALL);
         }else if(pmb.getEventType()==16){   //订单撤回
             mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.order_undo));
+            OrderUtils.with().updateRevokedOrder(pmb.getOrderId());
+            EventBus.getDefault().postSticky(new RevokeEvent(pmb.getOrderId()));
         }else if(pmb.getEventType()==20){   //订单催单
             mBuilder.setContentTitle(pmb.getTitle());
             mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.urge_shop));

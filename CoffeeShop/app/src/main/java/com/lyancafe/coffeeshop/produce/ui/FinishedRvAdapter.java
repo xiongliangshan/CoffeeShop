@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
-import com.lyancafe.coffeeshop.event.UpdateFinishedOrderDetailEvent;
+import com.lyancafe.coffeeshop.event.UpdateFinishedDetailEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.utils.FinishedOrderSortComparator;
@@ -127,9 +127,9 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Vi
         Collections.sort(this.list,new FinishedOrderSortComparator());
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
-            EventBus.getDefault().post(new UpdateFinishedOrderDetailEvent(this.list.get(selected)));
+            EventBus.getDefault().post(new UpdateFinishedDetailEvent(this.list.get(selected)));
         }else{
-            EventBus.getDefault().post(new UpdateFinishedOrderDetailEvent(null));
+            EventBus.getDefault().post(new UpdateFinishedDetailEvent(null));
         }
 
     }
@@ -139,9 +139,9 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Vi
         Collections.sort(this.list,new FinishedOrderSortComparator());
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
-            EventBus.getDefault().post(new UpdateFinishedOrderDetailEvent(this.list.get(selected)));
+            EventBus.getDefault().post(new UpdateFinishedDetailEvent(this.list.get(selected)));
         }else{
-            EventBus.getDefault().post(new UpdateFinishedOrderDetailEvent(null));
+            EventBus.getDefault().post(new UpdateFinishedDetailEvent(null));
         }
     }
 

@@ -25,20 +25,16 @@ import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
-import com.lyancafe.coffeeshop.event.NaiGaiEvent;
-import com.lyancafe.coffeeshop.event.RemoveItemEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
+import com.lyancafe.coffeeshop.utils.FinishedOrderSortComparator;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,61 +42,48 @@ import butterknife.ButterKnife;
 /**
  * Created by Administrator on 2015/9/21.
  */
-public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.ViewHolder>{
+public class RevokedRvAdapter extends RecyclerView.Adapter<RevokedRvAdapter.ViewHolder>{
 
     private static final String TAG  ="OrderGridViewAdapter";
     private Context context;
     public List<OrderBean> list = new ArrayList<OrderBean>();
     public int selected = -1;
     public ListMode curMode;
-    private List<OrderBean> batchOrders;
-    public Map<Integer,Boolean> selectMap;
 
-    public ToProduceRvAdapter(Context context) {
+    public RevokedRvAdapter(Context context) {
         this.context = context;
         curMode = ListMode.NORMAL;
-        batchOrders = new ArrayList<>();
-        selectMap = new HashMap<>();
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_list_item, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.revoked_list_item, parent, false);
         return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final OrderBean order = list.get(position);
-
         if(curMode==ListMode.SELECT){
             holder.selectView.setVisibility(View.VISIBLE);
             holder.selectView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(!order.getWxScan()){
-                        holder.checkBox.setChecked(!holder.checkBox.isChecked());
-                        selectMap.put(position,holder.checkBox.isChecked());
-                    }
-
+                    holder.checkBox.setChecked(!holder.checkBox.isChecked());
                 }
             });
-            holder.checkBox.setChecked(selectMap.get(position)==null?false:selectMap.get(position));
         }else {
             holder.selectView.setVisibility(View.GONE);
         }
-
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //通知详情板块内容变更
                 selected = position;
                 notifyDataSetChanged();
+                Log.d(TAG, "点击了 " + position);
                 if(position>=0 && position<list.size()){
                     EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
                 }
-
-                Log.d(TAG, "点击了 " + position);
             }
         });
 
@@ -109,6 +92,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         }else{
             holder.rootLayout.setBackgroundResource(R.drawable.bg_order);
         }
+        final OrderBean order = list.get(position);
 
         holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
 
@@ -149,7 +133,6 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
             holder.remarkFlagIV.setImageResource(R.mipmap.flag_bei);
         }
 
-
 //        OrderHelper.showEffectOnly(order,holder.effectTimeTxt);
         if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN) {
             holder.expectedTimeText.setText(order.getInstant() == 1 ? "立即送出" : OrderHelper.getFormatTimeToStr(order.getExpectedTime()));
@@ -157,12 +140,12 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
             holder.expectedTimeText.setText(order.getInstant() == 1 ? "尽快送达" : OrderHelper.getFormatPeriodTimeStr(order.getExpectedTime()));
         }
 
-
         holder.deliverStatusText.setText(OrderHelper.getStatusName(order.getStatus(),order.getWxScan()));
+
 
         fillItemListData(holder.itemContainerll, order.getItems());
         holder.cupCountText.setText(context.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
-        if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
+       /* if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
             holder.twobtnContainerLayout.setVisibility(View.GONE);
             holder.onebtnContainerlayout.setVisibility(View.VISIBLE);
             holder.produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
@@ -188,8 +171,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
             holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
             holder.onebtnContainerlayout.setVisibility(View.GONE);
             holder.produceBtn.setVisibility(View.GONE);
-
-        }
+        }*/
 
     }
 
@@ -205,7 +187,6 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
     public long getItemId(int position) {
         return position;
     }
-
 
     //填充item数据
     private void fillItemListData(LinearLayout ll,List<ItemContentBean> items){
@@ -254,16 +235,6 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         ll.invalidate();
     }
 
-    public List<OrderBean> getBatchOrders() {
-        List<OrderBean> batchOrders = new ArrayList<>();
-        for(int i= 0;i<list.size();i++){
-            Boolean isChecked = selectMap.get(i);
-            if(isChecked!=null && isChecked.booleanValue()){
-                batchOrders.add(list.get(i));
-            }
-        }
-        return batchOrders;
-    }
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -278,16 +249,15 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         @BindView(R.id.iv_label_flag) ImageView labelFlagImg;
         @BindView(R.id.item_order_id) TextView orderIdTxt;
         @BindView(R.id.item_expected_time) TextView expectedTimeText;
+        @BindView(R.id.tv_deliver_status) TextView deliverStatusText;
         @BindView(R.id.item_grab_flag) ImageView grabFlagIV;
         @BindView(R.id.item_remark_flag) ImageView remarkFlagIV;
         @BindView(R.id.item_container) LinearLayout itemContainerll;
-        @BindView(R.id.tv_deliver_status) TextView deliverStatusText;
         @BindView(R.id.tv_cup_count) TextView cupCountText;
         @BindView(R.id.ll_twobtn_container) LinearLayout twobtnContainerLayout;
         @BindView(R.id.ll_onebtn_container) LinearLayout onebtnContainerlayout;
         @BindView(R.id.item_produce_and_print) TextView produceAndPrintBtn;
         @BindView(R.id.item_produce) TextView produceBtn;
-
 
 
         public ViewHolder(View itemView) {
@@ -296,11 +266,10 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         }
     }
 
-    public void setData(List<OrderBean> list,int category){
-        this.list = filterOrders(list,category);
-        Collections.sort(this.list,new OrderSortComparator());
+    public void setData(List<OrderBean> list){
+        this.list = list;
+        Collections.sort(this.list,new FinishedOrderSortComparator());
         notifyDataSetChanged();
-        EventBus.getDefault().post(new NaiGaiEvent(OrderHelper.caculateNaiGai(list)));
         if(selected>=0 && selected<this.list.size()){
             EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
         }else{
@@ -309,26 +278,6 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
 
     }
 
-    private List<OrderBean> filterOrders(List<OrderBean> list,int category){
-        List<OrderBean> subList = new ArrayList<>();
-        if(category== OrderCategory.MEITUN){
-            for(OrderBean orderBean:list){
-                if(orderBean.getDeliveryTeam()==8){
-                    subList.add(orderBean);
-                }
-            }
-        }else if(category==OrderCategory.OWN){
-            for(OrderBean orderBean:list){
-                if(orderBean.getDeliveryTeam()!=8){
-                    subList.add(orderBean);
-                }
-            }
-        }else{
-            subList = list;
-        }
-
-        return subList;
-    }
 
 
     /**
@@ -339,7 +288,6 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         for(int i=list.size()-1;i>=0;i--){
             if(list.get(i).getId()==orderId){
                 list.remove(i);
-                EventBus.getDefault().postSticky(new RemoveItemEvent(0,orderId));
                 break;
             }
         }
@@ -352,33 +300,8 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
             notifyDataSetChanged();
             EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
         }
-        //计算奶盖数量
-        EventBus.getDefault().post(new NaiGaiEvent(OrderHelper.caculateNaiGai(list)));
 
-    }
 
-    /**
-     * 点击批量开始生产，
-     * @param orderIds
-     */
-    public void removeOrdersFromList(List<Long> orderIds){
-        for(int i=list.size()-1;i>=0;i--){
-            if(orderIds.contains(list.get(i).getId())){
-                list.remove(i);
-            }
-        }
-
-        if(list.size()>0){
-            selected=0;
-            notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(selected)));
-        }else{
-            selected = -1;
-            notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
-        }
-        //计算奶盖数量
-        EventBus.getDefault().post(new NaiGaiEvent(OrderHelper.caculateNaiGai(list)));
     }
 
 

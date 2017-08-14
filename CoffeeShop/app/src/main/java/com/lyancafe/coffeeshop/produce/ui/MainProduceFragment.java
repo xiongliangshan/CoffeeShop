@@ -36,13 +36,13 @@ import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
+import com.lyancafe.coffeeshop.event.RemoveItemEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
-import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
+import com.lyancafe.coffeeshop.event.UpdateTabCount;
 import com.lyancafe.coffeeshop.produce.presenter.MainProducePresenter;
 import com.lyancafe.coffeeshop.produce.presenter.MainProducePresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.MainProduceView;
-import com.lyancafe.coffeeshop.produce.view.TomorrowView;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
 import com.lyancafe.coffeeshop.widget.ReportIssueDialog;
@@ -106,6 +106,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     private ProducingFragment producingFragment;
     private ProducedFragment producedFragment;
     private FinishedOrderFragment finishedOrderFragment;
+    private RevokedFragment revokedFragment;
     private TomorrowFragment tomorrowFragment;
 
     private OrderBean mOrder = null;
@@ -144,15 +145,17 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
         producingFragment = new ProducingFragment();
         producedFragment = new ProducedFragment();
         finishedOrderFragment = new FinishedOrderFragment();
+        revokedFragment = new RevokedFragment();
         tomorrowFragment = new TomorrowFragment();
         fragments.add(toProduceFragment);
         fragments.add(producingFragment);
         fragments.add(producedFragment);
         fragments.add(finishedOrderFragment);
+        fragments.add(revokedFragment);
         fragments.add(tomorrowFragment);
         mPagerAdapter = new ProduceFragmentPagerAdapter(getChildFragmentManager(), getActivity(), fragments);
         viewPager.setAdapter(mPagerAdapter);
-        viewPager.setOffscreenPageLimit(4);
+        viewPager.setOffscreenPageLimit(5);
         viewPager.setPageTransformer(true,new ZoomOutPageTransformer());
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.addOnTabSelectedListener(this);
@@ -267,40 +270,45 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
                     assignBtn.setText("订单撤回");
                 }
             }
+            if(order.getRevoked()){
+                twoBtnLayout.setVisibility(View.GONE);
+                oneBtnLayout.setVisibility(View.GONE);
+            }else{
+                if (order.getProduceStatus() == OrderStatus.UNPRODUCED) {
+                    twoBtnLayout.setVisibility(View.GONE);
+                    oneBtnLayout.setVisibility(View.VISIBLE);
+                    if(OrderHelper.isTomorrowOrder(order)){
+                        produceAndPrintBtn.setVisibility(View.GONE);
+                    }else{
+                        produceAndPrintBtn.setVisibility(View.VISIBLE);
+                    }
+                } else if (order.getProduceStatus() == OrderStatus.PRODUCING) {
+                    twoBtnLayout.setVisibility(View.VISIBLE);
+                    oneBtnLayout.setVisibility(View.GONE);
+                    finishProduceBtn.setVisibility(View.VISIBLE);
+                    if (OrderHelper.isPrinted(mContext, order.getOrderSn())) {
+                        printOrderBtn.setText(R.string.print_again);
+                        printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.red1));
+                    } else {
+                        printOrderBtn.setText(R.string.print);
+                        printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.white1));
+                    }
+                } else if(order.getProduceStatus() == OrderStatus.PRODUCED){
+                    twoBtnLayout.setVisibility(View.VISIBLE);
+                    oneBtnLayout.setVisibility(View.GONE);
+                    finishProduceBtn.setVisibility(View.GONE);
+                    if (OrderHelper.isPrinted(mContext, order.getOrderSn())) {
+                        printOrderBtn.setText(R.string.print_again);
+                        printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_red));
+                    } else {
+                        printOrderBtn.setText(R.string.print);
+                        printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_black));
+                    }
+                } else{
+                    twoBtnLayout.setVisibility(View.GONE);
+                    oneBtnLayout.setVisibility(View.GONE);
+                }
 
-            if (order.getProduceStatus() == OrderStatus.UNPRODUCED) {
-                twoBtnLayout.setVisibility(View.GONE);
-                oneBtnLayout.setVisibility(View.VISIBLE);
-                if(OrderHelper.isTomorrowOrder(order)){
-                    produceAndPrintBtn.setVisibility(View.GONE);
-                }else{
-                    produceAndPrintBtn.setVisibility(View.VISIBLE);
-                }
-            } else if (order.getProduceStatus() == OrderStatus.PRODUCING) {
-                twoBtnLayout.setVisibility(View.VISIBLE);
-                oneBtnLayout.setVisibility(View.GONE);
-                finishProduceBtn.setVisibility(View.VISIBLE);
-                if (OrderHelper.isPrinted(mContext, order.getOrderSn())) {
-                    printOrderBtn.setText(R.string.print_again);
-                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.red1));
-                } else {
-                    printOrderBtn.setText(R.string.print);
-                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.white1));
-                }
-            } else if(order.getProduceStatus() == OrderStatus.PRODUCED){
-                twoBtnLayout.setVisibility(View.VISIBLE);
-                oneBtnLayout.setVisibility(View.GONE);
-                finishProduceBtn.setVisibility(View.GONE);
-                if (OrderHelper.isPrinted(mContext, order.getOrderSn())) {
-                    printOrderBtn.setText(R.string.print_again);
-                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_red));
-                } else {
-                    printOrderBtn.setText(R.string.print);
-                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_black));
-                }
-            } else{
-                twoBtnLayout.setVisibility(View.GONE);
-                oneBtnLayout.setVisibility(View.GONE);
             }
 
         }
@@ -409,13 +417,13 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
 
 
     /**
-     * 更新列表订单数量
+     * 更新tab数量显示
      *
      * @param event
      */
     @Subscribe
-    public void OnUpdateProduceFragmentTabOrderCountEvent(UpdateProduceFragmentTabOrderCount event) {
-        Log.d("xls", "UpdateProduceFragmentTabOrderCount");
+    public void OnUpdateTabCountEvent(UpdateTabCount event) {
+        Log.d("xls", "UpdateTabCount");
         TabLayout.Tab tab = tabLayout.getTabAt(event.tabIndex);
         tab.setTag(event.count);
         if (event.count > 0) {
@@ -452,6 +460,22 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
         Log.d(TAG, "onDetach");
     }
 
+    @Subscribe
+    public void onRemoveItemEvent(RemoveItemEvent event){
+        TabLayout.Tab tab = tabLayout.getTabAt(event.tabIndex);
+        if(tab!=null && tab.getTag()!=null){
+            Integer tabCount = (Integer) tab.getTag();
+            int newCount = tabCount-1;
+            if(newCount<=0){
+                newCount = 0;
+            }
+            tab.setTag(newCount);
+            String tabTitle = mPagerAdapter.getPageTitle(event.tabIndex).toString();
+            tab.setText(newCount==0?tabTitle:tabTitle+"("+newCount+")");
+        }
+
+    }
+
 
     /**
      * 对订单操作后更改相关列表中的订单数量角标显示
@@ -470,16 +494,16 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
             case OrderAction.STARTPRODUCE:
                 int tabTo = toProduceCount - event.count;
                 int tabPro = event.isQrCode?producingCount:producingCount + event.count;
-                tabToproduce.setText(tabTo==0?mPagerAdapter.getPageTitle(0):mPagerAdapter.getPageTitle(0) + "(" + tabTo + ")");
-                tabProducing.setText(tabPro==0?mPagerAdapter.getPageTitle(1):mPagerAdapter.getPageTitle(1) + "(" + tabPro + ")");
+                tabToproduce.setText(tabTo<=0?mPagerAdapter.getPageTitle(0):mPagerAdapter.getPageTitle(0) + "(" + tabTo + ")");
+                tabProducing.setText(tabPro<=0?mPagerAdapter.getPageTitle(1):mPagerAdapter.getPageTitle(1) + "(" + tabPro + ")");
                 tabToproduce.setTag(tabTo);
                 tabProducing.setTag(tabPro);
                 break;
             case OrderAction.FINISHPRODUCE:
                 int tabProduceResult = producingCount - event.count;
                 int tabProducedResult = producedCount + event.count;
-                tabProducing.setText(tabProduceResult==0?mPagerAdapter.getPageTitle(1):mPagerAdapter.getPageTitle(1) + "(" + tabProduceResult + ")");
-                tabProduced.setText(tabProducedResult==0?mPagerAdapter.getPageTitle(2):mPagerAdapter.getPageTitle(2)+"("+tabProducedResult+")");
+                tabProducing.setText(tabProduceResult<=0?mPagerAdapter.getPageTitle(1):mPagerAdapter.getPageTitle(1) + "(" + tabProduceResult + ")");
+                tabProduced.setText(tabProducedResult<=0?mPagerAdapter.getPageTitle(2):mPagerAdapter.getPageTitle(2)+"("+tabProducedResult+")");
                 tabProducing.setTag(tabProduceResult);
                 tabProduced.setTag(tabProducedResult);
                 break;
