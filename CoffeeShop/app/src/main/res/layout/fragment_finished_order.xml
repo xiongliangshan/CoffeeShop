@@ -1,19 +1,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="4dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp">
+        >
 
         <TextView
             android:id="@+id/constant_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:text="日期:"
             android:textSize="18sp"
             android:textColor="@color/white1"
@@ -22,15 +24,19 @@
             android:id="@+id/tv_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:textSize="18sp"
             android:layout_marginLeft="4dp"
-            android:layout_toRightOf="@id/constant_date"
+            app:layout_constraintLeft_toRightOf="@id/constant_date"
             android:textColor="@color/white1"/>
         <TextView
             android:id="@+id/constant_order_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/tv_date"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/tv_date"
             android:layout_marginLeft="16dp"
             android:text="单量:"
             android:textSize="18sp"
@@ -40,15 +46,20 @@
             android:id="@+id/tv_order_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginLeft="4dp"
             android:textSize="18sp"
             android:textColor="@color/white1"
-            android:layout_toRightOf="@id/constant_order_count"/>
+            app:layout_constraintLeft_toRightOf="@id/constant_order_count"
+            />
         <TextView
             android:id="@+id/constant_cup_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/tv_order_count"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/tv_order_count"
             android:layout_marginLeft="16dp"
             android:text="杯量:"
             android:textSize="18sp"
@@ -58,13 +69,39 @@
             android:id="@+id/tv_cup_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginLeft="4dp"
             android:textSize="18sp"
             android:textColor="@color/white1"
-            android:layout_toRightOf="@id/constant_cup_count"/>
+            app:layout_constraintLeft_toRightOf="@id/constant_cup_count"
+            />
 
 
-    </RelativeLayout>
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
+            <EditText
+                android:id="@+id/et_search_key"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white1"
+                android:inputType="number"
+                android:hint="输入门店单号"/>
+            <Button
+                android:id="@+id/btn_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/et_search_key"
+                android:text="搜索"/>
+        </android.support.constraint.ConstraintLayout>
+
+
+    </android.support.constraint.ConstraintLayout>
 
 
     <LinearLayout

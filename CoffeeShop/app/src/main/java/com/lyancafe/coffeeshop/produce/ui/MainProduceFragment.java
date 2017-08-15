@@ -62,7 +62,7 @@ import butterknife.Unbinder;
 /**
  * Created by Administrator on 2015/9/1.
  */
-public class MainProduceFragment extends BaseFragment implements TabLayout.OnTabSelectedListener, AdapterView.OnItemSelectedListener,MainProduceView {
+public class MainProduceFragment extends BaseFragment implements TabLayout.OnTabSelectedListener,MainProduceView {
 
     private static final String TAG = "MainProduceFragment";
     private Context mContext;
@@ -71,7 +71,6 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     private static final int REQUEST_ASSIGN = 0x1001;
 
     @BindView(R.id.tabLayout) TabLayout tabLayout;
-    @BindView(R.id.spinner_category) AppCompatSpinner spinnerCategory;
     @BindView(R.id.vp_container) ViewPager viewPager;
     @BindView(R.id.order_id) TextView shopOrderNoText;
     @BindView(R.id.reach_time) TextView reachTimeTxt;
@@ -159,37 +158,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.addOnTabSelectedListener(this);
 
-        spinnerCategory.setOnItemSelectedListener(this);
-
     }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Object object = parent.getItemAtPosition(position);
-        switch (position) {
-            case 0:
-                category = OrderCategory.ALL;
-                break;
-            case 1:
-                category = OrderCategory.MEITUN;
-                break;
-            case 2:
-                category = OrderCategory.OWN;
-                break;
-        }
-
-        if (tabIndex == 0) {
-            toProduceFragment.filter(String.valueOf(object));
-        } else if (tabIndex == 1) {
-            producingFragment.filter(String.valueOf(object));
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
-
 
 
     @Override
@@ -604,8 +573,4 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
         context.startActivity(intent);
     }
 
-
-    public interface FilterOrdersListenter {
-        void filter(String category);
-    }
 }

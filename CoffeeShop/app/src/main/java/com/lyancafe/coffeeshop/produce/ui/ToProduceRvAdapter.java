@@ -29,6 +29,7 @@ import com.lyancafe.coffeeshop.event.NaiGaiEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -40,6 +41,14 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Predicate;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2015/9/21.
@@ -52,12 +61,14 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
     public int selected = -1;
     public ListMode curMode;
     private List<OrderBean> batchOrders;
+    private List<OrderBean> searchList;
     public Map<Integer,Boolean> selectMap;
 
     public ToProduceRvAdapter(Context context) {
         this.context = context;
         curMode = ListMode.NORMAL;
         batchOrders = new ArrayList<>();
+        searchList = new ArrayList<>();
         selectMap = new HashMap<>();
     }
 
@@ -148,7 +159,6 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         }
 
 
-//        OrderHelper.showEffectOnly(order,holder.effectTimeTxt);
         if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN) {
             holder.expectedTimeText.setText(order.getInstant() == 1 ? "立即送出" : OrderHelper.getFormatTimeToStr(order.getExpectedTime()));
         } else {
@@ -264,6 +274,45 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
     }
 
 
+    //搜索
+    public void searchOrder(final int shopOrderNo){
+        Observable.fromIterable(list)
+                .subscribeOn(Schedulers.io())
+                .filter(new Predicate<OrderBean>() {
+                    @Override
+                    public boolean test(@NonNull OrderBean orderBean) throws Exception {
+                        return orderBean.getShopOrderNo()==shopOrderNo;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<OrderBean>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                        searchList.clear();
+                    }
+
+                    @Override
+                    public void onNext(@NonNull OrderBean orderBean) {
+                        searchList.add(orderBean);
+                        setData(searchList);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        if(searchList.size()==0){
+                            ToastUtil.show(context,"没有搜到目标订单");
+                        }
+                    }
+                });
+
+    }
+
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.rl_select_view) RelativeLayout selectView;
@@ -294,8 +343,8 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         }
     }
 
-    public void setData(List<OrderBean> list,int category){
-        this.list = filterOrders(list,category);
+    public void setData(List<OrderBean> list){
+        this.list = list;
         Collections.sort(this.list,new OrderSortComparator());
         notifyDataSetChanged();
         EventBus.getDefault().post(new NaiGaiEvent(OrderHelper.caculateNaiGai(list)));

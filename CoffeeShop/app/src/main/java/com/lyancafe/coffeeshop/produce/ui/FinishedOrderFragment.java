@@ -8,10 +8,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
@@ -21,6 +25,7 @@ import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.produce.presenter.FinishedPresenter;
 import com.lyancafe.coffeeshop.produce.presenter.FinishedPresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.FinishedView;
+import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
@@ -31,6 +36,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -42,6 +48,10 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     PullLoadMoreRecyclerView pullLoadMoreRecyclerView;
     @BindView(R.id.tv_empty)
     TextView tvEmpty;
+    @BindView(R.id.et_search_key)
+    EditText etSearchKey;
+    @BindView(R.id.btn_search)
+    Button btnSearch;
     private FinishedRvAdapter mAdapter;
     private long mLastOrderId = 0;
     private Context mContext;
@@ -102,23 +112,35 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         dateText.setText(sdf.format(new Date()));
 
+
+        etSearchKey.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode==KeyEvent.KEYCODE_ENTER && event.getAction()==KeyEvent.ACTION_UP){
+                    search();
+                    return true;
+                }
+                return false;
+            }
+        });
+
     }
 
     @Override
     public void showEmpty(boolean isNeedToShow) {
 
-       if(tvEmpty!=null){
-           tvEmpty.setVisibility(isNeedToShow?View.VISIBLE:View.GONE);
-       }
+        if (tvEmpty != null) {
+            tvEmpty.setVisibility(isNeedToShow ? View.VISIBLE : View.GONE);
+        }
     }
 
 
     @Override
     public void bindDataToView(List<OrderBean> list) {
-        if(list!=null && list.size()>0){
+        if (list != null && list.size() > 0) {
             showEmpty(false);
             mAdapter.setData(list);
-        }else{
+        } else {
             showEmpty(true);
         }
 
@@ -131,7 +153,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
     @Override
     public void bindAmountDataToView(int ordersAmount, int cupsAmount) {
-        if(orderCountText!=null && cupCountText!=null){
+        if (orderCountText != null && cupCountText != null) {
             orderCountText.setText(String.valueOf(ordersAmount));
             cupCountText.setText(String.valueOf(cupsAmount));
         }
@@ -174,7 +196,6 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     }
 
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -197,7 +218,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
     @Override
     public void onLoadMore() {
-        mFinishedPresenter.loadFinishedOrders(mLastOrderId,true);
+        mFinishedPresenter.loadFinishedOrders(mLastOrderId, true);
     }
 
 
@@ -213,11 +234,29 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
     }
 
+    @OnClick(R.id.btn_search)
+    public void onViewClicked() {
+        search();
+    }
+
+
+    // 执行搜索
+    private void search(){
+        String searchKey = etSearchKey.getText().toString();
+        if(TextUtils.isEmpty(searchKey)){
+            ToastUtil.show(getContext(),"请输入要查找订单的门店单号");
+            return;
+        }
+        mAdapter.searchOrder(Integer.parseInt(searchKey));
+        MyUtil.hideKeyboard(etSearchKey);
+        etSearchKey.setText("");
+    }
+
     class FineshedTaskRunnable implements Runnable {
         @Override
         public void run() {
             mFinishedPresenter.loadOrderAmount();
-            mFinishedPresenter.loadFinishedOrders(0,false);
+            mFinishedPresenter.loadFinishedOrders(0, false);
         }
     }
 
@@ -230,7 +269,6 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
             mHandler.removeCallbacks(mRunnable);
         }
     }
-
 
 
 }

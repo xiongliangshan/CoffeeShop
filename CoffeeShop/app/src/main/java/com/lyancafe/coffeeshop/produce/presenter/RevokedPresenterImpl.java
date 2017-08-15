@@ -3,6 +3,7 @@ package com.lyancafe.coffeeshop.produce.presenter;
 import android.content.Context;
 
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.constant.TabList;
 import com.lyancafe.coffeeshop.event.UpdateTabCount;
 import com.lyancafe.coffeeshop.produce.model.RevokedModel;
 import com.lyancafe.coffeeshop.produce.model.RevokedModelImpl;
@@ -51,11 +52,8 @@ public class RevokedPresenterImpl implements RevokedPresenter {
                 @Override
                 public void accept(@NonNull List<OrderBean> orderBeanList) throws Exception {
                     LogUtil.d("xls","accept");
-                    EventBus.getDefault().post(new UpdateTabCount(4, orderBeanList==null?0:orderBeanList.size()));
+                    EventBus.getDefault().post(new UpdateTabCount(TabList.TAB_REVOKED, orderBeanList==null?0:orderBeanList.size()));
                     mRevokedView.bindDataToView(orderBeanList);
-                    for(OrderBean order:orderBeanList){
-                        LogUtil.d("xls","order = "+order.toString());
-                    }
                 }
             });
 

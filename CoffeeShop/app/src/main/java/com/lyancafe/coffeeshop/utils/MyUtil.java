@@ -5,6 +5,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 /**
  * Created by Administrator on 2015/10/26.
@@ -57,5 +59,22 @@ public class MyUtil {
             return true;
         }
 
+    }
+
+    /**
+     * 显示键盘
+     * @param context
+     * @param view
+     */
+    public static void showInputMethod(Context context, View view) {
+        InputMethodManager im = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        im.showSoftInput(view, 0);
+    }
+    //隐藏虚拟键盘
+    public static void hideKeyboard(View v){
+        InputMethodManager imm = ( InputMethodManager) v.getContext( ).getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm.isActive()) {
+            imm.hideSoftInputFromWindow( v.getApplicationWindowToken() , 0 );
+        }
     }
 }

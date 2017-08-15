@@ -5,6 +5,7 @@ import android.content.Context;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
+import com.lyancafe.coffeeshop.constant.TabList;
 import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.UpdateTabCount;
 import com.lyancafe.coffeeshop.http.CustomObserver;
@@ -40,7 +41,7 @@ public class TomorrowPresenterImpl implements TomorrowPresenter {
             @Override
             protected void onHandleSuccess(List<OrderBean> orderBeanList) {
                 List<OrderBean> tomorrowList = orderBeanList;
-                EventBus.getDefault().post(new UpdateTabCount(4, tomorrowList.size()));
+                EventBus.getDefault().post(new UpdateTabCount(TabList.TAB_TOMORROW, tomorrowList.size()));
                 mTomorrowView.bindDataToView(tomorrowList);
                 OrderUtils.with().insertOrderList(tomorrowList);
             }

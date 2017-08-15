@@ -22,7 +22,9 @@ import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.event.UpdateProducedDetailEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -32,6 +34,13 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Predicate;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2015/9/21.
@@ -42,9 +51,11 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
     private Context context;
     public List<OrderBean> list = new ArrayList<OrderBean>();
     public int selected = -1;
+    private List<OrderBean> searchList;
 
     public ProducedRvAdapter(Context context) {
         this.context = context;
+        searchList = new ArrayList<>();
     }
 
     @Override
@@ -166,8 +177,8 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
         }
     }
 
-    public void setData(List<OrderBean> list,int category){
-        this.list = filterOrders(list,category);
+    public void setData(List<OrderBean> list){
+        this.list = list;
         Collections.sort(this.list,new OrderSortComparator());
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
@@ -198,6 +209,48 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
 
         return subList;
     }
+
+    //搜索
+    public void searchOrder(final int shopOrderNo){
+        Observable.fromIterable(list)
+                .subscribeOn(Schedulers.io())
+                .filter(new Predicate<OrderBean>() {
+                    @Override
+                    public boolean test(@NonNull OrderBean orderBean) throws Exception {
+                        return orderBean.getShopOrderNo()==shopOrderNo;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<OrderBean>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                        LogUtil.d("xls","onSubscribe");
+                        searchList.clear();
+                    }
+
+                    @Override
+                    public void onNext(@NonNull OrderBean orderBean) {
+                        LogUtil.d("xls","onNext");
+                        searchList.add(orderBean);
+                        setData(searchList);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        LogUtil.d("xls","onError");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        LogUtil.d("xls","onComplete");
+                        if(searchList.size()==0){
+                            ToastUtil.show(context,"没有搜到目标订单");
+                        }
+                    }
+                });
+
+    }
+
 
 
     /**
