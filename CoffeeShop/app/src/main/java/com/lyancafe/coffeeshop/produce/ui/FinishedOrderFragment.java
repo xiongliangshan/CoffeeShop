@@ -164,10 +164,6 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        mFinishedPresenter.loadOrderAmount();
-        mFinishedPresenter.loadFinishedOrders(0,false);
-
     }
 
 

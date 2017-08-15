@@ -22,6 +22,9 @@ import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.common.PrintHelper;
+import com.lyancafe.coffeeshop.constant.OrderAction;
+import com.lyancafe.coffeeshop.constant.TabList;
+import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.NaiGaiEvent;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
 import com.lyancafe.coffeeshop.event.RevokeEvent;
@@ -260,7 +263,11 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
     //订单撤销事件
     @Subscribe
     public void onRevokeEvent(RevokeEvent event){
-        removeItemFromList((int) event.orderId);
+        if(MainProduceFragment.tabIndex== TabList.TAB_TOPRODUCE){
+            removeItemFromList((int) event.orderId);
+            EventBus.getDefault().postSticky(new ChangeTabCountByActionEvent(OrderAction.REVOKEORDER,0,1));
+        }
+
     }
 
     /**

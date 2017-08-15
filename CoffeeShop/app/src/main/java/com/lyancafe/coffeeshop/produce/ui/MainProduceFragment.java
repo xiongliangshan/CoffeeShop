@@ -36,7 +36,6 @@ import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
-import com.lyancafe.coffeeshop.event.RemoveItemEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.event.UpdateTabCount;
@@ -423,7 +422,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
      */
     @Subscribe
     public void OnUpdateTabCountEvent(UpdateTabCount event) {
-        Log.d("xls", "UpdateTabCount");
+        LogUtil.d(TAG, "UpdateTabCount : index = "+event.tabIndex+" | count = "+event.count);
         TabLayout.Tab tab = tabLayout.getTabAt(event.tabIndex);
         tab.setTag(event.count);
         if (event.count > 0) {
@@ -431,6 +430,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
         } else {
             tab.setText(mPagerAdapter.getPageTitle(event.tabIndex));
         }
+        LogUtil.d(TAG,tab.toString()+tab.getPosition()+" getTag = "+tab.getTag());
     }
 
 
@@ -460,22 +460,6 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
         Log.d(TAG, "onDetach");
     }
 
-    @Subscribe
-    public void onRemoveItemEvent(RemoveItemEvent event){
-        TabLayout.Tab tab = tabLayout.getTabAt(event.tabIndex);
-        if(tab!=null && tab.getTag()!=null){
-            Integer tabCount = (Integer) tab.getTag();
-            int newCount = tabCount-1;
-            if(newCount<=0){
-                newCount = 0;
-            }
-            tab.setTag(newCount);
-            String tabTitle = mPagerAdapter.getPageTitle(event.tabIndex).toString();
-            tab.setText(newCount==0?tabTitle:tabTitle+"("+newCount+")");
-        }
-
-    }
-
 
     /**
      * 对订单操作后更改相关列表中的订单数量角标显示
@@ -484,16 +468,23 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
      */
     @Subscribe
     public void onChangeTabCountByActionEvent(ChangeTabCountByActionEvent event) {
+        LogUtil.d(TAG,"onChangeTabCountByAction :action = "+event.action+" | count = "+event.count);
         TabLayout.Tab tabToproduce = tabLayout.getTabAt(0);
         TabLayout.Tab tabProducing = tabLayout.getTabAt(1);
         TabLayout.Tab tabProduced = tabLayout.getTabAt(2);
-        int toProduceCount = ((Integer) tabToproduce.getTag()).intValue();
-        int producingCount = ((Integer) tabProducing.getTag()).intValue();
-        int producedCount = ((Integer) tabProduced.getTag()).intValue();
+        int toProduceCount = tabToproduce.getTag()==null?0:(Integer) tabToproduce.getTag();
+        int producingCount = tabProducing.getTag()==null?0:(Integer) tabProducing.getTag();
+        int producedCount = tabProduced.getTag()==null?0:(Integer) tabProduced.getTag();
         switch (event.action) {
             case OrderAction.STARTPRODUCE:
                 int tabTo = toProduceCount - event.count;
                 int tabPro = event.isQrCode?producingCount:producingCount + event.count;
+                if(tabTo<0){
+                    tabTo = 0;
+                }
+                if(tabPro<0){
+                    tabPro=0;
+                }
                 tabToproduce.setText(tabTo<=0?mPagerAdapter.getPageTitle(0):mPagerAdapter.getPageTitle(0) + "(" + tabTo + ")");
                 tabProducing.setText(tabPro<=0?mPagerAdapter.getPageTitle(1):mPagerAdapter.getPageTitle(1) + "(" + tabPro + ")");
                 tabToproduce.setTag(tabTo);
@@ -502,10 +493,27 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
             case OrderAction.FINISHPRODUCE:
                 int tabProduceResult = producingCount - event.count;
                 int tabProducedResult = producedCount + event.count;
+                if(tabProduceResult<0){
+                    tabProduceResult = 0;
+                }
+                if(tabProducedResult<0){
+                    tabProducedResult=0;
+                }
                 tabProducing.setText(tabProduceResult<=0?mPagerAdapter.getPageTitle(1):mPagerAdapter.getPageTitle(1) + "(" + tabProduceResult + ")");
                 tabProduced.setText(tabProducedResult<=0?mPagerAdapter.getPageTitle(2):mPagerAdapter.getPageTitle(2)+"("+tabProducedResult+")");
                 tabProducing.setTag(tabProduceResult);
                 tabProduced.setTag(tabProducedResult);
+                break;
+            case OrderAction.REVOKEORDER:
+                TabLayout.Tab tab = tabLayout.getTabAt(event.tabIndex);
+                int count = tab.getTag()==null?0:(Integer)tab.getTag();
+                count = count-1;
+                if(count<0){
+                    count = 0;
+                }
+                tab.setTag(count);
+                String tabTitle = mPagerAdapter.getPageTitle(event.tabIndex).toString();
+                tab.setText(count==0?tabTitle:tabTitle+"("+count+")");
                 break;
         }
     }

@@ -17,6 +17,9 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.constant.OrderAction;
+import com.lyancafe.coffeeshop.constant.TabList;
+import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.RevokeEvent;
 import com.lyancafe.coffeeshop.produce.presenter.ProducingPresenter;
@@ -191,7 +194,10 @@ public class ProducingFragment extends BaseFragment implements MainProduceFragme
     //订单撤销事件
     @Subscribe
     public void onRevokeEvent(RevokeEvent event){
-        removeItemFromList((int) event.orderId);
+        if(MainProduceFragment.tabIndex== TabList.TAB_PRODUCING) {
+            removeItemFromList((int) event.orderId);
+            EventBus.getDefault().postSticky(new ChangeTabCountByActionEvent(OrderAction.REVOKEORDER, 1, 1));
+        }
     }
 
 
@@ -225,7 +231,6 @@ public class ProducingFragment extends BaseFragment implements MainProduceFragme
     class ProducingTaskRunnable implements Runnable{
         @Override
         public void run() {
-//            mProducingPresenter.loadProducingOrderList();
             mProducingPresenter.loadProducingOrders();
         }
     }

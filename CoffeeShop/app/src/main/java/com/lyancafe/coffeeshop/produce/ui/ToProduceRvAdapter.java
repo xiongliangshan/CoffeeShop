@@ -26,7 +26,6 @@ import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.NaiGaiEvent;
-import com.lyancafe.coffeeshop.event.RemoveItemEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
@@ -35,7 +34,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -339,7 +337,6 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         for(int i=list.size()-1;i>=0;i--){
             if(list.get(i).getId()==orderId){
                 list.remove(i);
-                EventBus.getDefault().postSticky(new RemoveItemEvent(0,orderId));
                 break;
             }
         }

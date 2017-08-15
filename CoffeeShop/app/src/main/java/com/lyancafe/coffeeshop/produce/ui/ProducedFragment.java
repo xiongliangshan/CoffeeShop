@@ -15,11 +15,18 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.constant.OrderAction;
+import com.lyancafe.coffeeshop.constant.TabList;
+import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
+import com.lyancafe.coffeeshop.event.RevokeEvent;
 import com.lyancafe.coffeeshop.produce.presenter.ProducedPresenter;
 import com.lyancafe.coffeeshop.produce.presenter.ProducedPresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.ProducedView;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,12 +64,12 @@ public class ProducedFragment extends BaseFragment implements ProducedView{
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mProducedPresenter.loadToFetchOrders();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        EventBus.getDefault().register(this);
         View contentView =  inflater.inflate(R.layout.fragment_produced, container, false);
         unbinder = ButterKnife.bind(this,contentView);
         initViews();
@@ -89,6 +96,20 @@ public class ProducedFragment extends BaseFragment implements ProducedView{
         allOrderList.clear();
         allOrderList.addAll(list);
         mAdapter.setData(list, MainProduceFragment.category);
+    }
+
+    //订单撤销事件
+    @Subscribe
+    public void onRevokeEvent(RevokeEvent event){
+        if(MainProduceFragment.tabIndex== TabList.TAB_PRODUCED){
+            removeItemFromList((int) event.orderId);
+            EventBus.getDefault().postSticky(new ChangeTabCountByActionEvent(OrderAction.REVOKEORDER,2,1));
+        }
+    }
+
+    @Override
+    public void removeItemFromList(int id) {
+        mAdapter.removeOrderFromList(id);
     }
 
     @Override
@@ -119,6 +140,7 @@ public class ProducedFragment extends BaseFragment implements ProducedView{
 
     @Override
     public void onDestroyView() {
+        EventBus.getDefault().unregister(this);
         super.onDestroyView();
         unbinder.unbind();
     }

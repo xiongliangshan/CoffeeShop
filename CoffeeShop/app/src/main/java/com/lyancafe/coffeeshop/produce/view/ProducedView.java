@@ -9,4 +9,7 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 
 public interface ProducedView extends BaseView<OrderBean>{
 
+    //从列表中删除某个item
+    void removeItemFromList(int id);
+
 }
