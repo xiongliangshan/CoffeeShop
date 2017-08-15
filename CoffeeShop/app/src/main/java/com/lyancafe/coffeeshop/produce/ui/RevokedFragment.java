@@ -13,12 +13,18 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.constant.OrderAction;
+import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
+import com.lyancafe.coffeeshop.event.RevokeEvent;
 import com.lyancafe.coffeeshop.produce.presenter.RevokedPresenter;
 import com.lyancafe.coffeeshop.produce.presenter.RevokedPresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.RevokedView;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
@@ -58,6 +64,7 @@ public class RevokedFragment extends BaseFragment implements RevokedView {
         View contentView = inflater.inflate(R.layout.fragment_revoked, container, false);
         unbinder = ButterKnife.bind(this, contentView);
         initViews();
+        EventBus.getDefault().register(this);
         return contentView;
     }
 
@@ -83,8 +90,15 @@ public class RevokedFragment extends BaseFragment implements RevokedView {
         ToastUtil.show(getContext(),promptStr);
     }
 
+    //订单撤销事件
+    @Subscribe
+    public void onRevokeEvent(RevokeEvent event) {
+        mRevokedPresenter.loadRevokedOrders();
+    }
+
     @Override
     public void onDestroyView() {
+        EventBus.getDefault().unregister(this);
         super.onDestroyView();
         unbinder.unbind();
     }
