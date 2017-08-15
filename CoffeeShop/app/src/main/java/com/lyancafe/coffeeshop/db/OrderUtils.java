@@ -71,6 +71,11 @@ public class OrderUtils {
 
     }
 
+    //通过Id获取某个订单
+    public OrderBean getOrderById(long orderId){
+        return  queryOrder(orderId);
+    }
+
 
     //更新某个订单的生产状态
     public  void updateOrder(long orderId,int produceStatus){

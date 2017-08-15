@@ -22,6 +22,7 @@ import com.lyancafe.coffeeshop.event.RevokeEvent;
 import com.lyancafe.coffeeshop.produce.presenter.ProducedPresenter;
 import com.lyancafe.coffeeshop.produce.presenter.ProducedPresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.ProducedView;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
@@ -101,8 +102,12 @@ public class ProducedFragment extends BaseFragment implements ProducedView{
     //订单撤销事件
     @Subscribe
     public void onRevokeEvent(RevokeEvent event){
-        if(MainProduceFragment.tabIndex== TabList.TAB_PRODUCED){
-            removeItemFromList((int) event.orderId);
+        if(event.orderBean==null){
+            LogUtil.e("xls","onRevokeEvent orderBean = null");
+            return;
+        }
+        if(event.orderBean.getProduceStatus()== 4010){
+            removeItemFromList((int) event.orderBean.getId());
             EventBus.getDefault().postSticky(new ChangeTabCountByActionEvent(OrderAction.REVOKEORDER,2,1));
         }
     }
