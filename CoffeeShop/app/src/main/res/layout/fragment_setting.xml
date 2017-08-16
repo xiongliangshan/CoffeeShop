@@ -23,7 +23,7 @@
             android:id="@+id/tv_current_version"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
+            android:layout_marginLeft="16dp"
             app:layout_constraintLeft_toRightOf="@id/constant_current_version"
             android:layout_marginRight="16dp"
             android:textColor="@color/white1"
