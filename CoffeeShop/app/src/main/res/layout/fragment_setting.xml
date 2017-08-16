@@ -1,0 +1,57 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/gray3"
+    android:padding="16dp"
+    tools:context="com.lyancafe.coffeeshop.setting.ui.SettingFragment">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/constant_current_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:textColor="@color/white1"
+            android:textSize="20sp"
+            android:text="当前版本:"/>
+        <TextView
+            android:id="@+id/tv_current_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintLeft_toRightOf="@id/constant_current_version"
+            android:layout_marginRight="16dp"
+            android:textColor="@color/white1"
+            android:textSize="20sp"
+            />
+
+        <Button
+            android:id="@+id/btn_login_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/constant_current_version"
+            android:textSize="18sp"
+            android:text="退出登录"/>
+
+        <Button
+            android:id="@+id/btn_check_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            app:layout_constraintLeft_toRightOf="@id/btn_login_out"
+            app:layout_constraintBaseline_toBaselineOf="@id/btn_login_out"
+            android:textColor="@color/bg_blue"
+            android:textSize="18sp"
+            android:text="系统更新"/>
+
+
+    </android.support.constraint.ConstraintLayout>
+
+</ScrollView>

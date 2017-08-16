@@ -13,13 +13,10 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
-import com.lyancafe.coffeeshop.constant.OrderAction;
-import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.RevokeEvent;
 import com.lyancafe.coffeeshop.produce.presenter.RevokedPresenter;
 import com.lyancafe.coffeeshop.produce.presenter.RevokedPresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.RevokedView;
-import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 

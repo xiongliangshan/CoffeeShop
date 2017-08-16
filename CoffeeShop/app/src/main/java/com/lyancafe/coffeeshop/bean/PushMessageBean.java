@@ -10,7 +10,7 @@ public class PushMessageBean {
     private int id;   //消息 id;
     private String title;  //消息标题
     private long orderId;  //订单id（有则传，没有则传0）
-    private int eventType;   //通知事件类型 1：新订单  10:小哥上报问题 11:问题已解决 16:订单撤回 20:催单
+    private int eventType;   //通知事件类型 1：新订单  10:小哥上报问题 11:问题已解决 16:订单撤回 20:催单 22:取消
     private String content; //消息内容
 
     public int getId() {

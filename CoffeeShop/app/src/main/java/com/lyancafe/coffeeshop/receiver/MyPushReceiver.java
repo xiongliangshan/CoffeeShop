@@ -156,6 +156,12 @@ public class MyPushReceiver extends BroadcastReceiver {
         }else if(pmb.getEventType()==20){   //订单催单
             mBuilder.setContentTitle(pmb.getTitle());
             mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.urge_shop));
+        }else if(pmb.getEventType()==22){
+            //取消订单
+            mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.cancel_order));
+            OrderUtils.with().updateRevokedOrder(pmb.getOrderId());
+            OrderBean orderBean = OrderUtils.with().getOrderById(pmb.getOrderId());
+            EventBus.getDefault().postSticky(new RevokeEvent(orderBean));
         }
 
 
