@@ -11,10 +11,10 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.event.UpdateFinishedDetailEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
-import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.utils.FinishedOrderSortComparator;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
@@ -32,7 +32,6 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 

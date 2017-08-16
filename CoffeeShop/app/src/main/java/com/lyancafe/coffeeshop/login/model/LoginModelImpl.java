@@ -14,8 +14,6 @@ import java.util.Date;
 import java.util.Map;
 
 import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 import static com.lyancafe.coffeeshop.common.LoginHelper.getLoginTime;
 import static com.lyancafe.coffeeshop.common.LoginHelper.saveCurrentDayFirstLoginTime;

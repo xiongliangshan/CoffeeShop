@@ -1,12 +1,11 @@
 package com.lyancafe.coffeeshop.bean;
 
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.NotNull;
 
 import java.io.Serializable;
-import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * Created by Administrator on 2015/9/21.

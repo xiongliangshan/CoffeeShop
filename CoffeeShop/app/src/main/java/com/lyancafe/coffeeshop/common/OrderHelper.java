@@ -675,11 +675,7 @@ public class OrderHelper {
         int day_order = calendar1.get(Calendar.DAY_OF_MONTH);
 
 
-        if(day_order>day_current){
-            return true;
-        }else{
-            return false;
-        }
+        return day_order > day_current;
     }
 
     public static String getPrintFlag(String orderSn) {

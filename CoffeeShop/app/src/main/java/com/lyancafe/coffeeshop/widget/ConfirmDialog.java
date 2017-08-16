@@ -86,7 +86,7 @@ public class ConfirmDialog extends Dialog {
 	}
 
 	public interface OnClickYesListener {
-		public void onClickYes();
+		void onClickYes();
 	}
 
 }

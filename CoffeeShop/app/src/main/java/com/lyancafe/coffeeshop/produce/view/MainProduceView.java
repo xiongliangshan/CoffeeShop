@@ -1,7 +1,5 @@
 package com.lyancafe.coffeeshop.produce.view;
 
-import java.util.Map;
-
 /**
 * Created by Administrator on 2017/03/15
 */

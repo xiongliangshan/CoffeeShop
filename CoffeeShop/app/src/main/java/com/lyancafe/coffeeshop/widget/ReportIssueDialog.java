@@ -16,19 +16,17 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
+import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.http.RetrofitHttp;
-import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.http.RxHelper;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2017/2/18.
