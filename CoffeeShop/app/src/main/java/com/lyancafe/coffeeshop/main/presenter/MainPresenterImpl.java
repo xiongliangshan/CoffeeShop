@@ -4,25 +4,21 @@ package com.lyancafe.coffeeshop.main.presenter;
 import android.content.Context;
 import android.content.Intent;
 
-import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
+import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.http.RetrofitHttp;
-import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.http.RxHelper;
 import com.lyancafe.coffeeshop.main.view.MainView;
 import com.lyancafe.coffeeshop.service.DownLoadService;
 import com.lyancafe.coffeeshop.service.TaskService;
-import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.UpdateUtil;
 
 import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 /**
 * Created by Administrator on 2017/03/14

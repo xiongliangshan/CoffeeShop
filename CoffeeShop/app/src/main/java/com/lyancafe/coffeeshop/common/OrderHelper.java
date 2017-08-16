@@ -181,7 +181,7 @@ public class OrderHelper {
 
     //计算某个订单的总杯数
     public static int getTotalQutity(OrderBean orderBean){
-        if(orderBean.getItems().size()<=0){
+        if(orderBean.getItems()==null || orderBean.getItems().size()<=0){
             return 0;
         }
         int sum = 0;
@@ -416,18 +416,10 @@ public class OrderHelper {
         if(orderBean.getDeliveryTeam()== DeliveryTeam.MEITUAN){
             return "美团"+orderBean.getMtShopOrderNo();
         }
-        String shopOrderSn = "";
-        if(orderBean.getShopOrderNo()<10){
-            shopOrderSn = "00"+orderBean.getShopOrderNo();
-        }else if(orderBean.getShopOrderNo()>=10&&orderBean.getShopOrderNo()<100){
-            shopOrderSn = "0"+orderBean.getShopOrderNo();
-        }else{
-            shopOrderSn = ""+orderBean.getShopOrderNo();
-        }
         if(orderBean.getInstant()==1){//及时单
-            return shopOrderSn;
+            return String.valueOf(orderBean.getShopOrderNo());
         }else{
-            return shopOrderSn+"约";
+            return orderBean.getShopOrderNo()+"约";
         }
     }
 
@@ -435,36 +427,15 @@ public class OrderHelper {
         if(evaluationBean.getDeliveryTeam()== DeliveryTeam.MEITUAN){
             return "美团"+evaluationBean.getMtShopOrderNo();
         }
-        String shopOrderSn = "";
-        if(evaluationBean.getShopOrderNo()<10){
-            shopOrderSn = "00"+evaluationBean.getShopOrderNo();
-        }else if(evaluationBean.getShopOrderNo()>=10&&evaluationBean.getShopOrderNo()<100){
-            shopOrderSn = "0"+evaluationBean.getShopOrderNo();
-        }else{
-            shopOrderSn = ""+evaluationBean.getShopOrderNo();
-        }
+
         if(evaluationBean.getInstant()==1){//及时单
-            return shopOrderSn;
+            return String.valueOf(evaluationBean.getShopOrderNo());
         }else{
-            return shopOrderSn+"约";
+            return evaluationBean.getShopOrderNo()+"约";
         }
     }
 
 
-
-   /* //拼接个性化标签
-    public static String getLabelStr(List<String> list){
-        if(list==null || list.size()<=0){
-            return "";
-        }
-        StringBuilder sb = new StringBuilder();
-        for(String label:list){
-            sb.append(label);
-            sb.append("/");
-        }
-        sb.deleteCharAt(sb.length()-1);
-        return sb.toString();
-    }*/
 
    public static String getWxScanStrForPrint(PrintOrderBean printOrderBean){
        return printOrderBean.isWxScan()?"(到店扫)":"";
@@ -704,11 +675,7 @@ public class OrderHelper {
         int day_order = calendar1.get(Calendar.DAY_OF_MONTH);
 
 
-        if(day_order>day_current){
-            return true;
-        }else{
-            return false;
-        }
+        return day_order > day_current;
     }
 
     public static String getPrintFlag(String orderSn) {

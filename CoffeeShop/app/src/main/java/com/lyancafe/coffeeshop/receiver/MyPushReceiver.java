@@ -14,8 +14,11 @@ import android.util.Log;
 
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.PushMessageBean;
+import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
+import com.lyancafe.coffeeshop.event.RevokeEvent;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.tinkerpatch.sdk.TinkerPatch;
 
@@ -105,7 +108,7 @@ public class MyPushReceiver extends BroadcastReceiver {
                     Iterator<String> it =  json.keys();
 
                     while (it.hasNext()) {
-                        String myKey = it.next().toString();
+                        String myKey = it.next();
                         sb.append("\nkey:" + key + ", value: [" +
                                 myKey + " - " +json.optString(myKey) + "]");
                     }
@@ -145,11 +148,20 @@ public class MyPushReceiver extends BroadcastReceiver {
             mBuilder.setDefaults(Notification.DEFAULT_ALL);
         }else if(pmb.getEventType()==11){   //问题已经解决
             mBuilder.setDefaults(Notification.DEFAULT_ALL);
-        }else if(pmb.getEventType()==16){   //订单撤销
+        }else if(pmb.getEventType()==16){   //订单撤回
             mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.order_undo));
+            OrderUtils.with().updateRevokedOrder(pmb.getOrderId());
+            OrderBean orderBean = OrderUtils.with().getOrderById(pmb.getOrderId());
+            EventBus.getDefault().postSticky(new RevokeEvent(orderBean));
         }else if(pmb.getEventType()==20){   //订单催单
             mBuilder.setContentTitle(pmb.getTitle());
             mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.urge_shop));
+        }else if(pmb.getEventType()==22){
+            //取消订单
+            mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.cancel_order));
+            OrderUtils.with().updateRevokedOrder(pmb.getOrderId());
+            OrderBean orderBean = OrderUtils.with().getOrderById(pmb.getOrderId());
+            EventBus.getDefault().postSticky(new RevokeEvent(orderBean));
         }
 
 

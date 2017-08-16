@@ -1,6 +1,5 @@
 package com.lyancafe.coffeeshop.login.ui;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -17,7 +16,6 @@ import com.lyancafe.coffeeshop.login.presenter.LoginPresenterImpl;
 import com.lyancafe.coffeeshop.login.view.LoginView;
 import com.lyancafe.coffeeshop.main.ui.HomeActivity;
 import com.lyancafe.coffeeshop.service.DownLoadService;
-import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

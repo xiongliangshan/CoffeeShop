@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -15,16 +14,14 @@ import android.widget.TextView;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseActivity;
 import com.lyancafe.coffeeshop.bean.ApkInfoBean;
-import com.lyancafe.coffeeshop.common.LoginHelper;
-import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.main.presenter.MainPresenter;
 import com.lyancafe.coffeeshop.main.presenter.MainPresenterImpl;
 import com.lyancafe.coffeeshop.main.view.MainView;
 import com.lyancafe.coffeeshop.produce.ui.MainProduceFragment;
 import com.lyancafe.coffeeshop.service.DownLoadService;
 import com.lyancafe.coffeeshop.service.TaskService;
+import com.lyancafe.coffeeshop.setting.ui.SettingFragment;
 import com.lyancafe.coffeeshop.shop.ui.MainShopFragment;
-import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.LoadingDialog;
 
@@ -39,79 +36,81 @@ import butterknife.OnClick;
 /**
  * Created by Administrator on 2015/9/18.
  */
-public class HomeActivity extends BaseActivity implements MainView{
+public class HomeActivity extends BaseActivity implements MainView {
 
-    private static final String TAG ="main";
+    private static final String TAG = "main";
     public List<Fragment> fragmentsList = new ArrayList<Fragment>();
+
     private MainProduceFragment orderFrag;
     private MainShopFragment shopFragment;
-    private TaskService taskService;
-    private ServiceConnection connection;
+    private SettingFragment settingFragment;
     private Context context;
     private int mSelectedIndex = 0;
 
     private MainPresenter mMainPresenter;
     private LoadingDialog mLoadingDlg;
 
-    @BindView(R.id.ll_produce_tab) LinearLayout tabProduceLayout;
-    @BindView(R.id.ll_shop_tab) LinearLayout tabShopLayout;
-    @BindViews({R.id.ll_produce_tab,R.id.ll_shop_tab})
+    @BindView(R.id.ll_produce_tab)
+    LinearLayout tabProduceLayout;
+    @BindView(R.id.ll_shop_tab)
+    LinearLayout tabShopLayout;
+    @BindView(R.id.ll_system_tab)
+    LinearLayout llSystemTab;
+    @BindViews({R.id.ll_produce_tab, R.id.ll_shop_tab,R.id.ll_system_tab})
     List<LinearLayout> tabList;
-    @BindView(R.id.tv_shop_name) TextView shopNameText;
-    @BindView(R.id.tv_current_version) TextView curVerText;
+
 
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-     //   super.onSaveInstanceState(outState);
+        //   super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context  = HomeActivity.this;
+        context = HomeActivity.this;
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
-        mMainPresenter = new MainPresenterImpl(this,this);
+        mMainPresenter = new MainPresenterImpl(this, this);
         initViews();
         updateTab(mSelectedIndex);
-        Intent intent=new Intent(HomeActivity.this,TaskService.class);
+        Intent intent = new Intent(HomeActivity.this, TaskService.class);
         startService(intent);
 
 
     }
 
-    private void initViews(){
-        shopNameText.setText(LoginHelper.getUser(context).getShopName());
-        curVerText.setText(String.format("当前版本:%s", MyUtil.getVersion(context)));
-
-        orderFrag =  new MainProduceFragment();
+    private void initViews() {
+        orderFrag = new MainProduceFragment();
         shopFragment = new MainShopFragment();
+        settingFragment = new SettingFragment();
         fragmentsList.add(orderFrag);
         fragmentsList.add(shopFragment);
+        fragmentsList.add(settingFragment);
     }
 
 
     @Override
     public void showLoading() {
-        if(mLoadingDlg==null){
+        if (mLoadingDlg == null) {
             mLoadingDlg = new LoadingDialog(this);
         }
-        if(!mLoadingDlg.isShowing()){
+        if (!mLoadingDlg.isShowing()) {
             mLoadingDlg.show();
         }
     }
 
     @Override
     public void dismissLoading() {
-        if(mLoadingDlg!=null && mLoadingDlg.isShowing()){
+        if (mLoadingDlg != null && mLoadingDlg.isShowing()) {
             mLoadingDlg.dismiss();
         }
     }
 
     @Override
     public void showToast(String message) {
-        ToastUtil.showToast(getApplicationContext(),message);
+        ToastUtil.showToast(getApplicationContext(), message);
     }
 
     @Override
@@ -127,7 +126,7 @@ public class HomeActivity extends BaseActivity implements MainView{
                 dialog.dismiss();
                 //启动Service下载apk文件
                 Intent intent = new Intent(HomeActivity.this, DownLoadService.class);
-                intent.putExtra("apk",apk);
+                intent.putExtra("apk", apk);
                 startService(intent);
             }
         });
@@ -147,48 +146,34 @@ public class HomeActivity extends BaseActivity implements MainView{
     }
 
 
-    @OnClick({R.id.ll_produce_tab,R.id.ll_shop_tab})
+    @OnClick({R.id.ll_produce_tab, R.id.ll_shop_tab,R.id.ll_system_tab})
     void onLeftTabClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.ll_produce_tab:
                 mSelectedIndex = 0;
-                updateTab(mSelectedIndex);
                 break;
             case R.id.ll_shop_tab:
                 mSelectedIndex = 1;
-                updateTab(mSelectedIndex);
+                break;
+            case R.id.ll_system_tab:
+                mSelectedIndex = 2;
                 break;
         }
+        updateTab(mSelectedIndex);
 
     }
 
-    @OnClick({R.id.tv_check_update,R.id.tv_login_out})
-    void onClick(View v){
-        switch (v.getId()){
-            case R.id.tv_check_update:
-                //系统更新
-                mMainPresenter.checkUpdate(true);
-                break;
-            case R.id.tv_login_out:
-                //退出登录
-                mMainPresenter.exitLogin();
-                OrderHelper.batchList.clear();
-                HomeActivity.this.finish();
-                HomeActivity.this.overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);
-                break;
-        }
-    }
 
-    private void updateTab(int selectedIndex){
-        for(int i=0;i<tabList.size();i++){
+    private void updateTab(int selectedIndex) {
+        for (int i = 0; i < tabList.size(); i++) {
             LinearLayout linearLayout = tabList.get(i);
             View childView = linearLayout.getChildAt(0);
-            if(selectedIndex==i){
+            if (selectedIndex == i) {
                 linearLayout.setBackgroundColor(context.getResources().getColor(R.color.black1));
-                ((TextView)childView).setTextColor(context.getResources().getColor(R.color.yellow1));
-            }else{
+                ((TextView) childView).setTextColor(context.getResources().getColor(R.color.yellow1));
+            } else {
                 linearLayout.setBackgroundColor(context.getResources().getColor(R.color.gray4));
-                ((TextView)childView).setTextColor(context.getResources().getColor(R.color.gray5));
+                ((TextView) childView).setTextColor(context.getResources().getColor(R.color.gray5));
             }
         }
         switchFragment(selectedIndex);
@@ -198,21 +183,22 @@ public class HomeActivity extends BaseActivity implements MainView{
     @Override
     public void switchFragment(int selectedIndex) {
         Fragment fragment = fragmentsList.get(selectedIndex);
-        if(!fragment.isAdded()){
+        if (!fragment.isAdded()) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.add(R.id.tab_content,fragment);
+            ft.add(R.id.tab_content, fragment);
             ft.commitAllowingStateLoss();
         }
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        if(fragment instanceof MainProduceFragment){
-            ft.hide(shopFragment).show(orderFrag);
-        }else{
-            ft.hide(orderFrag).show(shopFragment);
+        if (fragment instanceof MainProduceFragment) {
+            ft.hide(shopFragment).hide(settingFragment).show(orderFrag);
+        } else if (fragment instanceof MainShopFragment) {
+            ft.hide(orderFrag).hide(settingFragment).show(shopFragment);
+        } else {
+            ft.hide(orderFrag).hide(shopFragment).show(settingFragment);
         }
         ft.commitAllowingStateLoss();
         fragment.onResume();
     }
-
 
 }

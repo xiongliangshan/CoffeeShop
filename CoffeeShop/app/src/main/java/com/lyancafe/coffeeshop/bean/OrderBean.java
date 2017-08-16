@@ -2,10 +2,7 @@ package com.lyancafe.coffeeshop.bean;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Index;
-import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.ToMany;
-import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.Serializable;
 import java.util.List;
@@ -73,320 +70,342 @@ public class OrderBean implements Serializable{
 
     private double orderDistance;       //订单距离
 
-    @Transient
-    private List<ItemContentBean> items; //购买的咖啡内容列表
+    private boolean revoked = false;     //是否被撤销
 
+    @ToMany(referencedJoinProperty = "orderId")
+    private List<ItemContentBean> items;        //购买的咖啡内容列表
+
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+
+    /** Used for active entity operations. */
+    @Generated(hash = 627331561)
+    private transient OrderBeanDao myDao;
+
+    @Generated(hash = 930366938)
+    public OrderBean(long id, String reminder, String orderSn, int shopOrderNo, boolean wxScan, boolean isRecipeFittings,
+            long expectedTime, long orderTime, long distributeTime, long produceEffect, String recipient, String address,
+            String phone, String courierName, String courierPhone, int status, int produceStatus, boolean issueOrder,
+            int instant, String notes, String csrNotes, long handoverTime, int feedbackType, int deliveryTeam,
+            int mtShopOrderNo, double orderDistance, boolean revoked) {
+        this.id = id;
+        this.reminder = reminder;
+        this.orderSn = orderSn;
+        this.shopOrderNo = shopOrderNo;
+        this.wxScan = wxScan;
+        this.isRecipeFittings = isRecipeFittings;
+        this.expectedTime = expectedTime;
+        this.orderTime = orderTime;
+        this.distributeTime = distributeTime;
+        this.produceEffect = produceEffect;
+        this.recipient = recipient;
+        this.address = address;
+        this.phone = phone;
+        this.courierName = courierName;
+        this.courierPhone = courierPhone;
+        this.status = status;
+        this.produceStatus = produceStatus;
+        this.issueOrder = issueOrder;
+        this.instant = instant;
+        this.notes = notes;
+        this.csrNotes = csrNotes;
+        this.handoverTime = handoverTime;
+        this.feedbackType = feedbackType;
+        this.deliveryTeam = deliveryTeam;
+        this.mtShopOrderNo = mtShopOrderNo;
+        this.orderDistance = orderDistance;
+        this.revoked = revoked;
+    }
 
     @Generated(hash = 1725534308)
     public OrderBean() {
     }
 
-
-    @Generated(hash = 432081132)
-    public OrderBean(long id, String reminder, String orderSn, int shopOrderNo, boolean wxScan,
-            boolean isRecipeFittings, long expectedTime, long orderTime, long distributeTime,
-            long produceEffect, String recipient, String address, String phone, String courierName,
-            String courierPhone, int status, int produceStatus, boolean issueOrder, int instant,
-            String notes, String csrNotes, long handoverTime, int feedbackType, int deliveryTeam,
-            int mtShopOrderNo, double orderDistance) {
-        this.id = id;
-        this.reminder = reminder;
-        this.orderSn = orderSn;
-        this.shopOrderNo = shopOrderNo;
-        this.wxScan = wxScan;
-        this.isRecipeFittings = isRecipeFittings;
-        this.expectedTime = expectedTime;
-        this.orderTime = orderTime;
-        this.distributeTime = distributeTime;
-        this.produceEffect = produceEffect;
-        this.recipient = recipient;
-        this.address = address;
-        this.phone = phone;
-        this.courierName = courierName;
-        this.courierPhone = courierPhone;
-        this.status = status;
-        this.produceStatus = produceStatus;
-        this.issueOrder = issueOrder;
-        this.instant = instant;
-        this.notes = notes;
-        this.csrNotes = csrNotes;
-        this.handoverTime = handoverTime;
-        this.feedbackType = feedbackType;
-        this.deliveryTeam = deliveryTeam;
-        this.mtShopOrderNo = mtShopOrderNo;
-        this.orderDistance = orderDistance;
-    }
-
-
     public long getId() {
         return this.id;
     }
-
 
     public void setId(long id) {
         this.id = id;
     }
 
-
     public String getReminder() {
         return this.reminder;
     }
-
 
     public void setReminder(String reminder) {
         this.reminder = reminder;
     }
 
-
     public String getOrderSn() {
         return this.orderSn;
     }
-
 
     public void setOrderSn(String orderSn) {
         this.orderSn = orderSn;
     }
 
-
     public int getShopOrderNo() {
         return this.shopOrderNo;
     }
-
 
     public void setShopOrderNo(int shopOrderNo) {
         this.shopOrderNo = shopOrderNo;
     }
 
-
     public boolean getWxScan() {
         return this.wxScan;
     }
-
 
     public void setWxScan(boolean wxScan) {
         this.wxScan = wxScan;
     }
 
-
     public boolean getIsRecipeFittings() {
         return this.isRecipeFittings;
     }
-
 
     public void setIsRecipeFittings(boolean isRecipeFittings) {
         this.isRecipeFittings = isRecipeFittings;
     }
 
-
     public long getExpectedTime() {
         return this.expectedTime;
     }
-
 
     public void setExpectedTime(long expectedTime) {
         this.expectedTime = expectedTime;
     }
 
-
     public long getOrderTime() {
         return this.orderTime;
     }
-
 
     public void setOrderTime(long orderTime) {
         this.orderTime = orderTime;
     }
 
-
     public long getDistributeTime() {
         return this.distributeTime;
     }
-
 
     public void setDistributeTime(long distributeTime) {
         this.distributeTime = distributeTime;
     }
 
-
     public long getProduceEffect() {
         return this.produceEffect;
     }
-
 
     public void setProduceEffect(long produceEffect) {
         this.produceEffect = produceEffect;
     }
 
-
     public String getRecipient() {
         return this.recipient;
     }
-
 
     public void setRecipient(String recipient) {
         this.recipient = recipient;
     }
 
-
     public String getAddress() {
         return this.address;
     }
-
 
     public void setAddress(String address) {
         this.address = address;
     }
 
-
     public String getPhone() {
         return this.phone;
     }
-
 
     public void setPhone(String phone) {
         this.phone = phone;
     }
 
-
     public String getCourierName() {
         return this.courierName;
     }
-
 
     public void setCourierName(String courierName) {
         this.courierName = courierName;
     }
 
-
     public String getCourierPhone() {
         return this.courierPhone;
     }
-
 
     public void setCourierPhone(String courierPhone) {
         this.courierPhone = courierPhone;
     }
 
-
     public int getStatus() {
         return this.status;
     }
-
 
     public void setStatus(int status) {
         this.status = status;
     }
 
-
     public int getProduceStatus() {
         return this.produceStatus;
     }
-
 
     public void setProduceStatus(int produceStatus) {
         this.produceStatus = produceStatus;
     }
 
-
     public boolean getIssueOrder() {
         return this.issueOrder;
     }
-
 
     public void setIssueOrder(boolean issueOrder) {
         this.issueOrder = issueOrder;
     }
 
-
     public int getInstant() {
         return this.instant;
     }
-
 
     public void setInstant(int instant) {
         this.instant = instant;
     }
 
-
     public String getNotes() {
         return this.notes;
     }
-
 
     public void setNotes(String notes) {
         this.notes = notes;
     }
 
-
     public String getCsrNotes() {
         return this.csrNotes;
     }
-
 
     public void setCsrNotes(String csrNotes) {
         this.csrNotes = csrNotes;
     }
 
-
     public long getHandoverTime() {
         return this.handoverTime;
     }
-
 
     public void setHandoverTime(long handoverTime) {
         this.handoverTime = handoverTime;
     }
 
-
     public int getFeedbackType() {
         return this.feedbackType;
     }
-
 
     public void setFeedbackType(int feedbackType) {
         this.feedbackType = feedbackType;
     }
 
-
     public int getDeliveryTeam() {
         return this.deliveryTeam;
     }
-
 
     public void setDeliveryTeam(int deliveryTeam) {
         this.deliveryTeam = deliveryTeam;
     }
 
-
     public int getMtShopOrderNo() {
         return this.mtShopOrderNo;
     }
-
 
     public void setMtShopOrderNo(int mtShopOrderNo) {
         this.mtShopOrderNo = mtShopOrderNo;
     }
 
-
     public double getOrderDistance() {
         return this.orderDistance;
     }
-
 
     public void setOrderDistance(double orderDistance) {
         this.orderDistance = orderDistance;
     }
 
-
-
-    public List<ItemContentBean> getItems() {
-        return items;
+    public boolean getRevoked() {
+        return this.revoked;
     }
+
+    public void setRevoked(boolean revoked) {
+        this.revoked = revoked;
+    }
+
 
     public void setItems(List<ItemContentBean> items) {
         this.items = items;
     }
 
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 1727427045)
+    public List<ItemContentBean> getItems() {
+        if (items == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            ItemContentBeanDao targetDao = daoSession.getItemContentBeanDao();
+            List<ItemContentBean> itemsNew = targetDao._queryOrderBean_Items(id);
+            synchronized (this) {
+                if (items == null) {
+                    items = itemsNew;
+                }
+            }
+        }
+        return items;
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 1727286264)
+    public synchronized void resetItems() {
+        items = null;
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
+    }
 
     @Override
     public String toString() {
@@ -417,7 +436,15 @@ public class OrderBean implements Serializable{
                 ", deliveryTeam=" + deliveryTeam +
                 ", mtShopOrderNo=" + mtShopOrderNo +
                 ", orderDistance=" + orderDistance +
+                ", revoked=" + revoked +
                 ", items=" + items +
                 '}';
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 1247266390)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getOrderBeanDao() : null;
     }
 }

@@ -81,10 +81,6 @@ public class TaskService extends Service {
         },0,PERIOD_CHECK);
     }
 
-    private void checkOrdersForUnFetch(){
-
-    }
-
 
 
     @Override

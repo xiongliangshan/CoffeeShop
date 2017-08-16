@@ -1,7 +1,5 @@
 package com.lyancafe.coffeeshop.shop.presenter;
 
-import com.lyancafe.coffeeshop.shop.model.EvaluationModelImpl;
-
 /**
  * Created by Administrator on 2017/3/17.
  */

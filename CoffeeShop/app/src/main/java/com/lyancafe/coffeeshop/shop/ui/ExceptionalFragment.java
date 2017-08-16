@@ -28,7 +28,7 @@ import com.lyancafe.coffeeshop.bean.ExceptionalOrder;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
-import com.lyancafe.coffeeshop.event.UpdateExceptionalOrderDetailEvent;
+import com.lyancafe.coffeeshop.event.UpdateExceptionalDetailEvent;
 import com.lyancafe.coffeeshop.shop.presenter.ExceptionalPresenter;
 import com.lyancafe.coffeeshop.shop.presenter.ExceptionalPresenterImpl;
 import com.lyancafe.coffeeshop.shop.view.ExceptionalView;
@@ -155,7 +155,7 @@ public class ExceptionalFragment extends BaseFragment implements ExceptionalView
     }
 
     @Subscribe
-    public void onUpdateExceptionalOrderDetailEvent(UpdateExceptionalOrderDetailEvent event) {
+    public void onUpdateExceptionalOrderDetailEvent(UpdateExceptionalDetailEvent event) {
         updateDetailView(event.exceptionalOrder);
     }
 

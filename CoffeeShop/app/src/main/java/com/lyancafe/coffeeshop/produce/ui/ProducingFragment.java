@@ -8,19 +8,28 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.constant.OrderAction;
+import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
+import com.lyancafe.coffeeshop.event.RevokeEvent;
 import com.lyancafe.coffeeshop.produce.presenter.ProducingPresenter;
 import com.lyancafe.coffeeshop.produce.presenter.ProducingPresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.ProducingView;
+import com.lyancafe.coffeeshop.utils.LogUtil;
+import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
@@ -34,16 +43,22 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ProducingFragment extends BaseFragment implements MainProduceFragment.FilterOrdersListenter,ProducingView {
+public class ProducingFragment extends BaseFragment implements ProducingView {
 
+    @BindView(R.id.et_search_key)
+    EditText etSearchKey;
+    @BindView(R.id.btn_search)
+    Button btnSearch;
     private ProducingPresenter mProducingPresenter;
 
-    @BindView(R.id.rv_producing) RecyclerView mRecyclerView;
+    @BindView(R.id.rv_producing)
+    RecyclerView mRecyclerView;
     private Unbinder unbinder;
     private ProducingRvAdapter mAdapter;
     private Context mContext;
@@ -68,23 +83,34 @@ public class ProducingFragment extends BaseFragment implements MainProduceFragme
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mHandler = new Handler();
-        mProducingPresenter = new ProducingPresenterImpl(this,this.getContext());
+        mProducingPresenter = new ProducingPresenterImpl(this, this.getContext());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         EventBus.getDefault().register(this);
         View contentView = inflater.inflate(R.layout.fragment_producing, container, false);
-        unbinder = ButterKnife.bind(this,contentView);
+        unbinder = ButterKnife.bind(this, contentView);
         initViews();
         return contentView;
     }
 
     private void initViews() {
         mAdapter = new ProducingRvAdapter(getActivity());
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),4,GridLayoutManager.VERTICAL,false));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4, GridLayoutManager.VERTICAL, false));
         mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(12, getActivity()), false));
         mRecyclerView.setAdapter(mAdapter);
+
+        etSearchKey.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode==KeyEvent.KEYCODE_ENTER && event.getAction()==KeyEvent.ACTION_UP){
+                    search();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
 
@@ -97,27 +123,27 @@ public class ProducingFragment extends BaseFragment implements MainProduceFragme
     public void bindDataToView(List<OrderBean> list) {
         allOrderList.clear();
         allOrderList.addAll(list);
-        mAdapter.setData(list, MainProduceFragment.category);
+        mAdapter.setData(list);
     }
 
     @Override
     public void showToast(String promptStr) {
-        ToastUtil.showToast(getActivity(),promptStr);
+        ToastUtil.showToast(getActivity(), promptStr);
     }
 
     @Override
     public void showLoading() {
-        if(mLoadingDlg==null){
+        if (mLoadingDlg == null) {
             mLoadingDlg = new LoadingDialog(getContext());
         }
-        if(!mLoadingDlg.isShowing()){
+        if (!mLoadingDlg.isShowing()) {
             mLoadingDlg.show();
         }
     }
 
     @Override
     public void dismissLoading() {
-        if(mLoadingDlg!=null && mLoadingDlg.isShowing()){
+        if (mLoadingDlg != null && mLoadingDlg.isShowing()) {
             mLoadingDlg.dismiss();
         }
     }
@@ -151,54 +177,80 @@ public class ProducingFragment extends BaseFragment implements MainProduceFragme
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(mHandler!=null){
-            mHandler=null;
+        if (mHandler != null) {
+            mHandler = null;
         }
+    }
+
+    // 执行搜索
+    private void search() {
+        String searchKey = etSearchKey.getText().toString();
+        if (TextUtils.isEmpty(searchKey)) {
+            mAdapter.setSearchData(mAdapter.tempList);
+            return;
+        }
+        mAdapter.searchOrder(Integer.parseInt(searchKey));
+        MyUtil.hideKeyboard(etSearchKey);
+        etSearchKey.setText("");
     }
 
     @Override
     public void onVisible() {
         super.onVisible();
-        Log.d("xls","producingFragment is Visible");
-        if(!isResumed()){
+        Log.d("xls", "producingFragment is Visible");
+        if (!isResumed()) {
             return;
         }
         mRunnable = new ProducingTaskRunnable();
-        mHandler.postDelayed(mRunnable,OrderHelper.DELAY_LOAD_TIME);
+        mHandler.postDelayed(mRunnable, OrderHelper.DELAY_LOAD_TIME);
 
     }
 
     @Override
     public void onInVisible() {
         super.onInVisible();
-        Log.d("xls","producingFragment is InVisible");
-        if(mHandler!=null){
+        Log.d("xls", "producingFragment is InVisible");
+        if (mHandler != null) {
             mHandler.removeCallbacks(mRunnable);
         }
     }
 
     /**
      * 点击生产完成的按钮事件
+     *
      * @param event
      */
     @Subscribe
-    public void onFinishProduceEvent(FinishProduceEvent event){
+    public void onFinishProduceEvent(FinishProduceEvent event) {
         showFinishProduceConfirmDialog(event.order);
     }
 
 
-
-    //订单状态改变后刷新列表UI
-    public void refreshListForStatus(long orderId, int status){
-        if(mAdapter==null){
+    //订单撤销事件
+    @Subscribe
+    public void onRevokeEvent(RevokeEvent event) {
+        if (event.orderBean == null) {
+            LogUtil.e("xls", "onRevokeEvent orderBean = null");
             return;
         }
-        for(int i=0;i<mAdapter.list.size();i++) {
+        if (event.orderBean.getProduceStatus() == 4005) {
+            removeItemFromList((int) event.orderBean.getId());
+            EventBus.getDefault().postSticky(new ChangeTabCountByActionEvent(OrderAction.REVOKEORDER, 1, 1));
+        }
+    }
+
+
+    //订单状态改变后刷新列表UI
+    public void refreshListForStatus(long orderId, int status) {
+        if (mAdapter == null) {
+            return;
+        }
+        for (int i = 0; i < mAdapter.list.size(); i++) {
             OrderBean order = mAdapter.list.get(i);
             if (orderId == order.getId()) {
                 order.setStatus(status);
                 mAdapter.notifyItemChanged(i);
-                if(getParentFragment() instanceof MainProduceFragment){
+                if (getParentFragment() instanceof MainProduceFragment) {
                     ((MainProduceFragment) getParentFragment()).updateOrderDetail(order);
                 }
                 break;
@@ -206,18 +258,15 @@ public class ProducingFragment extends BaseFragment implements MainProduceFragme
         }
     }
 
-
-    @Override
-    public void filter(String category) {
-        Log.d("xls","Producing category = "+category);
-        mAdapter.setData(allOrderList, MainProduceFragment.category);
+    @OnClick(R.id.btn_search)
+    public void onViewClicked() {
+        search();
     }
 
 
-    class ProducingTaskRunnable implements Runnable{
+    class ProducingTaskRunnable implements Runnable {
         @Override
         public void run() {
-//            mProducingPresenter.loadProducingOrderList();
             mProducingPresenter.loadProducingOrders();
         }
     }

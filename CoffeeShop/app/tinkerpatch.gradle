@@ -29,14 +29,14 @@ tinkerpatchSupport {
     appKey = "95efc68c26698ea8"
 
     /** 注意: 若发布新的全量包, appVersion一定要更新 **/
-    appVersion = "3.3.1"
+    appVersion = "3.3.2"
 
     def pathPrefix = "${bakPath}/${baseInfo}/${variantName}/"
     def name = "${project.name}-${variantName}"
 
-    baseApkFile = "D:/base_for_patch/QA/CoffeeShop07061525QA.apk"
-    baseProguardMappingFile = "D:/base_for_patch/QA/CoffeeShop07061525QA-mapping.txt"
-    baseResourceRFile = "D:/base_for_patch/QA/CoffeeShop07061525QA-R.txt"
+    baseApkFile = "D:/base_for_patch/CoffeeShop08101905OL.apk"
+    baseProguardMappingFile = "D:/base_for_patch/CoffeeShop08101905OL-mapping.txt"
+    baseResourceRFile = "D:/base_for_patch/CoffeeShop08101905OL-R.txt"
 
     /**
      *  若有编译多flavors需求, 可以参照： https://github.com/TinkerPatch/tinkerpatch-flavors-sample

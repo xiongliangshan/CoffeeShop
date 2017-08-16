@@ -9,11 +9,14 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.CSApplication;
@@ -22,13 +25,17 @@ import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.common.PrintHelper;
+import com.lyancafe.coffeeshop.constant.OrderAction;
+import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.NaiGaiEvent;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
+import com.lyancafe.coffeeshop.event.RevokeEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.produce.presenter.ToProducePresenter;
 import com.lyancafe.coffeeshop.produce.presenter.ToProducePresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.ToProduceView;
 import com.lyancafe.coffeeshop.utils.LogUtil;
+import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
@@ -52,7 +59,7 @@ import static com.lyancafe.coffeeshop.produce.ui.ListMode.SELECT;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ToProduceFragment extends BaseFragment implements MainProduceFragment.FilterOrdersListenter, ToProduceView {
+public class ToProduceFragment extends BaseFragment implements ToProduceView {
 
 
     @BindView(R.id.rv_to_produce)
@@ -69,6 +76,10 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
     Button batchSelectBtn;
     @BindView(R.id.btn_cancel)
     Button cancelBtn;
+    @BindView(R.id.et_search_key)
+    EditText etSearchKey;
+    @BindView(R.id.btn_search)
+    Button btnSearch;
 
     private Unbinder unbinder;
     private ToProduceRvAdapter mAdapter;
@@ -112,6 +123,17 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4, GridLayoutManager.VERTICAL, false));
         mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(12, getActivity()), false));
         mRecyclerView.setAdapter(mAdapter);
+
+        etSearchKey.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode==KeyEvent.KEYCODE_ENTER && event.getAction()==KeyEvent.ACTION_UP){
+                    search();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -124,6 +146,7 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
     public void onResume() {
         super.onResume();
     }
+
 
     @Subscribe
     public void onNaiGaiEvent(NaiGaiEvent event) {
@@ -157,7 +180,7 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
         allOrderList.clear();
         allOrderList.addAll(list);
         if (isVisible) {
-            mAdapter.setData(list, MainProduceFragment.category);
+            mAdapter.setData(list);
         }
     }
 
@@ -184,11 +207,6 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
         }
     }
 
-    @Override
-    public void filter(String category) {
-        Log.d("xls", "ToProduce category = " + category);
-        mAdapter.setData(allOrderList, MainProduceFragment.category);
-    }
 
     @Override
     public void showStartProduceConfirmDialog(final OrderBean orderBean) {
@@ -255,6 +273,21 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
 
     }
 
+    //订单撤销事件
+    @Subscribe
+    public void onRevokeEvent(RevokeEvent event) {
+        if (event.orderBean == null) {
+            LogUtil.e("xls", "onRevokeEvent orderBean = null");
+            return;
+        }
+        if (event.orderBean.getProduceStatus() == 4000) {
+            removeItemFromList((int) event.orderBean.getId());
+            EventBus.getDefault().postSticky(new ChangeTabCountByActionEvent(OrderAction.REVOKEORDER, 0, 1));
+        }
+
+
+    }
+
     /**
      * 点击开始生产按钮事件
      *
@@ -298,7 +331,7 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
     public void setMode(ListMode mode) {
         mAdapter.curMode = mode;
         mAdapter.notifyDataSetChanged();
-        switch (mode){
+        switch (mode) {
             case NORMAL:
                 batchSelectBtn.setText(R.string.batch_select);
                 cancelBtn.setVisibility(View.GONE);
@@ -310,20 +343,20 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
         }
     }
 
-    @OnClick({R.id.btn_batch_select, R.id.btn_cancel})
+    @OnClick({R.id.btn_batch_select, R.id.btn_cancel,R.id.btn_search})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_batch_select:
-                if(getString(R.string.batch_select).equals(batchSelectBtn.getText().toString())){
+                if (getString(R.string.batch_select).equals(batchSelectBtn.getText().toString())) {
                     //点击批量选择
                     mAdapter.selectMap.clear();
                     setMode(SELECT);
 
-                }else{
+                } else {
                     //点击批量开始
-                    LogUtil.d("xls","被选中的订单:");
+                    LogUtil.d("xls", "被选中的订单:");
                     List<OrderBean> selectedList = mAdapter.getBatchOrders();
-                    if(selectedList.size()==0){
+                    if (selectedList.size() == 0) {
                         showToast("未选中订单");
                         return;
                     }
@@ -342,8 +375,26 @@ public class ToProduceFragment extends BaseFragment implements MainProduceFragme
                 cancelBtn.setVisibility(View.GONE);
                 batchSelectBtn.setText(R.string.batch_select);
                 break;
+            case R.id.btn_search:
+                search();
+                break;
         }
     }
+
+    // 执行搜索
+    private void search(){
+        String searchKey = etSearchKey.getText().toString();
+        if(TextUtils.isEmpty(searchKey)){
+            mAdapter.setSearchData(mAdapter.tempList);
+            return;
+        }
+        mAdapter.searchOrder(Integer.parseInt(searchKey));
+        MyUtil.hideKeyboard(etSearchKey);
+        etSearchKey.setText("");
+    }
+
+
+
 
     class ToProduceTaskRunnable implements Runnable {
         @Override

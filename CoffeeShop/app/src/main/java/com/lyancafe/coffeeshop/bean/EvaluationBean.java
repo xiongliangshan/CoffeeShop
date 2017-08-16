@@ -1,14 +1,5 @@
 package com.lyancafe.coffeeshop.bean;
 
-import android.content.Context;
-import android.util.Log;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONException;
-import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**

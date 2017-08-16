@@ -11,7 +11,7 @@ public class TabList {
     public static final int TAB_TOPRODUCE = 0;      //待生产
     public static final int TAB_PRODUCING = 1;      //生产中
     public static final int TAB_PRODUCED = 2;       //已生产
-    public static final int TAB_DELIVERING = 3;     //配送中
-    public static final int TAB_FINISHED = 4;       //已完成
-
+    public static final int TAB_FINISHED = 3;       //已完成
+    public static final int TAB_REVOKED = 4;        //被撤销
+    public static final int TAB_TOMORROW = 5;       //明日预定
 }

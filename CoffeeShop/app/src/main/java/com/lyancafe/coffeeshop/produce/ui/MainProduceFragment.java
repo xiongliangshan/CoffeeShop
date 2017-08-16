@@ -8,14 +8,12 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.AppCompatSpinner;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -38,11 +36,10 @@ import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
-import com.lyancafe.coffeeshop.event.UpdateProduceFragmentTabOrderCount;
+import com.lyancafe.coffeeshop.event.UpdateTabCount;
 import com.lyancafe.coffeeshop.produce.presenter.MainProducePresenter;
 import com.lyancafe.coffeeshop.produce.presenter.MainProducePresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.MainProduceView;
-import com.lyancafe.coffeeshop.produce.view.TomorrowView;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
 import com.lyancafe.coffeeshop.widget.ReportIssueDialog;
@@ -63,7 +60,7 @@ import butterknife.Unbinder;
 /**
  * Created by Administrator on 2015/9/1.
  */
-public class MainProduceFragment extends BaseFragment implements TabLayout.OnTabSelectedListener, AdapterView.OnItemSelectedListener,MainProduceView {
+public class MainProduceFragment extends BaseFragment implements TabLayout.OnTabSelectedListener,MainProduceView {
 
     private static final String TAG = "MainProduceFragment";
     private Context mContext;
@@ -72,7 +69,6 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     private static final int REQUEST_ASSIGN = 0x1001;
 
     @BindView(R.id.tabLayout) TabLayout tabLayout;
-    @BindView(R.id.spinner_category) AppCompatSpinner spinnerCategory;
     @BindView(R.id.vp_container) ViewPager viewPager;
     @BindView(R.id.order_id) TextView shopOrderNoText;
     @BindView(R.id.reach_time) TextView reachTimeTxt;
@@ -106,6 +102,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     private ProducingFragment producingFragment;
     private ProducedFragment producedFragment;
     private FinishedOrderFragment finishedOrderFragment;
+    private RevokedFragment revokedFragment;
     private TomorrowFragment tomorrowFragment;
 
     private OrderBean mOrder = null;
@@ -144,50 +141,22 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
         producingFragment = new ProducingFragment();
         producedFragment = new ProducedFragment();
         finishedOrderFragment = new FinishedOrderFragment();
+        revokedFragment = new RevokedFragment();
         tomorrowFragment = new TomorrowFragment();
         fragments.add(toProduceFragment);
         fragments.add(producingFragment);
         fragments.add(producedFragment);
         fragments.add(finishedOrderFragment);
+        fragments.add(revokedFragment);
         fragments.add(tomorrowFragment);
         mPagerAdapter = new ProduceFragmentPagerAdapter(getChildFragmentManager(), getActivity(), fragments);
         viewPager.setAdapter(mPagerAdapter);
-        viewPager.setOffscreenPageLimit(4);
+        viewPager.setOffscreenPageLimit(5);
         viewPager.setPageTransformer(true,new ZoomOutPageTransformer());
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.addOnTabSelectedListener(this);
 
-        spinnerCategory.setOnItemSelectedListener(this);
-
     }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Object object = parent.getItemAtPosition(position);
-        switch (position) {
-            case 0:
-                category = OrderCategory.ALL;
-                break;
-            case 1:
-                category = OrderCategory.MEITUN;
-                break;
-            case 2:
-                category = OrderCategory.OWN;
-                break;
-        }
-
-        if (tabIndex == 0) {
-            toProduceFragment.filter(String.valueOf(object));
-        } else if (tabIndex == 1) {
-            producingFragment.filter(String.valueOf(object));
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
-
 
 
     @Override
@@ -267,40 +236,45 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
                     assignBtn.setText("订单撤回");
                 }
             }
+            if(order.getRevoked()){
+                twoBtnLayout.setVisibility(View.GONE);
+                oneBtnLayout.setVisibility(View.GONE);
+            }else{
+                if (order.getProduceStatus() == OrderStatus.UNPRODUCED) {
+                    twoBtnLayout.setVisibility(View.GONE);
+                    oneBtnLayout.setVisibility(View.VISIBLE);
+                    if(OrderHelper.isTomorrowOrder(order)){
+                        produceAndPrintBtn.setVisibility(View.GONE);
+                    }else{
+                        produceAndPrintBtn.setVisibility(View.VISIBLE);
+                    }
+                } else if (order.getProduceStatus() == OrderStatus.PRODUCING) {
+                    twoBtnLayout.setVisibility(View.VISIBLE);
+                    oneBtnLayout.setVisibility(View.GONE);
+                    finishProduceBtn.setVisibility(View.VISIBLE);
+                    if (OrderHelper.isPrinted(mContext, order.getOrderSn())) {
+                        printOrderBtn.setText(R.string.print_again);
+                        printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.red1));
+                    } else {
+                        printOrderBtn.setText(R.string.print);
+                        printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.white1));
+                    }
+                } else if(order.getProduceStatus() == OrderStatus.PRODUCED){
+                    twoBtnLayout.setVisibility(View.VISIBLE);
+                    oneBtnLayout.setVisibility(View.GONE);
+                    finishProduceBtn.setVisibility(View.GONE);
+                    if (OrderHelper.isPrinted(mContext, order.getOrderSn())) {
+                        printOrderBtn.setText(R.string.print_again);
+                        printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_red));
+                    } else {
+                        printOrderBtn.setText(R.string.print);
+                        printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_black));
+                    }
+                } else{
+                    twoBtnLayout.setVisibility(View.GONE);
+                    oneBtnLayout.setVisibility(View.GONE);
+                }
 
-            if (order.getProduceStatus() == OrderStatus.UNPRODUCED) {
-                twoBtnLayout.setVisibility(View.GONE);
-                oneBtnLayout.setVisibility(View.VISIBLE);
-                if(OrderHelper.isTomorrowOrder(order)){
-                    produceAndPrintBtn.setVisibility(View.GONE);
-                }else{
-                    produceAndPrintBtn.setVisibility(View.VISIBLE);
-                }
-            } else if (order.getProduceStatus() == OrderStatus.PRODUCING) {
-                twoBtnLayout.setVisibility(View.VISIBLE);
-                oneBtnLayout.setVisibility(View.GONE);
-                finishProduceBtn.setVisibility(View.VISIBLE);
-                if (OrderHelper.isPrinted(mContext, order.getOrderSn())) {
-                    printOrderBtn.setText(R.string.print_again);
-                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.red1));
-                } else {
-                    printOrderBtn.setText(R.string.print);
-                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.white1));
-                }
-            } else if(order.getProduceStatus() == OrderStatus.PRODUCED){
-                twoBtnLayout.setVisibility(View.VISIBLE);
-                oneBtnLayout.setVisibility(View.GONE);
-                finishProduceBtn.setVisibility(View.GONE);
-                if (OrderHelper.isPrinted(mContext, order.getOrderSn())) {
-                    printOrderBtn.setText(R.string.print_again);
-                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_red));
-                } else {
-                    printOrderBtn.setText(R.string.print);
-                    printOrderBtn.setTextColor(mContext.getResources().getColor(R.color.text_black));
-                }
-            } else{
-                twoBtnLayout.setVisibility(View.GONE);
-                oneBtnLayout.setVisibility(View.GONE);
             }
 
         }
@@ -409,13 +383,13 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
 
 
     /**
-     * 更新列表订单数量
+     * 更新tab数量显示
      *
      * @param event
      */
     @Subscribe
-    public void OnUpdateProduceFragmentTabOrderCountEvent(UpdateProduceFragmentTabOrderCount event) {
-        Log.d("xls", "UpdateProduceFragmentTabOrderCount");
+    public void OnUpdateTabCountEvent(UpdateTabCount event) {
+        LogUtil.d(TAG, "UpdateTabCount : index = "+event.tabIndex+" | count = "+event.count);
         TabLayout.Tab tab = tabLayout.getTabAt(event.tabIndex);
         tab.setTag(event.count);
         if (event.count > 0) {
@@ -423,6 +397,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
         } else {
             tab.setText(mPagerAdapter.getPageTitle(event.tabIndex));
         }
+        LogUtil.d(TAG,tab.toString()+tab.getPosition()+" getTag = "+tab.getTag());
     }
 
 
@@ -460,28 +435,52 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
      */
     @Subscribe
     public void onChangeTabCountByActionEvent(ChangeTabCountByActionEvent event) {
+        LogUtil.d(TAG,"onChangeTabCountByAction :action = "+event.action+" | count = "+event.count);
         TabLayout.Tab tabToproduce = tabLayout.getTabAt(0);
         TabLayout.Tab tabProducing = tabLayout.getTabAt(1);
         TabLayout.Tab tabProduced = tabLayout.getTabAt(2);
-        int toProduceCount = ((Integer) tabToproduce.getTag()).intValue();
-        int producingCount = ((Integer) tabProducing.getTag()).intValue();
-        int producedCount = ((Integer) tabProduced.getTag()).intValue();
+        int toProduceCount = tabToproduce.getTag()==null?0:(Integer) tabToproduce.getTag();
+        int producingCount = tabProducing.getTag()==null?0:(Integer) tabProducing.getTag();
+        int producedCount = tabProduced.getTag()==null?0:(Integer) tabProduced.getTag();
         switch (event.action) {
             case OrderAction.STARTPRODUCE:
                 int tabTo = toProduceCount - event.count;
                 int tabPro = event.isQrCode?producingCount:producingCount + event.count;
-                tabToproduce.setText(tabTo==0?mPagerAdapter.getPageTitle(0):mPagerAdapter.getPageTitle(0) + "(" + tabTo + ")");
-                tabProducing.setText(tabPro==0?mPagerAdapter.getPageTitle(1):mPagerAdapter.getPageTitle(1) + "(" + tabPro + ")");
+                if(tabTo<0){
+                    tabTo = 0;
+                }
+                if(tabPro<0){
+                    tabPro=0;
+                }
+                tabToproduce.setText(tabTo<=0?mPagerAdapter.getPageTitle(0):mPagerAdapter.getPageTitle(0) + "(" + tabTo + ")");
+                tabProducing.setText(tabPro<=0?mPagerAdapter.getPageTitle(1):mPagerAdapter.getPageTitle(1) + "(" + tabPro + ")");
                 tabToproduce.setTag(tabTo);
                 tabProducing.setTag(tabPro);
                 break;
             case OrderAction.FINISHPRODUCE:
                 int tabProduceResult = producingCount - event.count;
                 int tabProducedResult = producedCount + event.count;
-                tabProducing.setText(tabProduceResult==0?mPagerAdapter.getPageTitle(1):mPagerAdapter.getPageTitle(1) + "(" + tabProduceResult + ")");
-                tabProduced.setText(tabProducedResult==0?mPagerAdapter.getPageTitle(2):mPagerAdapter.getPageTitle(2)+"("+tabProducedResult+")");
+                if(tabProduceResult<0){
+                    tabProduceResult = 0;
+                }
+                if(tabProducedResult<0){
+                    tabProducedResult=0;
+                }
+                tabProducing.setText(tabProduceResult<=0?mPagerAdapter.getPageTitle(1):mPagerAdapter.getPageTitle(1) + "(" + tabProduceResult + ")");
+                tabProduced.setText(tabProducedResult<=0?mPagerAdapter.getPageTitle(2):mPagerAdapter.getPageTitle(2)+"("+tabProducedResult+")");
                 tabProducing.setTag(tabProduceResult);
                 tabProduced.setTag(tabProducedResult);
+                break;
+            case OrderAction.REVOKEORDER:
+                TabLayout.Tab tab = tabLayout.getTabAt(event.tabIndex);
+                int count = tab.getTag()==null?0:(Integer)tab.getTag();
+                count = count-1;
+                if(count<0){
+                    count = 0;
+                }
+                tab.setTag(count);
+                String tabTitle = mPagerAdapter.getPageTitle(event.tabIndex).toString();
+                tab.setText(count==0?tabTitle:tabTitle+"("+count+")");
                 break;
         }
     }
@@ -572,8 +571,4 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
         context.startActivity(intent);
     }
 
-
-    public interface FilterOrdersListenter {
-        void filter(String category);
-    }
 }

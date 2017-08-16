@@ -3,7 +3,6 @@ package com.lyancafe.coffeeshop.common;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.baidu.mapapi.map.Text;
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.MaterialItem;
@@ -27,11 +26,9 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Observable;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -54,7 +51,7 @@ public class PrintHelper {
     private PrintHelper() {
         Log.d(TAG,"PrintHelpter()");
         mPoolExecutor = new ThreadPoolExecutor(1, 5, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-        if(Api.BASE_URL.contains("cn")||Api.BASE_URL.contains("192.168")||"滴水湖".equals(LoginHelper.getUser(CSApplication.getInstance()).getShopName())){
+        if(Api.BASE_URL.contains("cn")||Api.BASE_URL.contains("192.168")||"测试-滴水湖".equals(LoginHelper.getUser(CSApplication.getInstance()).getShopName())){
             ip_print_order = "192.168.1.229";
             ip_print_cup = "192.168.1.229";
         }else{
