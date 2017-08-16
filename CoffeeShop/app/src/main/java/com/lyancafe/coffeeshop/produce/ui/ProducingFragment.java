@@ -186,7 +186,7 @@ public class ProducingFragment extends BaseFragment implements ProducingView {
     private void search() {
         String searchKey = etSearchKey.getText().toString();
         if (TextUtils.isEmpty(searchKey)) {
-            ToastUtil.show(getContext(), "请输入要查找订单的门店单号");
+            mAdapter.setSearchData(mAdapter.tempList);
             return;
         }
         mAdapter.searchOrder(Integer.parseInt(searchKey));

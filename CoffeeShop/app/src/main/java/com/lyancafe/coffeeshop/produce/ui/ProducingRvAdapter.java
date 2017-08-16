@@ -57,11 +57,13 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
     public List<OrderBean> list = new ArrayList<OrderBean>();
     public int selected = -1;
     public ListMode curMode;
+    public List<OrderBean> tempList;
     private List<OrderBean> searchList;
 
     public ProducingRvAdapter(Context context) {
         this.context = context;
         curMode = ListMode.NORMAL;
+        tempList = new ArrayList<>();
         searchList = new ArrayList<>();
     }
 
@@ -285,7 +287,19 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         }else{
             EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
         }
+        tempList.clear();
+        tempList.addAll(list);
 
+    }
+
+    public void setSearchData(List<OrderBean> list){
+        this.list = list;
+        notifyDataSetChanged();
+        if(selected>=0 && selected<this.list.size()){
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+        }else{
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+        }
     }
 
     private List<OrderBean> filterOrders(List<OrderBean> list,int category){
@@ -312,7 +326,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
 
     //搜索
     public void searchOrder(final int shopOrderNo){
-        Observable.fromIterable(list)
+        Observable.fromIterable(tempList)
                 .subscribeOn(Schedulers.io())
                 .filter(new Predicate<OrderBean>() {
                     @Override
@@ -332,7 +346,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
                     public void onNext(@NonNull OrderBean orderBean) {
                         LogUtil.d("xls","onNext");
                         searchList.add(orderBean);
-                        setData(searchList);
+                        setSearchData(searchList);
                     }
 
                     @Override

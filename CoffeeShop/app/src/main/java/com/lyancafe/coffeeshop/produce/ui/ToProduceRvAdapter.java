@@ -59,14 +59,14 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
     public List<OrderBean> list = new ArrayList<OrderBean>();
     public int selected = -1;
     public ListMode curMode;
-    private List<OrderBean> batchOrders;
+    public List<OrderBean> tempList;
     private List<OrderBean> searchList;
     public Map<Integer,Boolean> selectMap;
 
     public ToProduceRvAdapter(Context context) {
         this.context = context;
         curMode = ListMode.NORMAL;
-        batchOrders = new ArrayList<>();
+        tempList = new ArrayList<>();
         searchList = new ArrayList<>();
         selectMap = new HashMap<>();
     }
@@ -275,7 +275,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
 
     //搜索
     public void searchOrder(final int shopOrderNo){
-        Observable.fromIterable(list)
+        Observable.fromIterable(tempList)
                 .subscribeOn(Schedulers.io())
                 .filter(new Predicate<OrderBean>() {
                     @Override
@@ -293,7 +293,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
                     @Override
                     public void onNext(@NonNull OrderBean orderBean) {
                         searchList.add(orderBean);
-                        setData(searchList);
+                        setSearchData(searchList);
                     }
 
                     @Override
@@ -352,7 +352,19 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         }else{
             EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
         }
+        tempList.clear();
+        tempList.addAll(list);
 
+    }
+
+    public void setSearchData(List<OrderBean> list){
+        this.list = list;
+        notifyDataSetChanged();
+        if(selected>=0 && selected<this.list.size()){
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+        }else{
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+        }
     }
 
     private List<OrderBean> filterOrders(List<OrderBean> list,int category){

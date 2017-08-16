@@ -52,10 +52,12 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
     public List<OrderBean> list = new ArrayList<OrderBean>();
     public int selected = -1;
     private List<OrderBean> searchList;
+    public List<OrderBean> tempList;
 
     public ProducedRvAdapter(Context context) {
         this.context = context;
         searchList = new ArrayList<>();
+        tempList = new ArrayList<>();
     }
 
     @Override
@@ -187,6 +189,19 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
             EventBus.getDefault().post(new UpdateProducedDetailEvent(null));
         }
 
+        tempList.clear();
+        tempList.addAll(list);
+
+    }
+
+    public void setSearchData(List<OrderBean> list){
+        this.list = list;
+        notifyDataSetChanged();
+        if(selected>=0 && selected<this.list.size()){
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+        }else{
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+        }
     }
 
     private List<OrderBean> filterOrders(List<OrderBean> list,int category){
@@ -212,7 +227,7 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
 
     //搜索
     public void searchOrder(final int shopOrderNo){
-        Observable.fromIterable(list)
+        Observable.fromIterable(tempList)
                 .subscribeOn(Schedulers.io())
                 .filter(new Predicate<OrderBean>() {
                     @Override
@@ -232,7 +247,7 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
                     public void onNext(@NonNull OrderBean orderBean) {
                         LogUtil.d("xls","onNext");
                         searchList.add(orderBean);
-                        setData(searchList);
+                        setSearchData(searchList);
                     }
 
                     @Override
