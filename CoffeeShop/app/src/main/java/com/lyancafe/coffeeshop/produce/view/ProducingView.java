@@ -3,6 +3,8 @@ package com.lyancafe.coffeeshop.produce.view;
 import com.lyancafe.coffeeshop.base.BaseView;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 
+import java.util.List;
+
 /**
 * Created by Administrator on 2017/03/15
 */
@@ -20,4 +22,7 @@ public interface ProducingView extends BaseView<OrderBean>{
 
     //关闭进度对话框
     void dismissLoading();
+
+    //从列表中删除一个N个item
+    void removeItemsFromList(List<Long> ids);
 }

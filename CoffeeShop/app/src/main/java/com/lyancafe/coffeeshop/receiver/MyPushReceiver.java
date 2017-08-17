@@ -142,7 +142,18 @@ public class MyPushReceiver extends BroadcastReceiver {
             mBuilder.setContentText("有订单消息，数据解析错误无法显示单号");
         }
         if(pmb.getEventType()==1){  //新订单消息
-            mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.coffee_box));
+            switch (pmb.getInstant()){
+                case 0:
+                    mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.yuyue));
+                    break;
+                case 1:
+                    mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.jishi));
+                    break;
+                default:
+                    mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.coffee_box));
+
+            }
+
             EventBus.getDefault().post(new NewOderComingEvent(0L));
         }else if(pmb.getEventType()==10){   //小哥上报问题
             mBuilder.setDefaults(Notification.DEFAULT_ALL);

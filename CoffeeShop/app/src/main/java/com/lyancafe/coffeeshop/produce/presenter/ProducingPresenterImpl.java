@@ -3,6 +3,7 @@ package com.lyancafe.coffeeshop.produce.presenter;
 
 import android.content.Context;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.OrderBean;
@@ -16,6 +17,7 @@ import com.lyancafe.coffeeshop.event.UpdateTabCount;
 import com.lyancafe.coffeeshop.http.CustomObserver;
 import com.lyancafe.coffeeshop.produce.model.ProducingModel;
 import com.lyancafe.coffeeshop.produce.model.ProducingModelImpl;
+import com.lyancafe.coffeeshop.produce.ui.ListMode;
 import com.lyancafe.coffeeshop.produce.view.ProducingView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -66,6 +68,22 @@ public class ProducingPresenterImpl implements ProducingPresenter{
                 mProducingView.removeItemFromList(id);
                 EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.FINISHPRODUCE,1));
                 OrderUtils.with().updateOrder(orderId,4010);
+            }
+        });
+    }
+
+    @Override
+    public void doCompleteBatchProduce(final List<Long> orderIds) {
+        UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
+        mProducingModel.doCompleteBatchProduce(user.getShopId(), orderIds, user.getToken(), new CustomObserver<JsonObject>(mContext,true) {
+            @Override
+            protected void onHandleSuccess(JsonObject jsonObject) {
+                mProducingView.showToast(mContext.getString(R.string.do_success));
+//                mProducingView.setMode(ListMode.NORMAL);
+                JsonArray jsonArray = jsonObject.get("orderIds").getAsJsonArray();
+                mProducingView.removeItemsFromList(orderIds);
+                EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.FINISHPRODUCE,orderIds.size(),false));
+                OrderUtils.with().updateBatchOrder(orderIds,4010);
             }
         });
     }

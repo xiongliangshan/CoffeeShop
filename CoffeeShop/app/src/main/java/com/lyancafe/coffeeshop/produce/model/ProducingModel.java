@@ -17,4 +17,7 @@ public interface ProducingModel{
 
     //上产完成
     void dodoFinishProduced(int shopId, long orderId, String token, CustomObserver<JsonObject> observer);
+
+    //批量完成生产
+    void doCompleteBatchProduce(int shopId,List<Long> orderIds,String token,CustomObserver<JsonObject> observer);
 }

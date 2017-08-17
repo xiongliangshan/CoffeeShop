@@ -100,6 +100,16 @@ public interface HttpInterface {
     Observable<BaseEntity<JsonObject>> doFinishProduced(@Path("shopId") int shopId, @Path("orderId") long orderId, @Query("token") String token);
 
 
+    /**
+     * 批量完成生产
+     * @param shopId
+     * @param orderIds
+     * @param token
+     * @return
+     */
+    @POST("{shopId}/order/batchCompleteProduce")
+    Observable<BaseEntity<JsonObject>> doCompleteBatchProduce(@Path("shopId") int shopId,@Query("orderIds") List<Long> orderIds,@Query("token") String token);
+
 
     /**
      * 已生产列表

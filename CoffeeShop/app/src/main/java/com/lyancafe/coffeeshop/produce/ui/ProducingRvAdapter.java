@@ -25,6 +25,7 @@ import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
+import com.lyancafe.coffeeshop.event.NaiGaiEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.utils.LogUtil;
@@ -388,6 +389,29 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
             EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
         }
 
+
+    }
+
+    /**
+     * 点击批量完成生产
+     * @param orderIds
+     */
+    public void removeOrdersFromList(List<Long> orderIds){
+        for(int i=list.size()-1;i>=0;i--){
+            if(orderIds.contains(list.get(i).getId())){
+                list.remove(i);
+            }
+        }
+
+        if(list.size()>0){
+            selected=0;
+            notifyDataSetChanged();
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(selected)));
+        }else{
+            selected = -1;
+            notifyDataSetChanged();
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+        }
 
     }
 

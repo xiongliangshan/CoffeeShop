@@ -55,6 +55,8 @@ public class ProducingFragment extends BaseFragment implements ProducingView {
     EditText etSearchKey;
     @BindView(R.id.btn_search)
     Button btnSearch;
+    @BindView(R.id.btn_finish_all)
+    Button btnFinishAll;
     private ProducingPresenter mProducingPresenter;
 
     @BindView(R.id.rv_producing)
@@ -104,7 +106,7 @@ public class ProducingFragment extends BaseFragment implements ProducingView {
         etSearchKey.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(keyCode==KeyEvent.KEYCODE_ENTER && event.getAction()==KeyEvent.ACTION_UP){
+                if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP) {
                     search();
                     return true;
                 }
@@ -151,6 +153,11 @@ public class ProducingFragment extends BaseFragment implements ProducingView {
     @Override
     public void removeItemFromList(int id) {
         mAdapter.removeOrderFromList(id);
+    }
+
+    @Override
+    public void removeItemsFromList(List<Long> ids) {
+        mAdapter.removeOrdersFromList(ids);
     }
 
     @Override
@@ -258,10 +265,24 @@ public class ProducingFragment extends BaseFragment implements ProducingView {
         }
     }
 
-    @OnClick(R.id.btn_search)
-    public void onViewClicked() {
-        search();
+    @OnClick({R.id.btn_search,R.id.btn_finish_all})
+    public void onViewClicked(View view) {
+        switch (view.getId()){
+            case R.id.btn_search:
+                search();
+                break;
+            case R.id.btn_finish_all:
+                List<Long> orderIs = OrderHelper.getIdsFromOrders(mAdapter.list);
+                if(orderIs.size()==0){
+                    showToast("没有可操作的订单");
+                    return;
+                }
+                mProducingPresenter.doCompleteBatchProduce(orderIs);
+                break;
+        }
+
     }
+
 
 
     class ProducingTaskRunnable implements Runnable {

@@ -12,6 +12,8 @@ public class PushMessageBean {
     private long orderId;  //订单id（有则传，没有则传0）
     private int eventType;   //通知事件类型 1：新订单  10:小哥上报问题 11:问题已解决 16:订单撤回 20:催单 22:取消
     private String content; //消息内容
+    private int status;
+    private int instant = -1;
 
     public int getId() {
         return id;
@@ -53,6 +55,22 @@ public class PushMessageBean {
         this.content = content;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getInstant() {
+        return instant;
+    }
+
+    public void setInstant(int instant) {
+        this.instant = instant;
+    }
+
     @Override
     public String toString() {
         return "PushMessageBean{" +
@@ -61,6 +79,8 @@ public class PushMessageBean {
                 ", orderId=" + orderId +
                 ", eventType=" + eventType +
                 ", content='" + content + '\'' +
+                ", status=" + status +
+                ", instant=" + instant +
                 '}';
     }
 

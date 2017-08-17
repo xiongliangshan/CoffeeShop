@@ -31,4 +31,12 @@ public class ProducingModelImpl implements ProducingModel{
                 .compose(RxHelper.<BaseEntity<JsonObject>>io_main())
                 .subscribe(observer);
     }
+
+
+    @Override
+    public void doCompleteBatchProduce(int shopId, List<Long> orderIds, String token, CustomObserver<JsonObject> observer) {
+        RetrofitHttp.getRetrofit().doCompleteBatchProduce(shopId,orderIds,token)
+                .compose(RxHelper.<BaseEntity<JsonObject>>io_main())
+                .subscribe(observer);
+    }
 }
