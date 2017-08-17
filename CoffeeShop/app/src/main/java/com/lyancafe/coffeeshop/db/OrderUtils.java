@@ -171,6 +171,13 @@ public class OrderUtils {
         return  list;
     }
 
+    //查询已经配送完成的订单
+    public List<OrderBean> queryFinishedOrders(){
+        QueryBuilder<OrderBean> qb = mOrderDao.queryBuilder();
+        qb.where(OrderBeanDao.Properties.Status.ge(6000));
+        return qb.list();
+    }
+
 
     //查询待取货订单
     public List<OrderBean> queryToFetchOrders(){
