@@ -81,4 +81,17 @@
         <attr name="ltb_text" format="string"/>
     </declare-styleable>
 
+
+
+
+    <declare-styleable name="PiePercentView">
+        <attr name="startAngle" format="float"/>
+        <attr name="arcTextSize" format="dimension"/>
+        <attr name="arcTextColor" format="color"/>
+        <attr name="innerTextSize" format="dimension"/>
+        <attr name="innerTextColor" format="color"/>
+        <attr name="arcTextVisible" format="boolean"/>
+        <attr name="innerTextVisible" format="boolean"/>
+    </declare-styleable>
+
 </resources>

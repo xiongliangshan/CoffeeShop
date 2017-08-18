@@ -1,7 +1,9 @@
 package com.lyancafe.coffeeshop.shop.view;
 
 import com.lyancafe.coffeeshop.base.BaseView;
+import com.lyancafe.coffeeshop.widget.PiePercentView;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -11,4 +13,6 @@ import java.util.Map;
 public interface StatementView {
 
     void bindData(Map<String,Integer> map);
+
+    void bindPie(List<PiePercentView.PieData> pieDatas);
 }

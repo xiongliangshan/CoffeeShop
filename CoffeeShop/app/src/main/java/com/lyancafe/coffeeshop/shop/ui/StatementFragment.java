@@ -1,7 +1,8 @@
 package com.lyancafe.coffeeshop.shop.ui;
 
 
-import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +10,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.BounceInterpolator;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
@@ -17,7 +21,9 @@ import com.lyancafe.coffeeshop.shop.presenter.StatementPresenter;
 import com.lyancafe.coffeeshop.shop.presenter.StatementPresenterImpl;
 import com.lyancafe.coffeeshop.shop.view.StatementView;
 import com.lyancafe.coffeeshop.utils.LogUtil;
+import com.lyancafe.coffeeshop.widget.PiePercentView;
 
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -39,6 +45,8 @@ public class StatementFragment extends BaseFragment implements StatementView {
     @BindView(R.id.tv_all_cup_count)
     TextView tvAllCupCount;
     Unbinder unbinder;
+    @BindView(R.id.cpv)
+    PiePercentView cpv;
 
     private StatementPresenter mStatementPresenter;
     private final int DURATION = 1000; //ms
@@ -50,7 +58,7 @@ public class StatementFragment extends BaseFragment implements StatementView {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mStatementPresenter = new StatementPresenterImpl(getContext(),this);
+        mStatementPresenter = new StatementPresenterImpl(getContext(), this);
     }
 
     @Override
@@ -69,11 +77,17 @@ public class StatementFragment extends BaseFragment implements StatementView {
         int allCupsCount = map.get("allCups");
         int finishedCupsCount = map.get("finishedCups");
 
-        /*tvAllOrderCount.setText(String.valueOf(allOrdersCount));
-        tvFinishedOrderCount.setText(String.valueOf(finishedOrdersCount));
-        tvAllCupCount.setText(String.valueOf(allCupsCount));
-        tvFinishedCupCount.setText(String.valueOf(finishedCupsCount));*/
-        animateShow(allOrdersCount,finishedOrdersCount,allCupsCount,finishedCupsCount);
+        animateShow(allOrdersCount, finishedOrdersCount, allCupsCount, finishedCupsCount);
+    }
+
+    @Override
+    public void bindPie(List<PiePercentView.PieData> pieDatas) {
+        if(pieDatas.size()==0){
+            return;
+        }
+        cpv.setData(pieDatas);
+        animatePie();
+
     }
 
     @Override
@@ -82,16 +96,16 @@ public class StatementFragment extends BaseFragment implements StatementView {
         unbinder.unbind();
     }
 
-    private void animateShow(int allOrdersCount,int finishedOrdersCount,int allCupsCount,int finishedCupsCount ){
-        ValueAnimator animator1 = ValueAnimator.ofInt(0,allOrdersCount);
-        ValueAnimator animator2 = ValueAnimator.ofInt(0,finishedOrdersCount);
-        ValueAnimator animator3 = ValueAnimator.ofInt(0,allCupsCount);
-        ValueAnimator animator4 = ValueAnimator.ofInt(0,finishedCupsCount);
+    private void animateShow(int allOrdersCount, int finishedOrdersCount, int allCupsCount, int finishedCupsCount) {
+        ValueAnimator animator1 = ValueAnimator.ofInt(0, allOrdersCount);
+        ValueAnimator animator2 = ValueAnimator.ofInt(0, finishedOrdersCount);
+        ValueAnimator animator3 = ValueAnimator.ofInt(0, allCupsCount);
+        ValueAnimator animator4 = ValueAnimator.ofInt(0, finishedCupsCount);
 
-        animator1.setDuration(allOrdersCount*4);
-        animator2.setDuration(finishedOrdersCount*4);
-        animator3.setDuration(allCupsCount*4);
-        animator4.setDuration(finishedCupsCount*4);
+        animator1.setDuration(allOrdersCount * 4);
+        animator2.setDuration(finishedOrdersCount * 4);
+        animator3.setDuration(allCupsCount * 4);
+        animator4.setDuration(finishedCupsCount * 4);
 
         animator1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -129,13 +143,27 @@ public class StatementFragment extends BaseFragment implements StatementView {
 
     }
 
+    private void animatePie(){
+        if(cpv==null){
+            return;
+        }
+        ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(cpv,"scaleX",0,1).setDuration(800);
+        ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(cpv,"scaleY",0,1).setDuration(800);
+        ObjectAnimator objectAnimatorZ = ObjectAnimator.ofFloat(cpv,"rotationY",-540,0).setDuration(800);
+        objectAnimatorX.setInterpolator(new AccelerateDecelerateInterpolator());
+        objectAnimatorY.setInterpolator(new AccelerateDecelerateInterpolator());
+        objectAnimatorZ.setInterpolator(new AccelerateDecelerateInterpolator());
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(objectAnimatorX,objectAnimatorY,objectAnimatorZ);
+        animatorSet.start();
+    }
 
 
     @Override
     public void onVisible() {
         super.onVisible();
-        LogUtil.d("xls","StatementFragment onVisible");
-        if(!isResumed()){
+        LogUtil.d("xls", "StatementFragment onVisible");
+        if (!isResumed()) {
             return;
         }
         mStatementPresenter.calculateCount();
@@ -145,6 +173,6 @@ public class StatementFragment extends BaseFragment implements StatementView {
     @Override
     public void onInVisible() {
         super.onInVisible();
-        LogUtil.d("xls","StatementFragment onInVisible");
+        LogUtil.d("xls", "StatementFragment onInVisible");
     }
 }

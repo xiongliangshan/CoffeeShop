@@ -17,9 +17,11 @@
             android:id="@+id/constant_order"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
             android:textColor="@color/white1"
             android:textSize="20sp"
-            android:text="单量完成情况:(已完成/全部)"/>
+            android:text="单量完成情况:(已完成/全部)" />
 
 
         <LinearLayout
@@ -27,7 +29,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/constant_order"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constant_order"
             android:orientation="horizontal">
 
             <TextView
@@ -65,17 +68,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
-            app:layout_constraintTop_toBottomOf="@id/ll_order_count_container"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_order_count_container"
             android:textColor="@color/white1"
             android:textSize="20sp"
-            android:text="杯量完成情况:(已完成/全部)"/>
+            android:text="杯量完成情况:(已完成/全部)" />
 
         <LinearLayout
             android:id="@+id/ll_cup_count_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/constant_cup"
+            app:layout_constraintTop_toBottomOf="@+id/constant_cup"
             android:orientation="horizontal">
 
             <TextView
@@ -112,6 +117,20 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="2">
+
+        <com.lyancafe.coffeeshop.widget.PiePercentView
+            android:id="@+id/cpv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="20dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:startAngle="50"
+            app:arcTextColor="@color/white1"
+            app:arcTextSize="18sp"
+            app:innerTextSize="18sp"/>
 
     </android.support.constraint.ConstraintLayout>
 </LinearLayout>
