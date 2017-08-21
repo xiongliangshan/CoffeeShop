@@ -13,6 +13,7 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
+import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.utils.FinishedOrderSortComparator;
 import com.lyancafe.coffeeshop.utils.LogUtil;
@@ -173,7 +174,7 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Vi
 
     //搜索
     public void searchOrder(final int shopOrderNo){
-        Observable.fromIterable(tempList)
+        Observable.fromIterable(OrderUtils.with().queryFinishedOrders())
                 .subscribeOn(Schedulers.io())
                 .filter(new Predicate<OrderBean>() {
                     @Override
