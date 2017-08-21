@@ -20,7 +20,6 @@ import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.OrderCategory;
-import com.lyancafe.coffeeshop.event.UpdateProducedDetailEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
@@ -50,7 +49,7 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
     private static final String TAG  ="OrderGridViewAdapter";
     private Context context;
     public List<OrderBean> list = new ArrayList<OrderBean>();
-    public int selected = -1;
+    private int selected = -1;
     private List<OrderBean> searchList;
     public List<OrderBean> tempList;
 
@@ -184,9 +183,9 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
         Collections.sort(this.list,new OrderSortComparator());
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
-            EventBus.getDefault().post(new UpdateProducedDetailEvent(this.list.get(selected)));
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
         }else{
-            EventBus.getDefault().post(new UpdateProducedDetailEvent(null));
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
         }
 
         tempList.clear();
@@ -282,11 +281,11 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
         if(list.size()>0){
             selected=0;
             notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateProducedDetailEvent(list.get(selected)));
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(selected)));
         }else{
             selected = -1;
             notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateProducedDetailEvent(null));
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
         }
 
 
