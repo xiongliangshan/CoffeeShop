@@ -173,6 +173,10 @@ public class MyPushReceiver extends BroadcastReceiver {
             OrderUtils.with().updateRevokedOrder(pmb.getOrderId());
             OrderBean orderBean = OrderUtils.with().getOrderById(pmb.getOrderId());
             EventBus.getDefault().postSticky(new RevokeEvent(orderBean));
+        }else if(pmb.getEventType()==24){
+            //订单完成
+            mBuilder.setDefaults(Notification.DEFAULT_LIGHTS);
+            OrderUtils.with().updateStatus(pmb.getOrderId(),pmb.getStatus());
         }
 
 

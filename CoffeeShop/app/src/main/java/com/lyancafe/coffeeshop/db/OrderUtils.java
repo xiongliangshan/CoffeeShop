@@ -121,6 +121,16 @@ public class OrderUtils {
     }
 
 
+    //更新订单的配送状态
+    public void updateStatus(long orderId,int status){
+        OrderBean orderBean = queryOrder(orderId);
+        if(orderBean==null){
+            return;
+        }
+        orderBean.setStatus(status);
+        mOrderDao.update(orderBean);
+        LogUtil.i(TAG,"更新订单 "+orderId+"状态为 "+status);
+    }
 
     //更新问题订单的状态
     public void updateIssueOrder(OrderBean orderBean, boolean isIssueOrder){
