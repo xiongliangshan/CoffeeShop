@@ -70,6 +70,10 @@ public class OrderBean implements Serializable{
 
     private double orderDistance;       //订单距离
 
+    private long relationOrderId;        //关联订单Id（补单）
+
+    private String reason;               //补单原因（补单）
+
     private boolean revoked = false;     //是否被撤销
 
     @ToMany(referencedJoinProperty = "orderId")
@@ -83,12 +87,12 @@ public class OrderBean implements Serializable{
     @Generated(hash = 627331561)
     private transient OrderBeanDao myDao;
 
-    @Generated(hash = 930366938)
+    @Generated(hash = 1097962413)
     public OrderBean(long id, String reminder, String orderSn, int shopOrderNo, boolean wxScan, boolean isRecipeFittings,
             long expectedTime, long orderTime, long distributeTime, long produceEffect, String recipient, String address,
             String phone, String courierName, String courierPhone, int status, int produceStatus, boolean issueOrder,
             int instant, String notes, String csrNotes, long handoverTime, int feedbackType, int deliveryTeam,
-            int mtShopOrderNo, double orderDistance, boolean revoked) {
+            int mtShopOrderNo, double orderDistance, long relationOrderId, String reason, boolean revoked) {
         this.id = id;
         this.reminder = reminder;
         this.orderSn = orderSn;
@@ -115,6 +119,8 @@ public class OrderBean implements Serializable{
         this.deliveryTeam = deliveryTeam;
         this.mtShopOrderNo = mtShopOrderNo;
         this.orderDistance = orderDistance;
+        this.relationOrderId = relationOrderId;
+        this.reason = reason;
         this.revoked = revoked;
     }
 
@@ -436,9 +442,27 @@ public class OrderBean implements Serializable{
                 ", deliveryTeam=" + deliveryTeam +
                 ", mtShopOrderNo=" + mtShopOrderNo +
                 ", orderDistance=" + orderDistance +
+                ", relationOrderId=" + relationOrderId +
+                ", reason='" + reason + '\'' +
                 ", revoked=" + revoked +
                 ", items=" + items +
                 '}';
+    }
+
+    public long getRelationOrderId() {
+        return this.relationOrderId;
+    }
+
+    public void setRelationOrderId(long relationOrderId) {
+        this.relationOrderId = relationOrderId;
+    }
+
+    public String getReason() {
+        return this.reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
     /** called by internal mechanisms, do not call yourself. */

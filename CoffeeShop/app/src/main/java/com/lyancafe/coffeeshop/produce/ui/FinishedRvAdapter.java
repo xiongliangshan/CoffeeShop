@@ -13,7 +13,7 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
-import com.lyancafe.coffeeshop.event.UpdateFinishedDetailEvent;
+import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.utils.FinishedOrderSortComparator;
 import com.lyancafe.coffeeshop.utils.LogUtil;
@@ -140,9 +140,9 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Vi
         Collections.sort(this.list,new FinishedOrderSortComparator());
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
-            EventBus.getDefault().post(new UpdateFinishedDetailEvent(this.list.get(selected)));
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
         }else{
-            EventBus.getDefault().post(new UpdateFinishedDetailEvent(null));
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
         }
 
         tempList.clear();
@@ -165,16 +165,16 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Vi
         Collections.sort(this.list,new FinishedOrderSortComparator());
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
-            EventBus.getDefault().post(new UpdateFinishedDetailEvent(this.list.get(selected)));
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
         }else{
-            EventBus.getDefault().post(new UpdateFinishedDetailEvent(null));
+            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
         }
     }
 
 
     //搜索
     public void searchOrder(final int shopOrderNo){
-        Observable.fromIterable(tempList)
+        Observable.fromIterable(OrderUtils.with().queryFinishedOrders())
                 .subscribeOn(Schedulers.io())
                 .filter(new Predicate<OrderBean>() {
                     @Override

@@ -38,7 +38,8 @@ public class MainShopFragment extends BaseFragment implements TabLayout.OnTabSel
     private EvaluationFragment evaluationFragment;
     private MaterialsFragment materialFragment;
     private ManagerFragment managerFragment;
-    private ExceptionalFragment exceptionalListFragment;
+//    private ExceptionalFragment exceptionalListFragment;
+    private StatementFragment statementFragment;
 
     public MainShopFragment() {
     }
@@ -57,11 +58,13 @@ public class MainShopFragment extends BaseFragment implements TabLayout.OnTabSel
         evaluationFragment = new EvaluationFragment();
         materialFragment = new MaterialsFragment();
         managerFragment = new ManagerFragment();
-        exceptionalListFragment = new ExceptionalFragment();
+//        exceptionalListFragment = new ExceptionalFragment();
+        statementFragment = new StatementFragment();
         fragments.add(evaluationFragment);
         fragments.add(materialFragment);
         fragments.add(managerFragment);
-        fragments.add(exceptionalListFragment);
+//        fragments.add(exceptionalListFragment);
+        fragments.add(statementFragment);
         mPagerAdapter = new ShopFragmentPagerAdapter(getChildFragmentManager(),getActivity(),fragments);
         viewPager.setAdapter(mPagerAdapter);
         viewPager.setOffscreenPageLimit(3);

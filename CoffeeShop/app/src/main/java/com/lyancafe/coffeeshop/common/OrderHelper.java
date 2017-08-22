@@ -190,6 +190,20 @@ public class OrderHelper {
         }
         return sum;
     }
+
+    //计算某个订单集合的总杯数
+    public static int getTotalQutity(List<OrderBean> orders){
+        if(orders==null || orders.size()==0){
+            return 0;
+        }
+        int sum = 0;
+        for(int i = 0;i<orders.size();i++){
+            sum+=getTotalQutity(orders.get(i));
+        }
+        return sum;
+    }
+
+
     //计算某个订单的总金额,单位为分
     public static int getTotalPrice(OrderBean orderBean){
         if(orderBean.getItems().size()<=0){

@@ -121,6 +121,16 @@ public class OrderUtils {
     }
 
 
+    //更新订单的配送状态
+    public void updateStatus(long orderId,int status){
+        OrderBean orderBean = queryOrder(orderId);
+        if(orderBean==null){
+            return;
+        }
+        orderBean.setStatus(status);
+        mOrderDao.update(orderBean);
+        LogUtil.i(TAG,"更新订单 "+orderId+"状态为 "+status);
+    }
 
     //更新问题订单的状态
     public void updateIssueOrder(OrderBean orderBean, boolean isIssueOrder){
@@ -169,6 +179,13 @@ public class OrderUtils {
         List<OrderBean> list = qb.list();
         LogUtil.d(TAG,"查询所有订单: "+list.size()+" 条记录");
         return  list;
+    }
+
+    //查询已经配送完成的订单
+    public List<OrderBean> queryFinishedOrders(){
+        QueryBuilder<OrderBean> qb = mOrderDao.queryBuilder();
+        qb.where(OrderBeanDao.Properties.Status.ge(6000));
+        return qb.list();
     }
 
 
