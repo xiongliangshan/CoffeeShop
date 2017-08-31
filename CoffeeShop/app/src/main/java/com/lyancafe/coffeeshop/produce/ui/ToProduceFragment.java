@@ -306,6 +306,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView {
     @Subscribe
     public void onNotNeedProduce(NotNeedProduceEvent event){
         mToProducePresenter.doNoPruduce(event.order.getId());
+        PrintHelper.getInstance().printOrderInfo(event.order);
     }
 
 
