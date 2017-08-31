@@ -98,7 +98,7 @@ public class PrintHelper {
         int hotBoxAmount = getTotalBoxAmount(hotCupList.size());
         int coolBoxAmount = getTotalBoxAmount(coolCupList.size());
         int totalBoxAmount = hotBoxAmount+coolBoxAmount; //盒子总数
-        Log.i(TAG,"hotBoxAmount = "+hotBoxAmount+" | coolBoxAmount = "+coolBoxAmount+" | totalBoxAmount = "+totalBoxAmount);
+//        Log.i(TAG,"hotBoxAmount = "+hotBoxAmount+" | coolBoxAmount = "+coolBoxAmount+" | totalBoxAmount = "+totalBoxAmount);
         int i = 0;      //盒子号
         for(i=0;i<hotCupList.size()/4;i++){
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,i+1,4);
@@ -195,14 +195,12 @@ public class PrintHelper {
 
     //打印入口方法
     public void printOrderInfo(OrderBean orderBean){
-        Log.d(TAG, "printOrderInfo");
         List<PrintOrderBean> printList = calculatePinterOrderBeanList(orderBean);
-        Log.d(TAG, "printList.size  =" + printList.size());
+        Log.d(TAG, "printOrderInfo , printList.size  =" + printList.size());
 
         for(PrintOrderBean bean:printList){
             String printContent = getPrintOrderContent(bean);
             DoPrintOrder(printContent);
-            Log.d(TAG, "打印盒子清单:" + bean.toString());
         }
 
         OrderHelper.addPrintedSet(CSApplication.getInstance(), orderBean.getOrderSn());
@@ -233,7 +231,6 @@ public class PrintHelper {
         }
 
         String addressCMD, addr1,addr2,addr3;
-        Log.d(TAG, "address len: " + bean.getAddress().length());
         int length = bean.getAddress().length();
         if (length <= 22) {
             addressCMD = "A100,300,0,230,1,1,N,\""+bean.getAddress()+"\""+"\n";
@@ -293,17 +290,15 @@ public class PrintHelper {
         List<PrintCupBean> hotPrintList = new ArrayList<>();
         List<PrintCupBean> coolPrintList = new ArrayList<>();
         calculatePinterCupBeanList(orderBean, hotPrintList, coolPrintList);
-        Log.d(TAG, "printList.size = " + hotPrintList.size() + "+" + coolPrintList.size());
+        Log.d(TAG, "printOrderItems ,printList.size = " + hotPrintList.size() + "+" + coolPrintList.size());
 
         for(PrintCupBean bean:hotPrintList){
             String printContent = getPrintCupContent(bean);
             DoPrintCup(printContent);
-            Log.d(TAG, "打印杯贴纸:" + bean.toString());
         }
         for(PrintCupBean bean:coolPrintList){
             String printContent = getPrintCupContent(bean);
             DoPrintCup(printContent);
-            Log.d(TAG, "打印杯贴纸:" + bean.toString());
         }
     }
 
@@ -315,11 +310,9 @@ public class PrintHelper {
 
         int hotTotalQuantity = getTotalQuantity(hotItemList);
         int coolTotalQuantity = getTotalQuantity(coolItemList);
-        Log.e(TAG,"hotTotalQuantity = "+hotTotalQuantity+" | coolTotalQuantity = "+coolTotalQuantity);
         int hotBoxAmount = getTotalBoxAmount(hotTotalQuantity);
         int coolBoxAmount = getTotalBoxAmount(coolTotalQuantity);
         int boxAmount = hotBoxAmount + coolBoxAmount;
-        Log.e(TAG,"hotBoxAmount = "+hotBoxAmount+" | coolBoxAmount = "+coolBoxAmount);
         int pos = 0;
         for(int i=0;i<hotItemList.size();i++){
             ItemContentBean item = hotItemList.get(i);
@@ -441,7 +434,7 @@ public class PrintHelper {
 
         private void setPrinterContent(String content) {
             this.printConent = content;
-            Log.d(TAG,"printConent = "+printConent);
+//            Log.d(TAG,"printConent = "+printConent);
         }
         @Override
         public void run() {
@@ -489,19 +482,6 @@ public class PrintHelper {
         void onPrompt(int type,String message);
     }
 
-    //在字符串中每隔三个字符插入一个符号
-    public String getSelfDefineOrderId(long orderId){
-        String orderIdStr = String.valueOf(orderId);
-        int length = orderIdStr.length();
-        if(length<=3){
-            return orderIdStr;
-        }else if(length>3&&length<=6){
-            return orderIdStr.substring(0,3)+"-"+orderIdStr.substring(3);
-        }else if(length>6&&length<=9){
-            return orderIdStr.substring(0,3)+"-"+orderIdStr.substring(3,6)+"-"+orderIdStr.substring(6);
-        }
-        return "";
-    }
 
     //检查打印机是否ping得通
     public void checkPrinterStatus() {
@@ -560,7 +540,6 @@ public class PrintHelper {
         for(PrintCupBean bean:sortedCupList){
             String printContent = getPrintCupContent(bean);
             DoPrintCup(printContent);
-            Log.d(TAG, "打印杯贴纸:" + bean.toString());
         }
 
     }
@@ -611,7 +590,7 @@ public class PrintHelper {
 
     //生成合并订单的咖啡和对应数量的映射关系
     private Map<String,Integer> creteCoffeeNumberMap(List<PrintCupBean> batchCupList){
-        Map<String,Integer> map = new HashMap<String,Integer>();
+        Map<String,Integer> map = new HashMap<>();
         for(PrintCupBean cupBean:batchCupList){
             if(map.get(cupBean.getCoffee())==null){
                 map.put(cupBean.getCoffee(), 1);
@@ -701,21 +680,13 @@ public class PrintHelper {
 
     //打印汇总
     private  void doPrintBatchInfo(String printContent){
-        Log.d("xls","DoPrintBatchInfo ="+printContent);
+        Log.d(TAG,"DoPrintBatchInfo ="+printContent);
         DoPrintRunnable dpt = new DoPrintRunnable();
         dpt.setPrinterIP(ip_print_order);
         dpt.setPrinterContent(printContent);
         mPoolExecutor.execute(dpt);
     }
 
-
-    private String getRemarkFlag(boolean isHaveRemark){
-        if(isHaveRemark){
-            return "  备";
-        }else{
-            return "";
-        }
-    }
 
 
     public void printBatchInfo(List<OrderBean> batchOrders){
@@ -752,8 +723,6 @@ public class PrintHelper {
             }
         }
         List<PrintObject> printObjects = PrintObject.transformPrintObjects(coffeeMap,recipeFittingsMap);
-        LogUtil.d("xls","recipeFittingsMap size = "+recipeFittingsMap.size());
-        LogUtil.d("xls","printObject size = "+printObjects.size());
         if(printObjects.size()>0){
             for(int i=printObjects.size()-1;i>=0;i--){
                 doPrintBatchInfo(printObjects.get(i).getPrintContent());
