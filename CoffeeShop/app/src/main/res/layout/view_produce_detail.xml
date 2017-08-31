@@ -56,6 +56,66 @@
             android:layout_height="1dp"
             android:background="@color/gray2"/>
 
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/cl_replenish_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/yellow1"
+            android:layout_marginTop="1dp"
+            android:paddingTop="8dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/constant_relationOrder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="关联订单:"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginLeft="4dp"
+                 />
+
+            <TextView
+                android:id="@+id/tv_relationOrderId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                app:layout_constraintLeft_toRightOf="@+id/constant_relationOrder"
+                app:layout_constraintBaseline_toBaselineOf="@+id/constant_relationOrder"
+                android:layout_marginStart="4dp" />
+
+            <TextView
+                android:id="@+id/constant_reason"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="16dp"
+                app:layout_constraintLeft_toRightOf="@+id/tv_relationOrderId"
+                app:layout_constraintBaseline_toBaselineOf="@+id/constant_relationOrder"
+                android:text="补单原因:"
+                android:layout_marginStart="16dp" />
+
+            <TextView
+                android:id="@+id/tv_reason"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                app:layout_constraintLeft_toRightOf="@+id/constant_reason"
+                app:layout_constraintBaseline_toBaselineOf="@+id/constant_relationOrder"
+                android:layout_marginStart="4dp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="@color/gray2"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constant_relationOrder"
+                android:layout_marginTop="8dp"
+                />
+        </android.support.constraint.ConstraintLayout>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

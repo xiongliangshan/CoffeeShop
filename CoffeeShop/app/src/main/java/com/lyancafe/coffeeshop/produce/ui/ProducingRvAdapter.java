@@ -146,6 +146,14 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
             holder.remarkFlagIV.setImageResource(R.mipmap.flag_bei);
         }
 
+        //补单
+        if(order.getRelationOrderId()==0){
+            holder.replenishIV.setVisibility(View.GONE);
+        }else{
+            holder.replenishIV.setVisibility(View.VISIBLE);
+            holder.replenishIV.setImageResource(R.mipmap.flag_replenish);
+        }
+
 //        OrderHelper.showEffectOnly(order,holder.effectTimeTxt);
         if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN) {
             holder.expectedTimeText.setText(order.getInstant() == 1 ? "立即送出" : OrderHelper.getFormatTimeToStr(order.getExpectedTime()));
@@ -265,6 +273,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         @BindView(R.id.tv_deliver_status) TextView deliverStatusText;
         @BindView(R.id.item_grab_flag) ImageView grabFlagIV;
         @BindView(R.id.item_remark_flag) ImageView remarkFlagIV;
+        @BindView(R.id.item_replenish_flag) ImageView replenishIV;
         @BindView(R.id.item_container) LinearLayout itemContainerll;
         @BindView(R.id.tv_cup_count) TextView cupCountText;
         @BindView(R.id.ll_twobtn_container) LinearLayout twobtnContainerLayout;
