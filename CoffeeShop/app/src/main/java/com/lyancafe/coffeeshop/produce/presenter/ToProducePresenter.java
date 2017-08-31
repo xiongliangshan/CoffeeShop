@@ -17,4 +17,7 @@ public interface ToProducePresenter {
     //点击批量开始生产
     void doStartBatchProduce(List<Long> orderIds);
 
+    //无需生产
+    void doNoPruduce(long orderId);
+
 }

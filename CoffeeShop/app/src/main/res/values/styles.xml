@@ -83,6 +83,11 @@
         <item name="android:windowExitAnimation">@anim/slide_out_to_right</item>
     </style>
 
+    <style name="window_replenish">
+        <item name="android:windowEnterAnimation">@anim/slide_in_from_bottom</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_to_bottom</item>
+    </style>
+
     <style name="setting_popwin_anim_style">
         <item name="android:windowEnterAnimation">@anim/slide_in_from_bottom</item>
         <item name="android:windowExitAnimation">@anim/slide_out_to_bottom</item>

@@ -12,6 +12,7 @@ public class OrderAction {
     public static final int STARTPRODUCE = 1001;  //开始生产
     public static final int FINISHPRODUCE = 1002; //生产完成
     public static final int REVOKEORDER = 1003;  //订单撤销
+    public static final int NONEEDPRODUCE = 1004;
 
 
 }

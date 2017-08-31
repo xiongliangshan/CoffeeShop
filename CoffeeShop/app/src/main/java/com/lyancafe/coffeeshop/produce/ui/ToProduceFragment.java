@@ -29,6 +29,7 @@ import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.NaiGaiEvent;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
+import com.lyancafe.coffeeshop.event.NotNeedProduceEvent;
 import com.lyancafe.coffeeshop.event.RevokeEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.produce.presenter.ToProducePresenter;
@@ -296,6 +297,16 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView {
     @Subscribe
     public void onStartProduceEvent(StartProduceEvent event) {
         showStartProduceConfirmDialog(event.order);
+    }
+
+    /**
+     * 点击无需生产按钮
+     * @param event
+     */
+    @Subscribe
+    public void onNotNeedProduce(NotNeedProduceEvent event){
+        mToProducePresenter.doNoPruduce(event.order.getId());
+        PrintHelper.getInstance().printOrderInfo(event.order);
     }
 
 

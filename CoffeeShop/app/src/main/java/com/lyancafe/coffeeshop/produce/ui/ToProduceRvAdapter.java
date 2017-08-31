@@ -26,10 +26,12 @@ import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.NaiGaiEvent;
+import com.lyancafe.coffeeshop.event.NotNeedProduceEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
+import com.lyancafe.coffeeshop.widget.ReplenishWindow;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -86,7 +88,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
             holder.selectView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(!order.getWxScan()){
+                    if(!order.getWxScan() && order.getRelationOrderId()==0){
                         holder.checkBox.setChecked(!holder.checkBox.isChecked());
                         selectMap.put(position,holder.checkBox.isChecked());
                     }
@@ -157,6 +159,14 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
             holder.remarkFlagIV.setImageResource(R.mipmap.flag_bei);
         }
 
+        //补单
+        if(order.getRelationOrderId()==0){
+            holder.replenishIV.setVisibility(View.GONE);
+        }else{
+            holder.replenishIV.setVisibility(View.VISIBLE);
+            holder.replenishIV.setImageResource(R.mipmap.flag_replenish);
+        }
+
 
         if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN) {
             holder.expectedTimeText.setText(order.getInstant() == 1 ? "立即送出" : OrderHelper.getFormatTimeToStr(order.getExpectedTime()));
@@ -176,7 +186,27 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
                 @Override
                 public void onClick(View v) {
                     //点击开始生产（打印）按钮
-                    EventBus.getDefault().post(new StartProduceEvent(order));
+                    if(order.getRelationOrderId()==0){
+                        EventBus.getDefault().post(new StartProduceEvent(order));
+                    }else{
+                        //补单
+                        ReplenishWindow replenishWindow = new ReplenishWindow(context,order);
+                        replenishWindow.setCallback(new ReplenishWindow.ReplenishCallBack() {
+                            @Override
+                            public void onProduce(OrderBean orderBean) {
+                                //正常生产
+                                EventBus.getDefault().post(new StartProduceEvent(order));
+                            }
+
+                            @Override
+                            public void onNoProduce(OrderBean orderBean) {
+                                //无需生产
+                                EventBus.getDefault().post(new NotNeedProduceEvent(order));
+                            }
+                        });
+                        replenishWindow.showPopUpWindow(v);
+                    }
+
                 }
             });
         }else if(order.getProduceStatus() == OrderStatus.PRODUCING){
@@ -326,6 +356,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         @BindView(R.id.item_expected_time) TextView expectedTimeText;
         @BindView(R.id.item_grab_flag) ImageView grabFlagIV;
         @BindView(R.id.item_remark_flag) ImageView remarkFlagIV;
+        @BindView(R.id.item_replenish_flag) ImageView replenishIV;
         @BindView(R.id.item_container) LinearLayout itemContainerll;
         @BindView(R.id.tv_deliver_status) TextView deliverStatusText;
         @BindView(R.id.tv_cup_count) TextView cupCountText;

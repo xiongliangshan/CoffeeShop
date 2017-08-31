@@ -40,4 +40,11 @@ public class ToProduceModelImpl implements ToProduceModel{
                 .compose(RxHelper.<BaseEntity<JsonObject>>io_main())
                 .subscribe(observer);
     }
+
+    @Override
+    public void doNoProduce(int shopId, long orderId, String token, CustomObserver<JsonObject> observer) {
+        RetrofitHttp.getRetrofit().doNoProduce(shopId,orderId,token)
+                .compose(RxHelper.<BaseEntity<JsonObject>>io_main())
+                .subscribe(observer);
+    }
 }

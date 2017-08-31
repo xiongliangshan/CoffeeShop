@@ -71,6 +71,17 @@ public interface HttpInterface {
     Observable<BaseEntity<JsonObject>> doStartProduce(@Path("shopId") int shopId, @Path("orderId") long orderId, @Query("token") String token);
 
     /**
+     * 针对补单的无需操作
+     * @param shopId
+     * @param orderId
+     * @param token
+     * @return
+     */
+    @POST("{shopId}/order/{orderId}/needlessProduce")
+    Observable<BaseEntity<JsonObject>> doNoProduce(@Path("shopId") int shopId, @Path("orderId") long orderId,@Query("token") String token);
+
+
+    /**
      * 批量生产接口
      * @param shopId
      * @param orderIds
@@ -278,4 +289,7 @@ public interface HttpInterface {
      */
     @POST("{shopId}/order/{orderId}/{deliveryTeam}/rePushOrderToDelivery")
     Observable<BaseEntity<JsonObject>> doRePush(@Path("shopId") int shopId,@Path("orderId") long orderId,@Path("deliveryTeam") int team,@Query("token") String token);
+
+
+
 }

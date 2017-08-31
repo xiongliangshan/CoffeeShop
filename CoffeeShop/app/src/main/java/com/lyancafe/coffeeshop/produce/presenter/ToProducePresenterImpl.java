@@ -89,4 +89,19 @@ public class ToProducePresenterImpl implements ToProducePresenter{
             }
         });
     }
+
+    @Override
+    public void doNoPruduce(final long orderId) {
+        UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
+        mToProduceModel.doNoProduce(user.getShopId(), orderId, user.getToken(), new CustomObserver<JsonObject>(mContext,true) {
+            @Override
+            protected void onHandleSuccess(JsonObject jsonObject) {
+                mToProduceView.showToast(mContext.getString(R.string.do_success));
+                int id  = jsonObject.get("id").getAsInt();
+                mToProduceView.removeItemFromList(id);
+                EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.NONEEDPRODUCE,1,false));
+                OrderUtils.with().updateOrder(orderId,4010);
+            }
+        });
+    }
 }
