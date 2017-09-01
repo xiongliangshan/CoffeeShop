@@ -11,6 +11,7 @@ import com.lyancafe.coffeeshop.bean.PrintCupBean;
 import com.lyancafe.coffeeshop.bean.PrintObject;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
 import com.lyancafe.coffeeshop.http.Api;
+import com.lyancafe.coffeeshop.utils.FinishedOrderSortComparator;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
@@ -798,6 +799,7 @@ public class PrintHelper {
      * @param orders
      */
     private void printBatchOrders(List<OrderBean> orders){
+        Collections.sort(orders,new FinishedOrderSortComparator());
         for(OrderBean bean:orders){
             printSingleOrder(bean);
         }
