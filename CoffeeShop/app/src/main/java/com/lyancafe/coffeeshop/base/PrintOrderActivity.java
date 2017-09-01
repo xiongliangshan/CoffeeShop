@@ -46,14 +46,13 @@ public class PrintOrderActivity extends Activity implements PrintHelper.OnPrompt
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_print_box:
-                PrintHelper.getInstance().printOrderInfo(mOrderBean);
+                PrintHelper.getInstance().startPrintOnlyBoxTask(mOrderBean);
                 break;
             case R.id.btn_print_cup:
-                PrintHelper.getInstance().printOrderItems(mOrderBean);
+                PrintHelper.getInstance().startPrintOnlyCupTask(mOrderBean);
                 break;
             case R.id.btn_print_all:
-                PrintHelper.getInstance().printOrderInfo(mOrderBean);
-                PrintHelper.getInstance().printOrderItems(mOrderBean);
+                PrintHelper.getInstance().startPrintWholeOrderTask(mOrderBean);
                 break;
             case R.id.btn_check_printer:
                 PrintHelper.getInstance().checkPrinterStatus();

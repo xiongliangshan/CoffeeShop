@@ -131,8 +131,7 @@ public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.Vi
             @Override
             public void onClick(View v) {
                 //点击预打印按钮
-                PrintHelper.getInstance().printOrderInfo(order);
-                PrintHelper.getInstance().printOrderItems(order);
+                PrintHelper.getInstance().startPrintWholeOrderTask(order);
                 notifyDataSetChanged();
             }
         });

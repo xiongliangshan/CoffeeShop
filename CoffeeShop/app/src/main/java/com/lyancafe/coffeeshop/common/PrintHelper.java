@@ -75,7 +75,7 @@ public class PrintHelper {
             return totalQuantity/4 + 1;
         }
     }
-    //计算订单中的咖啡清单列表
+   /* //计算订单中的咖啡清单列表
     public ArrayList<String> getCoffeeList(OrderBean orderBean){
         ArrayList<String> coffeeList = new ArrayList<>();
         for(int i=0;i<orderBean.getItems().size();i++){
@@ -87,7 +87,7 @@ public class PrintHelper {
         }
         return coffeeList;
     }
-
+*/
 
     //计算杯贴纸信息，生成打印数据模型
     private List<PrintOrderBean> calculatePinterOrderBeanList(OrderBean orderBean){
@@ -193,7 +193,7 @@ public class PrintHelper {
         return boxList;
     }
 
-    //打印入口方法
+   /* //打印入口方法
     public void printOrderInfo(OrderBean orderBean){
         List<PrintOrderBean> printList = calculatePinterOrderBeanList(orderBean);
         Log.d(TAG, "printOrderInfo , printList.size  =" + printList.size());
@@ -201,10 +201,11 @@ public class PrintHelper {
         for(PrintOrderBean bean:printList){
             String printContent = getPrintOrderContent(bean);
             DoPrintOrder(printContent);
+            writeDataToPrinter(ip_print_order,printContent);
         }
 
         OrderHelper.addPrintedSet(CSApplication.getInstance(), orderBean.getOrderSn());
-    }
+    }*/
     //把要打印的盒子小票信息组装成字符串
     private String getPrintOrderContent(PrintOrderBean bean){
         String order1 = "",order2 = "",order3 = "",order4 = "";
@@ -275,17 +276,17 @@ public class PrintHelper {
     }
 
 
-    private  void DoPrintOrder(String printContent){
+   /* private  void DoPrintOrder(String printContent){
         Log.i(TAG,"DoPrintOrder");
         DoPrintRunnable dpt = new DoPrintRunnable();
         dpt.setPrinterIP(ip_print_order);
         dpt.setPrinterContent(printContent);
         mPoolExecutor.execute(dpt);
-    }
+    }*/
 
 
 
-    //打印杯子贴纸信息入口方法
+   /* //打印杯子贴纸信息入口方法
     public  void printOrderItems(OrderBean orderBean){
         List<PrintCupBean> hotPrintList = new ArrayList<>();
         List<PrintCupBean> coolPrintList = new ArrayList<>();
@@ -300,7 +301,7 @@ public class PrintHelper {
             String printContent = getPrintCupContent(bean);
             DoPrintCup(printContent);
         }
-    }
+    }*/
 
 
     //计算杯子贴纸信息，生成打印数据模型
@@ -416,15 +417,15 @@ public class PrintHelper {
     }
 
 
-    private void DoPrintCup(String printContent){
+   /* private void DoPrintCup(String printContent){
         Log.d(TAG,"DoPrintCup");
         DoPrintRunnable dpt = new DoPrintRunnable();
         dpt.setPrinterIP(ip_print_cup);
         dpt.setPrinterContent(printContent);
         mPoolExecutor.execute(dpt);
-    }
+    }*/
 
-    private class DoPrintRunnable implements Runnable {
+   /* private class DoPrintRunnable implements Runnable {
         private String printerIP = "";
         private String printConent = "";
 
@@ -434,11 +435,10 @@ public class PrintHelper {
 
         private void setPrinterContent(String content) {
             this.printConent = content;
-//            Log.d(TAG,"printConent = "+printConent);
         }
         @Override
         public void run() {
-            Log.i(TAG,"printerIsAvailable = "+printerIsAvailable);
+            Log.i(TAG,"printerIsAvailable = "+printerIsAvailable+" | threadName = "+Thread.currentThread().getName());
             while (!printerIsAvailable) {
                 try {
                     Thread.sleep(300);
@@ -472,7 +472,7 @@ public class PrintHelper {
             }
         }
     }
-
+*/
 
     public void setPromptlistener(OnPromptListener promptlistener){
         this.mlistener = promptlistener;
@@ -524,15 +524,22 @@ public class PrintHelper {
         }
     }
 
-    //批量打印订单入口
-    public void printBatchBoxes(List<OrderBean> orderList){
-        for(OrderBean bean:orderList){
-            printOrderInfo(bean);
-        }
-    }
+   /* //批量打印订单入口
+    public void printBatchBoxes(final List<OrderBean> orderList){
+        mPoolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                for(OrderBean bean:orderList){
+                    printOrderInfo(bean);
+                }
+            }
+        });
+
+    }*/
 
 
-    //批量打印杯贴纸入口
+
+   /* //批量打印杯贴纸入口
     public void printBatchCups(List<OrderBean> orderList){
         List<PrintCupBean> cupBeanList = calculateBatchCupList(orderList);
         List<PrintCupBean> sortedCupList = sortCupList(cupBeanList);
@@ -542,7 +549,7 @@ public class PrintHelper {
             DoPrintCup(printContent);
         }
 
-    }
+    }*/
 
     //生成批量打印的杯贴纸集合（按同种咖啡数量多到少排序）
     private List<PrintCupBean> calculateBatchCupList(List<OrderBean> orderList){
@@ -602,13 +609,13 @@ public class PrintHelper {
         return map;
     }
 
-    private  void DoPrintMaterial(String printContent){
+  /*  private  void DoPrintMaterial(String printContent){
         Log.d(TAG,"DoPrintMaterial");
         DoPrintRunnable dpt = new DoPrintRunnable();
         dpt.setPrinterIP(ip_print_order);
         dpt.setPrinterContent(printContent);
         mPoolExecutor.execute(dpt);
-    }
+    }*/
 
 
 
@@ -620,7 +627,7 @@ public class PrintHelper {
     }
 
 
-    //打印物料（大纸）
+    /*//打印物料（大纸）
     public  void printMaterialBig(MaterialItem materialItem){
         String printMaterialContent =  "N"+"\n"+
                     "OD"+"\n"+
@@ -631,10 +638,10 @@ public class PrintHelper {
                     "A60,150,0,230,3,4,N,\""+materialItem.getName()+"\""+"\n"+
                     "P1"+"\n";
         DoPrintMaterial(printMaterialContent);
-    }
+    }*/
 
 
-    //打印物料（小纸）
+    /*//打印物料（小纸）
     public void printPasterSmall(MaterialItem materialItem){
         String pasterContent = "N"+"\n"+
                     "OD"+"\n"+
@@ -649,9 +656,9 @@ public class PrintHelper {
                     "A120,120,0,230,1,1,N,\"____________\""+"\n"+
                     "P1"+"\n";
         DoPrintPaster(pasterContent);
-    }
+    }*/
 
-    //打印空白贴纸（小纸）
+   /* //打印空白贴纸（小纸）
     public void printPasterSmallBlank(){
         String pasterContent = "N"+"\n"+
                 "OD"+"\n"+
@@ -667,25 +674,25 @@ public class PrintHelper {
                 "A120,120,0,230,1,1,N,\"____________\""+"\n"+
                 "P1"+"\n";
         DoPrintPaster(pasterContent);
-    }
+    }*/
 
-    private  void DoPrintPaster(String printContent){
+    /*private  void DoPrintPaster(String printContent){
         Log.d(TAG,"DoPrintMaterial");
         DoPrintRunnable dpt = new DoPrintRunnable();
         dpt.setPrinterIP(ip_print_cup);
         dpt.setPrinterContent(printContent);
         mPoolExecutor.execute(dpt);
-    }
+    }*/
 
 
-    //打印汇总
+   /* //打印汇总
     private  void doPrintBatchInfo(String printContent){
         Log.d(TAG,"DoPrintBatchInfo ="+printContent);
         DoPrintRunnable dpt = new DoPrintRunnable();
         dpt.setPrinterIP(ip_print_order);
         dpt.setPrinterContent(printContent);
         mPoolExecutor.execute(dpt);
-    }
+    }*/
 
 
 
@@ -725,11 +732,270 @@ public class PrintHelper {
         List<PrintObject> printObjects = PrintObject.transformPrintObjects(coffeeMap,recipeFittingsMap);
         if(printObjects.size()>0){
             for(int i=printObjects.size()-1;i>=0;i--){
-                doPrintBatchInfo(printObjects.get(i).getPrintContent());
+                writeDataToPrinter(ip_print_order,printObjects.get(i).getPrintContent());
             }
         }
 
     }
+
+
+
+    /**
+     * 往打印机中写入指令
+     * @param host
+     * @param command
+     */
+    private void writeDataToPrinter(String host,String command){
+        Log.d(TAG,"writeDataToPrinter");
+        Socket client;
+        try {
+            client = new Socket(host, 9100);
+            Writer writer = new OutputStreamWriter(client.getOutputStream(), "GBK");
+            writer.write(command);
+            writer.flush();
+            writer.close();
+            client.close();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            Log.e(TAG, "UnknownHostException:"+e.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e(TAG, "IOException" + e.toString());
+            ToastUtil.showToast(CSApplication.getInstance(),"打印机"+host+"无法连接");
+        } finally {
+
+        }
+    }
+
+
+    /**
+     * 批量生产打印
+     */
+    public void printBatch(final List<OrderBean> batchOrders){
+        mPoolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                //打印汇总信息
+                printBatchInfo(batchOrders);
+
+                //打印大标签
+                printBatchOrders(batchOrders);
+            }
+        });
+
+        mPoolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                //打印小标签
+                printBatchCups(batchOrders);
+            }
+        });
+
+    }
+
+    /**
+     * 批量打印订单大标签
+     * @param orders
+     */
+    private void printBatchOrders(List<OrderBean> orders){
+        for(OrderBean bean:orders){
+            printSingleOrder(bean);
+        }
+    }
+
+    /**
+     * 批量打印订单小标签
+     * @param orders
+     */
+    private void printBatchCups(List<OrderBean> orders){
+        List<PrintCupBean> cupBeanList = calculateBatchCupList(orders);
+        List<PrintCupBean> sortedCupList = sortCupList(cupBeanList);
+        for(PrintCupBean bean:sortedCupList){
+            String printContent = getPrintCupContent(bean);
+            writeDataToPrinter(ip_print_cup,printContent);
+        }
+    }
+
+
+    /**
+     * 打印单个订单大标签
+     * @param order
+     */
+    private void printSingleOrder(OrderBean order){
+        List<PrintOrderBean> printList = calculatePinterOrderBeanList(order);
+        for(PrintOrderBean bean:printList){
+            String printContent = getPrintOrderContent(bean);
+            writeDataToPrinter(ip_print_order,printContent);
+        }
+        OrderHelper.addPrintedSet(CSApplication.getInstance(), order.getOrderSn());
+    }
+
+    /**
+     * 打印单个订单小标签
+     * @param order
+     */
+    private void printSingleOrderItem(OrderBean order){
+        List<PrintCupBean> hotPrintList = new ArrayList<>();
+        List<PrintCupBean> coolPrintList = new ArrayList<>();
+        calculatePinterCupBeanList(order, hotPrintList, coolPrintList);
+
+        for(PrintCupBean bean:hotPrintList){
+            String printContent = getPrintCupContent(bean);
+            writeDataToPrinter(ip_print_cup,printContent);
+        }
+        for(PrintCupBean bean:coolPrintList){
+            String printContent = getPrintCupContent(bean);
+            writeDataToPrinter(ip_print_cup,printContent);
+
+        }
+    }
+
+
+    /**
+     * 打印物料
+     * @param materialItem
+     */
+    private void printMaterial(MaterialItem materialItem){
+        String printMaterialContent =  "N"+"\n"+
+                "OD"+"\n"+
+                "q640"+"\n"+
+                "Q400,16"+"\n"+
+                "S3"+"\n"+
+                "D8"+"\n"+
+                "A60,150,0,230,3,4,N,\""+materialItem.getName()+"\""+"\n"+
+                "P1"+"\n";
+        writeDataToPrinter(ip_print_order,printMaterialContent);
+    }
+
+
+    /**
+     * 打印时控贴
+     * @param materialItem
+     */
+    private void printPaster(MaterialItem materialItem){
+        String pasterContent = "N"+"\n"+
+                "OD"+"\n"+
+                "q240"+"\n"+
+                "Q160,16"+"\n"+
+                "S3"+"\n"+
+                "D8"+"\n"+
+                "A10,20,0,230,1,1,N,\""+materialItem.getName()+"\""+"\n"+
+                "A10,55,0,230,1,1,N,\""+getOverDueDate(materialItem.getOverdueTime())+"\""+"\n"+
+                "A10,80,0,230,1,1,N,\"过期\""+"\n"+
+                "A10,120,0,230,1,1,N,\"原始到期:\""+"\n"+
+                "A120,120,0,230,1,1,N,\"____________\""+"\n"+
+                "P1"+"\n";
+        writeDataToPrinter(ip_print_cup,pasterContent);
+    }
+
+    /**
+     * 打印空白时控贴
+     */
+    private void printBlankPaster(){
+        String pasterContent = "N"+"\n"+
+                "OD"+"\n"+
+                "q240"+"\n"+
+                "Q160,16"+"\n"+
+                "S3"+"\n"+
+                "D8"+"\n"+
+                "A10,25,0,230,1,1,N,\"物料:\""+"\n"+
+                "A70,25,0,230,1,1,N,\"_____________\""+"\n"+
+                "A10,70,0,230,1,1,N,\"过期:\""+"\n"+
+                "A70,70,0,230,1,1,N,\"_____________\""+"\n"+
+                "A10,120,0,230,1,1,N,\"原始到期:\""+"\n"+
+                "A120,120,0,230,1,1,N,\"____________\""+"\n"+
+                "P1"+"\n";
+        writeDataToPrinter(ip_print_cup,pasterContent);
+    }
+
+
+    /**
+     * 仅打印盒贴标签
+     * @param order
+     */
+    public void startPrintOnlyBoxTask(final OrderBean order){
+        mPoolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                printSingleOrder(order);
+            }
+        });
+    }
+
+    /**
+     * 仅打印杯贴标签
+     * @param order
+     */
+    public void startPrintOnlyCupTask(final OrderBean order){
+        mPoolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                printSingleOrderItem(order);
+            }
+        });
+
+    }
+
+
+    /**
+     * 同时打印一个订单的大小标签
+     */
+    public void startPrintWholeOrderTask(final OrderBean order){
+        mPoolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                printSingleOrder(order);
+            }
+        });
+        mPoolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                printSingleOrderItem(order);
+            }
+        });
+    }
+
+    /**
+     * 启动打印物料任务
+     * @param materialItem
+     */
+    public void startPrintMaterialTask(final MaterialItem materialItem){
+        mPoolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                printMaterial(materialItem);
+            }
+        });
+    }
+
+    /**
+     * 启动打印时控贴任务
+     * @param materialItem
+     */
+    public void startPrintPasterTask(final MaterialItem materialItem){
+        mPoolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                printPaster(materialItem);
+            }
+        });
+    }
+
+    /**
+     * 启动打印空白时控贴任务
+     */
+    public void startPrintBlankPasterTask(){
+        mPoolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                printBlankPaster();
+            }
+        });
+    }
+
+
+
+
 
 
 }

@@ -216,8 +216,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView {
             public void onClickYes() {
                 //请求服务器改变该订单状态，由 待生产--生产中
                 mToProducePresenter.doStartProduce(orderBean.getId(), orderBean.getWxScan());
-                PrintHelper.getInstance().printOrderInfo(orderBean);
-                PrintHelper.getInstance().printOrderItems(orderBean);
+                PrintHelper.getInstance().startPrintWholeOrderTask(orderBean);
 
             }
         });
@@ -306,7 +305,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView {
     @Subscribe
     public void onNotNeedProduce(NotNeedProduceEvent event){
         mToProducePresenter.doNoPruduce(event.order.getId());
-        PrintHelper.getInstance().printOrderInfo(event.order);
+        PrintHelper.getInstance().startPrintOnlyBoxTask(event.order);
     }
 
 
@@ -371,9 +370,8 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView {
                         showToast("未选中订单");
                         return;
                     }
-                    PrintHelper.getInstance().printBatchInfo(selectedList);
-                    PrintHelper.getInstance().printBatchBoxes(selectedList);
-                    PrintHelper.getInstance().printBatchCups(selectedList);
+
+                    PrintHelper.getInstance().printBatch(selectedList);
                     List<Long> orderIds = OrderHelper.getIdsFromOrders(selectedList);
                     mToProducePresenter.doStartBatchProduce(orderIds);
 

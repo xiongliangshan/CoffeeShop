@@ -32,6 +32,7 @@ import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PrimitiveIterator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -218,26 +219,26 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
     void onClickPrint(View v) {
         switch (v.getId()) {
             case R.id.tv_print_paster:
-                //打印小纸
+                //打印时控贴
                 MaterialItem itemSmall = mAdapter.getSelectedItem();
                 if (itemSmall == null) {
                     ToastUtil.showToast(getContext(), getString(R.string.select_material));
                     return;
                 }
-                PrintHelper.getInstance().printPasterSmall(itemSmall);
+                PrintHelper.getInstance().startPrintPasterTask(itemSmall);
                 break;
             case R.id.tv_print_material:
-                //打印大纸
+                //打印物料大纸
                 MaterialItem itemBig = mAdapter.getSelectedItem();
                 if (itemBig == null) {
                     ToastUtil.showToast(getContext(), getString(R.string.select_material));
                     return;
                 }
-                PrintHelper.getInstance().printMaterialBig(itemBig);
-
+                PrintHelper.getInstance().startPrintMaterialTask(itemBig);
                 break;
             case R.id.btn_print_blank:
-                PrintHelper.getInstance().printPasterSmallBlank();
+                //打印空白时控贴
+                PrintHelper.getInstance().startPrintBlankPasterTask();
                 break;
             case R.id.btn_print_test:
                 //测试打印机
@@ -273,8 +274,7 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
                 List<ItemContentBean> list = new ArrayList<>();
                 list.add(itemContentBean);
                 order.setItems(list);
-                PrintHelper.getInstance().printOrderInfo(order);
-                PrintHelper.getInstance().printOrderItems(order);
+                PrintHelper.getInstance().startPrintWholeOrderTask(order);
                 break;
         }
     }
