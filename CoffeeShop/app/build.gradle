@@ -50,8 +50,10 @@ android {
             buildConfigField("String","BASE_URL",'"https://apiqa.lyancafe.cn/shop/v3/"')
             buildConfigField("boolean","LOG_DEBUG","true")
             debuggable true
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.mySignConfig
-            minifyEnabled false
         }
     }
 
