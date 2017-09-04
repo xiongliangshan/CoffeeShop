@@ -39,12 +39,16 @@ android {
     }
     buildTypes {
         release {
+            buildConfigField("String","BASE_URL",'"https://api.lyancafe.com/shop/v3/"')
+            buildConfigField("boolean","LOG_DEBUG","false")
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.mySignConfig
         }
         debug {
+            buildConfigField("String","BASE_URL",'"https://apiqa.lyancafe.cn/shop/v3/"')
+            buildConfigField("boolean","LOG_DEBUG","true")
             debuggable true
             signingConfig signingConfigs.mySignConfig
             minifyEnabled false

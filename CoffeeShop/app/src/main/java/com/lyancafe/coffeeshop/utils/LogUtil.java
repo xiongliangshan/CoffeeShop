@@ -2,13 +2,15 @@ package com.lyancafe.coffeeshop.utils;
 
 import android.util.Log;
 
+import com.lyancafe.coffeeshop.BuildConfig;
+
 /**
  * Created by Administrator on 2017/5/18.
  */
 
 public class LogUtil {
 
-    private static boolean debug = true;
+    private static boolean debug = BuildConfig.LOG_DEBUG;
     public final static String TAG_LOGIN = "login";
     public final static String TAG_JPUSH = "jpush";
     public final static String TAG_TIMER = "timer";
