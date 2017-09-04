@@ -10,17 +10,15 @@ public class UserBean implements Serializable{
     private int userId;
     private int shopId;
     private String shopName;
-    private boolean isSFMode;
     private String token;
 
     public UserBean() {
     }
 
-    public UserBean(int userId, int shopId, String shopName, boolean isSFMode, String token) {
+    public UserBean(int userId, int shopId, String shopName, String token) {
         this.userId = userId;
         this.shopId = shopId;
         this.shopName = shopName;
-        this.isSFMode = isSFMode;
         this.token = token;
     }
 
@@ -48,14 +46,6 @@ public class UserBean implements Serializable{
         this.shopName = shopName;
     }
 
-    public boolean isSFMode() {
-        return isSFMode;
-    }
-
-    public void setIsSFMode(boolean isSFMode) {
-        this.isSFMode = isSFMode;
-    }
-
     public String getToken() {
         return token;
     }
@@ -71,7 +61,6 @@ public class UserBean implements Serializable{
                 "userId=" + userId +
                 ", shopId=" + shopId +
                 ", shopName='" + shopName + '\'' +
-                ", isSFMode=" + isSFMode +
                 ", token='" + token + '\'' +
                 '}';
     }
