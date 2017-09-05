@@ -99,7 +99,8 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/white1"
                 android:inputType="number"
-                android:hint="输入门店单号"/>
+                android:hint="输入门店单号"
+                android:textColorHint="@color/gray6"/>
             <Button
                 android:id="@+id/btn_search"
                 android:layout_width="wrap_content"
