@@ -173,14 +173,14 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView {
 
     @Override
     public void bindDataToView(List<OrderBean> list) {
-        if (list != null && list.size() > 1) {
-            batchLayout.setVisibility(View.VISIBLE);
-        } else {
-            batchLayout.setVisibility(View.GONE);
-        }
         allOrderList.clear();
         allOrderList.addAll(list);
         if (isVisible) {
+            if (list != null && list.size() > 1) {
+                batchLayout.setVisibility(View.VISIBLE);
+            } else {
+                batchLayout.setVisibility(View.GONE);
+            }
             mAdapter.setData(list);
         }
     }

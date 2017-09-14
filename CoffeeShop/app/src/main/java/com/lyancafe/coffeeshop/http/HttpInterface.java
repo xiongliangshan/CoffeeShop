@@ -10,6 +10,7 @@ import com.lyancafe.coffeeshop.bean.Material;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.ShopInfo;
 import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.bean.VideoBean;
 
 import java.util.List;
 import java.util.Map;
@@ -291,5 +292,13 @@ public interface HttpInterface {
     Observable<BaseEntity<JsonObject>> doRePush(@Path("shopId") int shopId,@Path("orderId") long orderId,@Path("deliveryTeam") int team,@Query("token") String token);
 
 
+    /**
+     * 加载视频列表数据
+     * @param shopId
+     * @param token
+     * @return
+     */
+    @GET("{shopId}/shop/videolist")
+    Observable<BaseEntity<List<VideoBean>>> loadVideos(@Path("shopId") int shopId,@Query("token") String token);
 
 }
