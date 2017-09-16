@@ -562,9 +562,15 @@ public class PrintHelper {
             batchCupList.addAll(hotCupList);
             batchCupList.addAll(coolCupList);
         }
-        sortCupList(batchCupList);
+        Collections.sort(batchCupList, new Comparator<PrintCupBean>() {
+            @Override
+            public int compare(PrintCupBean o1, PrintCupBean o2) {
+                return (int) (o1.getOrderId()-o2.getOrderId());
+            }
+        });
         return batchCupList;
     }
+
 
     //对集合按照同元素数量由多到少的顺序排序
     private List<PrintCupBean> sortCupList(List<PrintCupBean> batchCupList){
@@ -811,8 +817,7 @@ public class PrintHelper {
      */
     private void printBatchCups(List<OrderBean> orders){
         List<PrintCupBean> cupBeanList = calculateBatchCupList(orders);
-        List<PrintCupBean> sortedCupList = sortCupList(cupBeanList);
-        for(PrintCupBean bean:sortedCupList){
+        for(PrintCupBean bean:cupBeanList){
             String printContent = getPrintCupContent(bean);
             writeDataToPrinter(ip_print_cup,printContent);
         }
