@@ -270,15 +270,6 @@
                         android:textColor="@color/blue"
                         />
 
-                    <TextView
-                        android:id="@+id/btn_assign"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:textColor="@color/white_font"
-                        android:background="@drawable/bg_btn_assign"
-                        android:text="订单指派"/>
                 </RelativeLayout>
             </RelativeLayout>
 

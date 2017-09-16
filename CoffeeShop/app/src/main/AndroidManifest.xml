@@ -77,10 +77,6 @@
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar"/>
 
-        <activity android:name=".produce.ui.AssignOrderActivity"
-            android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar"/>
-
         <service android:name=".service.TaskService"/>
         <service android:name=".service.DownLoadService"/>
 

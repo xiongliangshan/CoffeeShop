@@ -16,12 +16,14 @@ android {
             storePassword 'lyan2015'
         }
     }
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
     defaultConfig {
         applicationId "com.lyancafe.coffeeshop"
-        minSdkVersion 16
-        targetSdkVersion 22
+        minSdkVersion 21
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 57
         versionName "3.3.5"
         multiDexEnabled true
@@ -39,16 +41,16 @@ android {
     }
     buildTypes {
         release {
-            buildConfigField("String","BASE_URL",'"https://api.lyancafe.com/shop/v3/"')
-            buildConfigField("boolean","LOG_DEBUG","false")
+            buildConfigField("String", "BASE_URL", '"https://api.lyancafe.com/shop/v3/"')
+            buildConfigField("boolean", "LOG_DEBUG", "false")
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.mySignConfig
         }
         debug {
-            buildConfigField("String","BASE_URL",'"https://apiqa.lyancafe.cn/shop/v3/"')
-            buildConfigField("boolean","LOG_DEBUG","true")
+            buildConfigField("String", "BASE_URL", '"https://apiqa.lyancafe.cn/shop/v3/"')
+            buildConfigField("boolean", "LOG_DEBUG", "true")
             debuggable true
             minifyEnabled true
             shrinkResources true

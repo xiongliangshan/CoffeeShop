@@ -99,8 +99,6 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     TextView deliverNameTxt;
     @BindView(R.id.deliver_phone)
     TextView deliverPhoneTxt;
-    @BindView(R.id.btn_assign)
-    TextView assignBtn;
     @BindView(R.id.items_container_layout)
     LinearLayout itemsContainerLayout;
     @BindView(R.id.scrollView)
@@ -219,14 +217,12 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
             csadRemarkTxt.setText("");
             itemsContainerLayout.removeAllViews();
             reportIssueBtn.setVisibility(View.GONE);
-            assignBtn.setVisibility(View.GONE);
             produceAndPrintBtn.setEnabled(false);
             finishProduceBtn.setEnabled(false);
             printOrderBtn.setEnabled(false);
             clReplenishLayout.setVisibility(View.GONE);
         } else {
             reportIssueBtn.setVisibility(View.VISIBLE);
-            assignBtn.setVisibility(View.VISIBLE);
             produceAndPrintBtn.setEnabled(true);
             finishProduceBtn.setEnabled(true);
             printOrderBtn.setEnabled(true);
@@ -266,17 +262,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
 
             userRemarkTxt.setText(order.getNotes());
             csadRemarkTxt.setText(order.getCsrNotes());
-            if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN || order.getDeliveryTeam() == DeliveryTeam.HAIKUI
-                    || order.getStatus() >= 6000) {
-                assignBtn.setVisibility(View.GONE);
-            } else {
-                assignBtn.setVisibility(View.VISIBLE);
-                if (order.getStatus() == OrderStatus.UNASSIGNED) {
-                    assignBtn.setText("订单指派");
-                } else if (order.getStatus() == OrderStatus.ASSIGNED) {
-                    assignBtn.setText("订单撤回");
-                }
-            }
+
             if (order.getRevoked()) {
                 twoBtnLayout.setVisibility(View.GONE);
                 oneBtnLayout.setVisibility(View.GONE);
@@ -562,7 +548,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
         updateDetailView(mOrder);
     }
 
-    @OnClick({R.id.contant_issue_feedback, R.id.btn_assign, R.id.ll_user_remark, R.id.ll_csad_remark, R.id.btn_finish_produce, R.id.btn_print_order, R.id.btn_produce_print})
+    @OnClick({R.id.contant_issue_feedback,R.id.ll_user_remark, R.id.ll_csad_remark, R.id.btn_finish_produce, R.id.btn_print_order, R.id.btn_produce_print})
     public void onClick(View view) {
         if (mOrder == null) {
             return;
@@ -572,16 +558,6 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
                 //问题反馈
                 ReportIssueDialog rid = ReportIssueDialog.newInstance(mOrder.getId());
                 rid.show(getChildFragmentManager(), "report_issue");
-                break;
-            case R.id.btn_assign:
-                //订单指派与撤回
-                if (mOrder.getStatus() == OrderStatus.UNASSIGNED) {
-                    Intent intent = new Intent(mContext, AssignOrderActivity.class);
-                    intent.putExtra("orderId", mOrder.getId());
-                    startActivityForResult(intent, REQUEST_ASSIGN);
-                } else if (mOrder.getStatus() == OrderStatus.ASSIGNED) {
-                    mMainProducePresenter.doRecallOrder(mOrder.getId());
-                }
                 break;
             case R.id.ll_user_remark:
                 //用户备注

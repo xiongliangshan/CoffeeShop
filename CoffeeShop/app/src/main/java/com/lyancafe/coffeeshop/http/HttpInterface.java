@@ -298,6 +298,8 @@ public interface HttpInterface {
      * @param token
      * @return
      */
+
+    @Headers("Cache-Control:public,max-age=60,max-stale=3600")
     @GET("{shopId}/shop/videolist")
     Observable<BaseEntity<List<VideoBean>>> loadVideos(@Path("shopId") int shopId,@Query("token") String token);
 
