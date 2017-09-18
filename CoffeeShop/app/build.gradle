@@ -102,4 +102,5 @@ dependencies {
     compile 'org.greenrobot:greendao:3.2.2'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
+    compile project(':ijkplayer-example')
 }

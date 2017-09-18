@@ -123,3 +123,5 @@ public static java.lang.String TABLENAME;
 # If you do not use Rx:
 -dontwarn rx.**
 
+-keep class tv.danmaku.ijk.**{*;}
+

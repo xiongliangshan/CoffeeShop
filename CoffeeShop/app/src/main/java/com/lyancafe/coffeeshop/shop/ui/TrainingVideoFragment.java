@@ -62,19 +62,7 @@ public class TrainingVideoFragment extends BaseFragment implements TrainingVideo
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),3,GridLayoutManager.VERTICAL, false);
         rvVideolist.setLayoutManager(gridLayoutManager);
         rvVideolist.addItemDecoration(new SpaceItemDecoration(3, OrderHelper.dip2Px(12, getActivity()), false));
-        List<VideoBean> list = new ArrayList<>();
-        VideoBean v1 = new VideoBean();
-        v1.setTitle("王亭文同仁堂");
-        v1.setUrl("http://qaimages.lyancafe.com/training/videos/1505381240699.mp4");
-        list.add(v1);
-        VideoBean v2 = new VideoBean();
-        v2.setTitle("工会经费鸡飞狗叫和");
-        v2.setUrl("http://qaimages.lyancafe.com/training/videos/两90后斗气 多次别车堪称大片_标清.mp4");
-        list.add(v2);
-        VideoBean v3 = new VideoBean();
-        v3.setTitle("3热污染翁");
-        v3.setUrl("http://qaimages.lyancafe.com/training/videos/1505382140099.flv");
-        mAdapter = new VideoListAdpater(list,getContext());
+        mAdapter = new VideoListAdpater(createTestData(),getContext());
         rvVideolist.setAdapter(mAdapter);
     }
 
@@ -106,5 +94,23 @@ public class TrainingVideoFragment extends BaseFragment implements TrainingVideo
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+
+    private List<VideoBean> createTestData(){
+        List<VideoBean> list = new ArrayList<>();
+        VideoBean v1 = new VideoBean();
+        v1.setTitle("王亭文同仁堂");
+        v1.setUrl("http://qaimages.lyancafe.com/training/videos/1505381240699.mp4");
+        list.add(v1);
+        VideoBean v2 = new VideoBean();
+        v2.setTitle("工会经费鸡飞狗叫和");
+        v2.setUrl("http://qaimages.lyancafe.com/training/videos/1505376240236");
+        list.add(v2);
+        VideoBean v3 = new VideoBean();
+        v3.setTitle("3热污染翁");
+        v3.setUrl("http://qaimages.lyancafe.com/training/videos/1505382140099.flv");
+        list.add(v3);
+        return list;
     }
 }

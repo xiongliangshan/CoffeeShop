@@ -4,11 +4,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:id="@+id/rl_container"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:background="@color/black1">
+
+        <ImageView
+            android:id="@+id/video_img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_player"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
+
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/white1"
+        android:textSize="18sp"
         android:text="视频标题"/>
 
 </LinearLayout>

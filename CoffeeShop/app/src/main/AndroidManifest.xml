@@ -148,6 +148,11 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".shop.ui.MyVedioActivity"
+            android:theme="@style/Theme.App.Light.NoActionBar"
+            android:screenOrientation="landscape"
+            android:launchMode="singleTask"/>
+
         <service
             android:name="cn.jpush.android.service.DownloadService"
             android:enabled="true"
