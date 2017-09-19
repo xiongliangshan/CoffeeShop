@@ -35,7 +35,7 @@ public class TrainingVideoPresenterImpl implements TrainingVideoPresenter {
         trainingVideoModel.loadVideos(user.getShopId(), user.getToken(), new CustomObserver<List<VideoBean>>(context) {
             @Override
             protected void onHandleSuccess(List<VideoBean> videoBeen) {
-                LogUtil.d("xls","loadVideos success :"+videoBeen);
+                LogUtil.d("xls","loadVideos success :"+videoBeen.size());
                 trainingVideoView.bindDataToView(videoBeen);
             }
         });

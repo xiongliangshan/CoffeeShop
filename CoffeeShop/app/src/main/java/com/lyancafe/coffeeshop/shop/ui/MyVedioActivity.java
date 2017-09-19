@@ -3,14 +3,18 @@ package com.lyancafe.coffeeshop.shop.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
+import com.danikula.videocache.CacheListener;
+import com.danikula.videocache.HttpProxyCacheServer;
+import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
+
+import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,13 +27,13 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
  * Created by Administrator on 2017/9/18.
  */
 
-public class MyVedioActivity extends AppCompatActivity {
+public class MyVedioActivity extends AppCompatActivity implements CacheListener {
 
     private static final String TAG  ="MyVedioActivity";
     @BindView(R.id.video_view)
     IjkVideoView videoView;
     private String videoUrl;
-    private String videoName;
+    private String videoTitle;
     private int currentPosition = 0;
 
     private AndroidMediaController mMediaController;
@@ -51,7 +55,7 @@ public class MyVedioActivity extends AppCompatActivity {
         LogUtil.d(TAG,"onCreate");
         Intent intent = getIntent();
         videoUrl = intent.getStringExtra("videoPath");
-        videoName = intent.getStringExtra("videoTitle");
+        videoTitle = intent.getStringExtra("videoTitle");
 
         if (!TextUtils.isEmpty(videoUrl)) {
             new RecentMediaStorage(this).saveUrlAsync(videoUrl);
@@ -68,7 +72,7 @@ public class MyVedioActivity extends AppCompatActivity {
             ToastUtil.show(this,"视频文件不存在");
             return;
         }else{
-            videoView.setVideoPath(videoUrl);
+            startProxy(videoUrl);
         }
 
         LogUtil.d(TAG,"url = "+videoUrl);
@@ -81,7 +85,7 @@ public class MyVedioActivity extends AppCompatActivity {
         super.onNewIntent(intent);
         LogUtil.d(TAG,"onNewIntent");
         videoUrl = intent.getStringExtra("videoPath");
-        videoName = intent.getStringExtra("videoTitle");
+        videoTitle = intent.getStringExtra("videoTitle");
     }
 
     @Override
@@ -126,5 +130,22 @@ public class MyVedioActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        CSApplication.getProxy(this).unregisterCacheListener(this);
+    }
+
+
+    private void startProxy(String url) {
+        HttpProxyCacheServer proxy = CSApplication.getProxy(this);
+        proxy.registerCacheListener(this, url);
+        videoView.setVideoPath(proxy.getProxyUrl(url));
+    }
+
+    @Override
+    public void onCacheAvailable(File cacheFile, String url, int percentsAvailable) {
+        LogUtil.d(TAG,"cacheFile = "+cacheFile==null?null:cacheFile.getName()+" | url = "+url+" | percentsAvailable="+percentsAvailable);
+      /*  if(percentsAvailable==100 && !cacheFile.getName().endsWith("download")){
+            MyUtil.encrypt(cacheFile.getAbsolutePath());
+        }*/
+
     }
 }

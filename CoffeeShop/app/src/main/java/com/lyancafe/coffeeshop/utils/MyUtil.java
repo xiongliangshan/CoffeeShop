@@ -8,12 +8,18 @@ import android.net.NetworkInfo;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import java.io.File;
+import java.io.RandomAccessFile;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+
 /**
  * Created by Administrator on 2015/10/26.
  */
 public class MyUtil {
 
     public static final int STATUS_INVALID_TOKEN = 103;  //token无效的状态码
+    private final static int REVERSE_LENGTH = 100;
     /**
      * 获取版本名
      * @return 当前应用的版本名
@@ -75,6 +81,45 @@ public class MyUtil {
         InputMethodManager imm = ( InputMethodManager) v.getContext( ).getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm.isActive()) {
             imm.hideSoftInputFromWindow( v.getApplicationWindowToken() , 0 );
+        }
+    }
+
+
+    public static File getVideoCacheDir(Context context) {
+        return new File(context.getExternalCacheDir(), "v-cache");
+    }
+
+
+    public static boolean encrypt(String strFile) {
+        LogUtil.d("MyVedioActivity","开始加密文件 "+strFile);
+        int len = REVERSE_LENGTH;
+        try {
+            File f = new File(strFile);
+            RandomAccessFile raf = new RandomAccessFile(f, "rw");
+            long totalLen = raf.length();
+
+            if (totalLen < REVERSE_LENGTH)
+                len = (int) totalLen;
+
+            FileChannel channel = raf.getChannel();
+            MappedByteBuffer buffer = channel.map(
+                    FileChannel.MapMode.READ_WRITE, 0, REVERSE_LENGTH);
+            byte tmp;
+            for (int i = 0; i < len; ++i) {
+                byte rawByte = buffer.get(i);
+                tmp = (byte) (rawByte ^ i);
+                buffer.put(i, tmp);
+            }
+            buffer.force();
+            buffer.clear();
+            channel.close();
+            raf.close();
+            LogUtil.d("MyVedioActivity","加密成功");
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtil.d("MyVedioActivity","加密失败"+e.getMessage());
+            return false;
         }
     }
 }

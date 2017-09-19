@@ -4,30 +4,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.VideoBean;
-import com.lyancafe.coffeeshop.http.RxHelper;
+import com.lyancafe.coffeeshop.utils.BitmapCache;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Consumer;
-import tv.danmaku.ijk.media.example.widget.media.IjkVideoView;
 
 /**
  * Created by Administrator on 2017/9/15.
@@ -63,22 +58,7 @@ public class VideoListAdpater extends RecyclerView.Adapter<VideoListAdpater.View
             }
         });
 
-        Observable.create(new ObservableOnSubscribe<Bitmap>() {
-            @Override
-            public void subscribe(@NonNull ObservableEmitter<Bitmap> e) throws Exception {
-                MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
-                mediaMetadataRetriever.setDataSource(videoBean.getUrl(), new HashMap<String, String>());
-                Bitmap bitmap = mediaMetadataRetriever.getFrameAtTime(100);
-                e.onNext(bitmap);
-                e.onComplete();
-            }
-        }).compose(RxHelper.<Bitmap>io_main())
-          .subscribe(new Consumer<Bitmap>() {
-            @Override
-            public void accept(@NonNull Bitmap bitmap) throws Exception {
-                holder.videoImg.setImageBitmap(bitmap);
-            }
-        });
+       new VideoFrameTask(holder.videoImg).execute(videoBean);
 
 
     }
@@ -109,6 +89,37 @@ public class VideoListAdpater extends RecyclerView.Adapter<VideoListAdpater.View
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+    }
+
+    class VideoFrameTask extends AsyncTask<VideoBean,Integer,Bitmap>{
+
+        private ImageView imageView;
+
+        public VideoFrameTask(ImageView imageView) {
+            this.imageView = imageView;
+        }
+
+        @Override
+        protected Bitmap doInBackground(VideoBean... params) {
+            VideoBean videoBean = params[0];
+            Bitmap  cacheBitmap =  BitmapCache.getInst().getBitmapFromCache(videoBean.getTitle());
+            if(cacheBitmap==null){
+                MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
+                mediaMetadataRetriever.setDataSource(videoBean.getUrl(), new HashMap<String, String>());
+                Bitmap bitmap = mediaMetadataRetriever.getFrameAtTime(1);
+                mediaMetadataRetriever.release();
+                BitmapCache.getInst().addBitmapToCache(videoBean.getTitle(),bitmap);
+                return bitmap;
+            }else{
+                return cacheBitmap;
+            }
+        }
+
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            imageView.setImageBitmap(bitmap);
         }
     }
 }

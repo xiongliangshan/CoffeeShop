@@ -11,9 +11,12 @@ import android.util.Log;
 import android.view.WindowManager;
 
 import com.baidu.mapapi.SDKInitializer;
+import com.danikula.videocache.HttpProxyCacheServer;
 import com.lyancafe.coffeeshop.bean.DaoMaster;
 import com.lyancafe.coffeeshop.bean.DaoSession;
 import com.lyancafe.coffeeshop.utils.LogUtil;
+import com.lyancafe.coffeeshop.utils.MyFileNameGenerator;
+import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.tinker.loader.app.ApplicationLike;
 import com.tinkerpatch.sdk.TinkerPatch;
@@ -47,6 +50,8 @@ public class CSApplication extends Application {
         Log.d(TAG,"CSApplication");
     }
     private  DaoSession daoSession;
+
+    private HttpProxyCacheServer proxy;
 
 
     @Override
@@ -142,6 +147,19 @@ public class CSApplication extends Application {
 
     public  DaoSession getDaoSession() {
         return daoSession;
+    }
+
+    public static HttpProxyCacheServer getProxy(Context context) {
+        CSApplication app = (CSApplication) context.getApplicationContext();
+        return app.proxy == null ? (app.proxy = app.newProxy()) : app.proxy;
+    }
+
+    private HttpProxyCacheServer newProxy() {
+        return new HttpProxyCacheServer.Builder(this)
+                .cacheDirectory(MyUtil.getVideoCacheDir(this))
+                .maxCacheSize(1024*1024*1024)
+                .fileNameGenerator(new MyFileNameGenerator())
+                .build();
     }
 
 }

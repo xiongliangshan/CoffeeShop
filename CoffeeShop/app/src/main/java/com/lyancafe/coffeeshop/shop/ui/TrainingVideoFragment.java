@@ -61,14 +61,14 @@ public class TrainingVideoFragment extends BaseFragment implements TrainingVideo
     private void initView(){
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),3,GridLayoutManager.VERTICAL, false);
         rvVideolist.setLayoutManager(gridLayoutManager);
-        rvVideolist.addItemDecoration(new SpaceItemDecoration(3, OrderHelper.dip2Px(12, getActivity()), false));
-        mAdapter = new VideoListAdpater(createTestData(),getContext());
+        rvVideolist.addItemDecoration(new SpaceItemDecoration(3, OrderHelper.dip2Px(20, getActivity()), false));
+        mAdapter = new VideoListAdpater(new ArrayList<VideoBean>(),getContext());
         rvVideolist.setAdapter(mAdapter);
     }
 
     @Override
     public void bindDataToView(List<VideoBean> list) {
-
+        mAdapter.setVideos(list);
     }
 
     @Override

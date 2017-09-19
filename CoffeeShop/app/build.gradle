@@ -103,4 +103,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
     compile project(':ijkplayer-example')
+    compile 'com.danikula:videocache:2.7.0'
 }

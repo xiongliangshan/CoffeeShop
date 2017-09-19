@@ -125,3 +125,5 @@ public static java.lang.String TABLENAME;
 
 -keep class tv.danmaku.ijk.**{*;}
 
+-keep class com.danikula.videocache.**{*;}
+
