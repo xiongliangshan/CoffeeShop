@@ -29,7 +29,7 @@ public interface IMediaController {
 
     void setEnabled(boolean enabled);
 
-    void setMediaPlayer(MediaController.MediaPlayerControl player);
+    void setMediaPlayer(CustomMediaController.MediaPlayerControl player);
 
     void show(int timeout);
 
@@ -39,4 +39,5 @@ public interface IMediaController {
     // Extends
     //----------
     void showOnce(View view);
+
 }

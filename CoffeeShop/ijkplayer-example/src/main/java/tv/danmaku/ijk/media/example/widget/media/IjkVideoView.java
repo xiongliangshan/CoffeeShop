@@ -34,8 +34,10 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.MediaController;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -62,7 +64,7 @@ import tv.danmaku.ijk.media.example.R;
 import tv.danmaku.ijk.media.example.application.Settings;
 import tv.danmaku.ijk.media.example.services.MediaPlayerService;
 
-public class IjkVideoView extends FrameLayout implements MediaController.MediaPlayerControl {
+public class IjkVideoView extends FrameLayout implements CustomMediaController.MediaPlayerControl {
     private String TAG = "IjkVideoView";
     // settable by the client
     private Uri mUri;
@@ -383,9 +385,9 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
     private void attachMediaController() {
         if (mMediaPlayer != null && mMediaController != null) {
             mMediaController.setMediaPlayer(this);
-            View anchorView = this.getParent() instanceof View ?
-                    (View) this.getParent() : this;
-            mMediaController.setAnchorView(anchorView);
+           /* View anchorView = this.getParent() instanceof View ?
+                    (View) this.getParent() : this;*/
+            mMediaController.setAnchorView(this);
             mMediaController.setEnabled(isInPlaybackState());
         }
     }
@@ -872,6 +874,49 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
                 mCurrentState != STATE_ERROR &&
                 mCurrentState != STATE_IDLE &&
                 mCurrentState != STATE_PREPARING);
+    }
+
+    @Override
+    public boolean isFullScreen() {
+        Log.d("xls","isFullScreen "+mCurrentAspectRatio);
+        if(RelativeLayout.LayoutParams.MATCH_PARENT==this.getLayoutParams().height &&
+                RelativeLayout.LayoutParams.MATCH_PARENT == this.getLayoutParams().width){
+
+            return true;
+        }else {
+            return false;
+        }
+
+    }
+
+    @Override
+    public void setFullScreen(boolean toFull) {
+        /*if(toFull){
+            mCurrentAspectRatio = IRenderView.AR_ASPECT_FIT_PARENT;
+        }else {
+            mCurrentAspectRatio = IRenderView.AR_ASPECT_WRAP_CONTENT;
+        }
+        if (mRenderView != null){
+            mRenderView.setAspectRatio(mCurrentAspectRatio);
+        }*/
+        Log.d("xls","videoHeight= "+mVideoHeight+" | videoWidth = "+mVideoWidth);
+        Log.d("xls","renderHeight= "+mRenderView.getView().getHeight()+" | renderWidth = "+mRenderView.getView().getWidth());
+        Log.d("xls","videoViewHeight ="+ this.getHeight()+" | videoViewWidth = "+this.getWidth());
+
+        ViewGroup.LayoutParams lp = this.getLayoutParams();
+        if(toFull){
+            lp.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+            lp.height = RelativeLayout.LayoutParams.MATCH_PARENT;
+            Log.d("xls","tofull");
+        }else{
+            if(mVideoHeight>0 && mVideoWidth>0){
+                lp.width = mVideoWidth;
+                lp.height = mVideoHeight;
+            }
+            Log.d("xls","tosmall");
+        }
+        setLayoutParams(lp);
+
     }
 
     @Override

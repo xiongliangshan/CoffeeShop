@@ -20,6 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import tv.danmaku.ijk.media.example.content.RecentMediaStorage;
 import tv.danmaku.ijk.media.example.widget.media.AndroidMediaController;
+import tv.danmaku.ijk.media.example.widget.media.CustomMediaController;
 import tv.danmaku.ijk.media.example.widget.media.IjkVideoView;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
@@ -36,7 +37,7 @@ public class MyVedioActivity extends AppCompatActivity implements CacheListener 
     private String videoTitle;
     private int currentPosition = 0;
 
-    private AndroidMediaController mMediaController;
+    private CustomMediaController mMediaController;
 
     private boolean mBackPressed = false;
 
@@ -64,7 +65,7 @@ public class MyVedioActivity extends AppCompatActivity implements CacheListener 
         IjkMediaPlayer.loadLibrariesOnce(null);
         IjkMediaPlayer.native_profileBegin("libijkplayer.so");
 
-        mMediaController = new AndroidMediaController(this,false);
+        mMediaController = new CustomMediaController(this,false);
         videoView.setMediaController(mMediaController);
 
 

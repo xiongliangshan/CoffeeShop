@@ -31,7 +31,7 @@ import tv.danmaku.ijk.media.example.R;
  */
 
 public class CustomMediaController extends FrameLayout implements IMediaController {
-    private MediaController.MediaPlayerControl mPlayer;
+    private CustomMediaController.MediaPlayerControl mPlayer;
     private final Context mContext;
     private View mAnchor;
     private View mRoot;
@@ -50,11 +50,13 @@ public class CustomMediaController extends FrameLayout implements IMediaControll
     private View.OnClickListener mNextListener, mPrevListener;
     StringBuilder mFormatBuilder;
     Formatter mFormatter;
+    private ImageButton mCenterPauseButton;
     private ImageButton mPauseButton;
     private ImageButton mFfwdButton;
     private ImageButton mRewButton;
     private ImageButton mNextButton;
     private ImageButton mPrevButton;
+    private ImageButton mFullScreenButton;
 
 
     public CustomMediaController(Context context, AttributeSet attrs) {
@@ -171,7 +173,7 @@ public class CustomMediaController extends FrameLayout implements IMediaControll
         }
     };
 
-    public void setMediaPlayer(MediaController.MediaPlayerControl player) {
+    public void setMediaPlayer(CustomMediaController.MediaPlayerControl player) {
         mPlayer = player;
         updatePausePlay();
     }
@@ -184,13 +186,13 @@ public class CustomMediaController extends FrameLayout implements IMediaControll
      * @param view The view to which to anchor the controller when it is visible.
      */
     public void setAnchorView(View view) {
-        if (mAnchor != null) {
+       /* if (mAnchor != null) {
             mAnchor.removeOnLayoutChangeListener(mLayoutChangeListener);
-        }
+        }*/
         mAnchor = view;
-        if (mAnchor != null) {
+        /*if (mAnchor != null) {
             mAnchor.addOnLayoutChangeListener(mLayoutChangeListener);
-        }
+        }*/
 
         FrameLayout.LayoutParams frameParams = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -199,7 +201,11 @@ public class CustomMediaController extends FrameLayout implements IMediaControll
 
         removeAllViews();
         View v = makeControllerView();
-        addView(v, frameParams);
+    //    addView(v, frameParams);
+
+        if(view instanceof ViewGroup){
+            ((ViewGroup) view).addView(v,frameParams);
+        }
     }
 
     /**
@@ -223,6 +229,16 @@ public class CustomMediaController extends FrameLayout implements IMediaControll
         if (mPauseButton != null) {
             mPauseButton.requestFocus();
             mPauseButton.setOnClickListener(mPauseListener);
+        }
+
+        mCenterPauseButton = (ImageButton) v.findViewById(R.id.center_pause);
+        if(mCenterPauseButton!=null){
+            mCenterPauseButton.setOnClickListener(mPauseListener);
+        }
+
+        mFullScreenButton = (ImageButton) v.findViewById(R.id.ib_fullscreen);
+        if(mFullScreenButton!=null && mFullSListener!=null){
+            mFullScreenButton.setOnClickListener(mFullSListener);
         }
 
         mFfwdButton = (ImageButton) v.findViewById(R.id.ffwd);
@@ -266,6 +282,9 @@ public class CustomMediaController extends FrameLayout implements IMediaControll
         mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
 
         installPrevNextListeners();
+
+        v.setVisibility(View.GONE);
+        mShowing = false;
     }
 
     /**
@@ -322,8 +341,9 @@ public class CustomMediaController extends FrameLayout implements IMediaControll
                 mPauseButton.requestFocus();
             }
             disableUnsupportedButtons();
-            updateFloatingWindowLayout();
-            mWindowManager.addView(mDecor, mDecorLayoutParams);
+        //    updateFloatingWindowLayout();
+        //    mWindowManager.addView(mDecor, mDecorLayoutParams);
+            mRoot.setVisibility(VISIBLE);
             mShowing = true;
         }
         updatePausePlay();
@@ -347,13 +367,14 @@ public class CustomMediaController extends FrameLayout implements IMediaControll
      * Remove the controller from the screen.
      */
     public void hide() {
-        if (mAnchor == null)
-            return;
+       /* if (mAnchor == null)
+            return;*/
 
         if (mShowing) {
             try {
                 removeCallbacks(mShowProgress);
-                mWindowManager.removeView(mDecor);
+            //    mWindowManager.removeView(mDecor);
+                mRoot.setVisibility(View.GONE);
             } catch (IllegalArgumentException ex) {
                 Log.w("MediaController", "already removed");
             }
@@ -497,14 +518,30 @@ public class CustomMediaController extends FrameLayout implements IMediaControll
         }
     };
 
+    private final View.OnClickListener mFullSListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            if(mPlayer.isFullScreen()){
+                mPlayer.setFullScreen(false);
+                mFullScreenButton.setImageResource(R.mipmap.fullscreen);
+            }else{
+                mPlayer.setFullScreen(true);
+                mFullScreenButton.setImageResource(R.mipmap.smallscreen);
+            }
+
+        }
+    };
+
     private void updatePausePlay() {
         if (mRoot == null || mPauseButton == null)
             return;
 
         if (mPlayer.isPlaying()) {
             mPauseButton.setImageResource(android.R.drawable.ic_media_pause);
+            mCenterPauseButton.setImageResource(R.mipmap.icon_pause);
         } else {
             mPauseButton.setImageResource(android.R.drawable.ic_media_play);
+            mCenterPauseButton.setImageResource(R.mipmap.icon_play);
         }
     }
 
@@ -625,6 +662,7 @@ public class CustomMediaController extends FrameLayout implements IMediaControll
         }
     };
 
+
     private void installPrevNextListeners() {
         if (mNextButton != null) {
             mNextButton.setOnClickListener(mNextListener);
@@ -654,6 +692,7 @@ public class CustomMediaController extends FrameLayout implements IMediaControll
         }
     }
 
+
     public interface MediaPlayerControl {
         void    start();
         void    pause();
@@ -665,6 +704,11 @@ public class CustomMediaController extends FrameLayout implements IMediaControll
         boolean canPause();
         boolean canSeekBackward();
         boolean canSeekForward();
+
+        //added by xls start
+        boolean isFullScreen();
+        void setFullScreen(boolean toFull);
+        //added by xls end
 
         /**
          * Get the audio session id for the player used by this VideoView. This can be used to
