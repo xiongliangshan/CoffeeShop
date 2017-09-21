@@ -49,6 +49,7 @@ public class VideoListAdpater extends RecyclerView.Adapter<VideoListAdpater.View
     @Override
     public void onBindViewHolder(final ViewHolder holder, int i) {
         final VideoBean videoBean = videos.get(i);
+        Object tag = holder.rlContainer.getTag();
         holder.tvTitle.setText(videoBean.getTitle());
         holder.rlContainer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,8 +58,11 @@ public class VideoListAdpater extends RecyclerView.Adapter<VideoListAdpater.View
                 context.startActivity(intent);
             }
         });
+        LogUtil.d("xls","holder.videoImg.drawable = "+holder.videoImg.getDrawable());
+        holder.videoImg.setTag(videoBean.getUrl());
+        new VideoFrameTask(holder.videoImg).execute(videoBean);
 
-       new VideoFrameTask(holder.videoImg).execute(videoBean);
+
 
 
     }
@@ -95,6 +99,7 @@ public class VideoListAdpater extends RecyclerView.Adapter<VideoListAdpater.View
     class VideoFrameTask extends AsyncTask<VideoBean,Integer,Bitmap>{
 
         private ImageView imageView;
+        private VideoBean videoBean;
 
         public VideoFrameTask(ImageView imageView) {
             this.imageView = imageView;
@@ -102,14 +107,24 @@ public class VideoListAdpater extends RecyclerView.Adapter<VideoListAdpater.View
 
         @Override
         protected Bitmap doInBackground(VideoBean... params) {
-            VideoBean videoBean = params[0];
+            videoBean = params[0];
             Bitmap  cacheBitmap =  BitmapCache.getInst().getBitmapFromCache(videoBean.getTitle());
             if(cacheBitmap==null){
-                MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
-                mediaMetadataRetriever.setDataSource(videoBean.getUrl(), new HashMap<String, String>());
-                Bitmap bitmap = mediaMetadataRetriever.getFrameAtTime(1);
-                mediaMetadataRetriever.release();
-                BitmapCache.getInst().addBitmapToCache(videoBean.getTitle(),bitmap);
+                MediaMetadataRetriever mediaMetadataRetriever=null;
+                Bitmap bitmap =null;
+                try {
+                    mediaMetadataRetriever = new MediaMetadataRetriever();
+                    String url = videoBean.getUrl();
+                    LogUtil.d("xls","doInBackground setDataSource url = "+url);
+                    mediaMetadataRetriever.setDataSource(url,new HashMap<String, String>());
+                    bitmap = mediaMetadataRetriever.getFrameAtTime(1);
+                    BitmapCache.getInst().addBitmapToCache(videoBean.getTitle(),bitmap);
+                }catch (Exception e){
+                    LogUtil.e("xls",""+e.getMessage());
+                }finally {
+                    mediaMetadataRetriever.release();
+                }
+
                 return bitmap;
             }else{
                 return cacheBitmap;
@@ -119,7 +134,10 @@ public class VideoListAdpater extends RecyclerView.Adapter<VideoListAdpater.View
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            imageView.setImageBitmap(bitmap);
+            if(videoBean.getUrl().equals(imageView.getTag())){
+                imageView.setImageBitmap(bitmap);
+            }
+
         }
     }
 }

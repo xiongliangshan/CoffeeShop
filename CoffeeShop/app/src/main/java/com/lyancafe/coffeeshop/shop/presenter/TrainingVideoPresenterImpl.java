@@ -36,6 +36,9 @@ public class TrainingVideoPresenterImpl implements TrainingVideoPresenter {
             @Override
             protected void onHandleSuccess(List<VideoBean> videoBeen) {
                 LogUtil.d("xls","loadVideos success :"+videoBeen.size());
+                for(VideoBean videoBean:videoBeen){
+                    LogUtil.d("xls",videoBean.getTitle()+" | "+videoBean.getUrl());
+                }
                 trainingVideoView.bindDataToView(videoBeen);
             }
         });
