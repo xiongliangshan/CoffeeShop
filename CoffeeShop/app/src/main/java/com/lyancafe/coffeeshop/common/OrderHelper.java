@@ -642,6 +642,9 @@ public class OrderHelper {
         }
         String statusName;
         switch (status){
+            case 2010:
+                statusName = "已接单";
+                break;
             case 3010:
                 statusName = "未指派骑手";
                 break;
