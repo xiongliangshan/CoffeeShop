@@ -630,6 +630,11 @@ public class PrintHelper {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINESE);
         Calendar nowDate = Calendar.getInstance();
         nowDate.add(Calendar.DAY_OF_MONTH,overdueDays);
+        if(overdueDays==1){
+            nowDate.set(Calendar.HOUR_OF_DAY,0);
+            nowDate.set(Calendar.MINUTE,0);
+
+        }
         return sdf.format(nowDate.getTime());
     }
 
