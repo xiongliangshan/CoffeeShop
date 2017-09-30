@@ -68,7 +68,6 @@ public class MainShopFragment extends BaseFragment implements TabLayout.OnTabSel
         mPagerAdapter = new ShopFragmentPagerAdapter(getChildFragmentManager(),getActivity(),fragments);
         viewPager.setAdapter(mPagerAdapter);
         viewPager.setOffscreenPageLimit(4);
-        viewPager.setPageTransformer(true,new DepthPageTransformer());
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.addOnTabSelectedListener(this);
     }
