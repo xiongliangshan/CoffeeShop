@@ -11,7 +11,7 @@ android {
         abortOnError false
     }
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion rootProject.ext.targetSdkVersion
     }
     buildTypes {
@@ -50,32 +50,12 @@ dependencies {
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.8.3'
     compile 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.3'*/
 
-    compile 'tv.danmaku.ijk.media:ijkplayer-armv5:0.8.3'
+   // compile 'tv.danmaku.ijk.media:ijkplayer-armv5:0.8.3'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.8.3'
-    compile 'tv.danmaku.ijk.media:ijkplayer-arm64:0.8.3'
+//    compile 'tv.danmaku.ijk.media:ijkplayer-arm64:0.8.3'
     compile 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.3'
-    compile 'tv.danmaku.ijk.media:ijkplayer-x86_64:0.8.3'
+//    compile 'tv.danmaku.ijk.media:ijkplayer-x86_64:0.8.3'
 
     compile 'com.danikula:videocache:2.7.0'
 
-  /*  compile project(':ijkplayer-java')
-    compile project(':ijkplayer-exo')
-
-    all32Compile project(':ijkplayer-armv5')
-    all32Compile project(':ijkplayer-armv7a')
-    all32Compile project(':ijkplayer-x86')
-
-    all64Compile project(':ijkplayer-armv5')
-    all64Compile project(':ijkplayer-armv7a')
-    all64Compile project(':ijkplayer-arm64')
-    all64Compile project(':ijkplayer-x86')
-    all64Compile project(':ijkplayer-x86_64')*/
-
-
-
-    /* armv5Compile project(':player-armv5')
-     armv7aCompile project(':player-armv7a')
-     arm64Compile project(':player-arm64')
-     x86Compile project(':player-x86')
-     x86_64Compile project(':player-x86_64')*/
 }

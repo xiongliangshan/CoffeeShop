@@ -65,7 +65,7 @@ public class MyVedioActivity extends AppCompatActivity implements CacheListener 
         IjkMediaPlayer.loadLibrariesOnce(null);
         IjkMediaPlayer.native_profileBegin("libijkplayer.so");
 
-        mMediaController = new CustomMediaController(this,false);
+        mMediaController = new CustomMediaController(this.getApplicationContext(),false);
         videoView.setMediaController(mMediaController);
 
 

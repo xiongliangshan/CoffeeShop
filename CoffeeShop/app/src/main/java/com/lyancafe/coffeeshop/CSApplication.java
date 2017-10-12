@@ -10,7 +10,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 
-import com.baidu.mapapi.SDKInitializer;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.lyancafe.coffeeshop.bean.DaoMaster;
 import com.lyancafe.coffeeshop.bean.DaoSession;
@@ -74,9 +73,6 @@ public class CSApplication extends Application {
         JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
         JPushInterface.init(this.getApplicationContext());     		// 初始化 JPush
         LogUtil.d(LogUtil.TAG_JPUSH,"JPush 开始初始化");
-
-        //初始化百度
-        SDKInitializer.initialize(getApplicationContext());
 
         setUpDatabase();
 
