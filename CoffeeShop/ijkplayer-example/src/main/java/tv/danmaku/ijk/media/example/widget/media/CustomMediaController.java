@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.media.AudioManager;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -88,9 +89,16 @@ public class CustomMediaController extends FrameLayout implements IMediaControll
     private void initFloatingWindow() {
         mWindowManager = (WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE);
         try {
-            Class clazz = Class.forName("com.android.internal.policy.PhoneWindow");
-            Constructor constructor = clazz.getDeclaredConstructor(Context.class);
-            mWindow = (Window) constructor.newInstance(mContext);
+            if(Build.VERSION.SDK_INT>=23){
+                Class clazz = Class.forName("com.android.internal.policy.PhoneWindow");
+                Constructor constructor = clazz.getDeclaredConstructor(Context.class);
+                mWindow = (Window) constructor.newInstance(mContext);
+            }else {
+                Class clazz = Class.forName("com.android.internal.policy.impl.PhoneWindow");
+                Constructor constructor = clazz.getDeclaredConstructor(Context.class);
+                mWindow = (Window) constructor.newInstance(mContext);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
