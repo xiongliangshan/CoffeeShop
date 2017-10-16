@@ -247,7 +247,13 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
             mAdapter.setSearchData(mAdapter.tempList);
             return;
         }
-        mAdapter.searchOrder(Integer.parseInt(searchKey));
+        try {
+            mAdapter.searchOrder(Integer.parseInt(searchKey));
+        }catch (NumberFormatException e){
+            showToast("数据太大或者类型不对");
+            return;
+        }
+
         MyUtil.hideKeyboard(etSearchKey);
         etSearchKey.setText("");
     }
