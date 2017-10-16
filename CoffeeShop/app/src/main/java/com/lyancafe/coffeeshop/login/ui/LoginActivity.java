@@ -1,5 +1,6 @@
 package com.lyancafe.coffeeshop.login.ui;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -104,7 +105,11 @@ public class LoginActivity extends BaseActivity implements LoginView{
     @Override
     public void dismissLoadingDlg() {
         if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
+            Activity activity = dialog.getOwnerActivity();
+            if(activity!=null && !activity.isFinishing()){
+                dialog.dismiss();
+            }
+
         }
     }
 
