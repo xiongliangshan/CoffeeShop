@@ -1,6 +1,5 @@
 package com.lyancafe.coffeeshop.shop.view;
 
-import com.lyancafe.coffeeshop.base.BaseView;
 import com.lyancafe.coffeeshop.widget.PiePercentView;
 
 import java.util.List;

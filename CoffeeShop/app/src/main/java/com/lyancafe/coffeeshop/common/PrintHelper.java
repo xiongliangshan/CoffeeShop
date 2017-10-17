@@ -12,7 +12,6 @@ import com.lyancafe.coffeeshop.bean.PrintObject;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
 import com.lyancafe.coffeeshop.http.Api;
 import com.lyancafe.coffeeshop.utils.FinishedOrderSortComparator;
-import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.io.IOException;
@@ -774,8 +773,6 @@ public class PrintHelper {
             e.printStackTrace();
             Log.e(TAG, "IOException" + e.toString());
             ToastUtil.showToast(CSApplication.getInstance(),"打印机"+host+"无法连接");
-        } finally {
-
         }
     }
 

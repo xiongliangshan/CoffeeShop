@@ -5,8 +5,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
 
-import com.lyancafe.coffeeshop.CSApplication;
-
 public class ToastUtil {
 
 

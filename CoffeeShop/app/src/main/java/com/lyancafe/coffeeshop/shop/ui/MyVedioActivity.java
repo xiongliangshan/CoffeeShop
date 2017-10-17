@@ -19,7 +19,6 @@ import java.io.File;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import tv.danmaku.ijk.media.example.content.RecentMediaStorage;
-import tv.danmaku.ijk.media.example.widget.media.AndroidMediaController;
 import tv.danmaku.ijk.media.example.widget.media.CustomMediaController;
 import tv.danmaku.ijk.media.example.widget.media.IjkVideoView;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;

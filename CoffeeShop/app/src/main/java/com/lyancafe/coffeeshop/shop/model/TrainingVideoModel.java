@@ -5,9 +5,6 @@ import com.lyancafe.coffeeshop.http.CustomObserver;
 
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-
 /**
  * Created by Administrator on 2017/9/14.
  */

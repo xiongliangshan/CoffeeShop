@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
-import com.lyancafe.coffeeshop.widget.DepthPageTransformer;
 
 import java.util.ArrayList;
 import java.util.List;

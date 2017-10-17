@@ -32,7 +32,6 @@ import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.PrimitiveIterator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

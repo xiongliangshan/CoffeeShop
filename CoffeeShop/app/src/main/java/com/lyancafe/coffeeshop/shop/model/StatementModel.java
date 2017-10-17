@@ -3,7 +3,6 @@ package com.lyancafe.coffeeshop.shop.model;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Administrator on 2017/8/17.

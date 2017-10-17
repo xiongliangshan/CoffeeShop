@@ -1,7 +1,5 @@
 package com.lyancafe.coffeeshop.utils;
 
-import android.net.Uri;
-
 import com.danikula.videocache.ProxyCacheUtils;
 import com.danikula.videocache.file.FileNameGenerator;
 

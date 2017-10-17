@@ -17,7 +17,6 @@ import com.lyancafe.coffeeshop.event.UpdateTabCount;
 import com.lyancafe.coffeeshop.http.CustomObserver;
 import com.lyancafe.coffeeshop.produce.model.ProducingModel;
 import com.lyancafe.coffeeshop.produce.model.ProducingModelImpl;
-import com.lyancafe.coffeeshop.produce.ui.ListMode;
 import com.lyancafe.coffeeshop.produce.view.ProducingView;
 
 import org.greenrobot.eventbus.EventBus;

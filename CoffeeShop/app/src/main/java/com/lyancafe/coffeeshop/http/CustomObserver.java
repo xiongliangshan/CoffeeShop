@@ -87,7 +87,7 @@ public abstract class CustomObserver<T> implements Observer<BaseEntity<T>> {
 
     @Override
     public void onError(@NonNull Throwable e) {
-        LogUtil.e(TAG,"onError :"+e==null?"":e.getMessage());
+        LogUtil.e(TAG,"onError :"+e.getMessage());
         if(isShowProgress){
             if(mLoadinngDlg!=null && mLoadinngDlg.isShowing()){
                 Activity activity = mLoadinngDlg.getOwnerActivity();
