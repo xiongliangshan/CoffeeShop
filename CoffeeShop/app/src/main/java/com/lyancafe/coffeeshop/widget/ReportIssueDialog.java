@@ -171,16 +171,16 @@ public class ReportIssueDialog extends DialogFragment implements View.OnClickLis
                     @Override
                     public void accept(@NonNull BaseEntity baseEntity) throws Exception {
                         if(baseEntity.getStatus()==0){
-                            ToastUtil.showToast(getContext(),"提交成功");
+                            ToastUtil.show(getContext(),"提交成功");
                             dismiss();
                         }else {
-                            ToastUtil.showToast(getContext(),baseEntity.getMessage());
+                            ToastUtil.show(getContext(),baseEntity.getMessage());
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
-                        ToastUtil.showToast(getContext(),throwable.getMessage());
+                        ToastUtil.show(getContext(),throwable.getMessage());
                     }
                 });
     }

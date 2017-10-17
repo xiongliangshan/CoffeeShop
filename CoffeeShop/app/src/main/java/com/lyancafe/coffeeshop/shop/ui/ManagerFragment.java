@@ -71,7 +71,7 @@ public class ManagerFragment extends BaseFragment implements ManagerView{
 
     @Override
     public void showToast(String message) {
-        ToastUtil.showToast(getContext(),message);
+        ToastUtil.show(getContext(),message);
     }
 
     @Override
@@ -164,7 +164,7 @@ public class ManagerFragment extends BaseFragment implements ManagerView{
             case R.id.iv_save:
                 String newPhone = etPhone.getText().toString().trim();
                 if(TextUtils.isEmpty(newPhone)){
-                    ToastUtil.showToast(getContext(),"请输入新的电话号码");
+                    ToastUtil.show(getContext(),"请输入新的电话号码");
                     return;
                 }
                 mManagerPresenter.modifyShopTelephone(newPhone);

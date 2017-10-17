@@ -22,6 +22,7 @@ import com.lyancafe.coffeeshop.service.DownLoadService;
 import com.lyancafe.coffeeshop.service.TaskService;
 import com.lyancafe.coffeeshop.setting.ui.SettingFragment;
 import com.lyancafe.coffeeshop.shop.ui.MainShopFragment;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.LoadingDialog;
 
@@ -77,7 +78,10 @@ public class HomeActivity extends BaseActivity implements MainView {
         updateTab(mSelectedIndex);
         Intent intent = new Intent(HomeActivity.this, TaskService.class);
         startService(intent);
-
+        ClassLoader classLoader = HomeActivity.class.getClassLoader();
+        if(classLoader!=null){
+            LogUtil.d(TAG,"classloader = "+classLoader.toString());
+        }
 
     }
 
@@ -110,7 +114,7 @@ public class HomeActivity extends BaseActivity implements MainView {
 
     @Override
     public void showToast(String message) {
-        ToastUtil.showToast(getApplicationContext(), message);
+        ToastUtil.show(getApplicationContext(), message);
     }
 
     @Override

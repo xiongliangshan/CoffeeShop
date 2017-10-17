@@ -88,7 +88,7 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView {
 
     @Override
     public void showToast(String promptStr) {
-        ToastUtil.showToast(getActivity(),promptStr);
+        ToastUtil.show(getActivity(),promptStr);
     }
 
     @Override

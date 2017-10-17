@@ -82,7 +82,7 @@ public class TomorrowFragment extends BaseFragment implements TomorrowView {
 
     @Override
     public void showToast(String promptStr) {
-        ToastUtil.showToast(getContext(), promptStr);
+        ToastUtil.show(getContext(), promptStr);
     }
 
     @Override

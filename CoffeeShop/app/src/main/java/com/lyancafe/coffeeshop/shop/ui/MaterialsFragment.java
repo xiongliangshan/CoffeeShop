@@ -197,7 +197,7 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
 
     @Override
     public void showToast(String promptStr) {
-        ToastUtil.showToast(getActivity(), promptStr);
+        ToastUtil.show(getActivity(), promptStr);
     }
 
     @Override
@@ -222,7 +222,7 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
                 //打印时控贴
                 MaterialItem itemSmall = mAdapter.getSelectedItem();
                 if (itemSmall == null) {
-                    ToastUtil.showToast(getContext(), getString(R.string.select_material));
+                    ToastUtil.show(getContext(), getString(R.string.select_material));
                     return;
                 }
                 PrintHelper.getInstance().startPrintPasterTask(itemSmall);
@@ -231,7 +231,7 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
                 //打印物料大纸
                 MaterialItem itemBig = mAdapter.getSelectedItem();
                 if (itemBig == null) {
-                    ToastUtil.showToast(getContext(), getString(R.string.select_material));
+                    ToastUtil.show(getContext(), getString(R.string.select_material));
                     return;
                 }
                 PrintHelper.getInstance().startPrintMaterialTask(itemBig);

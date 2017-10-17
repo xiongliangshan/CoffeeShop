@@ -56,11 +56,11 @@ public class LoginPresenterImpl implements LoginPresenter{
         String loginName = mLoginView.getUserName();
         String password = mLoginView.getPassword();
         if(TextUtils.isEmpty(loginName)){
-            ToastUtil.showToast(mContext.getApplicationContext(), R.string.username_empty_prompt);
+            ToastUtil.show(mContext.getApplicationContext(), R.string.username_empty_prompt);
             return ;
         }
         if(TextUtils.isEmpty(password)){
-            ToastUtil.showToast(mContext.getApplicationContext(),R.string.password_empty_prompt);
+            ToastUtil.show(mContext.getApplicationContext(),R.string.password_empty_prompt);
             return ;
         }
 
@@ -95,7 +95,7 @@ public class LoginPresenterImpl implements LoginPresenter{
                     mLoginView.stepToMain();
 
                 }else{
-                    ToastUtil.showToast(mContext.getApplicationContext(),userBeanBaseEntity.getMessage());
+                    ToastUtil.show(mContext.getApplicationContext(),userBeanBaseEntity.getMessage());
                 }
             }
 
@@ -103,7 +103,7 @@ public class LoginPresenterImpl implements LoginPresenter{
             public void onError(@NonNull Throwable e) {
                 Log.e(TAG,"登录失败 :"+e.getMessage());
                 mLoginView.dismissLoadingDlg();
-                ToastUtil.showToast(mContext.getApplicationContext(),e.getMessage());
+                ToastUtil.show(mContext.getApplicationContext(),e.getMessage());
             }
 
             @Override

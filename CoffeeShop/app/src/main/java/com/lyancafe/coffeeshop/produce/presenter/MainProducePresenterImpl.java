@@ -48,17 +48,17 @@ public class MainProducePresenterImpl implements MainProducePresenter{
                     @Override
                     public void onNext(@NonNull BaseEntity<JsonObject> jsonObjectBaseEntity) {
                         if(jsonObjectBaseEntity.getStatus()==0){
-                            ToastUtil.showToast(mContext.getApplicationContext(), R.string.do_success);
+                            ToastUtil.show(mContext.getApplicationContext(), R.string.do_success);
                             int id = jsonObjectBaseEntity.getData().get("id").getAsInt();
                             mMainProduceView.refreshListForStatus(id, OrderStatus.UNASSIGNED);
                         }else{
-                            ToastUtil.showToast(mContext.getApplicationContext(), jsonObjectBaseEntity.getMessage());
+                            ToastUtil.show(mContext.getApplicationContext(), jsonObjectBaseEntity.getMessage());
                         }
                     }
 
                     @Override
                     public void onError(@NonNull Throwable e) {
-                        ToastUtil.showToast(mContext.getApplicationContext(), e.getMessage());
+                        ToastUtil.show(mContext.getApplicationContext(), e.getMessage());
                     }
 
                     @Override

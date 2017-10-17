@@ -50,22 +50,23 @@ public class OrderUtils {
 
 
     //批量插入新的订单记录
-    public void insertOrderList(final List<OrderBean> list){
+    public  void insertOrderList(final List<OrderBean> list){
         if(list==null || list.size()==0){
             return;
         }
         tpl.execute(new Runnable() {
             @Override
             public void run() {
-                for(int i=0;i<list.size();i++){
-                    List<ItemContentBean> items = list.get(i).getItems();
-                    for(int j =0;j<items.size();j++){
-                        items.get(j).setOrderId(list.get(i).getId());
+                synchronized (list){
+                    for(int i=0;i<list.size();i++){
+                        List<ItemContentBean> items = list.get(i).getItems();
+                        for(int j =0;j<items.size();j++){
+                            items.get(j).setOrderId(list.get(i).getId());
+                        }
+                        mItemOrderDao.insertOrReplaceInTx(items);
                     }
-                    mItemOrderDao.insertOrReplaceInTx(items);
+                    mOrderDao.insertOrReplaceInTx(list);
                 }
-                mOrderDao.insertOrReplaceInTx(list);
-
             }
         });
 
