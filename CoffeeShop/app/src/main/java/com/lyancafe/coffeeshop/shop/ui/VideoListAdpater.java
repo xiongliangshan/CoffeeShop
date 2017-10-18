@@ -81,8 +81,6 @@ public class VideoListAdpater extends RecyclerView.Adapter<VideoListAdpater.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position, List<Object> payloads) {
-        LogUtil.d("xiong","onBindViewHolder 执行了1次，position="+position);
-        LogUtil.d("xiong","payloads,viewParent = "+holder.rootLayout.getParent());
         if(payloads.isEmpty()){
             onBindViewHolder(holder,position);
         }else{

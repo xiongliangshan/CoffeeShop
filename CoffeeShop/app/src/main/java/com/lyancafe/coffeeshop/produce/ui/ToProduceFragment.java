@@ -1,6 +1,7 @@
 package com.lyancafe.coffeeshop.produce.ui;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -196,7 +197,11 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView {
             mLoadinngDlg = new LoadingDialog(getContext());
         }
         if (!mLoadinngDlg.isShowing()) {
-            mLoadinngDlg.show();
+            Activity activity = mLoadinngDlg.getOwnerActivity();
+            if(activity!=null && !activity.isFinishing()){
+                mLoadinngDlg.show();
+            }
+
         }
 
     }
@@ -204,7 +209,11 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView {
     @Override
     public void dismissLoading() {
         if (mLoadinngDlg != null && mLoadinngDlg.isShowing()) {
-            mLoadinngDlg.dismiss();
+            Activity activity = mLoadinngDlg.getOwnerActivity();
+            if(activity!=null && !activity.isFinishing()){
+                mLoadinngDlg.dismiss();
+            }
+
         }
     }
 

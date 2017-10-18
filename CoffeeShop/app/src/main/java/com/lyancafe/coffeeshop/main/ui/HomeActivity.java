@@ -1,5 +1,6 @@
 package com.lyancafe.coffeeshop.main.ui;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,6 +26,7 @@ import com.lyancafe.coffeeshop.shop.ui.MainShopFragment;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.LoadingDialog;
+import com.sunfusheng.marqueeview.MarqueeView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +43,8 @@ public class HomeActivity extends BaseActivity implements MainView {
 
     private static final String TAG = "main";
     public List<Fragment> fragmentsList = new ArrayList<Fragment>();
+   /* @BindView(R.id.marqueeView)
+    MarqueeView marqueeView;*/
 
     private MainProduceFragment orderFrag;
     private MainShopFragment shopFragment;
@@ -57,9 +61,8 @@ public class HomeActivity extends BaseActivity implements MainView {
     LinearLayout tabShopLayout;
     @BindView(R.id.ll_system_tab)
     LinearLayout llSystemTab;
-    @BindViews({R.id.ll_produce_tab, R.id.ll_shop_tab,R.id.ll_system_tab})
+    @BindViews({R.id.ll_produce_tab, R.id.ll_shop_tab, R.id.ll_system_tab})
     List<LinearLayout> tabList;
-
 
 
     @Override
@@ -79,8 +82,8 @@ public class HomeActivity extends BaseActivity implements MainView {
         Intent intent = new Intent(HomeActivity.this, TaskService.class);
         startService(intent);
         ClassLoader classLoader = HomeActivity.class.getClassLoader();
-        if(classLoader!=null){
-            LogUtil.d(TAG,"classloader = "+classLoader.toString());
+        if (classLoader != null) {
+            LogUtil.d(TAG, "classloader = " + classLoader.toString());
         }
 
     }
@@ -92,8 +95,19 @@ public class HomeActivity extends BaseActivity implements MainView {
         fragmentsList.add(orderFrag);
         fragmentsList.add(shopFragment);
         fragmentsList.add(settingFragment);
+
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        marqueeView.startWithText(new String("大家好，我是孙福生。asdfasf sadf asdfas f asf asfs看辣椒粉收到交房看阿萨德见附件啊失联飞机爱上了加道法卡机"));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
 
     @Override
     public void showLoading() {
@@ -101,14 +115,21 @@ public class HomeActivity extends BaseActivity implements MainView {
             mLoadingDlg = new LoadingDialog(this);
         }
         if (!mLoadingDlg.isShowing()) {
-            mLoadingDlg.show();
+            Activity activity = mLoadingDlg.getOwnerActivity();
+            if(activity!=null && !activity.isFinishing()){
+                mLoadingDlg.show();
+            }
+
         }
     }
 
     @Override
     public void dismissLoading() {
         if (mLoadingDlg != null && mLoadingDlg.isShowing()) {
-            mLoadingDlg.dismiss();
+            Activity activity = mLoadingDlg.getOwnerActivity();
+            if(activity!=null && !activity.isFinishing()){
+                mLoadingDlg.dismiss();
+            }
         }
     }
 
@@ -150,7 +171,7 @@ public class HomeActivity extends BaseActivity implements MainView {
     }
 
 
-    @OnClick({R.id.ll_produce_tab, R.id.ll_shop_tab,R.id.ll_system_tab})
+    @OnClick({R.id.ll_produce_tab, R.id.ll_shop_tab, R.id.ll_system_tab})
     void onLeftTabClick(View v) {
         switch (v.getId()) {
             case R.id.ll_produce_tab:

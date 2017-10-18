@@ -98,7 +98,10 @@ public class LoginActivity extends BaseActivity implements LoginView{
             dialog.setMessage("请求网络中...");
         }
         if(!dialog.isShowing()){
-            dialog.show();
+            Activity activity = dialog.getOwnerActivity();
+            if(activity!=null && !activity.isFinishing()){
+                dialog.show();
+            }
         }
     }
 
