@@ -34,6 +34,7 @@ public class VideoListAdpater extends RecyclerView.Adapter<VideoListAdpater.View
 
     private List<VideoBean> videos;
     private Context context;
+    private RecyclerViewListener recyclerViewListener;
 
     public VideoListAdpater(List<VideoBean> videos, Context context) {
         this.videos = videos;
@@ -47,10 +48,21 @@ public class VideoListAdpater extends RecyclerView.Adapter<VideoListAdpater.View
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int i) {
+    public void onBindViewHolder(final ViewHolder holder, final int i) {
         final VideoBean videoBean = videos.get(i);
-        Object tag = holder.rlContainer.getTag();
         holder.tvTitle.setText(videoBean.getTitle());
+        holder.tvDesc.setText(videoBean.getDescription());
+        holder.tvDesc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(holder.tvDesc.getMaxLines()==Integer.MAX_VALUE){
+                    notifyItemRangeChanged(i-i%3,videos.size()<3?videos.size():3,"xiong");
+                }else{
+                    notifyItemRangeChanged(i-i%3,videos.size()<3?videos.size():3,"liang");
+                }
+
+            }
+        });
         holder.rlContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,6 +78,34 @@ public class VideoListAdpater extends RecyclerView.Adapter<VideoListAdpater.View
 
 
     }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position, List<Object> payloads) {
+        LogUtil.d("xiong","onBindViewHolder 执行了1次，position="+position);
+        LogUtil.d("xiong","payloads,viewParent = "+holder.rootLayout.getParent());
+        if(payloads.isEmpty()){
+            onBindViewHolder(holder,position);
+        }else{
+            String flag = (String) payloads.get(0);
+            LogUtil.d("xiong","flag  ="+flag);
+            if("xiong".equals(flag)){
+                holder.tvDesc.setMaxLines(2);
+            }else if("liang".equals(flag)){
+                holder.tvDesc.setMaxLines(Integer.MAX_VALUE);
+                if(videos.size()-position<=3){
+                    if(recyclerViewListener!=null){
+                        recyclerViewListener.needToScroll();
+                    }
+                }
+            }
+
+        }
+    }
+
+    public void setRecyclerViewListener(RecyclerViewListener recyclerViewListener) {
+        this.recyclerViewListener = recyclerViewListener;
+    }
+
 
     @Override
     public int getItemCount() {
@@ -85,10 +125,14 @@ public class VideoListAdpater extends RecyclerView.Adapter<VideoListAdpater.View
     static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tv_title)
         TextView tvTitle;
+        @BindView(R.id.tv_description)
+        TextView tvDesc;
         @BindView(R.id.video_img)
         ImageView videoImg;
         @BindView(R.id.rl_container)
         RelativeLayout rlContainer;
+        @BindView(R.id.item_root)
+        RelativeLayout rootLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -139,5 +183,9 @@ public class VideoListAdpater extends RecyclerView.Adapter<VideoListAdpater.View
             }
 
         }
+    }
+
+    public interface RecyclerViewListener{
+        void needToScroll();
     }
 }

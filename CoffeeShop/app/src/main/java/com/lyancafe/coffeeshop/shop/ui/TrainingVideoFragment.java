@@ -30,7 +30,7 @@ import butterknife.Unbinder;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TrainingVideoFragment extends BaseFragment implements TrainingVideoView {
+public class TrainingVideoFragment extends BaseFragment implements TrainingVideoView{
 
 
     @BindView(R.id.rv_videolist)
@@ -63,6 +63,12 @@ public class TrainingVideoFragment extends BaseFragment implements TrainingVideo
         rvVideolist.setLayoutManager(gridLayoutManager);
         rvVideolist.addItemDecoration(new SpaceItemDecoration(3, OrderHelper.dip2Px(20, getActivity()), false));
         mAdapter = new VideoListAdpater(new ArrayList<VideoBean>(),getContext());
+        mAdapter.setRecyclerViewListener(new VideoListAdpater.RecyclerViewListener() {
+            @Override
+            public void needToScroll() {
+                rvVideolist.smoothScrollToPosition(mAdapter.getItemCount()-1);
+            }
+        });
         rvVideolist.setAdapter(mAdapter);
     }
 
@@ -70,6 +76,7 @@ public class TrainingVideoFragment extends BaseFragment implements TrainingVideo
     public void bindDataToView(List<VideoBean> list) {
         mAdapter.setVideos(list);
     }
+
 
     @Override
     public void showToast(String promptStr) {

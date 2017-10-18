@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:id="@+id/item_root">
 
     <RelativeLayout
         android:id="@+id/rl_container"
@@ -13,7 +14,8 @@
         <ImageView
             android:id="@+id/video_img"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"/>
 
         <ImageView
             android:layout_width="wrap_content"
@@ -21,17 +23,28 @@
             android:src="@mipmap/icon_play"
             android:layout_centerInParent="true"/>
 
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_gravity="left|top"
+            android:textColor="@color/white1"
+            android:textSize="20sp"
+            android:text="视频标题"/>
+
     </RelativeLayout>
 
-
     <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
+        android:id="@+id/tv_description"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_gravity="center_horizontal"
-        android:textColor="@color/white1"
-        android:textSize="18sp"
-        android:text="视频标题"/>
+        android:layout_below="@id/rl_container"
+        android:minLines="2"
+        android:maxLines="2"
+        android:ellipsize="end"
+        />
 
-</LinearLayout>
+
+
+</RelativeLayout>
