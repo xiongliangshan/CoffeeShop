@@ -81,18 +81,4 @@
 
     </LinearLayout>
 
-   <!-- <com.sunfusheng.marqueeview.MarqueeView
-        android:id="@+id/marqueeView"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/black1"
-        android:layout_alignParentTop="true"
-        app:mvAnimDuration="1000"
-        app:mvDirection="bottom_to_top"
-        app:mvInterval="1000"
-        app:mvTextColor="@color/white_font"
-        app:mvTextSize="18sp"
-        app:mvSingleLine="true"/>-->
-
-
 </RelativeLayout>

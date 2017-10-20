@@ -26,7 +26,6 @@ import com.lyancafe.coffeeshop.shop.ui.MainShopFragment;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.LoadingDialog;
-import com.sunfusheng.marqueeview.MarqueeView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +42,6 @@ public class HomeActivity extends BaseActivity implements MainView {
 
     private static final String TAG = "main";
     public List<Fragment> fragmentsList = new ArrayList<Fragment>();
-   /* @BindView(R.id.marqueeView)
-    MarqueeView marqueeView;*/
 
     private MainProduceFragment orderFrag;
     private MainShopFragment shopFragment;
@@ -101,7 +98,6 @@ public class HomeActivity extends BaseActivity implements MainView {
     @Override
     protected void onResume() {
         super.onResume();
-//        marqueeView.startWithText(new String("大家好，我是孙福生。asdfasf sadf asdfas f asf asfs看辣椒粉收到交房看阿萨德见附件啊失联飞机爱上了加道法卡机"));
     }
 
     @Override
