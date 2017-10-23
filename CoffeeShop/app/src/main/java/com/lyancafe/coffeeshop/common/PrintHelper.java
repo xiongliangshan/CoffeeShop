@@ -628,11 +628,13 @@ public class PrintHelper {
     private String getOverDueDate(int overdueDays) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINESE);
         Calendar nowDate = Calendar.getInstance();
-        nowDate.add(Calendar.DAY_OF_MONTH,overdueDays);
-        if(overdueDays==1){
+        if(overdueDays<=0){
+            nowDate.add(Calendar.DAY_OF_MONTH,1);
             nowDate.set(Calendar.HOUR_OF_DAY,0);
             nowDate.set(Calendar.MINUTE,0);
 
+        }else{
+            nowDate.add(Calendar.DAY_OF_MONTH,overdueDays);
         }
         return sdf.format(nowDate.getTime());
     }
