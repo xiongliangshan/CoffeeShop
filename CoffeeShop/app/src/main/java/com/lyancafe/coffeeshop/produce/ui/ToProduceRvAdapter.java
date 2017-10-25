@@ -145,11 +145,11 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         }
 
         //抢单
-        if(order.getStatus()== OrderStatus.UNASSIGNED){
-            holder.grabFlagIV.setVisibility(View.GONE);
-        }else{
+        if(order.getStatus()>=OrderStatus.ASSIGNED){
             holder.grabFlagIV.setVisibility(View.VISIBLE);
             holder.grabFlagIV.setImageResource(R.mipmap.flag_qiang);
+        }else{
+            holder.grabFlagIV.setVisibility(View.GONE);
         }
         //备注
         if(TextUtils.isEmpty(order.getNotes()) && TextUtils.isEmpty(order.getCsrNotes())){
