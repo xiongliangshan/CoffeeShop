@@ -24,6 +24,7 @@ import com.lyancafe.coffeeshop.bean.MaterialItem;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.common.PrintHelper;
+import com.lyancafe.coffeeshop.printer.PrintFace;
 import com.lyancafe.coffeeshop.shop.presenter.MaterialsPresenter;
 import com.lyancafe.coffeeshop.shop.presenter.MaterialsPresenterImpl;
 import com.lyancafe.coffeeshop.shop.view.MaiterialsView;
@@ -224,7 +225,7 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
                     ToastUtil.show(getContext(), getString(R.string.select_material));
                     return;
                 }
-                PrintHelper.getInstance().startPrintPasterTask(itemSmall);
+                PrintFace.getInst().startPrintPasterTask(itemSmall);
                 break;
             case R.id.tv_print_material:
                 //打印物料大纸
@@ -233,11 +234,11 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
                     ToastUtil.show(getContext(), getString(R.string.select_material));
                     return;
                 }
-                PrintHelper.getInstance().startPrintMaterialTask(itemBig);
+                PrintFace.getInst().startPrintMaterialTask(itemBig);
                 break;
             case R.id.btn_print_blank:
                 //打印空白时控贴
-                PrintHelper.getInstance().startPrintBlankPasterTask();
+                PrintFace.getInst().startPrintBlankPasterTask();
                 break;
             case R.id.btn_print_test:
                 //测试打印机
@@ -273,7 +274,7 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView {
                 List<ItemContentBean> list = new ArrayList<>();
                 list.add(itemContentBean);
                 order.setItems(list);
-                PrintHelper.getInstance().startPrintWholeOrderTask(order);
+                PrintFace.getInst().printTest(order);
                 break;
         }
     }

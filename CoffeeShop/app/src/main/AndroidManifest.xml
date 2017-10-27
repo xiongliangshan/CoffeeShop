@@ -73,7 +73,7 @@
         </activity>
 
 
-        <activity android:name=".base.PrintOrderActivity"
+        <activity android:name=".printer.PrintOrderActivity"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar"/>
 

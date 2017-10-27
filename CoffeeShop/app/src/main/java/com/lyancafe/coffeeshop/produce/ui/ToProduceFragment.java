@@ -33,6 +33,7 @@ import com.lyancafe.coffeeshop.event.NewOderComingEvent;
 import com.lyancafe.coffeeshop.event.NotNeedProduceEvent;
 import com.lyancafe.coffeeshop.event.RevokeEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
+import com.lyancafe.coffeeshop.printer.PrintFace;
 import com.lyancafe.coffeeshop.produce.presenter.ToProducePresenter;
 import com.lyancafe.coffeeshop.produce.presenter.ToProducePresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.ToProduceView;
@@ -225,7 +226,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView {
             public void onClickYes() {
                 //请求服务器改变该订单状态，由 待生产--生产中
                 mToProducePresenter.doStartProduce(orderBean.getId(), orderBean.getWxScan());
-                PrintHelper.getInstance().startPrintWholeOrderTask(orderBean);
+                PrintFace.getInst().startPrintWholeOrderTask(orderBean);
 
             }
         });
@@ -314,7 +315,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView {
     @Subscribe
     public void onNotNeedProduce(NotNeedProduceEvent event){
         mToProducePresenter.doNoPruduce(event.order.getId());
-        PrintHelper.getInstance().startPrintOnlyBoxTask(event.order);
+        PrintFace.getInst().startPrintOnlyBoxTask(event.order);
     }
 
 
@@ -380,7 +381,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView {
                         return;
                     }
 
-                    PrintHelper.getInstance().printBatch(selectedList);
+                    PrintFace.getInst().printBatch(selectedList);
                     List<Long> orderIds = OrderHelper.getIdsFromOrders(selectedList);
                     mToProducePresenter.doStartBatchProduce(orderIds);
 

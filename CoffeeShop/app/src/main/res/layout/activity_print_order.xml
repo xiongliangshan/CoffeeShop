@@ -14,7 +14,7 @@
         android:background="@drawable/bg_printer_btn"
         android:textColor="@color/white_font"
         android:textSize="16sp"
-        android:text="打印订单信息" />
+        android:text="打印大标签" />
 
     <Button
         android:id="@+id/btn_print_cup"
@@ -23,7 +23,7 @@
         android:layout_below="@+id/btn_print_box"
         android:layout_marginTop="20dp"
         android:background="@drawable/bg_printer_btn"
-        android:text="打印商品贴纸"
+        android:text="打印小标签"
         android:textColor="@color/white_font"
         android:textSize="16sp" />
 

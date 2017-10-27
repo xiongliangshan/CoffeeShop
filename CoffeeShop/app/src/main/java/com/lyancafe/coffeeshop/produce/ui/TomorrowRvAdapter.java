@@ -25,6 +25,7 @@ import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.NaiGaiEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
+import com.lyancafe.coffeeshop.printer.PrintFace;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
 
 import org.greenrobot.eventbus.EventBus;
@@ -131,7 +132,7 @@ public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.Vi
             @Override
             public void onClick(View v) {
                 //点击预打印按钮
-                PrintHelper.getInstance().startPrintWholeOrderTask(order);
+                PrintFace.getInst().startPrintWholeOrderTask(order);
                 notifyDataSetChanged();
             }
         });

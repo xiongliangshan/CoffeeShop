@@ -1,4 +1,4 @@
-package com.lyancafe.coffeeshop.base;
+package com.lyancafe.coffeeshop.printer;
 
 import android.app.Activity;
 import android.content.Context;
@@ -28,7 +28,6 @@ public class PrintOrderActivity extends Activity implements PrintHelper.OnPrompt
         mContext = this;
         setContentView(R.layout.activity_print_order);
         ButterKnife.bind(this);
-        PrintHelper.getInstance().setPromptlistener(this);
         mOrderBean = (OrderBean) getIntent().getSerializableExtra("order");
     }
 
@@ -46,16 +45,16 @@ public class PrintOrderActivity extends Activity implements PrintHelper.OnPrompt
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_print_box:
-                PrintHelper.getInstance().startPrintOnlyBoxTask(mOrderBean);
+                PrintFace.getInst().startPrintOnlyBoxTask(mOrderBean);
                 break;
             case R.id.btn_print_cup:
-                PrintHelper.getInstance().startPrintOnlyCupTask(mOrderBean);
+                PrintFace.getInst().startPrintOnlyCupTask(mOrderBean);
                 break;
             case R.id.btn_print_all:
-                PrintHelper.getInstance().startPrintWholeOrderTask(mOrderBean);
+                PrintFace.getInst().startPrintWholeOrderTask(mOrderBean);
                 break;
             case R.id.btn_check_printer:
-                PrintHelper.getInstance().checkPrinterStatus();
+                PrintFace.getInst().checkPrinterStatus();
                 break;
         }
     }
