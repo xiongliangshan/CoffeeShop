@@ -269,7 +269,7 @@ public class FujitsuPrinter implements NetPrint {
 
     @Override
     public void writeCommand(String ip, int port, String command) {
-        Log.d(TAG,Thread.currentThread().getName()+" writeCommand,command = "+command);
+        Log.d(TAG,Thread.currentThread().getName()+" writeCommand,command = \n"+command);
         Socket client;
         try {
             client = new Socket(ip, port);
@@ -278,13 +278,17 @@ public class FujitsuPrinter implements NetPrint {
             writer.flush();
             writer.close();
             client.close();
+            Thread.sleep(300);
         } catch (UnknownHostException e) {
             e.printStackTrace();
-            Log.e(TAG, "UnknownHostException:"+e.toString());
+            Log.e(TAG, "UnknownHostException:"+e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e(TAG, "IOException" + e.toString());
+            Log.e(TAG, "IOException" + e.getMessage());
             ToastUtil.showToast(CSApplication.getInstance(),TAG+"打印机"+ip+":"+port+"无法连接");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Log.e(TAG, "InterruptedException" + e.getMessage());
         }
     }
 
@@ -301,7 +305,8 @@ public class FujitsuPrinter implements NetPrint {
             this.start = "SIZE 80 mm, 49 mm\n" +
                     "GAP 2 mm, 0 mm\n" +
                     "SET RIBBON OFF\n" +
-                    "DIRECTION 1,0\n";
+                    "DIRECTION 1,0\n" +
+                    "CLS\n";
 
             this.end = "PRINT 1,1\n";
             this.content = new ArrayList<>();

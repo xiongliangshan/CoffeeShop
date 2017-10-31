@@ -32,8 +32,8 @@ public class PrintFace {
     private PrintFace() {
         mPoolExecutor = new ThreadPoolExecutor(1, 5, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
         if(Api.BASE_URL.contains("cn")||Api.BASE_URL.contains("192.168")||"测试-滴水湖".equals(LoginHelper.getUser(CSApplication.getInstance()).getShopName())){
-            BIGLABELIP = "192.168.1.229";
-            SMALLLABELIP = "192.168.1.229";
+            BIGLABELIP = "192.168.0.229";
+            SMALLLABELIP = "192.168.0.229";
         }else{
             BIGLABELIP = "192.19.1.231";
             SMALLLABELIP = "192.19.1.232";
