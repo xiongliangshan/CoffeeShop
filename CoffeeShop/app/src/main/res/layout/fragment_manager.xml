@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="32dp">
 
     <LinearLayout
@@ -140,6 +141,104 @@
 
 
         </RelativeLayout>
+
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:padding="24dp"
+            android:background="@color/white1">
+
+            <TextView
+                android:id="@+id/tv_select_printer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="选择当前使用的打印机:"
+                android:textSize="18sp"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_small_printer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:padding="4dp"
+                app:layout_constraintTop_toBottomOf="@id/tv_select_printer"
+                android:text="小标签打印:"
+                android:textSize="18sp"/>
+
+            <RadioGroup
+                android:id="@+id/radio_group_small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/tv_small_printer"
+                app:layout_constraintTop_toTopOf="@id/tv_small_printer"
+                android:orientation="horizontal"
+                >
+                <RadioButton
+                    android:id="@+id/rb_winpos_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="旧版WinPos"
+                    android:textSize="18sp"/>
+
+                <RadioButton
+                    android:id="@+id/rb_fujitsu_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:text="新版富士通"
+                    android:textSize="18sp"/>
+
+
+            </RadioGroup>
+
+
+            <TextView
+                android:id="@+id/tv_big_printer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:padding="4dp"
+                app:layout_constraintTop_toBottomOf="@id/tv_small_printer"
+                app:layout_constraintLeft_toLeftOf="@id/tv_small_printer"
+                android:text="大标签打印:"
+                android:textSize="18sp"/>
+
+            <RadioGroup
+                android:id="@+id/radio_group_big"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/tv_big_printer"
+                app:layout_constraintTop_toTopOf="@id/tv_big_printer"
+                android:orientation="horizontal"
+                >
+                <RadioButton
+                    android:id="@+id/rb_winpos_big"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="旧版WinPos"
+                    android:textSize="18sp"/>
+
+                <RadioButton
+                    android:id="@+id/rb_fujitsu_big"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:text="新版富士通"
+                    android:textSize="18sp"/>
+
+
+            </RadioGroup>
+
+        </android.support.constraint.ConstraintLayout>
 
 
     </LinearLayout>

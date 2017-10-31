@@ -80,7 +80,12 @@ public class CSApplication extends Application {
 
     public static CSApplication getInstance(){
         if(application==null){
-            application = new CSApplication();
+            synchronized (CSApplication.class){
+                if(application==null){
+                    application = new CSApplication();
+                }
+            }
+
         }
         return application;
     }
@@ -101,7 +106,7 @@ public class CSApplication extends Application {
     }
 
 
-    public static String getProcessName(Context cxt, int pid) {
+    private String getProcessName(Context cxt, int pid) {
         ActivityManager am = (ActivityManager) cxt.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> runningApps = am.getRunningAppProcesses();
         if (runningApps == null) {

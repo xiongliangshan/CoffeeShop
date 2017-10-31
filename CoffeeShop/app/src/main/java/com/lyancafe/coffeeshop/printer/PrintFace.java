@@ -5,6 +5,7 @@ import com.lyancafe.coffeeshop.bean.MaterialItem;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.http.Api;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -19,7 +20,8 @@ public class PrintFace {
 
     private static final String TAG = "PrintFace";
 
-    private NetPrint mPrinter = null;
+    private NetPrint mBigPrinter = null;
+    private NetPrint mSmallPrinter = null;
 
     private static PrintFace mInst;
 
@@ -32,13 +34,13 @@ public class PrintFace {
     private PrintFace() {
         mPoolExecutor = new ThreadPoolExecutor(1, 5, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
         if(Api.BASE_URL.contains("cn")||Api.BASE_URL.contains("192.168")||"测试-滴水湖".equals(LoginHelper.getUser(CSApplication.getInstance()).getShopName())){
-            BIGLABELIP = "192.168.0.229";
-            SMALLLABELIP = "192.168.0.229";
+            BIGLABELIP = "192.168.1.228";
+            SMALLLABELIP = "192.168.1.229";
         }else{
             BIGLABELIP = "192.19.1.231";
             SMALLLABELIP = "192.19.1.232";
         }
-        mPrinter = new FujitsuPrinter(BIGLABELIP,SMALLLABELIP,PORT);
+        mBigPrinter = new WinposPrinter(BIGLABELIP,SMALLLABELIP,PORT);
         mPoolExecutor = new ThreadPoolExecutor(1, 5, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     }
 
@@ -46,11 +48,77 @@ public class PrintFace {
 
     public static PrintFace getInst(){
         if(mInst==null){
-            mInst = new PrintFace();
+            synchronized (PrintFace.class){
+                if(mInst==null){
+                    mInst = new PrintFace();
+                }
+            }
         }
-
         return mInst;
 
+    }
+
+    public static void reset(){
+        LogUtil.d(TAG,"reset");
+        if(mInst!=null){
+            mInst = null;
+        }
+    }
+
+    /**
+     * 获取大标签打印机
+     * @return
+     */
+    private NetPrint getBigLabelPrinter(){
+        int bigPrinter = PrintSetting.getBigPrinter(CSApplication.getInstance().getApplicationContext());
+        if(bigPrinter==PrintSetting.FUJITSU){
+            if(mBigPrinter!=null && mBigPrinter instanceof FujitsuPrinter){
+                LogUtil.d(TAG,"大标签使用新版打印机");
+                return mBigPrinter;
+            }else{
+                mBigPrinter = new FujitsuPrinter(BIGLABELIP,SMALLLABELIP,PORT);
+                LogUtil.d(TAG,"大标签使用新版打印机");
+                return mBigPrinter;
+            }
+
+        }else{
+            if(mBigPrinter!=null && mBigPrinter instanceof WinposPrinter){
+                LogUtil.d(TAG,"大标签使用旧版打印机");
+                return mBigPrinter;
+            }else{
+                mBigPrinter = new WinposPrinter(BIGLABELIP,SMALLLABELIP,PORT);
+                LogUtil.d(TAG,"大标签使用旧版打印机");
+                return mBigPrinter;
+            }
+        }
+    }
+
+    /**
+     * 获取小标签打印机
+     * @return
+     */
+    private NetPrint getSmallLabelPrinter(){
+        int smallPrinter = PrintSetting.getSmallPrinter(CSApplication.getInstance().getApplicationContext());
+        if(smallPrinter==PrintSetting.FUJITSU){
+            if(mSmallPrinter!=null && mSmallPrinter instanceof FujitsuPrinter){
+                LogUtil.d(TAG,"小标签使用新版打印机");
+                return mSmallPrinter;
+            }else{
+                mSmallPrinter = new FujitsuPrinter(BIGLABELIP,SMALLLABELIP,PORT);
+                LogUtil.d(TAG,"小标签使用新版打印机");
+                return mSmallPrinter;
+            }
+
+        }else{
+            if(mSmallPrinter!=null && mSmallPrinter instanceof WinposPrinter){
+                LogUtil.d(TAG,"小标签使用旧版打印机");
+                return mSmallPrinter;
+            }else{
+                mSmallPrinter = new WinposPrinter(BIGLABELIP,SMALLLABELIP,PORT);
+                LogUtil.d(TAG,"小标签使用旧版打印机");
+                return mSmallPrinter;
+            }
+        }
     }
 
 
@@ -61,13 +129,13 @@ public class PrintFace {
         mPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                mPrinter.printBigLabel(order);
+                getBigLabelPrinter().printBigLabel(order);
             }
         });
         mPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                mPrinter.printSmallLabel(order);
+                getSmallLabelPrinter().printSmallLabel(order);
             }
         });
     }
@@ -80,10 +148,10 @@ public class PrintFace {
             @Override
             public void run() {
                 //打印汇总信息
-                mPrinter.printSummaryInfo(batchOrders);
+                getBigLabelPrinter().printSummaryInfo(batchOrders);
 
                 //打印大标签
-                mPrinter.printBigLabels(batchOrders);
+                getBigLabelPrinter().printBigLabels(batchOrders);
             }
         });
 
@@ -91,7 +159,7 @@ public class PrintFace {
             @Override
             public void run() {
                 //打印小标签
-                mPrinter.printSmallLabels(batchOrders);
+                getSmallLabelPrinter().printSmallLabels(batchOrders);
             }
         });
 
@@ -105,7 +173,8 @@ public class PrintFace {
         mPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                mPrinter.printBigLabel(order);
+                LogUtil.d(TAG,"startPrintOnlyBoxTask");
+                getBigLabelPrinter().printBigLabel(order);
             }
         });
     }
@@ -118,7 +187,7 @@ public class PrintFace {
         mPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                mPrinter.printSmallLabel(order);
+                getSmallLabelPrinter().printSmallLabel(order);
             }
         });
 
@@ -132,7 +201,7 @@ public class PrintFace {
         mPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                mPrinter.printMaterialBigLabel(materialItem);
+                getBigLabelPrinter().printMaterialBigLabel(materialItem);
             }
         });
     }
@@ -145,7 +214,7 @@ public class PrintFace {
         mPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                mPrinter.printTimeControlPaster(materialItem);
+                getSmallLabelPrinter().printTimeControlPaster(materialItem);
             }
         });
     }
@@ -157,7 +226,7 @@ public class PrintFace {
         mPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                mPrinter.printBlankPaster();
+                getSmallLabelPrinter().printBlankPaster();
             }
         });
     }
@@ -167,7 +236,7 @@ public class PrintFace {
         mPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                mPrinter.checkPrinterStatus(BIGLABELIP,PORT);
+                mBigPrinter.checkPrinterStatus(BIGLABELIP,PORT);
             }
         });
     }
@@ -177,7 +246,7 @@ public class PrintFace {
         mPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                mPrinter.printBigLabel(order);
+                getBigLabelPrinter().printBigLabel(order);
             }
         });
     }

@@ -8,7 +8,6 @@ import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.MaterialItem;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.PrintCupBean;
-import com.lyancafe.coffeeshop.bean.PrintObject;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.utils.FinishedOrderSortComparator;
@@ -273,6 +272,7 @@ public class FujitsuPrinter implements NetPrint {
         Socket client;
         try {
             client = new Socket(ip, port);
+            client.setSoTimeout(3000);
             Writer writer = new OutputStreamWriter(client.getOutputStream(), "GBK");
             writer.write(command);
             writer.flush();
@@ -290,6 +290,7 @@ public class FujitsuPrinter implements NetPrint {
             e.printStackTrace();
             Log.e(TAG, "InterruptedException" + e.getMessage());
         }
+
     }
 
 
