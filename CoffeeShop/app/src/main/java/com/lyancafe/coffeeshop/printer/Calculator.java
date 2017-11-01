@@ -324,4 +324,12 @@ public class Calculator {
         return sdf.format(nowDate.getTime());
     }
 
+    public static String formatLabel(String label){
+        if(TextUtils.isEmpty(label)){
+            return "";
+        }else{
+            return "("+label+")";
+        }
+    }
+
 }

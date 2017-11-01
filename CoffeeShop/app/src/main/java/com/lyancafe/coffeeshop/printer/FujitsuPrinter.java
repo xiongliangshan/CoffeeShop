@@ -182,27 +182,16 @@ public class FujitsuPrinter implements NetPrint {
 
     @Override
     public String OTCForBigLabel(PrintOrderBean bean) {
-        String order1 = "",order2 = "",order3 = "",order4 = "";
+        String[] cupList = new String[]{"","","",""};
         List<PrintCupBean> coffeeList = bean.getCoffeeList();
-        switch (coffeeList.size()){
-            case 1:
-                order1 = coffeeList.get(0).getCoffee()+" "+coffeeList.get(0).getLabel();
+
+        for(int i =0;i<coffeeList.size();i++){
+            if(i>3){
+                LogUtil.e(TAG,"OTCForBigLabel ，数据异常");
                 break;
-            case 2:
-                order1 = coffeeList.get(0).getCoffee()+" "+coffeeList.get(0).getLabel();
-                order2 = coffeeList.get(1).getCoffee()+" "+coffeeList.get(1).getLabel();
-                break;
-            case 3:
-                order1 = coffeeList.get(0).getCoffee()+" "+coffeeList.get(0).getLabel();
-                order2 = coffeeList.get(1).getCoffee()+" "+coffeeList.get(1).getLabel();
-                order3 = coffeeList.get(2).getCoffee()+" "+coffeeList.get(2).getLabel();
-                break;
-            case 4:
-                order1 = coffeeList.get(0).getCoffee()+" "+coffeeList.get(0).getLabel();
-                order2 = coffeeList.get(1).getCoffee()+" "+coffeeList.get(1).getLabel();
-                order3 = coffeeList.get(2).getCoffee()+" "+coffeeList.get(2).getLabel();
-                order4 = coffeeList.get(3).getCoffee()+" "+coffeeList.get(3).getLabel();
-                break;
+            }
+            PrintCupBean pc = coffeeList.get(i);
+            cupList[i] = pc.getCoffee()+Calculator.formatLabel(pc.getLabel());
         }
 
         String addressCMD, addr1,addr2,addr3;
@@ -233,12 +222,13 @@ public class FujitsuPrinter implements NetPrint {
                 "TEXT 10,80,\"TSS24.BF2\",0,1,1,\"订单编号:\"\n" +
                 "TEXT 130,80,\"TSS24.BF2\",0,1,1,\""+bean.getOrderId()+OrderHelper.getWxScanStrForPrint(bean)+"\"\n" +
                 "TEXT 440,80,\"TSS24.BF2\",0,1,1,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\"\n" +
-                "TEXT 10,100,\"TSS24.BF2\",0,1,1,\"----------------------------------------------------\"\n" +
-                "TEXT 10,130,\"TSS24.BF2\",0,1,1,\""+order1+"\""+"\n"+
-                "TEXT 310,130,\"TSS24.BF2\",0,1,1,\""+order2+"\""+"\n"+
-                "TEXT 10,180,\"TSS24.BF2\",0,1,1,\""+order3+"\""+"\n"+
-                "TEXT 310,180,\"TSS24.BF2\",0,1,1,\""+order4+"\""+"\n"+
-                "TEXT 10,210,\"TSS24.BF2\",0,1,1,\"----------------------------------------------------\"\n" +
+                "BOX 8,110,616,220,1,10\n"+
+
+                "TEXT 14,130,\"TSS24.BF2\",0,1,1,\""+cupList[0]+"\""+"\n"+
+                "TEXT 314,130,\"TSS24.BF2\",0,1,1,\""+cupList[1]+"\""+"\n"+
+                "TEXT 14,180,\"TSS24.BF2\",0,1,1,\""+cupList[2]+"\""+"\n"+
+                "TEXT 314,180,\"TSS24.BF2\",0,1,1,\""+cupList[3]+"\""+"\n"+
+
                 "TEXT 10,240,\"TSS24.BF2\",0,1,1,\"收货人:\"\n" +
                 "TEXT 110,240,\"TSS24.BF2\",0,1,1,\""+bean.getReceiverName()+"\"\n" +
                 "TEXT 290,240,\"TSS24.BF2\",0,1,1,\"送达时间:\"\n" +

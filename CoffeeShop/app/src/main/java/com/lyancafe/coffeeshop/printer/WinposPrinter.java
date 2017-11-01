@@ -12,6 +12,7 @@ import com.lyancafe.coffeeshop.bean.PrintObject;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.utils.FinishedOrderSortComparator;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.io.IOException;
@@ -182,27 +183,15 @@ public class WinposPrinter implements NetPrint {
 
     @Override
     public String OTCForBigLabel(PrintOrderBean bean) {
-        String order1 = "",order2 = "",order3 = "",order4 = "";
+        String[] cupList = new String[]{"","","",""};
         List<PrintCupBean> coffeeList = bean.getCoffeeList();
-        switch (coffeeList.size()){
-            case 1:
-                order1 = coffeeList.get(0).getCoffee()+" "+coffeeList.get(0).getLabel();
+        for(int i =0;i<coffeeList.size();i++){
+            if(i>3){
+                LogUtil.e(TAG,"OTCForBigLabel ，数据异常");
                 break;
-            case 2:
-                order1 = coffeeList.get(0).getCoffee()+" "+coffeeList.get(0).getLabel();
-                order2 = coffeeList.get(1).getCoffee()+" "+coffeeList.get(1).getLabel();
-                break;
-            case 3:
-                order1 = coffeeList.get(0).getCoffee()+" "+coffeeList.get(0).getLabel();
-                order2 = coffeeList.get(1).getCoffee()+" "+coffeeList.get(1).getLabel();
-                order3 = coffeeList.get(2).getCoffee()+" "+coffeeList.get(2).getLabel();
-                break;
-            case 4:
-                order1 = coffeeList.get(0).getCoffee()+" "+coffeeList.get(0).getLabel();
-                order2 = coffeeList.get(1).getCoffee()+" "+coffeeList.get(1).getLabel();
-                order3 = coffeeList.get(2).getCoffee()+" "+coffeeList.get(2).getLabel();
-                order4 = coffeeList.get(3).getCoffee()+" "+coffeeList.get(3).getLabel();
-                break;
+            }
+            PrintCupBean pc = coffeeList.get(i);
+            cupList[i] = pc.getCoffee()+Calculator.formatLabel(pc.getLabel());
         }
 
         String addressCMD, addr1,addr2,addr3;
@@ -234,10 +223,10 @@ public class WinposPrinter implements NetPrint {
                 "A140,100,0,230,1,1,N,\""+bean.getOrderId()+OrderHelper.getWxScanStrForPrint(bean)+"\""+"\n"+
                 "A450,100,0,230,1,1,N,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
                 "A20,120,0,230,1,1,N,\"-------------------------------------------------- \""+"\n"+
-                "A20,150,0,230,1,1,N,\""+order1+"\""+"\n"+
-                "A320,150,0,230,1,1,N,\""+order2+"\""+"\n"+
-                "A20,200,0,230,1,1,N,\""+order3+"\""+"\n"+
-                "A320,200,0,230,1,1,N,\""+order4+"\""+"\n"+
+                "A20,150,0,230,1,1,N,\""+cupList[0]+"\""+"\n"+
+                "A320,150,0,230,1,1,N,\""+cupList[1]+"\""+"\n"+
+                "A20,200,0,230,1,1,N,\""+cupList[2]+"\""+"\n"+
+                "A320,200,0,230,1,1,N,\""+cupList[3]+"\""+"\n"+
                 "A20,230,0,230,1,1,N,\"-------------------------------------------------- \""+"\n"+
                 "A20,260,0,230,1,1,N,\"收货人 \""+"\n"+
                 "A120,260,0,230,1,1,N,\""+bean.getReceiverName()+"\""+"\n"+
