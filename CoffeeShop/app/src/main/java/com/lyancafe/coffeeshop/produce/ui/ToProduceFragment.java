@@ -189,7 +189,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView {
 
     @Override
     public void showToast(String promptStr) {
-        ToastUtil.show(getActivity(), promptStr);
+        ToastUtil.show(getContext(), promptStr);
     }
 
     @Override

@@ -131,7 +131,7 @@ public class ProducingFragment extends BaseFragment implements ProducingView {
 
     @Override
     public void showToast(String promptStr) {
-        ToastUtil.show(getActivity(), promptStr);
+        ToastUtil.show(getContext(), promptStr);
     }
 
     @Override

@@ -236,7 +236,13 @@ public class PrintFace {
         mPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                mBigPrinter.checkPrinterStatus(BIGLABELIP,PORT);
+                getBigLabelPrinter().checkPrinterStatus(BIGLABELIP,PORT);
+            }
+        });
+        mPoolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                getSmallLabelPrinter().checkPrinterStatus(SMALLLABELIP,PORT);
             }
         });
     }
@@ -246,7 +252,11 @@ public class PrintFace {
         mPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                getBigLabelPrinter().printBigLabel(order);
+//                getBigLabelPrinter().printBigLabel(order);
+                NetPrint printter = getBigLabelPrinter();
+                if(printter instanceof FujitsuPrinter){
+                    ((FujitsuPrinter) printter).printQRcode();
+                }
             }
         });
     }

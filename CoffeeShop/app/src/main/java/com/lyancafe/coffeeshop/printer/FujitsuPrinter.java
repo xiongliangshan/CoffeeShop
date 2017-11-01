@@ -15,6 +15,8 @@ import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.Socket;
@@ -247,6 +249,19 @@ public class FujitsuPrinter implements NetPrint {
 
     }
 
+    public String OTCForQrcode(){
+        return
+        "SIZE 80 mm, 49 mm\n" +
+        "GAP 2 mm, 0 mm\n" +
+        "SET RIBBON OFF\n" +
+        "DIRECTION 1,0\n" +
+        "REFERENCE 0,0\n" +
+        "BOX 10,10,610,386,3,10\n" +
+        "QRCODE 400,60,H,5,A,0,M2,S6,\"http://m.lyancoffee.com/wechat/mainbuy/enter\"  \n" +
+        "PRINT 1, 1\n";
+
+    }
+
     @Override
     public String OTCForSmallLabel(PrintCupBean bean) {
         return  "SIZE 30 mm, 20 mm\n" +
@@ -261,10 +276,98 @@ public class FujitsuPrinter implements NetPrint {
                 "PRINT 1,1\n";
     }
 
+    public void printQRcode(){
+        String command = OTCForQrcode();
+        writeCommand(bigLabelIP,port,command);
+    }
+
     @Override
     public void checkPrinterStatus(String ip, int port) {
+        LogUtil.d(TAG,"checkPrinterStatus");
+        byte[] bytes = new byte[]{0x1b,0x21,0x3f};
+        byte[] result = new byte[1];
+        Socket client = null;
+        try {
+            client = new Socket(ip, port);
+            OutputStream os = client.getOutputStream();
+            os.write(bytes);
 
+            InputStream is = client.getInputStream();
+            is.read(result);
+            is.close();
+
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            Log.e(TAG, "UnknownHostException:"+e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e(TAG, "IOException" + e.getMessage());
+            ToastUtil.showToast(CSApplication.getInstance(),TAG+"打印机"+ip+":"+port+"无法连接");
+        }finally {
+
+            try {if(client!=null){
+                    client.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        LogUtil.d(TAG,"checkPrinterStatus: result = "+bytesToHexString(result));
+        showPrompt(ip,bytesToHexString(result));
     }
+
+    public  String bytesToHexString(byte[] src) {
+        StringBuilder stringBuilder = new StringBuilder("");
+        if (src == null || src.length <= 0) {
+            return null;
+        }
+        for (int i = 0; i < src.length; i++) {
+            int v = src[i] & 0xFF;
+            String hv = Integer.toHexString(v);
+            if (hv.length() < 2) {
+                stringBuilder.append(0);
+            }
+            stringBuilder.append(hv);
+        }
+        return stringBuilder.toString();
+    }
+
+    /**
+     * 00000000  正常         00
+     * 00000001  纸仓打开      01
+     * 00000010  纸张错误      02
+     * 00000100  缺纸         04
+     * 00001000  碳带错误      08
+     * 00010000  暂停         10
+     * 00100000  正在打印      20
+     * 01000000  未定义        40
+     * 10000000  处于学习状态   80
+     * @param hexCode
+     */
+    private void showPrompt(String ip,String hexCode){
+        String prompt = "正常";
+        if("00".equals(hexCode)){
+            prompt = "正常";
+        }else if("01".equals(hexCode)){
+            prompt = "纸仓打开";
+        }else if("02".equals(hexCode)){
+            prompt = "纸张错误";
+        }else if("04".equals(hexCode)){
+            prompt = "缺纸";
+        }else if("08".equals(hexCode)){
+            prompt = "碳带错误";
+        }else if("10".equals(hexCode)){
+            prompt = "暂停";
+        }else if("20".equals(hexCode)){
+            prompt = "正在打印";
+        }else if("40".equals(hexCode)){
+            prompt = "未定义";
+        }else if("80".equals(hexCode)){
+            prompt = "处于学习状态";
+        }
+        ToastUtil.showToast(CSApplication.getInstance().getApplicationContext(),"打印机 "+ip+" "+prompt);
+    }
+
 
     @Override
     public void writeCommand(String ip, int port, String command) {

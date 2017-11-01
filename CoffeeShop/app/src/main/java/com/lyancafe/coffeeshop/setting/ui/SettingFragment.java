@@ -1,6 +1,7 @@
 package com.lyancafe.coffeeshop.setting.ui;
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -141,7 +142,10 @@ public class SettingFragment extends BaseFragment implements SettingView {
     @Override
     public void dismissLoading() {
         if (mLoadingDlg != null && mLoadingDlg.isShowing()) {
-            mLoadingDlg.dismiss();
+            Activity activity = mLoadingDlg.getOwnerActivity();
+            if(activity!=null && !activity.isFinishing()){
+                mLoadingDlg.dismiss();
+            }
         }
     }
 }
