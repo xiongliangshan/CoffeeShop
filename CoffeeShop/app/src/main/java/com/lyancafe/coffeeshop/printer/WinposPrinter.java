@@ -266,19 +266,13 @@ public class WinposPrinter implements NetPrint {
 
     @Override
     public void checkPrinterStatus(String ip, int port) {
-        boolean pingResult = ping(bigLabelIP);
+        boolean pingResult = ping(ip);
         if (pingResult) {
-            ToastUtil.showToast(CSApplication.getInstance().getApplicationContext(),bigLabelIP+"在线");
+            ToastUtil.showToast(CSApplication.getInstance().getApplicationContext(),ip+"在线");
         } else {
-            ToastUtil.showToast(CSApplication.getInstance().getApplicationContext(),bigLabelIP+"无法连接");
+            ToastUtil.showToast(CSApplication.getInstance().getApplicationContext(),ip+"无法连接");
         }
 
-        pingResult = ping(smallLabelIP);
-        if (pingResult) {
-            ToastUtil.showToast(CSApplication.getInstance().getApplicationContext(),smallLabelIP+"在线");
-        } else {
-            ToastUtil.showToast(CSApplication.getInstance().getApplicationContext(),smallLabelIP+"无法连接");
-        }
     }
 
     private boolean ping(String ip) {
@@ -301,14 +295,13 @@ public class WinposPrinter implements NetPrint {
     @Override
     public void writeCommand(String ip, int port, String command) {
         Log.d(TAG,"writeCommand,command = "+command);
-        Socket client;
+        Socket client = null;
         try {
             client = new Socket(ip, port);
             Writer writer = new OutputStreamWriter(client.getOutputStream(), "GBK");
             writer.write(command);
             writer.flush();
             writer.close();
-            client.close();
         } catch (UnknownHostException e) {
             e.printStackTrace();
             Log.e(TAG, "UnknownHostException:"+e.toString());
@@ -316,6 +309,14 @@ public class WinposPrinter implements NetPrint {
             e.printStackTrace();
             Log.e(TAG, "IOException" + e.toString());
             ToastUtil.showToast(CSApplication.getInstance(),TAG+"打印机"+ip+":"+port+"无法连接");
+        }finally {
+            try {
+                if(client!=null){
+                    client.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
