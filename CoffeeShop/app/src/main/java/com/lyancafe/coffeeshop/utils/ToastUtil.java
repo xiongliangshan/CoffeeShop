@@ -13,8 +13,10 @@ public class ToastUtil {
 	}
 
 	public static void show(Context context, String str) {
-		Toast toast = Toast.makeText(context, str, Toast.LENGTH_SHORT);
-		toast.show();
+		if(context!=null){
+			Toast toast = Toast.makeText(context, str, Toast.LENGTH_SHORT);
+			toast.show();
+		}
 	}
 
 

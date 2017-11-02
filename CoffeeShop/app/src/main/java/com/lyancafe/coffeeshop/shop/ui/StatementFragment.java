@@ -33,6 +33,7 @@ import butterknife.Unbinder;
  */
 public class StatementFragment extends BaseFragment implements StatementView {
 
+    private static final String TAG = "StatementFragment";
 
     @BindView(R.id.tv_finished_order_count)
     TextView tvFinishedOrderCount;
@@ -48,6 +49,8 @@ public class StatementFragment extends BaseFragment implements StatementView {
 
     private StatementPresenter mStatementPresenter;
     private final int DURATION = 1000; //ms
+
+    ValueAnimator[] animators = new ValueAnimator[4];
 
     public StatementFragment() {
         // Required empty public constructor
@@ -74,8 +77,9 @@ public class StatementFragment extends BaseFragment implements StatementView {
         int finishedOrdersCount = map.get("finishedOrders");
         int allCupsCount = map.get("allCups");
         int finishedCupsCount = map.get("finishedCups");
-
-        animateShow(allOrdersCount, finishedOrdersCount, allCupsCount, finishedCupsCount);
+        if(isVisible){
+            animateShow(allOrdersCount, finishedOrdersCount, allCupsCount, finishedCupsCount);
+        }
     }
 
     @Override
@@ -95,38 +99,39 @@ public class StatementFragment extends BaseFragment implements StatementView {
     }
 
     private void animateShow(int allOrdersCount, int finishedOrdersCount, int allCupsCount, int finishedCupsCount) {
-        ValueAnimator animator1 = ValueAnimator.ofInt(0, allOrdersCount);
-        ValueAnimator animator2 = ValueAnimator.ofInt(0, finishedOrdersCount);
-        ValueAnimator animator3 = ValueAnimator.ofInt(0, allCupsCount);
-        ValueAnimator animator4 = ValueAnimator.ofInt(0, finishedCupsCount);
+        LogUtil.d(TAG,"animateShow "+allCupsCount+"|"+finishedCupsCount+"|"+allCupsCount+"|"+finishedCupsCount);
+        animators[0] = ValueAnimator.ofInt(0, allOrdersCount);
+        animators[1] = ValueAnimator.ofInt(0, finishedOrdersCount);
+        animators[2] = ValueAnimator.ofInt(0, allCupsCount);
+        animators[3] = ValueAnimator.ofInt(0, finishedCupsCount);
 
-        animator1.setDuration(allOrdersCount * 4);
-        animator2.setDuration(finishedOrdersCount * 4);
-        animator3.setDuration(allCupsCount * 4);
-        animator4.setDuration(finishedCupsCount * 4);
+        animators[0].setDuration(allOrdersCount * 4);
+        animators[1].setDuration(finishedOrdersCount * 4);
+        animators[2].setDuration(allCupsCount * 4);
+        animators[3].setDuration(finishedCupsCount * 4);
 
-        animator1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        animators[0].addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 int value = (int) animation.getAnimatedValue();
                 tvAllOrderCount.setText(String.valueOf(value));
             }
         });
-        animator2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        animators[1].addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 int value = (int) animation.getAnimatedValue();
                 tvFinishedOrderCount.setText(String.valueOf(value));
             }
         });
-        animator3.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        animators[2].addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 int value = (int) animation.getAnimatedValue();
                 tvAllCupCount.setText(String.valueOf(value));
             }
         });
-        animator4.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        animators[3].addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 int value = (int) animation.getAnimatedValue();
@@ -134,10 +139,9 @@ public class StatementFragment extends BaseFragment implements StatementView {
             }
         });
 
-        animator1.start();
-        animator2.start();
-        animator3.start();
-        animator4.start();
+        for(int i=0;i<animators.length;i++){
+            animators[i].start();
+        }
 
     }
 
@@ -160,10 +164,11 @@ public class StatementFragment extends BaseFragment implements StatementView {
     @Override
     public void onVisible() {
         super.onVisible();
-        LogUtil.d("xls", "StatementFragment onVisible");
         if (!isResumed()) {
+            LogUtil.d(TAG, "StatementFragment onVisible "+isVisible);
             return;
         }
+        LogUtil.d(TAG, "StatementFragment onVisible & Resumed "+isVisible);
         mStatementPresenter.calculateCount();
 
     }
@@ -171,6 +176,11 @@ public class StatementFragment extends BaseFragment implements StatementView {
     @Override
     public void onInVisible() {
         super.onInVisible();
-        LogUtil.d("xls", "StatementFragment onInVisible");
+        LogUtil.d(TAG, "StatementFragment onInVisible "+isVisible);
+        for(int i=0;i<animators.length;i++){
+            if(animators[i]!=null&&animators[i].isRunning()){
+                animators[i].cancel();
+            }
+        }
     }
 }
