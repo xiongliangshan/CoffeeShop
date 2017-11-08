@@ -87,10 +87,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
         if (BuildConfig.DEBUG) {
             rlIpContainer.setVisibility(View.VISIBLE);
             String lastIp = mLoginPresenter.getDebugIP();
-            if (!TextUtils.isEmpty(lastIp)) {
-                Api.BASE_URL = "https://" + lastIp + "/shop/v3/";
-                RetrofitHttp.reset();
-            }
+            mLoginPresenter.updateUrl(lastIp);
             tvCurrentIp.setText(Api.BASE_URL);
         } else {
             rlIpContainer.setVisibility(View.GONE);
@@ -277,10 +274,6 @@ public class LoginActivity extends BaseActivity implements LoginView {
                 btnModifyIp.setText("修改");
                 etIp.setVisibility(View.INVISIBLE);
                 radioGroup.setVisibility(View.INVISIBLE);
-                String lastIp = mLoginPresenter.getDebugIP();
-                if (!TextUtils.isEmpty(lastIp)) {
-                    Api.BASE_URL = "https://" + lastIp + "/shop/v3/";
-                }
                 tvCurrentIp.setText(Api.BASE_URL);
             }
 

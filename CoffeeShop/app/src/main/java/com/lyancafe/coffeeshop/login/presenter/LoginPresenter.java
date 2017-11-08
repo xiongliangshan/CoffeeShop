@@ -30,4 +30,9 @@ public interface LoginPresenter {
      * 获取调试ip
      */
     String getDebugIP();
+
+    /**
+     * 更新访问的IP地址
+     */
+    void updateUrl(String ip);
 }

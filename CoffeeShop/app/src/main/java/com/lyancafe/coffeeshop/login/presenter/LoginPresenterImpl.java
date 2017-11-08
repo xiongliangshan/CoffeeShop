@@ -211,13 +211,25 @@ public class LoginPresenterImpl implements LoginPresenter{
     public void saveDebugIp(String ip) {
         SharedPreferences sp = mContext.getSharedPreferences("login",Context.MODE_PRIVATE);
         sp.edit().putString("ip",ip).apply();
-        Api.BASE_URL = "https://" + ip + "/shop/v3/";
-        RetrofitHttp.reset();
+        updateUrl(ip);
     }
 
     @Override
     public String getDebugIP() {
         SharedPreferences sp = mContext.getSharedPreferences("login",Context.MODE_PRIVATE);
         return sp.getString("ip","");
+    }
+
+    @Override
+    public void updateUrl(String ip) {
+        if(TextUtils.isEmpty(ip)){
+            return;
+        }
+        if(ip.contains("cn")||ip.contains("com")){
+            Api.BASE_URL = "https://" + ip + "/shop/v3/";
+        }else{
+            Api.BASE_URL = "http://" + ip + "/shop/v3/";
+        }
+        RetrofitHttp.reset();
     }
 }
