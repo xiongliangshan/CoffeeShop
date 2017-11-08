@@ -32,6 +32,6 @@ public class PrintSetting {
 
     public static int getBigPrinter(Context context){
         SharedPreferences sharedPreferences = context.getSharedPreferences(PRINTER,Context.MODE_PRIVATE);
-        return sharedPreferences.getInt(KEY_BIG,FUJITSU);
+        return sharedPreferences.getInt(KEY_BIG,WINPOS);
     }
 }
