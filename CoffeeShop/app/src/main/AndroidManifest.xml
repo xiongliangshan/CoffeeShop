@@ -30,6 +30,10 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!--  If your application uses Wi-Fi, declare so with a <uses-feature> element in the manifest file -->>
+    <uses-feature android:name="android.hardware.wifi" />
+    <!-- Allows applications to enter Wi-Fi Multicast mode -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
 
 
     <application
