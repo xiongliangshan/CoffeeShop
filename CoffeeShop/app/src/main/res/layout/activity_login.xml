@@ -68,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="8dp"
-                android:layout_below="@id/et_ip"
+                android:layout_below="@id/btn_modify_ip"
                 android:layout_alignLeft="@id/et_ip"
                 android:visibility="invisible">
 
@@ -77,18 +77,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="其他"/>
+                    android:text="其他"
+                    android:textColor="@color/red1"/>
                 <RadioButton
                     android:id="@+id/rb_qa"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="2dp"
+                    android:textColor="@color/red1"
                     android:text="QA"/>
                 <RadioButton
                     android:id="@+id/rb_ol"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="2dp"
+                    android:textColor="@color/red1"
                     android:text="线上"/>
 
             </RadioGroup>
