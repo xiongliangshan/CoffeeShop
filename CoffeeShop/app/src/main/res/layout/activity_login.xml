@@ -4,14 +4,96 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-
-    <ImageView
+    <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:src="@mipmap/login_left_image"
-        android:scaleType="centerCrop"
-        android:layout_weight="1"
-        />
+        android:layout_weight="1">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/login_left_image" />
+
+        <RelativeLayout
+            android:id="@+id/rl_ip_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_constant_ip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="当前访问地址:"
+                android:textColor="@color/bg_blue"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_current_ip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/tv_constant_ip"
+                android:layout_marginLeft="12dp"
+                android:layout_toRightOf="@id/tv_constant_ip"
+                android:textColor="@color/white1"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btn_modify_ip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/tv_constant_ip"
+                android:layout_below="@id/tv_constant_ip"
+                android:text="修改" />
+
+            <EditText
+                android:id="@+id/et_ip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/btn_modify_ip"
+                android:layout_marginLeft="12dp"
+                android:layout_toRightOf="@id/btn_modify_ip"
+                android:minWidth="180dp"
+                android:padding="4dp"
+                android:textColor="@color/white1"
+                android:background="@color/red1"
+                android:hint="输入域名 或者 IP+端口"
+                android:textColorHint="@color/gray6"
+                android:maxLines="1"
+                android:visibility="invisible"
+                />
+            <RadioGroup
+                android:id="@+id/radio_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                android:layout_below="@id/et_ip"
+                android:layout_alignLeft="@id/et_ip"
+                android:visibility="invisible">
+
+                <RadioButton
+                    android:id="@+id/rb_other"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="其他"/>
+                <RadioButton
+                    android:id="@+id/rb_qa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="QA"/>
+                <RadioButton
+                    android:id="@+id/rb_ol"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="线上"/>
+
+            </RadioGroup>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="0dp"

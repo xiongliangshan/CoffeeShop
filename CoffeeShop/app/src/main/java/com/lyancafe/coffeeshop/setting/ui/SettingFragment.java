@@ -88,6 +88,7 @@ public class SettingFragment extends BaseFragment implements SettingView {
                 //退出登录
                 mSettingPresenter.exitLogin();
                 OrderHelper.batchList.clear();
+                mSettingPresenter.resetToken();
                 if(getContext() instanceof HomeActivity){
                     ((HomeActivity) getContext()).finish();
                     ((HomeActivity) getContext()).overridePendingTransition(R.anim.scale_center_in, R.anim.scale_center_out);

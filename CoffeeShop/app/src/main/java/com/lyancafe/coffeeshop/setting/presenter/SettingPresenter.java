@@ -11,4 +11,7 @@ public interface SettingPresenter {
 
     //退出登录
     void exitLogin();
+
+    //清空本地token
+    void resetToken();
 }

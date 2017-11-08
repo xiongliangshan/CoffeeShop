@@ -33,7 +33,8 @@ public class SettingPresenterImpl implements SettingPresenter {
         this.mSettingView = mSettingView;
     }
 
-    private void resetToken() {
+    @Override
+    public void resetToken() {
         UserBean userBean = LoginHelper.getUser(mContext);
         userBean.setToken("");
         LoginHelper.saveUser(mContext, userBean);
@@ -87,7 +88,6 @@ public class SettingPresenterImpl implements SettingPresenter {
                     @Override
                     public void accept(@NonNull BaseEntity baseEntity) throws Exception {
                         if (baseEntity.getStatus() == 0) {
-                            resetToken();
                             Intent intent_update = new Intent(mContext, DownLoadService.class);
                             mContext.stopService(intent_update);
                             Intent intent_task = new Intent(mContext,TaskService.class);

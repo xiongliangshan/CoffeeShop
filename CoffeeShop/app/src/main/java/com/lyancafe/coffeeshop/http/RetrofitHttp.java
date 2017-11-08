@@ -99,4 +99,8 @@ public class RetrofitHttp {
         }
     };
 
+    public static void reset(){
+        singleton = null;
+    }
+
 }

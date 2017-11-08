@@ -19,4 +19,15 @@ public interface LoginPresenter {
      * @param token
      */
     void uploadDeviceInfo(int shopId,int userId,String token);
+
+    /**
+     * 保存调试服务器IP地址
+     */
+    void saveDebugIp(String ip);
+
+
+    /**
+     * 获取调试ip
+     */
+    String getDebugIP();
 }

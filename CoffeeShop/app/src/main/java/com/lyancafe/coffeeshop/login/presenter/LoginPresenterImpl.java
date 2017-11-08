@@ -4,6 +4,7 @@ package com.lyancafe.coffeeshop.login.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -14,6 +15,8 @@ import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.db.OrderUtils;
+import com.lyancafe.coffeeshop.http.Api;
+import com.lyancafe.coffeeshop.http.RetrofitHttp;
 import com.lyancafe.coffeeshop.login.model.LoginModel;
 import com.lyancafe.coffeeshop.login.model.LoginModelImpl;
 import com.lyancafe.coffeeshop.bean.UserBean;
@@ -202,5 +205,19 @@ public class LoginPresenterImpl implements LoginPresenter{
             }
         });
 
+    }
+
+    @Override
+    public void saveDebugIp(String ip) {
+        SharedPreferences sp = mContext.getSharedPreferences("login",Context.MODE_PRIVATE);
+        sp.edit().putString("ip",ip).apply();
+        Api.BASE_URL = "https://" + ip + "/shop/v3/";
+        RetrofitHttp.reset();
+    }
+
+    @Override
+    public String getDebugIP() {
+        SharedPreferences sp = mContext.getSharedPreferences("login",Context.MODE_PRIVATE);
+        return sp.getString("ip","");
     }
 }
