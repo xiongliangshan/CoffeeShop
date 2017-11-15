@@ -13,12 +13,9 @@ import android.view.WindowManager;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.lyancafe.coffeeshop.bean.DaoMaster;
 import com.lyancafe.coffeeshop.bean.DaoSession;
-import com.lyancafe.coffeeshop.printer.SnbcPrinter;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.MyFileNameGenerator;
 import com.lyancafe.coffeeshop.utils.MyUtil;
-import com.snbc.sdk.barcode.BarInstructionImpl.BarPrinter;
-import com.snbc.sdk.connect.IConnect.DeviceConnect;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.tinker.loader.app.ApplicationLike;
 import com.tinkerpatch.sdk.TinkerPatch;
@@ -55,16 +52,6 @@ public class CSApplication extends Application {
 
     private HttpProxyCacheServer proxy;
 
-    SnbcPrinter snbcPrinter;
-
-
-    /**
-     * 新北洋打印机相关
-     */
-    private BarPrinter printer;
-    private DeviceConnect connect;
-    private String[] storedCustomFontArray;
-
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -88,8 +75,6 @@ public class CSApplication extends Application {
         LogUtil.d(LogUtil.TAG_JPUSH,"JPush 开始初始化");
 
         setUpDatabase();
-
-        initScbcPrinter();
 
     }
 
@@ -176,40 +161,6 @@ public class CSApplication extends Application {
                 .maxCacheSize(1024*1024*1024)
                 .fileNameGenerator(new MyFileNameGenerator())
                 .build();
-    }
-
-
-    public BarPrinter getPrinter() {
-        return printer;
-    }
-
-    public void setPrinter(BarPrinter printer) {
-        this.printer = printer;
-    }
-
-    public DeviceConnect getConnect() {
-        return connect;
-    }
-
-    public void setConnect(DeviceConnect connect) {
-        this.connect = connect;
-    }
-
-    public String[] getStoredCustomFontArray() {
-        return storedCustomFontArray;
-    }
-
-    public void setStoredCustomFontArray(String[] storedCustomFontArray) {
-        this.storedCustomFontArray = storedCustomFontArray;
-    }
-
-    private void initScbcPrinter(){
-        snbcPrinter = new SnbcPrinter("192.168.3.228","192.168.3.228",9100);
-        snbcPrinter.connect();
-    }
-
-    public SnbcPrinter getSnbcPrinter() {
-        return snbcPrinter;
     }
 
 }
