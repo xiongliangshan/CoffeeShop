@@ -23,7 +23,6 @@ import com.lyancafe.coffeeshop.bean.Material;
 import com.lyancafe.coffeeshop.bean.MaterialItem;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
-import com.lyancafe.coffeeshop.common.PrintHelper;
 import com.lyancafe.coffeeshop.printer.PrintFace;
 import com.lyancafe.coffeeshop.shop.presenter.MaterialsPresenter;
 import com.lyancafe.coffeeshop.shop.presenter.MaterialsPresenterImpl;

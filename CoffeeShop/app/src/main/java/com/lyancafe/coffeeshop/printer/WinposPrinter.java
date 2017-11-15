@@ -11,7 +11,7 @@ import com.lyancafe.coffeeshop.bean.PrintCupBean;
 import com.lyancafe.coffeeshop.bean.PrintObject;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
-import com.lyancafe.coffeeshop.utils.FinishedOrderSortComparator;
+import com.lyancafe.coffeeshop.utils.OrderIdComparator;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
@@ -101,7 +101,7 @@ public class WinposPrinter implements NetPrint {
 
     @Override
     public void printBigLabels(List<OrderBean> orderBeanList) {
-        Collections.sort(orderBeanList,new FinishedOrderSortComparator());
+        Collections.sort(orderBeanList,new OrderIdComparator());
         for(OrderBean bean:orderBeanList){
             printBigLabel(bean);
         }

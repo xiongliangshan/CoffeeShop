@@ -24,7 +24,7 @@ import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
-import com.lyancafe.coffeeshop.utils.FinishedOrderSortComparator;
+import com.lyancafe.coffeeshop.utils.OrderIdComparator;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -264,7 +264,7 @@ public class RevokedRvAdapter extends RecyclerView.Adapter<RevokedRvAdapter.View
 
     public void setData(List<OrderBean> list){
         this.list = list;
-        Collections.sort(this.list,new FinishedOrderSortComparator());
+        Collections.sort(this.list,new OrderIdComparator());
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
             EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));

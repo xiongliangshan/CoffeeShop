@@ -8,7 +8,7 @@ import java.util.Comparator;
  * Created by Administrator on 2017/8/10.
  */
 
-public class FinishedOrderSortComparator implements Comparator<OrderBean> {
+public class OrderIdComparator implements Comparator<OrderBean> {
 
     @Override
     public int compare(OrderBean o1, OrderBean o2) {

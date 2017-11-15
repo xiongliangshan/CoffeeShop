@@ -1,14 +1,12 @@
 package com.lyancafe.coffeeshop.printer;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.common.PrintHelper;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -16,7 +14,7 @@ import butterknife.OnClick;
 /**
  * Created by Administrator on 2016/1/27.
  */
-public class PrintOrderActivity extends Activity implements PrintHelper.OnPromptListener {
+public class PrintOrderActivity extends AppCompatActivity {
 
     private static final String TAG = "PrintOrderActivity";
     private OrderBean mOrderBean;
@@ -59,9 +57,5 @@ public class PrintOrderActivity extends Activity implements PrintHelper.OnPrompt
         }
     }
 
-    @Override
-    public void onPrompt(int type, String message) {
-        ToastUtil.showToast(mContext, message);
-    }
 
 }
