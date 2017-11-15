@@ -1,8 +1,8 @@
 package com.lyancafe.coffeeshop.printer;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.lyancafe.coffeeshop.R;
@@ -14,7 +14,7 @@ import butterknife.OnClick;
 /**
  * Created by Administrator on 2016/1/27.
  */
-public class PrintOrderActivity extends AppCompatActivity {
+public class PrintOrderActivity extends Activity {
 
     private static final String TAG = "PrintOrderActivity";
     private OrderBean mOrderBean;
