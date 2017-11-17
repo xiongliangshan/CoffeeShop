@@ -14,6 +14,7 @@ import com.lyancafe.coffeeshop.produce.model.FinishedModelImpl;
 import com.lyancafe.coffeeshop.produce.view.FinishedView;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import io.reactivex.annotations.NonNull;
 
@@ -47,7 +48,7 @@ public class FinishedPresenterImpl implements FinishedPresenter {
                     mFinishedView.bindDataToView(finishedList);
                 }
                 mFinishedView.saveLastOrderId();
-                OrderUtils.with().insertOrderList(finishedList);
+                OrderUtils.with().insertOrderList(new CopyOnWriteArrayList<OrderBean>(finishedList));
             }
 
             @Override

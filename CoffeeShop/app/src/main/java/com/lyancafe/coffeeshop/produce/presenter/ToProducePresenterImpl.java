@@ -26,6 +26,7 @@ import com.lyancafe.coffeeshop.utils.LogUtil;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
 * Created by Administrator on 2017/03/14
@@ -54,7 +55,7 @@ public class ToProducePresenterImpl implements ToProducePresenter{
                 List<OrderBean> toProduceList = orderBeanList;
                 EventBus.getDefault().post(new UpdateTabCount(TabList.TAB_TOPRODUCE, toProduceList.size()));
                 mToProduceView.bindDataToView(toProduceList);
-                OrderUtils.with().insertOrderList(toProduceList);
+                OrderUtils.with().insertOrderList(new CopyOnWriteArrayList<OrderBean>(toProduceList));
             }
         });
     }

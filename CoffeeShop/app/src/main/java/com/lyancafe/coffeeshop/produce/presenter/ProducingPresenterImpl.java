@@ -22,6 +22,7 @@ import com.lyancafe.coffeeshop.produce.view.ProducingView;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
 * Created by Administrator on 2017/03/15
@@ -49,7 +50,7 @@ public class ProducingPresenterImpl implements ProducingPresenter{
                 List<OrderBean> producingList = orderBeanList;
                 EventBus.getDefault().post(new UpdateTabCount(TabList.TAB_PRODUCING,producingList.size()));
                 mProducingView.bindDataToView(producingList);
-                OrderUtils.with().insertOrderList(producingList);
+                OrderUtils.with().insertOrderList(new CopyOnWriteArrayList<OrderBean>(producingList));
             }
         });
     }

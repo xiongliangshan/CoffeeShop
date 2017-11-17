@@ -16,6 +16,7 @@ import com.lyancafe.coffeeshop.produce.view.TomorrowView;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by Administrator on 2017/7/28.
@@ -43,7 +44,7 @@ public class TomorrowPresenterImpl implements TomorrowPresenter {
                 List<OrderBean> tomorrowList = orderBeanList;
                 EventBus.getDefault().post(new UpdateTabCount(TabList.TAB_TOMORROW, tomorrowList.size()));
                 mTomorrowView.bindDataToView(tomorrowList);
-                OrderUtils.with().insertOrderList(tomorrowList);
+                OrderUtils.with().insertOrderList(new CopyOnWriteArrayList<OrderBean>(tomorrowList));
             }
         });
     }

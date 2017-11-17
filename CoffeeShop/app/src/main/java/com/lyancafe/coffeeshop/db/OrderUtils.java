@@ -10,6 +10,7 @@ import com.lyancafe.coffeeshop.utils.LogUtil;
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -50,23 +51,24 @@ public class OrderUtils {
 
 
     //批量插入新的订单记录
-    public  void insertOrderList(final List<OrderBean> list){
+    public  void insertOrderList(final CopyOnWriteArrayList<OrderBean> list){
         if(list==null || list.size()==0){
             return;
         }
         tpl.execute(new Runnable() {
             @Override
             public void run() {
-                synchronized (list){
-                    for(int i=0;i<list.size();i++){
-                        List<ItemContentBean> items = list.get(i).getItems();
-                        for(int j =0;j<items.size();j++){
-                            items.get(j).setOrderId(list.get(i).getId());
-                        }
-                        mItemOrderDao.insertOrReplaceInTx(items);
+                long startTime = System.currentTimeMillis();
+                for (int i = 0; i < list.size(); i++) {
+                    List<ItemContentBean> items = list.get(i).getItems();
+                    for (int j = 0; j < items.size(); j++) {
+                        items.get(j).setOrderId(list.get(i).getId());
                     }
-                    mOrderDao.insertOrReplaceInTx(list);
+                    mItemOrderDao.insertOrReplaceInTx(items);
                 }
+                mOrderDao.insertOrReplaceInTx(list);
+                long endTime = System.currentTimeMillis();
+                LogUtil.d(TAG,"插入: "+list.size()+" 条记录,所用时间: "+(endTime-startTime)+" ms");
             }
         });
 
@@ -176,9 +178,11 @@ public class OrderUtils {
 
     //查询所有订单
     public List<OrderBean> queryAllOrders(){
+        long startTime = System.currentTimeMillis();
         QueryBuilder<OrderBean> qb = mOrderDao.queryBuilder();
         List<OrderBean> list = qb.list();
-        LogUtil.d(TAG,"查询所有订单: "+list.size()+" 条记录");
+        long endTime = System.currentTimeMillis();
+        LogUtil.d(TAG,"查询所有订单: "+list.size()+" 条记录,所用时间: "+(endTime-startTime)+" ms");
         return  list;
     }
 
