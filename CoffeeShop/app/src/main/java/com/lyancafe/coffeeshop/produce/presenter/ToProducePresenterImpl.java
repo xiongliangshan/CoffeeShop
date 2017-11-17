@@ -9,16 +9,19 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
+import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.constant.TabList;
 import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.UpdateTabCount;
 import com.lyancafe.coffeeshop.http.CustomObserver;
+import com.lyancafe.coffeeshop.printer.PrintFace;
 import com.lyancafe.coffeeshop.produce.model.ToProduceModel;
 import com.lyancafe.coffeeshop.produce.model.ToProduceModelImpl;
 import com.lyancafe.coffeeshop.produce.ui.ListMode;
 import com.lyancafe.coffeeshop.produce.view.ToProduceView;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -75,12 +78,15 @@ public class ToProducePresenterImpl implements ToProducePresenter{
 
 
     @Override
-    public void doStartBatchProduce(final List<Long> orderIds) {
+    public void doStartBatchProduce(final List<OrderBean> orders) {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
+        final List<Long> orderIds = OrderHelper.getIdsFromOrders(orders);
         mToProduceModel.doStartBatchProduce(user.getShopId(), orderIds, user.getToken(), new CustomObserver<JsonObject>(mContext,true) {
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
                 mToProduceView.showToast(mContext.getString(R.string.do_success));
+                LogUtil.d("xls"," 批量生产 onHandleSuccess 开始打印");
+                PrintFace.getInst().printBatch(orders);
                 mToProduceView.setMode(ListMode.NORMAL);
                 JsonArray jsonArray = jsonObject.get("orderIds").getAsJsonArray();
                 mToProduceView.removeItemsFromList(orderIds);

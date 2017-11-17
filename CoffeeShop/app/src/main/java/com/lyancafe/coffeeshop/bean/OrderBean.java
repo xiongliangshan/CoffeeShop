@@ -76,6 +76,8 @@ public class OrderBean implements Serializable{
 
     private boolean revoked = false;     //是否被撤销
 
+    private boolean checkAddress = false;        //是否是重点关注的地址
+
     @ToMany(referencedJoinProperty = "orderId")
     private List<ItemContentBean> items;        //购买的咖啡内容列表
 
@@ -87,12 +89,18 @@ public class OrderBean implements Serializable{
     @Generated(hash = 627331561)
     private transient OrderBeanDao myDao;
 
-    @Generated(hash = 1097962413)
+    
+    @Generated(hash = 1725534308)
+    public OrderBean() {
+    }
+
+    @Generated(hash = 207883664)
     public OrderBean(long id, String reminder, String orderSn, int shopOrderNo, boolean wxScan, boolean isRecipeFittings,
             long expectedTime, long orderTime, long distributeTime, long produceEffect, String recipient, String address,
             String phone, String courierName, String courierPhone, int status, int produceStatus, boolean issueOrder,
             int instant, String notes, String csrNotes, long handoverTime, int feedbackType, int deliveryTeam,
-            int mtShopOrderNo, double orderDistance, long relationOrderId, String reason, boolean revoked) {
+            int mtShopOrderNo, double orderDistance, long relationOrderId, String reason, boolean revoked,
+            boolean checkAddress) {
         this.id = id;
         this.reminder = reminder;
         this.orderSn = orderSn;
@@ -122,10 +130,7 @@ public class OrderBean implements Serializable{
         this.relationOrderId = relationOrderId;
         this.reason = reason;
         this.revoked = revoked;
-    }
-
-    @Generated(hash = 1725534308)
-    public OrderBean() {
+        this.checkAddress = checkAddress;
     }
 
     public long getId() {
@@ -463,6 +468,14 @@ public class OrderBean implements Serializable{
 
     public void setReason(String reason) {
         this.reason = reason;
+    }
+
+    public boolean getCheckAddress() {
+        return this.checkAddress;
+    }
+
+    public void setCheckAddress(boolean checkAddress) {
+        this.checkAddress = checkAddress;
     }
 
     /** called by internal mechanisms, do not call yourself. */

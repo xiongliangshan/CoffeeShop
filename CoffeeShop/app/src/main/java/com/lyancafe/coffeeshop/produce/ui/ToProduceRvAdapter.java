@@ -65,6 +65,9 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
     private List<OrderBean> searchList;
     public Map<Integer,Boolean> selectMap;
 
+
+    private ToProduceCallback callback;
+
     public ToProduceRvAdapter(Context context) {
         this.context = context;
         curMode = ListMode.NORMAL;
@@ -165,6 +168,12 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         }else{
             holder.replenishIV.setVisibility(View.VISIBLE);
             holder.replenishIV.setImageResource(R.mipmap.flag_replenish);
+        }
+
+        if(order.getCheckAddress()){
+            holder.checkImg.setVisibility(View.VISIBLE);
+        }else {
+            holder.checkImg.setVisibility(View.INVISIBLE);
         }
 
 
@@ -352,6 +361,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         @BindView(R.id.iv_reminder) ImageView reminderImg;
         @BindView(R.id.iv_sao_flag) ImageView saoImg;
         @BindView(R.id.iv_label_flag) ImageView labelFlagImg;
+        @BindView(R.id.iv_check) ImageView checkImg;
         @BindView(R.id.item_order_id) TextView orderIdTxt;
         @BindView(R.id.item_expected_time) TextView expectedTimeText;
         @BindView(R.id.item_grab_flag) ImageView grabFlagIV;
@@ -377,6 +387,9 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         this.list = list;
         Collections.sort(this.list,new OrderSortComparator());
         notifyDataSetChanged();
+        if(callback!=null){
+            callback.updateBatchUI(this.list.size());
+        }
         EventBus.getDefault().post(new NaiGaiEvent(OrderHelper.caculateNaiGai(list)));
         if(selected>=0 && selected<this.list.size()){
             EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
@@ -398,26 +411,6 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         }
     }
 
-    private List<OrderBean> filterOrders(List<OrderBean> list,int category){
-        List<OrderBean> subList = new ArrayList<>();
-        if(category== OrderCategory.MEITUN){
-            for(OrderBean orderBean:list){
-                if(orderBean.getDeliveryTeam()==8){
-                    subList.add(orderBean);
-                }
-            }
-        }else if(category==OrderCategory.OWN){
-            for(OrderBean orderBean:list){
-                if(orderBean.getDeliveryTeam()!=8){
-                    subList.add(orderBean);
-                }
-            }
-        }else{
-            subList = list;
-        }
-
-        return subList;
-    }
 
 
     /**
@@ -442,6 +435,10 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         }
         //计算奶盖数量
         EventBus.getDefault().post(new NaiGaiEvent(OrderHelper.caculateNaiGai(list)));
+        //更新批量操作按钮可见性
+        if(callback!=null){
+            callback.updateBatchUI(this.list.size());
+        }
 
     }
 
@@ -467,6 +464,19 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         }
         //计算奶盖数量
         EventBus.getDefault().post(new NaiGaiEvent(OrderHelper.caculateNaiGai(list)));
+
+        //更新批量操作按钮可见性
+        if(callback!=null){
+            callback.updateBatchUI(this.list.size());
+        }
+    }
+
+    public void setCallback(ToProduceCallback callback) {
+        this.callback = callback;
+    }
+
+    interface ToProduceCallback{
+        void updateBatchUI(int size);
     }
 
 

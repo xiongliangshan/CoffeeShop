@@ -59,6 +59,7 @@ public class Calculator {
             bean.setWxScan(orderBean.getWxScan());
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
+            bean.setCheckAddress(orderBean.getCheckAddress());
             if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
                 bean.setIsHaveRemarks(false);
             }else{
@@ -81,6 +82,7 @@ public class Calculator {
             bean.setWxScan(orderBean.getWxScan());
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
+            bean.setCheckAddress(orderBean.getCheckAddress());
             if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
                 bean.setIsHaveRemarks(false);
             }else{
@@ -104,6 +106,7 @@ public class Calculator {
             bean.setWxScan(orderBean.getWxScan());
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
+            bean.setCheckAddress(orderBean.getCheckAddress());
             if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
                 bean.setIsHaveRemarks(false);
             }else{
@@ -126,6 +129,7 @@ public class Calculator {
             bean.setWxScan(orderBean.getWxScan());
             bean.setInstant(orderBean.getInstant());
             bean.setOrderSn(orderBean.getOrderSn());
+            bean.setCheckAddress(orderBean.getCheckAddress());
             if(TextUtils.isEmpty(orderBean.getNotes()) && TextUtils.isEmpty(orderBean.getCsrNotes())){
                 bean.setIsHaveRemarks(false);
             }else{
@@ -329,6 +333,14 @@ public class Calculator {
             return "";
         }else{
             return "("+label+")";
+        }
+    }
+
+    public static String getCheckShopNo(PrintOrderBean bean){
+        if(bean.isCheckAddress()){
+            return "*"+bean.getShopOrderNo()+"*";
+        }else{
+            return bean.getShopOrderNo();
         }
     }
 

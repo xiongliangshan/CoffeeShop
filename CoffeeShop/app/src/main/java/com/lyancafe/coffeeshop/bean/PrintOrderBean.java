@@ -23,6 +23,7 @@ public class PrintOrderBean {
     private String address;      //收货人的地址
     private long expectedTime;   //期望送达时间
     private String deliverName;  //配送员姓名
+    private boolean checkAddress; //是否是重点地址
     private List<PrintCupBean> coffeeList;
 
     public PrintOrderBean() {
@@ -160,6 +161,15 @@ public class PrintOrderBean {
         this.deliverName = deliverName;
     }
 
+    public boolean isCheckAddress() {
+        return checkAddress;
+    }
+
+    public void setCheckAddress(boolean checkAddress) {
+        this.checkAddress = checkAddress;
+    }
+
+
     public void setCoffeeList(List<PrintCupBean> coffeeList) {
         this.coffeeList = coffeeList;
     }
@@ -186,6 +196,7 @@ public class PrintOrderBean {
                 ", address='" + address + '\'' +
                 ", expectedTime=" + expectedTime +
                 ", deliverName='" + deliverName + '\'' +
+                ", checkAddress=" + checkAddress +
                 ", coffeeList=" + coffeeList +
                 '}';
     }

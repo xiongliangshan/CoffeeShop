@@ -1,5 +1,7 @@
 package com.lyancafe.coffeeshop.produce.presenter;
 
+import com.lyancafe.coffeeshop.bean.OrderBean;
+
 import java.util.List;
 
 /**
@@ -15,7 +17,7 @@ public interface ToProducePresenter {
     void doStartProduce(long orderId,boolean isScanCode);
 
     //点击批量开始生产
-    void doStartBatchProduce(List<Long> orderIds);
+    void doStartBatchProduce(List<OrderBean> orders);
 
     //无需生产
     void doNoPruduce(long orderId);

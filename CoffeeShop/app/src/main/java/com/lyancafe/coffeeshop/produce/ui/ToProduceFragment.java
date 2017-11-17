@@ -61,7 +61,7 @@ import static com.lyancafe.coffeeshop.produce.ui.ListMode.SELECT;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ToProduceFragment extends BaseFragment implements ToProduceView {
+public class ToProduceFragment extends BaseFragment implements ToProduceView,ToProduceRvAdapter.ToProduceCallback {
 
 
     @BindView(R.id.rv_to_produce)
@@ -122,6 +122,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView {
 
     private void initViews() {
         mAdapter = new ToProduceRvAdapter(getActivity());
+        mAdapter.setCallback(this);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4, GridLayoutManager.VERTICAL, false));
         mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(12, getActivity()), false));
         mRecyclerView.setAdapter(mAdapter);
@@ -176,13 +177,15 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView {
     public void bindDataToView(List<OrderBean> list) {
         allOrderList.clear();
         allOrderList.addAll(list);
-        if (isVisible && isResumed() && batchLayout!=null) {
-            if (list != null && list.size() > 1) {
-                batchLayout.setVisibility(View.VISIBLE);
-            } else {
-                batchLayout.setVisibility(View.GONE);
-            }
-            mAdapter.setData(list);
+        mAdapter.setData(list);
+    }
+
+    @Override
+    public void updateBatchUI(int size) {
+        if(size>=2){
+            batchLayout.setVisibility(View.VISIBLE);
+        }else{
+            batchLayout.setVisibility(View.GONE);
         }
     }
 
@@ -380,9 +383,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView {
                         return;
                     }
 
-                    PrintFace.getInst().printBatch(selectedList);
-                    List<Long> orderIds = OrderHelper.getIdsFromOrders(selectedList);
-                    mToProducePresenter.doStartBatchProduce(orderIds);
+                    mToProducePresenter.doStartBatchProduce(selectedList);
 
 
                 }
@@ -426,4 +427,5 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView {
             mToProducePresenter.loadToProduceOrders();
         }
     }
+
 }

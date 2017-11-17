@@ -146,11 +146,19 @@
                 tools:visibility="visible"
                 android:layout_marginLeft="4dp"/>
 
-            <ImageView
+            <!--<ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:src="@mipmap/flag_placeholder"
+                android:visibility="invisible"/>-->
+
+            <ImageView
+                android:id="@+id/iv_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:src="@mipmap/eye"
                 android:visibility="invisible"/>
 
 
