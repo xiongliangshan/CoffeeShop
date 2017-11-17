@@ -247,7 +247,7 @@ public class WinposPrinter implements NetPrint {
                 "S3"+"\n"+
                 "D8"+"\n"+
                 "A20,40,0,230,1,1,N,\""+orderBean.getShopOrderNo()+"\""+"\n"+
-                "A110,40,0,230,1,1,N,\""+orderBean.getBoxAmount()+"-"+orderBean.getBoxNumber()+"|"+orderBean.getCupAmount()+"-" +orderBean.getCupNumber()+"\""+"\n"+ //杯数盒子信息
+//                "A110,40,0,230,1,1,N,\""+orderBean.getBoxAmount()+"-"+orderBean.getBoxNumber()+"|"+orderBean.getCupAmount()+"-" +orderBean.getCupNumber()+"\""+"\n"+ //杯数盒子信息
                 "A20,70,0,230,1,1,N,\""+orderBean.getCoffee()+"\""+"\n"+
                 "A20,100,0,230,1,1,N,\""+orderBean.getLabel()+"\""+"\n"+
                 "P1"+"\n";

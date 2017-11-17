@@ -260,7 +260,7 @@ public class FujitsuPrinter implements NetPrint {
                 "DIRECTION 1,0\n" +
                 "CLS\n" +
                 "TEXT 20,40,\"TSS24.BF2\",0,1,1,\""+ bean.getShopOrderNo() +"\"\n" +
-                "TEXT 110,40,\"TSS24.BF2\",0,1,1,\""+bean.getBoxAmount()+"-"+bean.getBoxNumber()+"|"+bean.getCupAmount()+"-" +bean.getCupNumber()+"\"\n" +
+//                "TEXT 110,40,\"TSS24.BF2\",0,1,1,\""+bean.getBoxAmount()+"-"+bean.getBoxNumber()+"|"+bean.getCupAmount()+"-" +bean.getCupNumber()+"\"\n" +
                 "TEXT 20,70,\"TSS24.BF2\",0,1,1,\""+bean.getCoffee()+"\"\n" +
                 "TEXT 20,100,\"TSS24.BF2\",0,1,1,\""+bean.getLabel()+"\"\n" +
                 "PRINT 1,1\n";
