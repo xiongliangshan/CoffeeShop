@@ -274,9 +274,6 @@ public class OrderHelper {
     //判断订单是否已经被打印过
     public static boolean isPrinted(Context context,String orderSn){
         Set<String> list = getPrintedSet(context);
-        for(String order:list){
-            Log.d(TAG,"set contain :"+order);
-        }
         return list.contains(orderSn);
     }
     //筛选出未打印的订单集合
