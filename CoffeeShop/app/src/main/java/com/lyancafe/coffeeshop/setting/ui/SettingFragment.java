@@ -143,10 +143,7 @@ public class SettingFragment extends BaseFragment implements SettingView {
     @Override
     public void dismissLoading() {
         if (mLoadingDlg != null && mLoadingDlg.isShowing()) {
-            Activity activity = mLoadingDlg.getOwnerActivity();
-            if(activity!=null && !activity.isFinishing()){
-                mLoadingDlg.dismiss();
-            }
+            mLoadingDlg.dismiss();
         }
     }
 }
