@@ -129,7 +129,7 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
         mAdapter.setData(list);
     }
 
-    @Override
+    /*@Override
     public void showToast(String promptStr) {
         ToastUtil.show(getContext(), promptStr);
     }
@@ -156,7 +156,7 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
                 mLoadingDlg.dismiss();
             }
         }
-    }
+    }*/
 
     @Override
     public void removeItemFromList(int id) {
@@ -186,7 +186,6 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
         EventBus.getDefault().unregister(this);
         super.onDestroyView();
         unbinder.unbind();
-        dismissLoading();
     }
 
     @Override

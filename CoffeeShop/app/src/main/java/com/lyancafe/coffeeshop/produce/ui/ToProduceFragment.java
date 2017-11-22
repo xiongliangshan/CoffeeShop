@@ -189,7 +189,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         }
     }
 
-    @Override
+    /*@Override
     public void showToast(String promptStr) {
         ToastUtil.show(getContext(), promptStr);
     }
@@ -218,7 +218,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
             }
 
         }
-    }
+    }*/
 
 
     @Override
@@ -242,7 +242,6 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         EventBus.getDefault().unregister(this);
         super.onDestroyView();
         unbinder.unbind();
-        dismissLoading();
     }
 
     @Override

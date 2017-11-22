@@ -108,7 +108,7 @@ public class ManagerFragment extends BaseFragment implements ManagerView {
         }
     }
 
-    @Override
+   /* @Override
     public void showToast(String message) {
         ToastUtil.show(getContext(), message);
     }
@@ -128,7 +128,7 @@ public class ManagerFragment extends BaseFragment implements ManagerView {
         if (loadingDialog != null && loadingDialog.isShowing()) {
             loadingDialog.hide();
         }
-    }
+    }*/
 
     @Override
     public void showEdit() {
@@ -191,7 +191,6 @@ public class ManagerFragment extends BaseFragment implements ManagerView {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-        dismissLoading();
     }
 
     @OnClick({R.id.iv_edit, R.id.iv_save})

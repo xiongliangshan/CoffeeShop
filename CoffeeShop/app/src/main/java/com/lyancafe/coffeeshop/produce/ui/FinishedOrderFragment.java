@@ -177,10 +177,10 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
     }
 
-    @Override
+    /*@Override
     public void showToast(String promptStr) {
         ToastUtil.show(getContext(), promptStr);
-    }
+    }*/
 
 
     @Override

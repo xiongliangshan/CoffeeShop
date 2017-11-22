@@ -82,10 +82,10 @@ public class RevokedFragment extends BaseFragment implements RevokedView<OrderBe
         mAdapter.setData(list);
     }
 
-    @Override
+   /* @Override
     public void showToast(String promptStr) {
         ToastUtil.show(getContext(),promptStr);
-    }
+    }*/
 
     //订单撤销事件
     @Subscribe

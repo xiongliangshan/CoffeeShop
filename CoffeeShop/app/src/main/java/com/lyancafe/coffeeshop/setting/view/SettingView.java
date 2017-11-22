@@ -12,11 +12,11 @@ public interface SettingView extends BaseView{
     void showUpdateConfirmDlg(final ApkInfoBean apk);
 
 
-    void showToast(String message);
+   /* void showToast(String message);
 
     //显示加载进度对话框
     void showLoading();
 
     //关闭进度对话框
-    void dismissLoading();
+    void dismissLoading();*/
 }

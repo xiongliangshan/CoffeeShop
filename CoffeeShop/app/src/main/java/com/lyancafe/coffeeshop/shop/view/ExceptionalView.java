@@ -17,9 +17,9 @@ public interface ExceptionalView<T> extends BaseView {
     //显示无数据空视图
     void showEmpty(boolean isNeedToShow);
 
-    void showLoading();
+   /* void showLoading();
 
-    void dismissLoading();
+    void dismissLoading();*/
 
     //从列表中删除某个item
     void removeItemFromList(long orderId);

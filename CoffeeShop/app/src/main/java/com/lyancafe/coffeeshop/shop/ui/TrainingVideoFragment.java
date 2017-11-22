@@ -78,10 +78,10 @@ public class TrainingVideoFragment extends BaseFragment implements TrainingVideo
     }
 
 
-    @Override
+   /* @Override
     public void showToast(String promptStr) {
         ToastUtil.show(getContext(),promptStr);
-    }
+    }*/
 
     @Override
     public void onVisible() {

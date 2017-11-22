@@ -86,10 +86,10 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView<E
         mAdapter.setData(list);
     }
 
-    @Override
+    /*@Override
     public void showToast(String promptStr) {
         ToastUtil.show(getActivity(),promptStr);
-    }
+    }*/
 
     @Override
     public void appendListData(List<EvaluationBean> list) {

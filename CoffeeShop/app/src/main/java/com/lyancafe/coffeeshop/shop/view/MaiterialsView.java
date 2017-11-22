@@ -14,7 +14,7 @@ public interface MaiterialsView<T> extends BaseView{
     //绑定数据到列表视图
     void bindDataToView(List<T> list);
 
-    void showLoading();
+    void showContentLoading();
 
-    void dismissLoading();
+    void dismissContentLoading();
 }

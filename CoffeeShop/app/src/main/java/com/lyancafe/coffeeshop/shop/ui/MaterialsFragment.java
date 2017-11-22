@@ -194,20 +194,20 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView<Ma
         mAdapter.setList(materials.get(currentItem).getItems());
     }
 
-    @Override
+   /* @Override
     public void showToast(String promptStr) {
         ToastUtil.show(getActivity(), promptStr);
-    }
+    }*/
 
     @Override
-    public void showLoading() {
+    public void showContentLoading() {
         if (loadingProgressBar != null) {
             loadingProgressBar.show();
         }
     }
 
     @Override
-    public void dismissLoading() {
+    public void dismissContentLoading() {
         if (loadingProgressBar != null) {
             loadingProgressBar.hide();
         }
@@ -314,7 +314,6 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView<Ma
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        dismissLoading();
         savedState = saveState();
     }
 

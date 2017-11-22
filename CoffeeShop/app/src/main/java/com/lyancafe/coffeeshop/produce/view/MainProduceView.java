@@ -1,10 +1,12 @@
 package com.lyancafe.coffeeshop.produce.view;
 
+import com.lyancafe.coffeeshop.base.BaseView;
+
 /**
 * Created by Administrator on 2017/03/15
 */
 
-public interface MainProduceView{
+public interface MainProduceView extends BaseView{
 
 
     /**

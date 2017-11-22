@@ -156,10 +156,10 @@ public class ProducedFragment extends BaseFragment implements ProducedView<Order
         mAdapter.removeOrderFromList(id);
     }
 
-    @Override
+    /*@Override
     public void showToast(String promptStr) {
         ToastUtil.show(getContext(), promptStr);
-    }
+    }*/
 
     @Override
     public void onPause() {

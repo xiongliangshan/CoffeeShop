@@ -23,6 +23,7 @@
 -keepattributes EnclosingMethod
 -dontoptimize
 -dontpreverify
+-ignorewarnings
 
 -dontwarn android.support.**
 -dontwarn org.apache.**

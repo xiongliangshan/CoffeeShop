@@ -54,11 +54,9 @@ public abstract class CustomObserver<T> implements Observer<BaseEntity<T>> {
     public void onSubscribe(@NonNull Disposable d) {
         LogUtil.d(TAG,"onSubscribe  ");
         if(isShowProgress){
-            Activity activity = mLoadinngDlg.getOwnerActivity();
-            if(activity!=null && !activity.isFinishing()){
+            if(mLoadinngDlg!=null && !mLoadinngDlg.isShowing()){
                 mLoadinngDlg.show();
             }
-
         }
     }
 
@@ -90,10 +88,7 @@ public abstract class CustomObserver<T> implements Observer<BaseEntity<T>> {
         LogUtil.e(TAG,"onError :"+e.getMessage());
         if(isShowProgress){
             if(mLoadinngDlg!=null && mLoadinngDlg.isShowing()){
-                Activity activity = mLoadinngDlg.getOwnerActivity();
-                if(activity!=null && !activity.isFinishing()){
-                    mLoadinngDlg.dismiss();
-                }
+                mLoadinngDlg.dismiss();
             }
         }
         ToastUtil.show(CSApplication.getInstance(),e.getMessage());
@@ -104,10 +99,7 @@ public abstract class CustomObserver<T> implements Observer<BaseEntity<T>> {
         LogUtil.d(TAG,"onComplete");
         if(isShowProgress){
             if(mLoadinngDlg!=null && mLoadinngDlg.isShowing()){
-                Activity activity = mLoadinngDlg.getOwnerActivity();
-                if(activity!=null && !activity.isFinishing()){
-                    mLoadinngDlg.dismiss();
-                }
+                mLoadinngDlg.dismiss();
             }
         }
     }

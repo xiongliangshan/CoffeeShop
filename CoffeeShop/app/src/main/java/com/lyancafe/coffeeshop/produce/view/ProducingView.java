@@ -20,11 +20,11 @@ public interface ProducingView<T> extends BaseView{
     //显示生产完成确认对话框
     void showFinishProduceConfirmDialog(final OrderBean orderBean);
 
-    //显示加载进度对话框
+   /* //显示加载进度对话框
     void showLoading();
 
     //关闭进度对话框
-    void dismissLoading();
+    void dismissLoading();*/
 
     //从列表中删除一个N个item
     void removeItemsFromList(List<Long> ids);

@@ -125,7 +125,7 @@ public class SettingFragment extends BaseFragment implements SettingView {
         builder.create().show();
     }
 
-    @Override
+    /*@Override
     public void showToast(String message) {
         ToastUtil.show(getContext(),message);
     }
@@ -145,5 +145,5 @@ public class SettingFragment extends BaseFragment implements SettingView {
         if (mLoadingDlg != null && mLoadingDlg.isShowing()) {
             mLoadingDlg.dismiss();
         }
-    }
+    }*/
 }

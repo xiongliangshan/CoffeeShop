@@ -179,7 +179,7 @@ public class ExceptionalFragment extends BaseFragment implements ExceptionalView
         }
     }
 
-    @Override
+   /* @Override
     public void showLoading() {
         if (mLodingDlg == null) {
             mLodingDlg = new LoadingDialog(getActivity());
@@ -199,7 +199,7 @@ public class ExceptionalFragment extends BaseFragment implements ExceptionalView
     @Override
     public void showToast(String promptStr) {
         ToastUtil.show(getActivity(), promptStr);
-    }
+    }*/
 
     @Override
     public void showEmpty(boolean isNeedToShow) {
@@ -226,7 +226,6 @@ public class ExceptionalFragment extends BaseFragment implements ExceptionalView
     @Override
     public void onInVisible() {
         super.onInVisible();
-        dismissLoading();
         if (mHandler != null) {
             mHandler.removeCallbacks(mRunnable);
         }

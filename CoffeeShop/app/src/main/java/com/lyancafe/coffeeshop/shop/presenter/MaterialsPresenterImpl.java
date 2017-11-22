@@ -41,7 +41,7 @@ public class MaterialsPresenterImpl implements MaterialsPresenter{
             @Override
             public void onSubscribe(@NonNull Disposable d) {
                 super.onSubscribe(d);
-                mMaterialView.showLoading();
+                mMaterialView.showContentLoading();
             }
 
             @Override
@@ -53,13 +53,13 @@ public class MaterialsPresenterImpl implements MaterialsPresenter{
             @Override
             public void onComplete() {
                 super.onComplete();
-                mMaterialView.dismissLoading();
+                mMaterialView.dismissContentLoading();
             }
 
             @Override
             public void onError(@NonNull Throwable e) {
                 super.onError(e);
-                mMaterialView.dismissLoading();
+                mMaterialView.dismissContentLoading();
             }
         });
     }

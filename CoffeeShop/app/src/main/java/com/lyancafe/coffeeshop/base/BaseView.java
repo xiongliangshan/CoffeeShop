@@ -8,9 +8,12 @@ import java.util.List;
 
 public interface BaseView{
 
-   /* //绑定数据到列表视图
-    void bindDataToView(List<T> list);*/
-
     //弹出Toast提示
     void showToast(String promptStr);
+
+    //显示Loading进度框
+    void showLoading();
+
+    //关闭Loading进度框
+    void dismissLoading();
 }

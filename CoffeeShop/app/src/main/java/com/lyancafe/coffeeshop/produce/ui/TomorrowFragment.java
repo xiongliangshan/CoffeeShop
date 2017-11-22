@@ -80,10 +80,10 @@ public class TomorrowFragment extends BaseFragment implements TomorrowView<Order
         mAdapter.setData(list);
     }
 
-    @Override
+   /* @Override
     public void showToast(String promptStr) {
         ToastUtil.show(getContext(), promptStr);
-    }
+    }*/
 
     @Override
     public void onVisible() {
