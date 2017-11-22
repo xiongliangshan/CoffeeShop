@@ -50,7 +50,7 @@ import butterknife.Unbinder;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ProducingFragment extends BaseFragment implements ProducingView {
+public class ProducingFragment extends BaseFragment implements ProducingView<OrderBean> {
 
     @BindView(R.id.et_search_key)
     EditText etSearchKey;

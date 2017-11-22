@@ -50,7 +50,7 @@ import butterknife.Unbinder;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ExceptionalFragment extends BaseFragment implements ExceptionalView, PullLoadMoreRecyclerView.PullLoadMoreListener {
+public class ExceptionalFragment extends BaseFragment implements ExceptionalView<ExceptionalOrder>, PullLoadMoreRecyclerView.PullLoadMoreListener {
 
 
     Unbinder unbinder;

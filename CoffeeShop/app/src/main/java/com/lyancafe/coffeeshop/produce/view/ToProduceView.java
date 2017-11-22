@@ -11,7 +11,10 @@ import java.util.Map;
 * Created by Administrator on 2017/03/14
 */
 
-public interface ToProduceView extends BaseView<OrderBean>{
+public interface ToProduceView<T> extends BaseView{
+
+    //绑定数据到列表视图
+    void bindDataToView(List<T> list);
 
     //从列表中删除某个item
     void removeItemFromList(int id);

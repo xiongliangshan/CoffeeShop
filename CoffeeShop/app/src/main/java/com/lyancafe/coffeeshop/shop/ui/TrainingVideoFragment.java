@@ -30,7 +30,7 @@ import butterknife.Unbinder;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TrainingVideoFragment extends BaseFragment implements TrainingVideoView{
+public class TrainingVideoFragment extends BaseFragment implements TrainingVideoView<VideoBean>{
 
 
     @BindView(R.id.rv_videolist)

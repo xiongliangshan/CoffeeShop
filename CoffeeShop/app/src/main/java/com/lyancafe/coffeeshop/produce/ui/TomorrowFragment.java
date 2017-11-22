@@ -31,7 +31,7 @@ import butterknife.Unbinder;
  * Created by Administrator on 2017/7/28.
  */
 
-public class TomorrowFragment extends BaseFragment implements TomorrowView {
+public class TomorrowFragment extends BaseFragment implements TomorrowView<OrderBean> {
 
 
     @BindView(R.id.rv_tomorrow)

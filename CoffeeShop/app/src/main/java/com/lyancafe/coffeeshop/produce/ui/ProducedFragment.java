@@ -42,7 +42,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
-public class ProducedFragment extends BaseFragment implements ProducedView {
+public class ProducedFragment extends BaseFragment implements ProducedView<OrderBean> {
 
     public List<OrderBean> allOrderList = new ArrayList<>();
 

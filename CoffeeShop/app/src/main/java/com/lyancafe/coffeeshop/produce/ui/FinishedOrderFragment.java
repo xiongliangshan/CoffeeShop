@@ -42,7 +42,7 @@ import butterknife.Unbinder;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreRecyclerView.PullLoadMoreListener, FinishedView {
+public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreRecyclerView.PullLoadMoreListener, FinishedView<OrderBean> {
 
     @BindView(R.id.plmgv_order_list)
     PullLoadMoreRecyclerView pullLoadMoreRecyclerView;

@@ -1,12 +1,13 @@
 package com.lyancafe.coffeeshop.setting.view;
 
+import com.lyancafe.coffeeshop.base.BaseView;
 import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 
 /**
  * Created by Administrator on 2017/8/16.
  */
 
-public interface SettingView {
+public interface SettingView extends BaseView{
 
     void showUpdateConfirmDlg(final ApkInfoBean apk);
 

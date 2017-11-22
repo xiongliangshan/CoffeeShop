@@ -25,7 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class EvaluationFragment extends BaseFragment implements EvaluationView {
+public class EvaluationFragment extends BaseFragment implements EvaluationView<EvaluationBean> {
 
     private static String TAG = EvaluationFragment.class.getName();
     @BindView(R.id.pmrv_evaluation_list) PullLoadMoreRecyclerView pmrvEvaluationList;

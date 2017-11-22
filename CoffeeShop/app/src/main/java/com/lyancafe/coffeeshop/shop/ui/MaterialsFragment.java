@@ -40,7 +40,7 @@ import butterknife.OnClick;
 /**
  * Created by Administrator on 2015/9/1.
  */
-public class MaterialsFragment extends BaseFragment implements MaiterialsView {
+public class MaterialsFragment extends BaseFragment implements MaiterialsView<Material> {
 
     private static final String TAG = "MaterialsFragment";
     @BindView(R.id.tv_print_paster)

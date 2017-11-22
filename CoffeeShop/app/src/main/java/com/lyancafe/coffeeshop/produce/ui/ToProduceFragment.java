@@ -61,7 +61,7 @@ import static com.lyancafe.coffeeshop.produce.ui.ListMode.SELECT;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ToProduceFragment extends BaseFragment implements ToProduceView,ToProduceRvAdapter.ToProduceCallback {
+public class ToProduceFragment extends BaseFragment implements ToProduceView<OrderBean>,ToProduceRvAdapter.ToProduceCallback {
 
 
     @BindView(R.id.rv_to_produce)

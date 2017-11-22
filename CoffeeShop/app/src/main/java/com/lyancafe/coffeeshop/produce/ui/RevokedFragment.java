@@ -33,7 +33,7 @@ import butterknife.Unbinder;
  * Created by Administrator on 2017/8/11.
  */
 
-public class RevokedFragment extends BaseFragment implements RevokedView {
+public class RevokedFragment extends BaseFragment implements RevokedView<OrderBean> {
 
 
     @BindView(R.id.rv_revoked)
