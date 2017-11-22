@@ -291,6 +291,7 @@ public class WinposPrinter implements NetPrint {
             writer.write(command);
             writer.flush();
             writer.close();
+            Thread.sleep(300);
         } catch (UnknownHostException e) {
             e.printStackTrace();
             Log.e(TAG, "UnknownHostException:"+e.toString());
@@ -298,7 +299,9 @@ public class WinposPrinter implements NetPrint {
             e.printStackTrace();
             Log.e(TAG, "IOException" + e.toString());
             ToastUtil.showToast(CSApplication.getInstance(),TAG+"打印机"+ip+":"+port+"无法连接");
-        }finally {
+        }catch (InterruptedException e){
+            Log.e(TAG, "InterruptedException" + e.getMessage());
+        }finally{
             try {
                 if(client!=null){
                     client.close();

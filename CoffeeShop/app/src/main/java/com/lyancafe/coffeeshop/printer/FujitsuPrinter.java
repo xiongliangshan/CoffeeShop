@@ -362,7 +362,7 @@ public class FujitsuPrinter implements NetPrint {
     @Override
     public void writeCommand(String ip, int port, String command) {
         Log.d(TAG,Thread.currentThread().getName()+" writeCommand,command = \n"+command);
-        Socket client;
+        Socket client=null;
         try {
             client = new Socket(ip, port);
             client.setSoTimeout(3000);
@@ -370,7 +370,6 @@ public class FujitsuPrinter implements NetPrint {
             writer.write(command);
             writer.flush();
             writer.close();
-            client.close();
             Thread.sleep(300);
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -382,6 +381,14 @@ public class FujitsuPrinter implements NetPrint {
         } catch (InterruptedException e) {
             e.printStackTrace();
             Log.e(TAG, "InterruptedException" + e.getMessage());
+        }finally {
+            try {
+                if(client!=null){
+                    client.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }
