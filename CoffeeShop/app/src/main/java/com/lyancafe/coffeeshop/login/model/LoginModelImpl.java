@@ -27,8 +27,8 @@ public class LoginModelImpl implements LoginModel{
     private static final String TAG = "login";
 
     @Override
-    public void login(String loginName, String password, Observer<BaseEntity<UserBean>> observer) {
-        RetrofitHttp.getRetrofit().login(loginName,password)
+    public void login(String loginName, String password,String regId,Observer<BaseEntity<UserBean>> observer) {
+        RetrofitHttp.getRetrofit().login(loginName,password,regId)
                 .compose(RxHelper.<BaseEntity<UserBean>>io_main())
                 .subscribe(observer);
     }

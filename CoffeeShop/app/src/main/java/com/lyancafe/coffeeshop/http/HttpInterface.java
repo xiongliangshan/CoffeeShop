@@ -37,7 +37,7 @@ public interface HttpInterface {
      * @return
      */
     @POST("token")
-    Observable<BaseEntity<UserBean>> login(@Query("loginName") String loginName,@Query("password") String password);
+    Observable<BaseEntity<UserBean>> login(@Query("loginName") String loginName,@Query("password") String password,@Query("regId") String regId);
 
 
     /**

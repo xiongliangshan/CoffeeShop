@@ -73,7 +73,8 @@ public class LoginPresenterImpl implements LoginPresenter{
         } catch (Exception e) {
             Log.e("login", e.getMessage());
         }
-        mLoginModel.login(loginName, password, new Observer<BaseEntity<UserBean>>() {
+        final String redId = JPushInterface.getRegistrationID(CSApplication.getInstance());
+        mLoginModel.login(loginName, password,redId,new Observer<BaseEntity<UserBean>>() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
                 mLoginView.showLoadingDlg();

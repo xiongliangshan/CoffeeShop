@@ -24,8 +24,9 @@ public interface LoginModel{
      * 登录
      * @param loginName
      * @param password
+     * @param regId
      */
-    void login(String loginName, String password, Observer<BaseEntity<UserBean>> Observer);
+    void login(String loginName, String password,String regId,Observer<BaseEntity<UserBean>> Observer);
 
 
     /**
