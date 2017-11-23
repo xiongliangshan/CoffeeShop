@@ -16,7 +16,6 @@ import com.lyancafe.coffeeshop.shop.presenter.EvaluationPresenter;
 import com.lyancafe.coffeeshop.shop.presenter.EvaluationPresenterImpl;
 import com.lyancafe.coffeeshop.shop.view.EvaluationView;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
 import java.util.List;
@@ -86,10 +85,6 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView<E
         mAdapter.setData(list);
     }
 
-    /*@Override
-    public void showToast(String promptStr) {
-        ToastUtil.show(getActivity(),promptStr);
-    }*/
 
     @Override
     public void appendListData(List<EvaluationBean> list) {

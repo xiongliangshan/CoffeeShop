@@ -28,7 +28,6 @@ import com.lyancafe.coffeeshop.produce.view.ProducedView;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -156,10 +155,6 @@ public class ProducedFragment extends BaseFragment implements ProducedView<Order
         mAdapter.removeOrderFromList(id);
     }
 
-    /*@Override
-    public void showToast(String promptStr) {
-        ToastUtil.show(getContext(), promptStr);
-    }*/
 
     @Override
     public void onPause() {

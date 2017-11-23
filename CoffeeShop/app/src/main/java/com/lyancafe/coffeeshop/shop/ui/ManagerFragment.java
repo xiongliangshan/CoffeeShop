@@ -108,28 +108,6 @@ public class ManagerFragment extends BaseFragment implements ManagerView {
         }
     }
 
-   /* @Override
-    public void showToast(String message) {
-        ToastUtil.show(getContext(), message);
-    }
-
-    @Override
-    public void showLoading() {
-        if (loadingDialog == null) {
-            loadingDialog = new LoadingDialog(getContext());
-        }
-        if (!loadingDialog.isShowing()) {
-            loadingDialog.show();
-        }
-    }
-
-    @Override
-    public void dismissLoading() {
-        if (loadingDialog != null && loadingDialog.isShowing()) {
-            loadingDialog.hide();
-        }
-    }*/
-
     @Override
     public void showEdit() {
         if (llModifyContainer != null && llModifyContainer.getVisibility() != View.VISIBLE) {

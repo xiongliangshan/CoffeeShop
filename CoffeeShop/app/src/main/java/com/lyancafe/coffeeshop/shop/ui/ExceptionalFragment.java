@@ -33,7 +33,6 @@ import com.lyancafe.coffeeshop.shop.presenter.ExceptionalPresenter;
 import com.lyancafe.coffeeshop.shop.presenter.ExceptionalPresenterImpl;
 import com.lyancafe.coffeeshop.shop.view.ExceptionalView;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.LoadingDialog;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
@@ -179,27 +178,6 @@ public class ExceptionalFragment extends BaseFragment implements ExceptionalView
         }
     }
 
-   /* @Override
-    public void showLoading() {
-        if (mLodingDlg == null) {
-            mLodingDlg = new LoadingDialog(getActivity());
-        }
-        if (!mLodingDlg.isShowing()) {
-            mLodingDlg.show();
-        }
-    }
-
-    @Override
-    public void dismissLoading() {
-        if (mLodingDlg != null && mLodingDlg.isShowing()) {
-            mLodingDlg.hide();
-        }
-    }
-
-    @Override
-    public void showToast(String promptStr) {
-        ToastUtil.show(getActivity(), promptStr);
-    }*/
 
     @Override
     public void showEmpty(boolean isNeedToShow) {

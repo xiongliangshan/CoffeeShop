@@ -1,7 +1,6 @@
 package com.lyancafe.coffeeshop.setting.ui;
 
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,8 +23,6 @@ import com.lyancafe.coffeeshop.setting.presenter.SettingPresenter;
 import com.lyancafe.coffeeshop.setting.presenter.SettingPresenterImpl;
 import com.lyancafe.coffeeshop.setting.view.SettingView;
 import com.lyancafe.coffeeshop.utils.MyUtil;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
-import com.lyancafe.coffeeshop.widget.LoadingDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,7 +43,6 @@ public class SettingFragment extends BaseFragment implements SettingView {
     Button btnLoginOut;
     Unbinder unbinder;
 
-    private LoadingDialog mLoadingDlg;
     private SettingPresenter mSettingPresenter;
 
     public SettingFragment() {
@@ -125,25 +121,4 @@ public class SettingFragment extends BaseFragment implements SettingView {
         builder.create().show();
     }
 
-    /*@Override
-    public void showToast(String message) {
-        ToastUtil.show(getContext(),message);
-    }
-
-    @Override
-    public void showLoading() {
-        if (mLoadingDlg == null) {
-            mLoadingDlg = new LoadingDialog(getContext());
-        }
-        if (!mLoadingDlg.isShowing()) {
-            mLoadingDlg.show();
-        }
-    }
-
-    @Override
-    public void dismissLoading() {
-        if (mLoadingDlg != null && mLoadingDlg.isShowing()) {
-            mLoadingDlg.dismiss();
-        }
-    }*/
 }

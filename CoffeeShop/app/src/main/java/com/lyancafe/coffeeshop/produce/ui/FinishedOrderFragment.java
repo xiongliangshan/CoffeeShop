@@ -27,7 +27,6 @@ import com.lyancafe.coffeeshop.produce.presenter.FinishedPresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.FinishedView;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
 import java.text.SimpleDateFormat;
@@ -176,11 +175,6 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
         }
 
     }
-
-    /*@Override
-    public void showToast(String promptStr) {
-        ToastUtil.show(getContext(), promptStr);
-    }*/
 
 
     @Override

@@ -18,7 +18,6 @@ import com.lyancafe.coffeeshop.shop.presenter.TrainingVideoPresenter;
 import com.lyancafe.coffeeshop.shop.presenter.TrainingVideoPresenterImpl;
 import com.lyancafe.coffeeshop.shop.view.TrainingVideoView;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,11 +76,6 @@ public class TrainingVideoFragment extends BaseFragment implements TrainingVideo
         mAdapter.setVideos(list);
     }
 
-
-   /* @Override
-    public void showToast(String promptStr) {
-        ToastUtil.show(getContext(),promptStr);
-    }*/
 
     @Override
     public void onVisible() {

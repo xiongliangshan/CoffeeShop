@@ -18,7 +18,6 @@ import com.lyancafe.coffeeshop.produce.presenter.RevokedPresenter;
 import com.lyancafe.coffeeshop.produce.presenter.RevokedPresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.RevokedView;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -82,10 +81,6 @@ public class RevokedFragment extends BaseFragment implements RevokedView<OrderBe
         mAdapter.setData(list);
     }
 
-   /* @Override
-    public void showToast(String promptStr) {
-        ToastUtil.show(getContext(),promptStr);
-    }*/
 
     //订单撤销事件
     @Subscribe

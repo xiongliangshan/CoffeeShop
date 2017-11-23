@@ -1,7 +1,6 @@
 package com.lyancafe.coffeeshop.produce.ui;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,9 +31,7 @@ import com.lyancafe.coffeeshop.produce.view.ProducingView;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
-import com.lyancafe.coffeeshop.widget.LoadingDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -70,7 +67,6 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
 
     private Handler mHandler;
     private ProducingTaskRunnable mRunnable;
-    private LoadingDialog mLoadingDlg;
 
     public ProducingFragment() {
 
@@ -129,34 +125,6 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
         mAdapter.setData(list);
     }
 
-    /*@Override
-    public void showToast(String promptStr) {
-        ToastUtil.show(getContext(), promptStr);
-    }
-
-    @Override
-    public void showLoading() {
-        if (mLoadingDlg == null) {
-            mLoadingDlg = new LoadingDialog(getContext());
-        }
-        if (!mLoadingDlg.isShowing()) {
-            Activity activity = mLoadingDlg.getOwnerActivity();
-            if(activity!=null && !activity.isFinishing()){
-                mLoadingDlg.show();
-            }
-
-        }
-    }
-
-    @Override
-    public void dismissLoading() {
-        if (mLoadingDlg != null && mLoadingDlg.isShowing()) {
-            Activity activity = mLoadingDlg.getOwnerActivity();
-            if(activity!=null && !activity.isFinishing()){
-                mLoadingDlg.dismiss();
-            }
-        }
-    }*/
 
     @Override
     public void removeItemFromList(int id) {

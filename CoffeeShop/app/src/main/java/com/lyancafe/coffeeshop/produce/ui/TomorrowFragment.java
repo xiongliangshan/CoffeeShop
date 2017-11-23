@@ -19,7 +19,6 @@ import com.lyancafe.coffeeshop.produce.presenter.TomorrowPresenter;
 import com.lyancafe.coffeeshop.produce.presenter.TomorrowPresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.TomorrowView;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.util.List;
 
@@ -80,10 +79,6 @@ public class TomorrowFragment extends BaseFragment implements TomorrowView<Order
         mAdapter.setData(list);
     }
 
-   /* @Override
-    public void showToast(String promptStr) {
-        ToastUtil.show(getContext(), promptStr);
-    }*/
 
     @Override
     public void onVisible() {
