@@ -427,6 +427,9 @@ public class OrderHelper {
         if(orderBean.getDeliveryTeam()== DeliveryTeam.MEITUAN){
             return "美团"+orderBean.getMtShopOrderNo();
         }
+        if(orderBean.getDeliveryTeam()== DeliveryTeam.ELE){
+            return "饿"+orderBean.getShopOrderNo();
+        }
         if(orderBean.getInstant()==1){//及时单
             return String.valueOf(orderBean.getShopOrderNo());
         }else{
