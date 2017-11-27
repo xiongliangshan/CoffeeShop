@@ -88,7 +88,12 @@ public abstract class CustomObserver<T> implements Observer<BaseEntity<T>> {
         LogUtil.e(TAG,"onError :"+e.getMessage());
         if(isShowProgress){
             if(mLoadinngDlg!=null && mLoadinngDlg.isShowing()){
-                mLoadinngDlg.dismiss();
+                try {
+                    mLoadinngDlg.dismiss();
+                }catch (IllegalArgumentException ex){
+                    LogUtil.e(TAG,ex.getMessage());
+                }
+
             }
         }
         ToastUtil.show(CSApplication.getInstance(),e.getMessage());
@@ -99,7 +104,11 @@ public abstract class CustomObserver<T> implements Observer<BaseEntity<T>> {
         LogUtil.d(TAG,"onComplete");
         if(isShowProgress){
             if(mLoadinngDlg!=null && mLoadinngDlg.isShowing()){
-                mLoadinngDlg.dismiss();
+                try {
+                    mLoadinngDlg.dismiss();
+                }catch (IllegalArgumentException ex){
+                    LogUtil.e(TAG,ex.getMessage());
+                }
             }
         }
     }

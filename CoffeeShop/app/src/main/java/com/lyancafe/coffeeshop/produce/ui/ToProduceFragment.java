@@ -178,6 +178,9 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
 
     @Override
     public void updateBatchUI(int size) {
+        if(batchLayout==null){
+            return;
+        }
         if(size>=2){
             batchLayout.setVisibility(View.VISIBLE);
         }else{
