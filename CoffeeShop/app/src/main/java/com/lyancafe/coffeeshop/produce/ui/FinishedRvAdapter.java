@@ -84,7 +84,7 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Vi
 
         if(DeliveryTeam.MEITUAN == order.getDeliveryTeam()){
             holder.shopOrderIdText.setText("美团");
-            holder.deliverResultText.setText(String.valueOf(order.getMtShopOrderNo()));
+            holder.deliverResultText.setText(String.valueOf(order.getThirdShopOrderNo()));
             holder.deliverNameText.setText("美团配送");
         } else if(DeliveryTeam.HAIKUI == order.getDeliveryTeam()){
             holder.shopOrderIdText.setText(OrderHelper.getShopOrderSn(order));

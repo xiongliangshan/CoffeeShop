@@ -264,7 +264,7 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView<Ma
                 order.setHandoverTime(0L);
                 order.setFeedbackType(0);
                 order.setDeliveryTeam(4);
-                order.setMtShopOrderNo(0);
+                order.setThirdShopOrderNo(0);
                 order.setOrderDistance(1300);
                 List<String> customList = new ArrayList<>();
                 customList.add("半糖");

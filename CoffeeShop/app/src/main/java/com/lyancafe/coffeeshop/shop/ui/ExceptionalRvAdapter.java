@@ -68,7 +68,7 @@ public class ExceptionalRvAdapter extends RecyclerView.Adapter<ExceptionalRvAdap
         final ExceptionalOrder order = list.get(position);
 
         if (DeliveryTeam.MEITUAN == order.getDeliveryTeam()) {
-            holder.tvShopOrderId.setText("美团"+order.getMtShopOrderNo());
+            holder.tvShopOrderId.setText("美团"+order.getThirdShopOrderNo());
             holder.tvDeliverTeam.setText("美团配送");
         } else if (DeliveryTeam.HAIKUI == order.getDeliveryTeam()) {
             holder.tvShopOrderId.setText(OrderHelper.getShopOrderSn(order));

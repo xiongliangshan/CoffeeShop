@@ -425,10 +425,10 @@ public class OrderHelper {
 
     public static String getShopOrderSn(OrderBean orderBean){
         if(orderBean.getDeliveryTeam()== DeliveryTeam.MEITUAN){
-            return "美团"+orderBean.getMtShopOrderNo();
+            return "美团"+orderBean.getThirdShopOrderNo();
         }
         if(orderBean.getDeliveryTeam()== DeliveryTeam.ELE){
-            return "饿"+orderBean.getShopOrderNo();
+            return "饿"+orderBean.getThirdShopOrderNo();
         }
         if(orderBean.getInstant()==1){//及时单
             return String.valueOf(orderBean.getShopOrderNo());

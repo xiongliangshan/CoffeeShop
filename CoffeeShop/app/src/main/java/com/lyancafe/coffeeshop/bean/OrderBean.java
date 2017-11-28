@@ -66,7 +66,7 @@ public class OrderBean implements Serializable{
 
     private int deliveryTeam;               //   配送团队 -1:无配送 4:lyan 5:qusong 6:wokuaidao 7:sweets 8:美团外卖 9:海葵 100:仓库发货
 
-    private int mtShopOrderNo;                  //   美团门店单号
+    private int thirdShopOrderNo;                  //   美团门店单号
 
     private double orderDistance;       //订单距离
 
@@ -90,16 +90,14 @@ public class OrderBean implements Serializable{
     private transient OrderBeanDao myDao;
 
     
-    @Generated(hash = 1725534308)
-    public OrderBean() {
-    }
 
-    @Generated(hash = 207883664)
+
+    @Generated(hash = 93762891)
     public OrderBean(long id, String reminder, String orderSn, int shopOrderNo, boolean wxScan, boolean isRecipeFittings,
             long expectedTime, long orderTime, long distributeTime, long produceEffect, String recipient, String address,
             String phone, String courierName, String courierPhone, int status, int produceStatus, boolean issueOrder,
             int instant, String notes, String csrNotes, long handoverTime, int feedbackType, int deliveryTeam,
-            int mtShopOrderNo, double orderDistance, long relationOrderId, String reason, boolean revoked,
+            int thirdShopOrderNo, double orderDistance, long relationOrderId, String reason, boolean revoked,
             boolean checkAddress) {
         this.id = id;
         this.reminder = reminder;
@@ -125,7 +123,7 @@ public class OrderBean implements Serializable{
         this.handoverTime = handoverTime;
         this.feedbackType = feedbackType;
         this.deliveryTeam = deliveryTeam;
-        this.mtShopOrderNo = mtShopOrderNo;
+        this.thirdShopOrderNo = thirdShopOrderNo;
         this.orderDistance = orderDistance;
         this.relationOrderId = relationOrderId;
         this.reason = reason;
@@ -133,6 +131,12 @@ public class OrderBean implements Serializable{
         this.checkAddress = checkAddress;
     }
 
+
+    @Generated(hash = 1725534308)
+    public OrderBean() {
+    }
+
+    
     public long getId() {
         return this.id;
     }
@@ -325,12 +329,12 @@ public class OrderBean implements Serializable{
         this.deliveryTeam = deliveryTeam;
     }
 
-    public int getMtShopOrderNo() {
-        return this.mtShopOrderNo;
+    public int getThirdShopOrderNo() {
+        return this.thirdShopOrderNo;
     }
 
-    public void setMtShopOrderNo(int mtShopOrderNo) {
-        this.mtShopOrderNo = mtShopOrderNo;
+    public void setThirdShopOrderNo(int thirdShopOrderNo) {
+        this.thirdShopOrderNo = thirdShopOrderNo;
     }
 
     public double getOrderDistance() {
@@ -445,7 +449,7 @@ public class OrderBean implements Serializable{
                 ", handoverTime=" + handoverTime +
                 ", feedbackType=" + feedbackType +
                 ", deliveryTeam=" + deliveryTeam +
-                ", mtShopOrderNo=" + mtShopOrderNo +
+                ", thirdShopOrderNo=" + thirdShopOrderNo +
                 ", orderDistance=" + orderDistance +
                 ", relationOrderId=" + relationOrderId +
                 ", reason='" + reason + '\'' +
