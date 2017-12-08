@@ -12,6 +12,6 @@ import java.util.List;
 public interface EvaluationModel{
 
     //加载评价列表数据
-    void loadEvaluations(int shopId, long orderId, int feedbackType, String token, CustomObserver<List<EvaluationBean>> observer);
+    void loadEvaluations(int shopId, int id, String token, CustomObserver<List<EvaluationBean>> observer);
 
 }

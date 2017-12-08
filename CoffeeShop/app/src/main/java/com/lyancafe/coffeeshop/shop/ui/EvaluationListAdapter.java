@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
@@ -47,34 +46,61 @@ public class EvaluationListAdapter extends RecyclerView.Adapter<EvaluationListAd
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final EvaluationBean evaluationBean = list.get(position);
-        holder.tvShopOrderId.setText(OrderHelper.getShopOrderSn(evaluationBean));
-        if(evaluationBean.getType()==4){
-            //好评
-            holder.tvEvalutaionType.setText("好评");
-            holder.tvEvalutaionType.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_green_dark));
-        }else if(evaluationBean.getType()==5){
-            //差评
-            holder.tvEvalutaionType.setText("差评");
-            holder.tvEvalutaionType.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_red_dark));
+        holder.tvShopOrderId.setText(OrderHelper.getShopOrderSn(evaluationBean.getOrderbean()));
+        String levelName=null;
+        int levelColor = 0;
+        switch (evaluationBean.getDeliveryParameter()) {
+            case 1:
+                levelName = "非常差";
+                levelColor = mContext.getResources().getColor(R.color.red2);
+                break;
+            case 2:
+                levelName = "很差";
+                levelColor = mContext.getResources().getColor(R.color.red3);
+                break;
+            case 3:
+                levelName = "一般";
+                levelColor = mContext.getResources().getColor(R.color.yellow1);
+                break;
+            case 4:
+                levelName = "很好";
+                levelColor = mContext.getResources().getColor(R.color.green1);
+                break;
+            case 5:
+                levelName = "非常好";
+                levelColor = mContext.getResources().getColor(R.color.green2);
+                break;
+            default:
+                levelName = "未知";
+                break;
         }
+        holder.tvLevelNameText.setText(levelName);
+        holder.tvLevelNameText.setTextColor(levelColor);
         holder.flowLayout.setAdapter(new TagAdapter<String>(evaluationBean.getTags()) {
             @Override
             public View getView(FlowLayout parent, int position, String s) {
-                /*TextView tv = new TextView(parent.getContext());
-                tv.setTextColor(mContext.getResources().getColor(R.color.font_black));*/
                 TextView tv = (TextView) LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_tv,parent,false);
                 tv.setText(s);
                 return tv;
             }
         });
-        holder.llDetailLayout.setOnClickListener(new View.OnClickListener() {
+        holder.flTasteLayout.setAdapter(new TagAdapter<String>(new ArrayList(evaluationBean.getProductTaste().keySet())) {
+            @Override
+            public View getView(FlowLayout parent, int position, String s) {
+                TextView tv = (TextView) LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_taste,parent,false);
+                tv.setText(s+":"+evaluationBean.getProductTaste().get(s)+"心");
+                return tv;
+            }
+        });
+        holder.detailText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //点击查看详情
-                EvaluationDetailDialog dialog = EvaluationDetailDialog.newInstance(evaluationBean.getOrderId(),evaluationBean.getContent());
+                EvaluationDetailDialog dialog = EvaluationDetailDialog.newInstance(evaluationBean.getOrderbean());
                 dialog.show(mContext.getChildFragmentManager(),"evaluation_detail");
             }
         });
+        holder.tvContentText.setText(evaluationBean.getContent());
     }
 
     @Override
@@ -85,9 +111,11 @@ public class EvaluationListAdapter extends RecyclerView.Adapter<EvaluationListAd
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tv_shopOrderId) TextView tvShopOrderId;
-        @BindView(R.id.tv_evalutaion_type) TextView tvEvalutaionType;
+        @BindView(R.id.tv_level_name) TextView tvLevelNameText;
         @BindView(R.id.flowLayout) TagFlowLayout flowLayout;
-        @BindView(R.id.ll_detail_layout) LinearLayout llDetailLayout;
+        @BindView(R.id.fl_taste) TagFlowLayout flTasteLayout;
+        @BindView(R.id.tv_content) TextView tvContentText;
+        @BindView(R.id.tv_detail) TextView detailText;
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);

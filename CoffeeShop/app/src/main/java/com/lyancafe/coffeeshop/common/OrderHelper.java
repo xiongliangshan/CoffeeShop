@@ -437,17 +437,17 @@ public class OrderHelper {
         }
     }
 
-    public static String getShopOrderSn(EvaluationBean evaluationBean){
-        if(evaluationBean.getDeliveryTeam()== DeliveryTeam.MEITUAN){
-            return "美团"+evaluationBean.getMtShopOrderNo();
+    /*public static String getShopOrderSn(EvaluationBean evaluationBean){
+        if(evaluationBean.getOrderbean().getDeliveryTeam()== DeliveryTeam.MEITUAN){
+            return "美团"+evaluationBean.getOrderbean().getThirdShopOrderNo();
         }
 
-        if(evaluationBean.getInstant()==1){//及时单
-            return String.valueOf(evaluationBean.getShopOrderNo());
+        if(evaluationBean.getOrderbean().getInstant()==1){//及时单
+            return String.valueOf(evaluationBean.getOrderbean().getShopOrderNo());
         }else{
-            return evaluationBean.getShopOrderNo()+"约";
+            return evaluationBean.getOrderbean().getShopOrderNo()+"约";
         }
-    }
+    }*/
 
 
 

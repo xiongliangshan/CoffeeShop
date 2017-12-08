@@ -10,6 +10,7 @@ import com.lyancafe.coffeeshop.http.CustomObserver;
 import com.lyancafe.coffeeshop.shop.model.EvaluationModel;
 import com.lyancafe.coffeeshop.shop.model.EvaluationModelImpl;
 import com.lyancafe.coffeeshop.shop.view.EvaluationView;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import java.util.List;
 
@@ -33,9 +34,9 @@ public class EvaluationPresenterImpl implements EvaluationPresenter{
 
 
     @Override
-    public void loadEvaluations(long lastOrderId, int type, final boolean isLoadMore) {
+    public void loadEvaluations(int lastId,final boolean isLoadMore) {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        mEvaluationModel.loadEvaluations(user.getShopId(), lastOrderId, type, user.getToken(), new CustomObserver<List<EvaluationBean>>(mContext) {
+        mEvaluationModel.loadEvaluations(user.getShopId(), lastId,user.getToken(), new CustomObserver<List<EvaluationBean>>(mContext) {
             @Override
             protected void onHandleSuccess(List<EvaluationBean> evaluationBeenList) {
                 List<EvaluationBean> evaluationsList = evaluationBeenList;

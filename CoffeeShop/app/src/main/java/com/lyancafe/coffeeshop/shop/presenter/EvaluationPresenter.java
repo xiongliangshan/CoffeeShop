@@ -7,6 +7,6 @@ package com.lyancafe.coffeeshop.shop.presenter;
 public interface EvaluationPresenter {
 
     //加载评价列表数据
-    void loadEvaluations(long lastOrderId,int type,boolean isLoadMore);
+    void loadEvaluations(int lastId,boolean isLoadMore);
 
 }

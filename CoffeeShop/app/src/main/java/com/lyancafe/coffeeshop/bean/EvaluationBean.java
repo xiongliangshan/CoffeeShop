@@ -1,20 +1,29 @@
 package com.lyancafe.coffeeshop.bean;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2017/2/27.
  */
 
 public class EvaluationBean {
-    private int orderId;
-    private int shopOrderNo;
-    private int mtShopOrderNo;
-    private int instant;
-    private int deliveryTeam;   //   配送团队 4:lyan 5:qusong 6:wokuaidao 7:sweets 8:美团外卖 9:海葵
-    private int type;           // 0:没有评价，4:好评，5:差评
-    private List<String> tags;
-    private String content;
+
+    private int id;              	 //评价id
+    private int orderId;       		 //订单id
+    private int deliveryParameter;   // 配送评价 1:非常差，2:很差，3:一般，4:很好，5:非常好
+    private List<String> tags; 		 //标签
+    private Map<String,Integer>  productTaste; //口味星级 String是商品名字，Integer是星级
+    private String content;			//评价内容
+    private OrderBean orderbean;	//orderbean对象
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public int getOrderId() {
         return orderId;
@@ -24,44 +33,12 @@ public class EvaluationBean {
         this.orderId = orderId;
     }
 
-    public int getShopOrderNo() {
-        return shopOrderNo;
+    public int getDeliveryParameter() {
+        return deliveryParameter;
     }
 
-    public void setShopOrderNo(int shopOrderNo) {
-        this.shopOrderNo = shopOrderNo;
-    }
-
-    public int getMtShopOrderNo() {
-        return mtShopOrderNo;
-    }
-
-    public void setMtShopOrderNo(int mtShopOrderNo) {
-        this.mtShopOrderNo = mtShopOrderNo;
-    }
-
-    public int getInstant() {
-        return instant;
-    }
-
-    public void setInstant(int instant) {
-        this.instant = instant;
-    }
-
-    public int getDeliveryTeam() {
-        return deliveryTeam;
-    }
-
-    public void setDeliveryTeam(int deliveryTeam) {
-        this.deliveryTeam = deliveryTeam;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
+    public void setDeliveryParameter(int deliveryParameter) {
+        this.deliveryParameter = deliveryParameter;
     }
 
     public List<String> getTags() {
@@ -72,6 +49,14 @@ public class EvaluationBean {
         this.tags = tags;
     }
 
+    public Map<String, Integer> getProductTaste() {
+        return productTaste;
+    }
+
+    public void setProductTaste(Map<String, Integer> productTaste) {
+        this.productTaste = productTaste;
+    }
+
     public String getContent() {
         return content;
     }
@@ -80,19 +65,24 @@ public class EvaluationBean {
         this.content = content;
     }
 
+    public OrderBean getOrderbean() {
+        return orderbean;
+    }
+
+    public void setOrderbean(OrderBean orderbean) {
+        this.orderbean = orderbean;
+    }
 
     @Override
     public String toString() {
         return "EvaluationBean{" +
-                "orderId=" + orderId +
-                ", shopOrderNo=" + shopOrderNo +
-                ", mtShopOrderNo=" + mtShopOrderNo +
-                ", instant=" + instant +
-                ", deliveryTeam=" + deliveryTeam +
-                ", type=" + type +
+                "id=" + id +
+                ", orderId=" + orderId +
+                ", deliveryParameter=" + deliveryParameter +
                 ", tags=" + tags +
+                ", productTaste=" + productTaste +
                 ", content='" + content + '\'' +
+                ", orderbean=" + orderbean +
                 '}';
     }
-
 }

@@ -30,8 +30,7 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView<E
     @BindView(R.id.pmrv_evaluation_list) PullLoadMoreRecyclerView pmrvEvaluationList;
 
     private EvaluationListAdapter mAdapter;
-    private int mLastOrderId = 0;
-    private int mType = 0;
+    private int mLastFeedbackId = 1;
 
     private Unbinder unbinder;
 
@@ -74,8 +73,8 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView<E
 
             @Override
             public void onLoadMore() {
-                Log.d(TAG,"mLastOrderId = "+mLastOrderId);
-                mEvaluationPresenter.loadEvaluations(mLastOrderId,mType,true);
+                Log.d(TAG,"mLastFeedbackId = "+ mLastFeedbackId);
+                mEvaluationPresenter.loadEvaluations(mLastFeedbackId,true);
             }
         });
     }
@@ -94,9 +93,9 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView<E
     @Override
     public void saveLastOrderId() {
         if(mAdapter.list.size()>0){
-            mLastOrderId = mAdapter.list.get(mAdapter.list.size()-1).getOrderId();
+            mLastFeedbackId = mAdapter.list.get(mAdapter.list.size()-1).getId();
         }else {
-            mLastOrderId = 0;
+            mLastFeedbackId = 1;
         }
     }
 
@@ -145,7 +144,7 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView<E
     class EvaluationTaskRunnable implements Runnable{
         @Override
         public void run() {
-            mEvaluationPresenter.loadEvaluations(0,mType,false);
+            mEvaluationPresenter.loadEvaluations(1,false);
         }
     }
 }

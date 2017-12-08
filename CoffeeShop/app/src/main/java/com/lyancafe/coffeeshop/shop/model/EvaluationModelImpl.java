@@ -16,8 +16,8 @@ import java.util.List;
 public class EvaluationModelImpl implements EvaluationModel{
 
     @Override
-    public void loadEvaluations(int shopId, long orderId, int feedbackType, String token, CustomObserver<List<EvaluationBean>> observer) {
-        RetrofitHttp.getRetrofit().loadEvaluations(shopId,orderId,feedbackType,token)
+    public void loadEvaluations(int shopId, int id,String token, CustomObserver<List<EvaluationBean>> observer) {
+        RetrofitHttp.getRetrofit().loadEvaluations(shopId,id,token)
                 .compose(RxHelper.<BaseEntity<List<EvaluationBean>>>io_main())
                 .subscribe(observer);
     }

@@ -167,14 +167,12 @@ public interface HttpInterface {
     /**
      * 评价列表
      * @param shopId
-     * @param orderId
-     * @param feedbackType
+     * @param id
      * @param token
      * @return
      */
     @GET("{shopId}/orders/feedbackList")
-    Observable<BaseEntity<List<EvaluationBean>>> loadEvaluations(@Path("shopId") int shopId,@Query("orderId") long orderId,
-                                                                 @Query("feedbackType") int feedbackType,@Query("token") String token);
+    Observable<BaseEntity<List<EvaluationBean>>> loadEvaluations(@Path("shopId") int shopId,@Query("id") int id, @Query("token") String token);
 
 
 

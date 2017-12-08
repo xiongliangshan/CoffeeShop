@@ -45,6 +45,12 @@
 	<color name="yellow2">#FFFFCA</color>
 
 	<color name="red1">#CC0000</color>
+	<color name="red2">#FF9F050C</color>
+	<color name="red3">#FFF20A15</color>
+
+	<color name="green1">#FF06F716</color>
+	<color name="green2">#FF05A610</color>
+	<color name="blue1">#FD2BD2FC</color>
 
 
 </resources>  
