@@ -220,7 +220,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         for(ItemContentBean item:items){
             TextView tv1 = new TextView(context);
             tv1.setText(item.getProduct());
-            tv1.setMaxEms(6);
+            tv1.setMaxEms(7);
             tv1.setTextSize(context.getResources().getDimension(R.dimen.content_item_text_size));
             tv1.setTextColor(context.getResources().getColor(R.color.black2));
             if(!TextUtils.isEmpty(item.getRecipeFittings())){

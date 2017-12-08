@@ -118,7 +118,7 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
         for(ItemContentBean item:items){
             TextView tv1 = new TextView(context);
             tv1.setText(item.getProduct());
-            tv1.setMaxEms(6);
+            tv1.setMaxEms(7);
             tv1.setTextSize(context.getResources().getDimension(R.dimen.content_item_text_size));
             if(!TextUtils.isEmpty(item.getRecipeFittings())){
                 Drawable drawable = ContextCompat.getDrawable(CSApplication.getInstance(),R.mipmap.flag_ding);
