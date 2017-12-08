@@ -318,16 +318,22 @@
                         android:layout_height="wrap_content"
                         android:text="用户备注"
                         android:textColor="@color/font_gray"
-                        />
-                    <TextView
-                        android:id="@+id/user_remark"
+                        />ma
+                    <ScrollView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="5dp"
-                        android:text=""
-                        android:textColor="@color/font_black"
-                        android:textSize="16sp"
-                        />
+                        android:scrollbars="vertical"
+                        android:fadeScrollbars="false">
+                        <TextView
+                            android:id="@+id/user_remark"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textColor="@color/font_red"
+                            android:textStyle="bold"
+                            android:textSize="24sp"
+                            />
+                    </ScrollView>
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/ll_csad_remark"
@@ -343,15 +349,22 @@
                         android:textColor="@color/font_gray"
                         android:layout_marginTop="10dp"
                         />
-                    <TextView
-                        android:id="@+id/csad_remark"
+                    <ScrollView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="5dp"
-                        android:text=""
-                        android:textColor="@color/font_black"
-                        android:textSize="16sp"
-                        />
+                        android:scrollbars="vertical"
+                        android:fadeScrollbars="false"
+                        >
+                        <TextView
+                            android:id="@+id/csad_remark"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textColor="@color/font_red"
+                            android:textStyle="bold"
+                            android:textSize="24sp"
+                            />
+                    </ScrollView>
                 </LinearLayout>
 
             </LinearLayout>
