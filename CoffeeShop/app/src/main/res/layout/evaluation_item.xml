@@ -31,7 +31,7 @@
             android:textSize="18sp"
             android:textColor="@color/white_font"
             android:text="查看订单详情"
-            android:background="@drawable/bg_blue_round_corner"
+            android:background="@drawable/bg_gray_round_corner"
             android:elevation="2dp"
             />
 
