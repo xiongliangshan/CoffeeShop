@@ -10,7 +10,6 @@ import com.lyancafe.coffeeshop.http.CustomObserver;
 import com.lyancafe.coffeeshop.shop.model.EvaluationModel;
 import com.lyancafe.coffeeshop.shop.model.EvaluationModelImpl;
 import com.lyancafe.coffeeshop.shop.view.EvaluationView;
-import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import java.util.List;
 
@@ -45,7 +44,7 @@ public class EvaluationPresenterImpl implements EvaluationPresenter{
                 }else{
                     mEvaluationView.bindDataToView(evaluationsList);
                 }
-                mEvaluationView.saveLastOrderId();
+                mEvaluationView.saveLastFeedbackId();
             }
 
             @Override

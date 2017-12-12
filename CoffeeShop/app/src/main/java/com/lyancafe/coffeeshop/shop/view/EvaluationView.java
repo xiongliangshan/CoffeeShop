@@ -17,8 +17,8 @@ public interface EvaluationView<T> extends BaseView{
     //追加列表数据
     void appendListData(List<T> list);
 
-    //保存lastOrderId
-    void saveLastOrderId();
+    //保存lastFeedbackId
+    void saveLastFeedbackId();
 
     //停止加载进度对话框
     void stopLoadingProgress();

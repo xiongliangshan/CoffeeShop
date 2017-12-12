@@ -18,6 +18,8 @@ import com.lyancafe.coffeeshop.shop.view.EvaluationView;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -91,8 +93,14 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView<E
     }
 
     @Override
-    public void saveLastOrderId() {
+    public void saveLastFeedbackId() {
         if(mAdapter.list.size()>0){
+            Collections.sort(mAdapter.list, new Comparator<EvaluationBean>() {
+                @Override
+                public int compare(EvaluationBean o1, EvaluationBean o2) {
+                    return o1.getId()-o2.getId();
+                }
+            });
             mLastFeedbackId = mAdapter.list.get(mAdapter.list.size()-1).getId();
         }else {
             mLastFeedbackId = 1;

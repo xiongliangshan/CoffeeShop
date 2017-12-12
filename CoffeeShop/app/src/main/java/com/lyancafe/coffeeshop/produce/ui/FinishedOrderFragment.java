@@ -30,6 +30,8 @@ import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -162,6 +164,12 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     @Override
     public void saveLastOrderId() {
         if (mAdapter.list.size() > 0) {
+            Collections.sort(mAdapter.list, new Comparator<OrderBean>() {
+                @Override
+                public int compare(OrderBean o1, OrderBean o2) {
+                    return (int) (o1.getId()-o2.getId());
+                }
+            });
             mLastOrderId = mAdapter.list.get(mAdapter.list.size() - 1).getId();
         } else {
             mLastOrderId = 0;
