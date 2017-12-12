@@ -88,7 +88,7 @@ public class EvaluationListAdapter extends RecyclerView.Adapter<EvaluationListAd
             @Override
             public View getView(FlowLayout parent, int position, String s) {
                 TextView tv = (TextView) LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_taste,parent,false);
-                tv.setText(s+":"+evaluationBean.getProductTaste().get(s)+"心");
+                tv.setText(s+" : "+evaluationBean.getProductTaste().get(s)+"心");
                 return tv;
             }
         });
