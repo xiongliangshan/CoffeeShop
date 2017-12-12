@@ -2,6 +2,7 @@ package com.lyancafe.coffeeshop.shop.ui;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.shop.presenter.EvaluationPresenter;
 import com.lyancafe.coffeeshop.shop.presenter.EvaluationPresenterImpl;
 import com.lyancafe.coffeeshop.shop.view.EvaluationView;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
@@ -41,11 +43,12 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView<E
     private EvaluationPresenter mEvaluationPresenter;
 
     public EvaluationFragment() {
-
+        LogUtil.d("xls","EvaluationFragment  构造方法");
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        LogUtil.d("xls","EvaluationFragment  onCreate");
         super.onCreate(savedInstanceState);
         mHandler = new Handler();
         mEvaluationPresenter = new EvaluationPresenterImpl(getContext(),this);
@@ -53,6 +56,7 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView<E
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        LogUtil.d("xls","EvaluationFragment  onCreateView");
         View view = inflater.inflate(R.layout.fragment_evaluation, container, false);
         unbinder = ButterKnife.bind(this, view);
         initView();
@@ -75,11 +79,20 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView<E
 
             @Override
             public void onLoadMore() {
-                Log.d(TAG,"mLastFeedbackId = "+ mLastFeedbackId);
+                LogUtil.d(TAG,"mLastFeedbackId = "+ mLastFeedbackId);
                 mEvaluationPresenter.loadEvaluations(mLastFeedbackId,true);
             }
         });
     }
+
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mRunnable = new EvaluationTaskRunnable();
+        mHandler.postDelayed(mRunnable,OrderHelper.DELAY_LOAD_TIME);
+    }
+
 
     @Override
     public void bindDataToView(List<EvaluationBean> list) {
@@ -131,8 +144,9 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView<E
     @Override
     public void onVisible() {
         super.onVisible();
-        Log.d("xls","EvaluationFragment  Visible");
+        LogUtil.d("xls","EvaluationFragment  Visible ,isResumed = "+isResumed()+ "isVisible ="+isVisible());
         if(!isResumed()){
+            LogUtil.d("xls","EvaluationFragment  is unResumed  ,return");
             return;
         }
         mRunnable = new EvaluationTaskRunnable();
@@ -143,7 +157,7 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView<E
     @Override
     public void onInVisible() {
         super.onInVisible();
-        Log.d("xls","EvaluationFragment  InVisible");
+        LogUtil.d("xls","EvaluationFragment  InVisible");
         if(mHandler!=null){
             mHandler.removeCallbacks(mRunnable);
         }
