@@ -47,11 +47,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
-
 import static com.lyancafe.coffeeshop.produce.ui.ListMode.NORMAL;
 import static com.lyancafe.coffeeshop.produce.ui.ListMode.SELECT;
 
@@ -61,26 +56,25 @@ import static com.lyancafe.coffeeshop.produce.ui.ListMode.SELECT;
 public class ToProduceFragment extends BaseFragment implements ToProduceView<OrderBean>,ToProduceRvAdapter.ToProduceCallback {
 
 
-    @BindView(R.id.rv_to_produce)
+//    @BindView(R.id.rv_to_produce)
     RecyclerView mRecyclerView;
-    @BindView(R.id.ll_naigai_layout)
+//    @BindView(R.id.ll_naigai_layout)
     ConstraintLayout naigaiLayout;
-    @BindView(R.id.tv_amount_hongyu)
+//    @BindView(R.id.tv_amount_hongyu)
     TextView tvHongyu;
-    @BindView(R.id.tv_amount_moli)
+//    @BindView(R.id.tv_amount_moli)
     TextView tvMoli;
-    @BindView(R.id.cl_batch_layout)
+//    @BindView(R.id.cl_batch_layout)
     ConstraintLayout batchLayout;
-    @BindView(R.id.btn_batch_select)
+//    @BindView(R.id.btn_batch_select)
     Button batchSelectBtn;
-    @BindView(R.id.btn_cancel)
+//    @BindView(R.id.btn_cancel)
     Button cancelBtn;
-    @BindView(R.id.et_search_key)
+//    @BindView(R.id.et_search_key)
     EditText etSearchKey;
-    @BindView(R.id.btn_search)
+//    @BindView(R.id.btn_search)
     Button btnSearch;
 
-    private Unbinder unbinder;
     private ToProduceRvAdapter mAdapter;
     private Context mContext;
     public List<OrderBean> allOrderList = new ArrayList<>();
@@ -88,6 +82,8 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     private ToProduceTaskRunnable mRunnable;
 
     private ToProducePresenter mToProducePresenter;
+
+    private MyClickListener myClickListener;
 
     public ToProduceFragment() {
 
@@ -104,19 +100,31 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         super.onCreate(savedInstanceState);
         mHandler = new Handler();
         mToProducePresenter = new ToProducePresenterImpl(this.getContext(), this);
+        myClickListener = new MyClickListener();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         EventBus.getDefault().register(this);
         View contentView = inflater.inflate(R.layout.fragment_to_produce, container, false);
-        unbinder = ButterKnife.bind(this, contentView);
-        initViews();
+        initViews(contentView);
         return contentView;
     }
 
 
-    private void initViews() {
+    private void initViews(View view) {
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_to_produce);
+        naigaiLayout = (ConstraintLayout) view.findViewById(R.id.ll_naigai_layout);
+        tvHongyu = (TextView) view.findViewById(R.id.tv_amount_hongyu);
+        tvMoli = (TextView) view.findViewById(R.id.tv_amount_moli);
+        batchLayout = (ConstraintLayout) view.findViewById(R.id.cl_batch_layout);
+        batchSelectBtn = (Button) view.findViewById(R.id.btn_batch_select);
+        cancelBtn = (Button) view.findViewById(R.id.btn_cancel);
+        etSearchKey = (EditText) view.findViewById(R.id.et_search_key);
+        btnSearch = (Button) view.findViewById(R.id.btn_search);
+
+        setListener();
+
         mAdapter = new ToProduceRvAdapter(getActivity());
         mAdapter.setCallback(this);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4, GridLayoutManager.VERTICAL, false));
@@ -133,6 +141,12 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
                 return false;
             }
         });
+    }
+
+    private void setListener(){
+        batchSelectBtn.setOnClickListener(myClickListener);
+        cancelBtn.setOnClickListener(myClickListener);
+        btnSearch.setOnClickListener(myClickListener);
     }
 
     @Override
@@ -206,7 +220,6 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     public void onDestroyView() {
         EventBus.getDefault().unregister(this);
         super.onDestroyView();
-        unbinder.unbind();
     }
 
     @Override
@@ -329,40 +342,40 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         }
     }
 
-    @OnClick({R.id.btn_batch_select, R.id.btn_cancel,R.id.btn_search})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.btn_batch_select:
-                if (getString(R.string.batch_select).equals(batchSelectBtn.getText().toString())) {
-                    //点击批量选择
-                    mAdapter.selectMap.clear();
-                    setMode(SELECT);
+    class MyClickListener implements View.OnClickListener{
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.btn_batch_select:
+                    if (getString(R.string.batch_select).equals(batchSelectBtn.getText().toString())) {
+                        //点击批量选择
+                        mAdapter.selectMap.clear();
+                        setMode(SELECT);
 
-                } else {
-                    //点击批量开始
-                    LogUtil.d("xls", "被选中的订单:");
-                    List<OrderBean> selectedList = mAdapter.getBatchOrders();
-                    if (selectedList.size() == 0) {
-                        showToast("未选中订单");
-                        return;
+                    } else {
+                        //点击批量开始
+                        LogUtil.d("xls", "被选中的订单:");
+                        List<OrderBean> selectedList = mAdapter.getBatchOrders();
+                        if (selectedList.size() == 0) {
+                            showToast("未选中订单");
+                            return;
+                        }
+                        mToProducePresenter.doStartBatchProduce(selectedList);
                     }
 
-                    mToProducePresenter.doStartBatchProduce(selectedList);
-
-
-                }
-
-                break;
-            case R.id.btn_cancel:
-                setMode(NORMAL);
-                cancelBtn.setVisibility(View.GONE);
-                batchSelectBtn.setText(R.string.batch_select);
-                break;
-            case R.id.btn_search:
-                search();
-                break;
+                    break;
+                case R.id.btn_cancel:
+                    setMode(NORMAL);
+                    cancelBtn.setVisibility(View.GONE);
+                    batchSelectBtn.setText(R.string.batch_select);
+                    break;
+                case R.id.btn_search:
+                    search();
+                    break;
+            }
         }
     }
+
 
     // 执行搜索
     private void search(){
