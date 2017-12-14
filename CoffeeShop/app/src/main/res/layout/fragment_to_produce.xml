@@ -26,6 +26,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
+                android:background="@drawable/bg_native_button"
                 android:text="批量选择"/>
 
             <Button
@@ -33,8 +34,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintLeft_toRightOf="@id/btn_batch_select"
+                android:layout_marginLeft="6dp"
                 android:visibility="gone"
                 android:textSize="16sp"
+                android:background="@drawable/bg_native_button"
                 android:text="取消"/>
 
         </android.support.constraint.ConstraintLayout>
@@ -89,30 +92,35 @@
         <android.support.constraint.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            >
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
             <EditText
                 android:id="@+id/et_search_key"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white1"
-                android:inputType="number"
-                android:hint="输入门店单号"
-                android:textColorHint="@color/gray6"/>
+                android:layout_height="match_parent"
+                style="@style/SearchEdit"
+                app:layout_constraintEnd_toStartOf="@+id/btn_search"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <Button
                 android:id="@+id/btn_search"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintLeft_toRightOf="@id/et_search_key"
-                android:text="搜索"/>
+                android:layout_height="match_parent"
+                style="@style/SearchButton"
+                app:layout_constraintBaseline_toBaselineOf="@+id/et_search_key"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/et_search_key" />
         </android.support.constraint.ConstraintLayout>
     </android.support.constraint.ConstraintLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_to_produce"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"/>
 
 </LinearLayout>

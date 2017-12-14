@@ -14,24 +14,23 @@
         <EditText
             android:id="@+id/et_search_key"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white1"
-            android:inputType="number"
-            android:hint="输入门店单号"
-            android:textColorHint="@color/gray6"/>
+            android:layout_height="match_parent"
+            style="@style/SearchEdit"/>
         <Button
             android:id="@+id/btn_search"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            style="@style/SearchButton"
             app:layout_constraintLeft_toRightOf="@id/et_search_key"
-            android:text="搜索"/>
+            />
     </android.support.constraint.ConstraintLayout>
 
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_to_fetch"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"/>
 
 
 </LinearLayout>

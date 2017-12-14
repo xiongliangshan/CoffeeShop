@@ -121,4 +121,19 @@
         <item name="android:textColor">@color/white1</item>
         <item name="textAllCaps">true</item>
     </style>
+
+    <style name="SearchEdit">
+        <item name="android:hint">输入门店单号</item>
+        <item name="android:inputType">number</item>
+        <item name="android:textColorHint">@color/gray6</item>
+        <item name="android:textColor">@color/white1</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:background">@drawable/bg_search_edit</item>
+    </style>
+
+    <style name="SearchButton">
+        <item name="android:text">搜索</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:background">@drawable/bg_search_button</item>
+    </style>
 </resources>

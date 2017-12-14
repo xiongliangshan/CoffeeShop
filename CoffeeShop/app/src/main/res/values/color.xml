@@ -52,5 +52,7 @@
 	<color name="green2">#FF05A610</color>
 	<color name="blue1">#FD2BD2FC</color>
 
+	<color name="native_button">#D6D7D7</color>
+
 
 </resources>  
