@@ -106,46 +106,82 @@
         android:layout_weight="1"
         >
 
+        <TextView
+            android:id="@+id/soft_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="咖啡屋管理系统"
+            android:layout_centerHorizontal="true"
+            android:textColor="@android:color/black"
+            android:textSize="36sp"
+            android:layout_marginTop="30dp"
+            />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             >
 
-            <TextView
-                android:id="@+id/soft_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="咖啡屋管理系统"
-                android:layout_centerHorizontal="true"
-                android:textColor="@android:color/black"
-                android:textSize="36sp"
-                />
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_below="@id/soft_name"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="30dp"
+                android:focusableInTouchMode="true"
                 >
-                <EditText
-                    android:id="@+id/username"
-                    android:layout_width="260dp"
+                <LinearLayout
+                    android:layout_width="300dp"
                     android:layout_height="wrap_content"
-                    android:hint="请输入用户名"
-                    android:singleLine="true"
-                    />
-                <EditText
-                    android:id="@+id/password"
-                    android:layout_width="260dp"
+                    android:orientation="horizontal"
+                    android:background="@drawable/bg_login_edit">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/icon_account"/>
+
+                    <EditText
+                        android:id="@+id/username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="请输入用户名"
+                        android:layout_marginLeft="4dp"
+                        android:textSize="22sp"
+                        android:singleLine="true"
+                        android:background="@null"
+                        android:layout_gravity="center_vertical"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="300dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:inputType="textPassword"
-                    android:hint="请输入密码"
-                    android:singleLine="true"
-                    />
+                    android:orientation="horizontal"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/bg_login_edit">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/icon_password"/>
+
+                    <EditText
+                        android:id="@+id/password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        android:layout_marginLeft="4dp"
+                        android:textSize="22sp"
+                        android:hint="请输入密码"
+                        android:singleLine="true"
+                        android:background="@null"
+                        android:layout_gravity="center_vertical"
+                        />
+
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/login_btn"
@@ -153,7 +189,7 @@
                     android:layout_height="wrap_content"
                     android:text="登录"
                     android:textColor="@color/white_font"
-                    android:textSize="18sp"
+                    android:textSize="22sp"
                     android:background="@drawable/bg_login"
                     android:layout_marginTop="30dp"
                     android:layout_gravity="center_horizontal"

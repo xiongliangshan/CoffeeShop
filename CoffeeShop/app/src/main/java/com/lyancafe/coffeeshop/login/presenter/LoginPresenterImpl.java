@@ -24,6 +24,7 @@ import com.lyancafe.coffeeshop.login.view.LoginView;
 import com.lyancafe.coffeeshop.main.ui.HomeActivity;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.MyUtil;
+import com.lyancafe.coffeeshop.utils.PreferencesUtil;
 import com.lyancafe.coffeeshop.utils.RsaEncryptor;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.utils.UpdateUtil;
@@ -56,7 +57,7 @@ public class LoginPresenterImpl implements LoginPresenter{
 
     @Override
     public void login() {
-        String loginName = mLoginView.getUserName();
+        final String loginName = mLoginView.getUserName();
         String password = mLoginView.getPassword();
         if(TextUtils.isEmpty(loginName)){
             ToastUtil.show(mContext.getApplicationContext(), R.string.username_empty_prompt);
@@ -114,6 +115,7 @@ public class LoginPresenterImpl implements LoginPresenter{
             public void onComplete() {
                 mLoginView.dismissLoadingDlg();
                 Log.d(TAG,"登录成功");
+                PreferencesUtil.putLastLoginAccount(mContext,loginName);
             }
         });
     }

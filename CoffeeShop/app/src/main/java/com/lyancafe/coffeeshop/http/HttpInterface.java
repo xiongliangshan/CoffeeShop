@@ -33,7 +33,7 @@ public interface HttpInterface {
     /**
      * 登录
      * @param loginName 账户
-     * @param password 密码
+     * @param password icon_password
      * @return
      */
     @POST("token")

@@ -33,6 +33,7 @@ import com.lyancafe.coffeeshop.login.view.LoginView;
 import com.lyancafe.coffeeshop.main.ui.HomeActivity;
 import com.lyancafe.coffeeshop.service.DownLoadService;
 import com.lyancafe.coffeeshop.utils.LogUtil;
+import com.lyancafe.coffeeshop.utils.PreferencesUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import butterknife.BindView;
@@ -79,6 +80,8 @@ public class LoginActivity extends BaseActivity implements LoginView {
         mLoginPresenter.checkLoginStatus();
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        String lastAccount = PreferencesUtil.getLastLoginAccount(this.getApplicationContext());
+        userNameEdit.setText(lastAccount);
         initServerIp();
 
     }
