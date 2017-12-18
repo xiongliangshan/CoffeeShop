@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseActivity;
 import com.lyancafe.coffeeshop.bean.ApkInfoBean;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.main.presenter.MainPresenter;
 import com.lyancafe.coffeeshop.main.presenter.MainPresenterImpl;
 import com.lyancafe.coffeeshop.main.view.MainView;
@@ -213,10 +214,13 @@ public class HomeActivity extends BaseActivity implements MainView {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         if (fragment instanceof MainProduceFragment) {
             ft.hide(shopFragment).hide(settingFragment).show(orderFrag);
+            Logger.getLogger().log("切换到订单页");
         } else if (fragment instanceof MainShopFragment) {
             ft.hide(orderFrag).hide(settingFragment).show(shopFragment);
+            Logger.getLogger().log("切换到 门店");
         } else {
             ft.hide(orderFrag).hide(shopFragment).show(settingFragment);
+            Logger.getLogger().log("切换到 设置");
         }
         ft.commitAllowingStateLoss();
         fragment.onResume();
