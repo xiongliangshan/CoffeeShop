@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.lyancafe.coffeeshop.bean.DaoMaster;
 import com.lyancafe.coffeeshop.bean.DaoSession;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.MyFileNameGenerator;
 import com.lyancafe.coffeeshop.utils.MyUtil;
@@ -63,6 +64,7 @@ public class CSApplication extends Application {
     public void onCreate() {
         super.onCreate();
         initTinkerPatch();
+        Logger.getLogger().log("应用程序启动");
         LogUtil.d(TAG, "onCreate() process = " + getProcessName(this, Process.myPid()));
         application = this;
         getDeviceScreenSize();
@@ -103,6 +105,7 @@ public class CSApplication extends Application {
     public void onTerminate() {
         super.onTerminate();
         Log.d(TAG, "onTerminate()");
+        Logger.getLogger().log("应用程序终止");
     }
 
 

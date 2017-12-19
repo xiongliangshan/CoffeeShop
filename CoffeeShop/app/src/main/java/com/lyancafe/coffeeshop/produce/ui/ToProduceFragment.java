@@ -31,6 +31,7 @@ import com.lyancafe.coffeeshop.event.NewOderComingEvent;
 import com.lyancafe.coffeeshop.event.NotNeedProduceEvent;
 import com.lyancafe.coffeeshop.event.RevokeEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.printer.PrintFace;
 import com.lyancafe.coffeeshop.produce.presenter.ToProducePresenter;
 import com.lyancafe.coffeeshop.produce.presenter.ToProducePresenterImpl;
@@ -380,6 +381,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     // 执行搜索
     private void search(){
         String searchKey = etSearchKey.getText().toString();
+        Logger.getLogger().log("待生产搜索 "+searchKey);
         if(TextUtils.isEmpty(searchKey)){
             mAdapter.setSearchData(mAdapter.tempList);
             return;

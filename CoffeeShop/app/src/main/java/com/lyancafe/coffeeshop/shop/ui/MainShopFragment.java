@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
+import com.lyancafe.coffeeshop.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,6 +90,7 @@ public class MainShopFragment extends BaseFragment implements TabLayout.OnTabSel
     public void onTabSelected(TabLayout.Tab tab) {
         tabIndex = tab.getPosition();
         viewPager.setCurrentItem(tabIndex);
+        Logger.getLogger().log("切换到 门店--"+tabIndex);
     }
 
     @Override

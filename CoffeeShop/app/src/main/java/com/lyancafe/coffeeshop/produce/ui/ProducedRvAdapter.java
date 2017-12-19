@@ -21,6 +21,7 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
 import com.lyancafe.coffeeshop.utils.ToastUtil;

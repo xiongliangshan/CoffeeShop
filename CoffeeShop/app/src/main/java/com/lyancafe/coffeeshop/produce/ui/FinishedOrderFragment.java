@@ -22,6 +22,7 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.produce.presenter.FinishedPresenter;
 import com.lyancafe.coffeeshop.produce.presenter.FinishedPresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.FinishedView;
@@ -245,6 +246,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     // 执行搜索
     private void search(){
         String searchKey = etSearchKey.getText().toString();
+        Logger.getLogger().log("已完成搜索 "+searchKey);
         if(TextUtils.isEmpty(searchKey)){
             mAdapter.setSearchData(mAdapter.tempList);
             return;

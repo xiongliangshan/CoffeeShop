@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.ShopInfo;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.printer.PrintFace;
 import com.lyancafe.coffeeshop.printer.PrintSetting;
 import com.lyancafe.coffeeshop.shop.presenter.ManagerPresenter;
@@ -193,15 +194,19 @@ public class ManagerFragment extends BaseFragment implements ManagerView {
         switch (view.getId()) {
             case R.id.rb_winpos_small:
                 PrintSetting.saveSmallPrinter(getContext(),PrintSetting.WINPOS);
+                Logger.getLogger().log("设置小标签打印---WINPOS");
                 break;
             case R.id.rb_fujitsu_small:
                 PrintSetting.saveSmallPrinter(getContext(),PrintSetting.FUJITSU);
+                Logger.getLogger().log("设置小标签打印---富士通");
                 break;
             case R.id.rb_winpos_big:
                 PrintSetting.saveBigPrinter(getContext(),PrintSetting.WINPOS);
+                Logger.getLogger().log("设置大标签打印---WINPOS");
                 break;
             case R.id.rb_fujitsu_big:
                 PrintSetting.saveBigPrinter(getContext(),PrintSetting.FUJITSU);
+                Logger.getLogger().log("设置大标签打印---富士通");
                 break;
         }
         PrintFace.reset();

@@ -16,6 +16,7 @@ import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.UpdateTabCount;
 import com.lyancafe.coffeeshop.http.CustomObserver;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.printer.PrintFace;
 import com.lyancafe.coffeeshop.produce.model.ToProduceModel;
 import com.lyancafe.coffeeshop.produce.model.ToProduceModelImpl;
@@ -68,6 +69,7 @@ public class ToProducePresenterImpl implements ToProducePresenter{
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
                 mToProduceView.showToast(mContext.getString(R.string.do_success));
+                Logger.getLogger().log("开始生产订单 "+orderId+" 成功");
                 int id  = jsonObject.get("id").getAsInt();
                 mToProduceView.removeItemFromList(id);
                 EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,1,isScanCode));
@@ -86,6 +88,7 @@ public class ToProducePresenterImpl implements ToProducePresenter{
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
                 mToProduceView.showToast(mContext.getString(R.string.do_success));
+                Logger.getLogger().log("批量生产 ,size  = "+orders.size());
                 LogUtil.d("xls"," 批量生产 onHandleSuccess 开始打印");
                 PrintFace.getInst().printBatch(orders);
                 mToProduceView.setMode(ListMode.NORMAL);

@@ -29,7 +29,7 @@ public class LogFileManager {
     /**
      * 决定每个日志文件记录的log时间段长度
      */
-    private static final long interval = 2*60*1000;
+    private static final long interval = 60*60*1000;
 
     public LogFileManager() {
         if(logDir==null){
@@ -117,8 +117,7 @@ public class LogFileManager {
         LogUtil.d(TAG,"当前日志文件总数:"+allFiles.length);
         if(allFiles.length==0){
             LogUtil.d(TAG,"当前没有日志文件");
-            String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm").format(System.currentTimeMillis());
-            currentFile = createLogFile(fileName+".log");
+            currentFile = createLogFile(generateFileName(System.currentTimeMillis()));
 
         }else{
             if(currentFile!=null && currentFile.exists()){
@@ -143,8 +142,7 @@ public class LogFileManager {
                     Date date = simpleDateFormat.parse(lastFileName.substring(0,lastFileName.indexOf(".")));
                     long nowTime = System.currentTimeMillis();
                     if(nowTime-date.getTime()>=interval){
-                        String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm").format(nowTime);
-                        currentFile = createLogFile(fileName+".log");
+                        currentFile = createLogFile(generateFileName(nowTime));
                         LogUtil.d(TAG,"大于时间间隔，重新创建文件");
                     }else{
                         currentFile = lastFile;
@@ -153,13 +151,11 @@ public class LogFileManager {
                 } catch (ParseException e) {
                     e.printStackTrace();
                     LogUtil.e(TAG,e.getMessage());
-                    String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm").format(System.currentTimeMillis());
-                    currentFile = createLogFile(fileName+".log");
+                    currentFile = createLogFile(generateFileName(System.currentTimeMillis()));
                 }
 
             }else{
-                String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm").format(System.currentTimeMillis());
-                currentFile = createLogFile(fileName+".log");
+                currentFile = createLogFile(generateFileName(System.currentTimeMillis()));
             }
         }
 
@@ -168,14 +164,23 @@ public class LogFileManager {
         return currentFile;
     }
 
+    /**
+     * 创建日志文件名
+     * @return
+     */
+    private String generateFileName(long time){
+        return  new SimpleDateFormat("yyyy-MM-dd-HH-mm").format(time)+".log";
+    }
+
 
 
     public synchronized void writeLog(String log){
+        String wholeLog = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis())+"\t"+log;
         FileWriter fileWriter = null;
 
         try {
             fileWriter = new FileWriter(getCurrentLogFile(),true);
-            fileWriter.write(log);
+            fileWriter.write(wholeLog);
         } catch (IOException e) {
             e.printStackTrace();
         }finally {

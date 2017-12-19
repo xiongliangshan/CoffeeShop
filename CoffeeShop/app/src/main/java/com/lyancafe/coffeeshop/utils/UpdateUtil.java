@@ -5,6 +5,7 @@ import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.http.RetrofitHttp;
 import com.lyancafe.coffeeshop.http.RxHelper;
+import com.lyancafe.coffeeshop.logger.Logger;
 
 import io.reactivex.Observer;
 
@@ -30,6 +31,7 @@ public class UpdateUtil {
      */
     public void checkUpdate(Observer<BaseEntity<ApkInfoBean>> observer) {
         int curVersion = MyUtil.getVersionCode(CSApplication.getInstance());
+        Logger.getLogger().log("检测App版本更新，当前使用版本 : "+curVersion);
         RetrofitHttp.getRetrofit().checkUpdate(curVersion)
                 .compose(RxHelper.<BaseEntity<ApkInfoBean>>io_main())
                 .subscribe(observer);

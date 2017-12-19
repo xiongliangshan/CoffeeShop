@@ -37,6 +37,7 @@ import com.lyancafe.coffeeshop.event.PrintOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.event.UpdateTabCount;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.printer.PrintOrderActivity;
 import com.lyancafe.coffeeshop.produce.presenter.MainProducePresenter;
 import com.lyancafe.coffeeshop.produce.presenter.MainProducePresenterImpl;
@@ -395,6 +396,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
         tabIndex = tab.getPosition();
         viewPager.setCurrentItem(tabIndex, false);
         LogUtil.d(LogUtil.TAG_PRODUCE, "当前fragment: tabIndex =" + tabIndex);
+        Logger.getLogger().log("切换到 生产--"+tabIndex);
     }
 
     @Override

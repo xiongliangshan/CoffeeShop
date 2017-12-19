@@ -17,6 +17,7 @@ import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.http.Api;
 import com.lyancafe.coffeeshop.http.RetrofitHttp;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.login.model.LoginModel;
 import com.lyancafe.coffeeshop.login.model.LoginModelImpl;
 import com.lyancafe.coffeeshop.bean.UserBean;
@@ -86,11 +87,13 @@ public class LoginPresenterImpl implements LoginPresenter{
             public void onNext(@NonNull BaseEntity<UserBean> userBeanBaseEntity) {
                 LogUtil.d(LogUtil.TAG_LOGIN,"onNext thread  ="+Thread.currentThread().getName());
                 if(userBeanBaseEntity.getStatus()==LoginHelper.LOGIN_SUCCESS){
+                    Logger.getLogger().log(loginName+ " 登陆成功");
                     UserBean userBean = userBeanBaseEntity.getData();
 
                     LoginHelper.saveUser(mContext.getApplicationContext(), userBean);
                     //如果是当天第一次登陆，就清空本地缓存的订单打印记录
                     if(mLoginModel.isCurrentDayFirstLogin(mContext)){
+                        Logger.getLogger().log(loginName+ " 这是今天第一次登陆");
                         OrderHelper.clearPrintedSet(mContext);
                         OrderUtils.with().clearTable();
                     }

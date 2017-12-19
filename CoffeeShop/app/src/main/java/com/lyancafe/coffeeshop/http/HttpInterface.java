@@ -47,7 +47,7 @@ public interface HttpInterface {
      * @param params 设备型号，APP版本号，regId
      * @return
      */
-    @POST("{shopId}/barista/{userId}/device")
+    @POST("{shopId}/barista/{userId}/Device")
     Observable<BaseEntity> uploadDeviceInfo(@Path("shopId") int shopId,@Path("userId") int userId,@QueryMap Map<String,Object> params);
 
 

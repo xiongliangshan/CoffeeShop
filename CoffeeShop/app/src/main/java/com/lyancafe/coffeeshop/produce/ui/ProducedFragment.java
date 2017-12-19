@@ -22,6 +22,7 @@ import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.RevokeEvent;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.produce.presenter.ProducedPresenter;
 import com.lyancafe.coffeeshop.produce.presenter.ProducedPresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.ProducedView;
@@ -122,6 +123,7 @@ public class ProducedFragment extends BaseFragment implements ProducedView<Order
     // 执行搜索
     private void search(){
         String searchKey = etSearchKey.getText().toString();
+        Logger.getLogger().log("已生产搜索 "+searchKey);
         if(TextUtils.isEmpty(searchKey)){
             mAdapter.setSearchData(mAdapter.tempList);
             return;

@@ -15,6 +15,7 @@ import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.UpdateTabCount;
 import com.lyancafe.coffeeshop.http.CustomObserver;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.produce.model.ProducingModel;
 import com.lyancafe.coffeeshop.produce.model.ProducingModelImpl;
 import com.lyancafe.coffeeshop.produce.view.ProducingView;
@@ -64,6 +65,7 @@ public class ProducingPresenterImpl implements ProducingPresenter{
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
                 mProducingView.showToast(mContext.getString(R.string.do_success));
+                Logger.getLogger().log("完成生产订单 "+orderId+" 成功");
                 int id  = jsonObject.get("id").getAsInt();
                 mProducingView.removeItemFromList(id);
                 EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.FINISHPRODUCE,1));
@@ -79,6 +81,7 @@ public class ProducingPresenterImpl implements ProducingPresenter{
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
                 mProducingView.showToast(mContext.getString(R.string.do_success));
+                Logger.getLogger().log("一键全部完成 ,size  = "+orderIds.size());
 //                mProducingView.setMode(ListMode.NORMAL);
                 JsonArray jsonArray = jsonObject.get("orderIds").getAsJsonArray();
                 mProducingView.removeItemsFromList(orderIds);

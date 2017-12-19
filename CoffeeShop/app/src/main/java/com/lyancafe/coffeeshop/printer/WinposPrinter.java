@@ -11,6 +11,7 @@ import com.lyancafe.coffeeshop.bean.PrintCupBean;
 import com.lyancafe.coffeeshop.bean.PrintObject;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.utils.OrderIdComparator;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
@@ -299,6 +300,7 @@ public class WinposPrinter implements NetPrint {
             e.printStackTrace();
             Log.e(TAG, "IOException" + e.toString());
             ToastUtil.showToast(CSApplication.getInstance(),TAG+"打印机"+ip+":"+port+"无法连接");
+            Logger.getLogger().log("打印机 winpos "+ip+":"+port+" 无法连接");
         }catch (InterruptedException e){
             Log.e(TAG, "InterruptedException" + e.getMessage());
         }finally{

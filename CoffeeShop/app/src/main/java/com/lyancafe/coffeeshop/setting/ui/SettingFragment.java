@@ -17,6 +17,7 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.main.ui.HomeActivity;
 import com.lyancafe.coffeeshop.service.DownLoadService;
 import com.lyancafe.coffeeshop.setting.presenter.SettingPresenter;
@@ -83,6 +84,7 @@ public class SettingFragment extends BaseFragment implements SettingView {
             case R.id.btn_login_out:
                 //退出登录
                 mSettingPresenter.exitLogin();
+                Logger.getLogger().log("退出登录");
                 OrderHelper.batchList.clear();
                 mSettingPresenter.resetToken();
                 if(getContext() instanceof HomeActivity){
