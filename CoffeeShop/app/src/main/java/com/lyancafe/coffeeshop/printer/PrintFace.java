@@ -25,8 +25,8 @@ public class PrintFace {
 
     private static PrintFace mInst;
 
-    private static String BIGLABELIP = "192.19.1.231";
-    private static String SMALLLABELIP = "192.19.1.232";
+    public static String BIGLABELIP = "192.19.1.231";
+    public static String SMALLLABELIP = "192.19.1.232";
     private static final int PORT = 9100;
 
     private ThreadPoolExecutor mPoolExecutor;

@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.DeliverBean;
+import com.lyancafe.coffeeshop.bean.DeviceGroup;
 import com.lyancafe.coffeeshop.bean.EvaluationBean;
 import com.lyancafe.coffeeshop.bean.ExceptionalOrder;
 import com.lyancafe.coffeeshop.bean.Material;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
@@ -36,7 +38,7 @@ public interface HttpInterface {
      * @param password icon_password
      * @return
      */
-    @POST("token")
+    @POST("v3/token")
     Observable<BaseEntity<UserBean>> login(@Query("loginName") String loginName,@Query("password") String password,@Query("regId") String regId);
 
 
@@ -47,7 +49,7 @@ public interface HttpInterface {
      * @param params 设备型号，APP版本号，regId
      * @return
      */
-    @POST("{shopId}/barista/{userId}/Device")
+    @POST("v3/{shopId}/barista/{userId}/Device")
     Observable<BaseEntity> uploadDeviceInfo(@Path("shopId") int shopId,@Path("userId") int userId,@QueryMap Map<String,Object> params);
 
 
@@ -57,7 +59,7 @@ public interface HttpInterface {
      * @param token
      * @return
      */
-    @GET("{shopId}/today/toproduce/orders")
+    @GET("v3/{shopId}/today/toproduce/orders")
     Observable<BaseEntity<List<OrderBean>>> loadToProduceOrders(@Path("shopId") int shopId,@Query("token") String token);
 
 
@@ -68,7 +70,7 @@ public interface HttpInterface {
      * @param token
      * @return
      */
-    @POST("{shopId}/order/{orderId}/beginproduce")
+    @POST("v3/{shopId}/order/{orderId}/beginproduce")
     Observable<BaseEntity<JsonObject>> doStartProduce(@Path("shopId") int shopId, @Path("orderId") long orderId, @Query("token") String token);
 
     /**
@@ -78,7 +80,7 @@ public interface HttpInterface {
      * @param token
      * @return
      */
-    @POST("{shopId}/order/{orderId}/needlessProduce")
+    @POST("v3/{shopId}/order/{orderId}/needlessProduce")
     Observable<BaseEntity<JsonObject>> doNoProduce(@Path("shopId") int shopId, @Path("orderId") long orderId,@Query("token") String token);
 
 
@@ -89,7 +91,7 @@ public interface HttpInterface {
      * @param token
      * @return
      */
-    @POST("{shopId}/order/batchBeginProduce")
+    @POST("v3/{shopId}/order/batchBeginProduce")
     Observable<BaseEntity<JsonObject>> doStartBatchProduce(@Path("shopId") int shopId, @Query("orderIds") List<Long> orderIds, @Query("token") String token);
 
     /**
@@ -98,7 +100,7 @@ public interface HttpInterface {
      * @param token
      * @return
      */
-    @GET("{shopId}/today/producing/orders")
+    @GET("v3/{shopId}/today/producing/orders")
     Observable<BaseEntity<List<OrderBean>>> loadProducingOrders(@Path("shopId") int shopId,@Query("token") String token);
 
     /**
@@ -108,7 +110,7 @@ public interface HttpInterface {
      * @param token
      * @return
      */
-    @POST("{shopId}/order/{orderId}/produce")
+    @POST("v3/{shopId}/order/{orderId}/produce")
     Observable<BaseEntity<JsonObject>> doFinishProduced(@Path("shopId") int shopId, @Path("orderId") long orderId, @Query("token") String token);
 
 
@@ -119,7 +121,7 @@ public interface HttpInterface {
      * @param token
      * @return
      */
-    @POST("{shopId}/order/batchCompleteProduce")
+    @POST("v3/{shopId}/order/batchCompleteProduce")
     Observable<BaseEntity<JsonObject>> doCompleteBatchProduce(@Path("shopId") int shopId,@Query("orderIds") List<Long> orderIds,@Query("token") String token);
 
 
@@ -129,7 +131,7 @@ public interface HttpInterface {
      * @param token
      * @return
      */
-    @GET("{shopId}/today/produced/orders")
+    @GET("v3/{shopId}/today/produced/orders")
     Observable<BaseEntity<List<OrderBean>>> loadToFetchOrders(@Path("shopId") int shopId,@Query("token") String token);
 
 
@@ -139,7 +141,7 @@ public interface HttpInterface {
      * @param token
      * @return
      */
-    @GET("{shopId}/orders/tomorrow")
+    @GET("v3/{shopId}/orders/tomorrow")
     Observable<BaseEntity<List<OrderBean>>> loadTomorrowOrders(@Path("shopId") int shopId,@Query("token") String token);
 
 
@@ -150,7 +152,7 @@ public interface HttpInterface {
      * @param token
      * @return
      */
-    @GET("{shopId}/orders/today/finished")
+    @GET("v3/{shopId}/orders/today/finished")
     Observable<BaseEntity<List<OrderBean>>> loadFinishedOrders(@Path("shopId") int shopId,@Query("orderId") long orderId,@Query("token") String token);
 
 
@@ -160,7 +162,7 @@ public interface HttpInterface {
      * @param token
      * @return
      */
-    @GET("{shopId}/orders/today/finishedTotal")
+    @GET("v3/{shopId}/orders/today/finishedTotal")
     Observable<BaseEntity<JsonObject>> loadOrderAmount(@Path("shopId") int shopId,@Query("token") String token);
 
 
@@ -171,7 +173,7 @@ public interface HttpInterface {
      * @param token
      * @return
      */
-    @GET("{shopId}/orders/feedbackList")
+    @GET("v3/{shopId}/orders/feedbackList")
     Observable<BaseEntity<List<EvaluationBean>>> loadEvaluations(@Path("shopId") int shopId,@Query("id") int id, @Query("token") String token);
 
 
@@ -183,7 +185,7 @@ public interface HttpInterface {
      * @return
      */
     @Headers("Cache-Control:public,max-age=60,max-stale=1200")
-    @GET("{shopId}/supplies")
+    @GET("v3/{shopId}/supplies")
     Observable<BaseEntity<List<Material>>> loadMaterials(@Path("shopId") int shopId, @Query("token") String token);
 
 
@@ -192,7 +194,7 @@ public interface HttpInterface {
      * @param curVersion
      * @return
      */
-    @POST("token/{curVersion}/isUpdateApp")
+    @POST("v3/token/{curVersion}/isUpdateApp")
     Observable<BaseEntity<ApkInfoBean>> checkUpdate(@Path("curVersion") int curVersion);
 
 
@@ -201,7 +203,7 @@ public interface HttpInterface {
      * @param token
      * @return
      */
-    @POST("token/delete")
+    @POST("v3/token/delete")
     Observable<BaseEntity> exitLogin(@Query("token") String token);
 
 
@@ -212,7 +214,7 @@ public interface HttpInterface {
      * @param params
      * @return
      */
-    @POST("{shopId}/order/{orderId}/raiseissue")
+    @POST("v3/{shopId}/order/{orderId}/raiseissue")
     Observable<BaseEntity> reportIssue(@Path("shopId") int shopId,@Path("orderId") long orderId,@QueryMap Map<String,Object> params);
 
 
@@ -222,7 +224,7 @@ public interface HttpInterface {
      * @param token
      * @return
      */
-    @GET("{shopId}/couriersforassign")
+    @GET("v3/{shopId}/couriersforassign")
     Observable<BaseEntity<List<DeliverBean>>> loadDeliversForAssign(@Path("shopId") int shopId,@Query("token") String token);
 
 
@@ -234,7 +236,7 @@ public interface HttpInterface {
      * @param token
      * @return
      */
-    @POST("{shopId}/order/{orderId}/assigntocourier")
+    @POST("v3/{shopId}/order/{orderId}/assigntocourier")
     Observable<BaseEntity<JsonObject>> doAssignOrder(@Path("shopId") int shopId,@Path("orderId") long orderId,@Query("courierId") long courierId,
                                          @Query("token") String token);
 
@@ -245,7 +247,7 @@ public interface HttpInterface {
      * @param token
      * @return
      */
-    @POST("{shopId}/order/{orderId}/recall")
+    @POST("v3/{shopId}/order/{orderId}/recall")
     Observable<BaseEntity<JsonObject>> doRecallOrder(@Path("shopId") int shopId,@Path("orderId") long orderId,@Query("token") String token);
 
 
@@ -256,7 +258,7 @@ public interface HttpInterface {
      * @return
      */
     @Headers("Cache-Control:public,max-age=1,max-stale=2")
-    @GET("{shopId}/shop/info")
+    @GET("v3/{shopId}/shop/info")
     Observable<BaseEntity<ShopInfo>> loadShopInfo(@Path("shopId") int shopId,@Query("token") String token);
 
     /**
@@ -266,7 +268,7 @@ public interface HttpInterface {
      * @param token
      * @return
      */
-    @POST("{shopId}/shop/update")
+    @POST("v3/{shopId}/shop/update")
     Observable<BaseEntity<JsonObject>> modifyShopTelephone(@Path("shopId") int shopId,@Query("shopTelephone") String shopTelephone,@Query("token") String token);
 
     /**
@@ -275,7 +277,7 @@ public interface HttpInterface {
      * @param token
      * @return
      */
-    @GET("{shopId}/orders/today/haikuiTimeOutOrders")
+    @GET("v3/{shopId}/orders/today/haikuiTimeOutOrders")
     Observable<BaseEntity<List<ExceptionalOrder>>> loadExceptionalOrders(@Path("shopId") int shopId,@Query("token") String token);
 
     /**
@@ -286,7 +288,7 @@ public interface HttpInterface {
      * @param token
      * @return
      */
-    @POST("{shopId}/order/{orderId}/{deliveryTeam}/rePushOrderToDelivery")
+    @POST("v3/{shopId}/order/{orderId}/{deliveryTeam}/rePushOrderToDelivery")
     Observable<BaseEntity<JsonObject>> doRePush(@Path("shopId") int shopId,@Path("orderId") long orderId,@Path("deliveryTeam") int team,@Query("token") String token);
 
 
@@ -298,7 +300,16 @@ public interface HttpInterface {
      */
 
     @Headers("Cache-Control:public,max-age=60,max-stale=300")
-    @GET("{shopId}/shop/videolist")
+    @GET("v3/{shopId}/shop/videolist")
     Observable<BaseEntity<List<VideoBean>>> loadVideos(@Path("shopId") int shopId,@Query("token") String token);
+
+
+    /**
+     * 设备监控，心跳请求
+     * @param data
+     * @return
+     */
+    @POST("device/heartbeat")
+    Observable<BaseEntity<JsonObject>>heartbeat(@Body DeviceGroup data);
 
 }

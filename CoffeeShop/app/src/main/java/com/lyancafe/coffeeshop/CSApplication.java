@@ -3,6 +3,7 @@ package com.lyancafe.coffeeshop;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Environment;
 import android.os.Process;
 import android.support.multidex.MultiDex;
@@ -14,6 +15,7 @@ import com.danikula.videocache.HttpProxyCacheServer;
 import com.lyancafe.coffeeshop.bean.DaoMaster;
 import com.lyancafe.coffeeshop.bean.DaoSession;
 import com.lyancafe.coffeeshop.logger.Logger;
+import com.lyancafe.coffeeshop.service.MonitorService;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.MyFileNameGenerator;
 import com.lyancafe.coffeeshop.utils.MyUtil;
@@ -77,6 +79,9 @@ public class CSApplication extends Application {
         LogUtil.d(LogUtil.TAG_JPUSH,"JPush 开始初始化");
 
         setUpDatabase();
+
+        //启动服务
+        startService(new Intent(getApplicationContext(),MonitorService.class));
 
     }
 

@@ -263,6 +263,7 @@ public class WinposPrinter implements NetPrint {
             ToastUtil.showToast(CSApplication.getInstance().getApplicationContext(),ip+"无法连接");
         }
 
+
     }
 
     private boolean ping(String ip) {

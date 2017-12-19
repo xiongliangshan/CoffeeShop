@@ -79,6 +79,7 @@
 
         <service android:name=".service.TaskService"/>
         <service android:name=".service.DownLoadService"/>
+        <service android:name=".service.MonitorService"/>
 
 
         <!--极光推送配置开始-->
