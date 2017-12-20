@@ -6,7 +6,6 @@ import com.lyancafe.coffeeshop.utils.LogUtil;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
