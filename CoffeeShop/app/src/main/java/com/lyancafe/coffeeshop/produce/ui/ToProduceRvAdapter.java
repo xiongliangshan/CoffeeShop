@@ -24,7 +24,6 @@ import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
-import com.lyancafe.coffeeshop.event.NaiGaiEvent;
 import com.lyancafe.coffeeshop.event.NotNeedProduceEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
@@ -389,7 +388,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         if(callback!=null){
             callback.updateBatchUI(this.list.size());
         }
-        EventBus.getDefault().post(new NaiGaiEvent(OrderHelper.caculateNaiGai(list)));
+
         if(selected>=0 && selected<this.list.size()){
             EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
         }else{
@@ -432,8 +431,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
             notifyDataSetChanged();
             EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
         }
-        //计算奶盖数量
-        EventBus.getDefault().post(new NaiGaiEvent(OrderHelper.caculateNaiGai(list)));
+
         //更新批量操作按钮可见性
         if(callback!=null){
             callback.updateBatchUI(this.list.size());
@@ -461,8 +459,6 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
             notifyDataSetChanged();
             EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
         }
-        //计算奶盖数量
-        EventBus.getDefault().post(new NaiGaiEvent(OrderHelper.caculateNaiGai(list)));
 
         //更新批量操作按钮可见性
         if(callback!=null){

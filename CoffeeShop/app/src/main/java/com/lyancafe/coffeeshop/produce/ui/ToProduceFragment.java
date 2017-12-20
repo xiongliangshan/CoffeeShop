@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
@@ -26,7 +25,6 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
-import com.lyancafe.coffeeshop.event.NaiGaiEvent;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
 import com.lyancafe.coffeeshop.event.NotNeedProduceEvent;
 import com.lyancafe.coffeeshop.event.RevokeEvent;
@@ -60,11 +58,11 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
 //    @BindView(R.id.rv_to_produce)
     RecyclerView mRecyclerView;
 //    @BindView(R.id.ll_naigai_layout)
-    ConstraintLayout naigaiLayout;
+//    ConstraintLayout naigaiLayout;
 //    @BindView(R.id.tv_amount_hongyu)
-    TextView tvHongyu;
+//    TextView tvHongyu;
 //    @BindView(R.id.tv_amount_moli)
-    TextView tvMoli;
+//    TextView tvMoli;
 //    @BindView(R.id.cl_batch_layout)
     ConstraintLayout batchLayout;
 //    @BindView(R.id.btn_batch_select)
@@ -115,9 +113,6 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
 
     private void initViews(View view) {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_to_produce);
-        naigaiLayout = (ConstraintLayout) view.findViewById(R.id.ll_naigai_layout);
-        tvHongyu = (TextView) view.findViewById(R.id.tv_amount_hongyu);
-        tvMoli = (TextView) view.findViewById(R.id.tv_amount_moli);
         batchLayout = (ConstraintLayout) view.findViewById(R.id.cl_batch_layout);
         batchSelectBtn = (Button) view.findViewById(R.id.btn_batch_select);
         cancelBtn = (Button) view.findViewById(R.id.btn_cancel);
@@ -156,33 +151,8 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         mToProducePresenter.loadToProduceOrders();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
 
 
-    @Subscribe
-    public void onNaiGaiEvent(NaiGaiEvent event) {
-        showNaiGaiAmount(event.map);
-    }
-
-    @Override
-    public void showNaiGaiAmount(Map<String, Integer> map) {
-        if (naigaiLayout == null) {
-            return;
-        }
-        int hongyu = map.get(CSApplication.getInstance().getString(R.string.coffee_hongyu));
-        int moli = map.get(CSApplication.getInstance().getString(R.string.coffee_moli));
-        if (hongyu == 0 && moli == 0) {
-            naigaiLayout.setVisibility(View.GONE);
-        } else {
-            naigaiLayout.setVisibility(View.VISIBLE);
-            tvHongyu.setText(hongyu + "杯");
-            tvMoli.setText(moli + "杯");
-        }
-
-    }
 
     @Override
     public void bindDataToView(List<OrderBean> list) {

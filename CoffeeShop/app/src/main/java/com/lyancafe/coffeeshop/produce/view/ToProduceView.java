@@ -32,8 +32,8 @@ public interface ToProduceView<T> extends BaseView{
     void dismissLoading();
 */
 
-    //显示奶盖茶数量提示
-    void showNaiGaiAmount(Map<String,Integer> map);
+   /* //显示奶盖茶数量提示
+    void showNaiGaiAmount(Map<String,Integer> map);*/
 
     //设定模式
     void setMode(ListMode mode);

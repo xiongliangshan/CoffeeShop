@@ -20,9 +20,7 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
-import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
-import com.lyancafe.coffeeshop.event.NaiGaiEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.printer.PrintFace;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
@@ -120,7 +118,6 @@ public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.Vi
         }
 
 
-//        OrderHelper.showEffectOnly(order,holder.effectTimeTxt);
 
         holder.deliverStatusText.setText(OrderHelper.getStatusName(order.getStatus(),order.getWxScan()));
 
@@ -216,7 +213,6 @@ public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.Vi
         @BindView(R.id.iv_sao_flag) ImageView saoImg;
         @BindView(R.id.iv_label_flag) ImageView labelFlagImg;
         @BindView(R.id.item_order_id) TextView orderIdTxt;
-//        @BindView(R.id.item_produce_effect) TextView effectTimeTxt;
         @BindView(R.id.tv_expected_time) TextView expectedTimeText;
         @BindView(R.id.item_grab_flag) ImageView grabFlagIV;
         @BindView(R.id.item_remark_flag) ImageView remarkFlagIV;
@@ -243,53 +239,5 @@ public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.Vi
         }
 
     }
-
-    private List<OrderBean> filterOrders(List<OrderBean> list,int category){
-        List<OrderBean> subList = new ArrayList<>();
-        if(category== OrderCategory.MEITUN){
-            for(OrderBean orderBean:list){
-                if(orderBean.getDeliveryTeam()==8){
-                    subList.add(orderBean);
-                }
-            }
-        }else if(category==OrderCategory.OWN){
-            for(OrderBean orderBean:list){
-                if(orderBean.getDeliveryTeam()!=8){
-                    subList.add(orderBean);
-                }
-            }
-        }else{
-            subList = list;
-        }
-
-        return subList;
-    }
-
-
-    /**
-     * 点击开始生产，生产完成，扫码交付时从当前列表移除该订单
-     * @param orderId
-     */
-    public void removeOrderFromList(long orderId){
-        for(int i=list.size()-1;i>=0;i--){
-            if(list.get(i).getId()==orderId){
-                list.remove(i);
-                break;
-            }
-        }
-        if(list.size()>0){
-            selected=0;
-            notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(selected)));
-        }else{
-            selected = -1;
-            notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
-        }
-        //计算奶盖数量
-        EventBus.getDefault().post(new NaiGaiEvent(OrderHelper.caculateNaiGai(list)));
-
-    }
-
 
 }

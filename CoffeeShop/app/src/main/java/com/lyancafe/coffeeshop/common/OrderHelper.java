@@ -614,7 +614,7 @@ public class OrderHelper {
 
 
 
-    //奶盖茶数量提示
+   /* //奶盖茶数量提示
     public static Map<String,Integer> caculateNaiGai(List<OrderBean> orders){
         Map<String,Integer> map = new HashMap<>();
         String moli = CSApplication.getInstance().getString(R.string.coffee_moli);
@@ -634,7 +634,7 @@ public class OrderHelper {
             }
         }
         return map;
-    }
+    }*/
 
     public static String getStatusName(int status,boolean isWxScan) {
         if(isWxScan){
