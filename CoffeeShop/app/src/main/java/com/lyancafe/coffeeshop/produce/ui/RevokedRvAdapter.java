@@ -22,7 +22,6 @@ import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
-import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.utils.OrderIdComparator;
 
@@ -106,21 +105,7 @@ public class RevokedRvAdapter extends RecyclerView.Adapter<RevokedRvAdapter.View
         }else {
             holder.saoImg.setVisibility(View.GONE);
         }
-        //定制
-        if(order.getIsRecipeFittings()){
-            holder.labelFlagImg.setVisibility(View.VISIBLE);
-            holder.labelFlagImg.setImageResource(R.mipmap.flag_ding);
-        }else{
-            holder.labelFlagImg.setVisibility(View.GONE);
-        }
 
-        //抢单
-        if(order.getStatus()== OrderStatus.UNASSIGNED){
-            holder.grabFlagIV.setVisibility(View.GONE);
-        }else{
-            holder.grabFlagIV.setVisibility(View.VISIBLE);
-            holder.grabFlagIV.setImageResource(R.mipmap.flag_qiang);
-        }
         //备注
         if(TextUtils.isEmpty(order.getNotes()) && TextUtils.isEmpty(order.getCsrNotes())){
             holder.remarkFlagIV.setVisibility(View.GONE);
@@ -129,7 +114,7 @@ public class RevokedRvAdapter extends RecyclerView.Adapter<RevokedRvAdapter.View
             holder.remarkFlagIV.setImageResource(R.mipmap.flag_bei);
         }
 
-//        OrderHelper.showEffectOnly(order,holder.effectTimeTxt);
+
         if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN) {
             holder.expectedTimeText.setText(order.getInstant() == 1 ? "立即送出" : OrderHelper.getFormatTimeToStr(order.getExpectedTime()));
         } else {
@@ -141,34 +126,6 @@ public class RevokedRvAdapter extends RecyclerView.Adapter<RevokedRvAdapter.View
 
         fillItemListData(holder.itemContainerll, order.getItems());
         holder.cupCountText.setText(context.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
-       /* if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
-            holder.twobtnContainerLayout.setVisibility(View.GONE);
-            holder.onebtnContainerlayout.setVisibility(View.VISIBLE);
-            holder.produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //点击开始生产（打印）按钮
-                    EventBus.getDefault().post(new StartProduceEvent(order));
-                }
-            });
-        }else if(order.getProduceStatus() == OrderStatus.PRODUCING){
-            holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
-            holder.onebtnContainerlayout.setVisibility(View.GONE);
-            holder.produceBtn.setVisibility(View.VISIBLE);
-            holder.produceBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //生产完成
-                    EventBus.getDefault().post(new FinishProduceEvent(order));
-                }
-            });
-
-        }else{
-            holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
-            holder.onebtnContainerlayout.setVisibility(View.GONE);
-            holder.produceBtn.setVisibility(View.GONE);
-        }*/
-
     }
 
 
@@ -242,11 +199,9 @@ public class RevokedRvAdapter extends RecyclerView.Adapter<RevokedRvAdapter.View
         @BindView(R.id.ll_first_row) LinearLayout firstRowLayout;
         @BindView(R.id.iv_reminder) ImageView reminderImg;
         @BindView(R.id.iv_sao_flag) ImageView saoImg;
-        @BindView(R.id.iv_label_flag) ImageView labelFlagImg;
         @BindView(R.id.item_order_id) TextView orderIdTxt;
         @BindView(R.id.item_expected_time) TextView expectedTimeText;
         @BindView(R.id.tv_deliver_status) TextView deliverStatusText;
-        @BindView(R.id.item_grab_flag) ImageView grabFlagIV;
         @BindView(R.id.item_remark_flag) ImageView remarkFlagIV;
         @BindView(R.id.item_container) LinearLayout itemContainerll;
         @BindView(R.id.tv_cup_count) TextView cupCountText;
@@ -271,32 +226,6 @@ public class RevokedRvAdapter extends RecyclerView.Adapter<RevokedRvAdapter.View
         }else{
             EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
         }
-
-    }
-
-
-
-    /**
-     * 点击开始生产，生产完成，扫码交付时从当前列表移除该订单
-     * @param orderId
-     */
-    public void removeOrderFromList(long orderId){
-        for(int i=list.size()-1;i>=0;i--){
-            if(list.get(i).getId()==orderId){
-                list.remove(i);
-                break;
-            }
-        }
-        if(list.size()>0){
-            selected=0;
-            notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(selected)));
-        }else{
-            selected = -1;
-            notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
-        }
-
 
     }
 

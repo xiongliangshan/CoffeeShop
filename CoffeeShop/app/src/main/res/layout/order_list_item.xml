@@ -37,15 +37,6 @@
                 android:text="003约"
                 />
 
-           <!-- <TextView
-                android:id="@+id/item_contant_produce_effect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="生产时效"
-                android:textSize="10sp"
-                android:textColor="@color/font_gray"
-                android:layout_marginRight="4dp"
-                />-->
             <TextView
                 android:id="@+id/item_expected_time"
                 android:layout_width="wrap_content"
@@ -104,16 +95,6 @@
                 tools:visibility="visible"
                 android:src="@mipmap/flag_sao"/>
 
-            <ImageView
-                android:id="@+id/iv_label_flag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/iv_sao_flag"
-                android:src="@mipmap/flag_ding"
-                android:layout_marginLeft="4dp"
-                android:visibility="gone"
-                tools:visibility="visible"
-                />
 
             <ImageView
                 android:id="@+id/item_remark_flag"
@@ -123,35 +104,20 @@
                 android:src="@mipmap/flag_bei"
                 android:visibility="gone"
                 tools:visibility="visible"
-                android:layout_toRightOf="@id/iv_label_flag"
+                android:layout_toRightOf="@id/iv_sao_flag"
                 />
 
-            <ImageView
-                android:id="@+id/item_grab_flag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/item_remark_flag"
-                android:src="@mipmap/flag_qiang"
-                android:visibility="gone"
-                tools:visibility="visible"
-                android:layout_marginLeft="4dp"/>
 
             <ImageView
                 android:id="@+id/item_replenish_flag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/item_grab_flag"
+                android:layout_toRightOf="@id/item_remark_flag"
                 android:src="@mipmap/flag_replenish"
                 android:visibility="gone"
                 tools:visibility="visible"
                 android:layout_marginLeft="4dp"/>
 
-            <!--<ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:src="@mipmap/flag_placeholder"
-                android:visibility="invisible"/>-->
 
             <ImageView
                 android:id="@+id/iv_check"

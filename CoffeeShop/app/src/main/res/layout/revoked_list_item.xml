@@ -100,7 +100,7 @@
                 android:layout_marginLeft="4dp"
                 android:src="@mipmap/flag_sao"/>
 
-            <ImageView
+          <!--  <ImageView
                 android:id="@+id/iv_label_flag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -108,29 +108,29 @@
                 android:src="@mipmap/flag_ding"
                 android:layout_marginLeft="4dp"
                 />
-
+-->
             <ImageView
                 android:id="@+id/item_remark_flag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
                 android:src="@mipmap/flag_bei"
-                android:layout_toRightOf="@id/iv_label_flag"
+                android:layout_toRightOf="@id/iv_sao_flag"
                 />
 
-            <ImageView
+         <!--   <ImageView
                 android:id="@+id/item_grab_flag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/item_remark_flag"
                 android:src="@mipmap/flag_qiang"
-                android:layout_marginLeft="4dp"/>
-            <ImageView
+                android:layout_marginLeft="4dp"/>-->
+        <!--    <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:src="@mipmap/flag_placeholder"
-                android:visibility="invisible"/>
+                android:visibility="invisible"/>-->
 
 
 

@@ -137,7 +137,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         }else {
             holder.saoImg.setVisibility(View.GONE);
         }
-        //定制
+      /*  //定制
         if(order.getIsRecipeFittings()){
             holder.labelFlagImg.setVisibility(View.VISIBLE);
             holder.labelFlagImg.setImageResource(R.mipmap.flag_ding);
@@ -151,7 +151,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
             holder.grabFlagIV.setImageResource(R.mipmap.flag_qiang);
         }else{
             holder.grabFlagIV.setVisibility(View.GONE);
-        }
+        }*/
         //备注
         if(TextUtils.isEmpty(order.getNotes()) && TextUtils.isEmpty(order.getCsrNotes())){
             holder.remarkFlagIV.setVisibility(View.GONE);
@@ -358,11 +358,9 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         @BindView(R.id.ll_first_row) LinearLayout firstRowLayout;
         @BindView(R.id.iv_reminder) ImageView reminderImg;
         @BindView(R.id.iv_sao_flag) ImageView saoImg;
-        @BindView(R.id.iv_label_flag) ImageView labelFlagImg;
         @BindView(R.id.iv_check) ImageView checkImg;
         @BindView(R.id.item_order_id) TextView orderIdTxt;
         @BindView(R.id.item_expected_time) TextView expectedTimeText;
-        @BindView(R.id.item_grab_flag) ImageView grabFlagIV;
         @BindView(R.id.item_remark_flag) ImageView remarkFlagIV;
         @BindView(R.id.item_replenish_flag) ImageView replenishIV;
         @BindView(R.id.item_container) LinearLayout itemContainerll;
