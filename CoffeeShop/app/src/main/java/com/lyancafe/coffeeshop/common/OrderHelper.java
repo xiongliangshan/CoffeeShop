@@ -13,8 +13,10 @@ import com.lyancafe.coffeeshop.bean.EvaluationBean;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
+import com.lyancafe.coffeeshop.bean.SummarizeGroup;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -437,17 +439,6 @@ public class OrderHelper {
         }
     }
 
-    /*public static String getShopOrderSn(EvaluationBean evaluationBean){
-        if(evaluationBean.getOrderbean().getDeliveryTeam()== DeliveryTeam.MEITUAN){
-            return "美团"+evaluationBean.getOrderbean().getThirdShopOrderNo();
-        }
-
-        if(evaluationBean.getOrderbean().getInstant()==1){//及时单
-            return String.valueOf(evaluationBean.getOrderbean().getShopOrderNo());
-        }else{
-            return evaluationBean.getOrderbean().getShopOrderNo()+"约";
-        }
-    }*/
 
 
 
@@ -614,27 +605,7 @@ public class OrderHelper {
 
 
 
-   /* //奶盖茶数量提示
-    public static Map<String,Integer> caculateNaiGai(List<OrderBean> orders){
-        Map<String,Integer> map = new HashMap<>();
-        String moli = CSApplication.getInstance().getString(R.string.coffee_moli);
-        String hongyu = CSApplication.getInstance().getString(R.string.coffee_hongyu);
-        map.put(moli,0);
-        map.put(hongyu,0);
-        if(orders==null || orders.size()==0){
-            return map;
-        }
-        for(int i=0;i<orders.size();i++){
-             OrderBean order = orders.get(i);
-            for(int j=0;j<order.getItems().size();j++){
-                ItemContentBean item = order.getItems().get(j);
-                if(moli.equals(item.getProduct()) || hongyu.equals(item.getProduct())){
-                    map.put(item.getProduct(),map.get(item.getProduct())+item.getQuantity());
-                }
-            }
-        }
-        return map;
-    }*/
+
 
     public static String getStatusName(int status,boolean isWxScan) {
         if(isWxScan){
@@ -706,4 +677,134 @@ public class OrderHelper {
         }
         return orderIds;
     }
+
+
+    ////把所有订单按汇总组来划分
+    public static List<SummarizeGroup> splitOrdersToGroup(List<OrderBean> orders){
+        List<SummarizeGroup> groups = new ArrayList<>();
+        Map<Long,Object> map = new HashMap<>();
+        SummarizeGroup jishisg = null;
+        for(OrderBean order:orders){
+            if(order.getInstant()==1){
+                //及时单
+                if(jishisg==null){
+                    jishisg = new SummarizeGroup();
+                    jishisg.setExpetedTime(order.getExpectedTime());
+                    jishisg.setGroupName("及时单");
+                    jishisg.setOrders(new ArrayList<OrderBean>());
+                    jishisg.getOrders().add(order);
+                    groups.add(jishisg);
+                }else {
+                    jishisg.getOrders().add(order);
+                }
+
+            }else{
+                //预约单
+                Object object = map.get(order.getExpectedTime());
+                if(object==null){
+                    SummarizeGroup sg =  new SummarizeGroup();
+                    sg.setExpetedTime(order.getExpectedTime());
+                    sg.setOrders(new ArrayList<OrderBean>());
+                    sg.setGroupName(getFormatPeriodTimeStr(sg.getExpetedTime()));
+                    sg.getOrders().add(order);
+                    map.put(order.getExpectedTime(),sg);
+                    groups.add(sg);
+                }else{
+                    SummarizeGroup sg = (SummarizeGroup) object;
+                    sg.getOrders().add(order);
+                }
+            }
+        }
+
+        return groups;
+    }
+
+
+    public static void caculateGroupList(List<SummarizeGroup> groups){
+        for(int i=0;i<groups.size();i++){
+            SummarizeGroup summarizeGroup = groups.get(i);
+            summarizeGroup.setOrderCount(summarizeGroup.getOrders().size());
+            caculateGroup(summarizeGroup);
+        }
+    }
+
+    private static void caculateGroup(SummarizeGroup summarizeGroup) {
+
+
+        summarizeGroup.setIconMap(new HashMap<String, Integer>());
+        List<OrderBean> orders =  summarizeGroup.getOrders();
+        for(OrderBean order:orders){
+            if("Y".equals(order.getReminder())){
+                //催单
+                Integer iconNum = summarizeGroup.getIconMap().get("ji");
+                if(iconNum==null){
+                    summarizeGroup.getIconMap().put("ji", 1);
+                }else{
+                    summarizeGroup.getIconMap().put("ji",iconNum+1);
+                }
+
+            }
+
+            if(order.getCheckAddress()){
+                //重点关注地址（眼睛）
+                Integer iconNum = summarizeGroup.getIconMap().get("yan");
+                if(iconNum==null){
+                    summarizeGroup.getIconMap().put("yan", 1);
+                }else{
+                    summarizeGroup.getIconMap().put("yan",iconNum+1);
+                }
+
+            }
+
+            if(!TextUtils.isEmpty(order.getNotes()) || !TextUtils.isEmpty(order.getCsrNotes())){
+                //有备注
+                Integer iconNum = summarizeGroup.getIconMap().get("bei");
+                if(iconNum==null){
+                    summarizeGroup.getIconMap().put("bei", 1);
+                }else{
+                    summarizeGroup.getIconMap().put("bei",iconNum+1);
+                }
+            }
+
+            if(order.getRelationOrderId()!=0){
+                //有补单
+                Integer iconNum = summarizeGroup.getIconMap().get("bu");
+                if(iconNum==null){
+                    summarizeGroup.getIconMap().put("bu", 1);
+                }else{
+                    summarizeGroup.getIconMap().put("bu",iconNum+1);
+                }
+            }
+
+
+        }
+        LogUtil.d(TAG,summarizeGroup.toString());
+
+    }
+
+
+    //计算一个单子能预装几盒
+    public static int caculateBoxCountByOrder(OrderBean order){
+        List<ItemContentBean> items = order.getItems();
+        int cold =0;
+        int hot = 0;
+        int coldBox=0;
+        int hotBox=0;
+        for(ItemContentBean item:items){
+            if(item.getColdHotProperty()==1){
+                //冷
+                cold+=item.getQuantity();
+            }else if(item.getColdHotProperty()==2){
+                //热
+                hot+=item.getQuantity();
+            }
+        }
+
+        coldBox = cold>0?(cold>=4?(cold/4+cold%4):1):0;
+        hotBox = hot>0?(hot>=4?(hot/4+hot%4):1):0;
+
+        return coldBox+hotBox;
+    }
+
+
 }

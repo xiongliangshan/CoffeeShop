@@ -22,6 +22,7 @@ import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.bean.SummarizeGroup;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
@@ -65,6 +66,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     Button btnSearch;
 
     private ToProduceRvAdapter mAdapter;
+    private SummarizeAdapter summarizeAdapter;
     private Context mContext;
     public List<OrderBean> allOrderList = new ArrayList<>();
     private Handler mHandler;
@@ -359,6 +361,8 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     private void switchMode(OrderMode mode){
         if(mode==OrderMode.SUMMARIZE){
             //汇总模式
+            List<SummarizeGroup> groups = OrderHelper.splitOrdersToGroup(mAdapter.tempList);
+            OrderHelper.caculateGroupList(groups);
         }else{
             //详单模式
         }
