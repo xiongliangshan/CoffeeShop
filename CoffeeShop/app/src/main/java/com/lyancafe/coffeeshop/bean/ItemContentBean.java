@@ -26,10 +26,15 @@ public class ItemContentBean implements Serializable{
     private int totalPrice;        //总价,单位：分
     private int coldHotProperty;   //1.冷  2.热  3.常温
     private String recipeFittings; //个性化标签
-    @Generated(hash = 976611957)
-    public ItemContentBean(@NotNull String product, long orderId, String unit,
-            int price, int quantity, int totalPrice, int coldHotProperty,
-            String recipeFittings) {
+    private int produceProcess;    //0 ：null,1：咖啡师生产,咖啡师出品,2：饮品师生产，饮品师出品,3：咖啡师生产，饮品师生产，饮品师出品
+
+
+
+
+    @Generated(hash = 81616558)
+    public ItemContentBean(@NotNull String product, long orderId, String unit, int price,
+            int quantity, int totalPrice, int coldHotProperty, String recipeFittings,
+            int produceProcess) {
         this.product = product;
         this.orderId = orderId;
         this.unit = unit;
@@ -38,10 +43,13 @@ public class ItemContentBean implements Serializable{
         this.totalPrice = totalPrice;
         this.coldHotProperty = coldHotProperty;
         this.recipeFittings = recipeFittings;
+        this.produceProcess = produceProcess;
     }
     @Generated(hash = 1975170859)
     public ItemContentBean() {
     }
+
+
    
     public String getProduct() {
         return this.product;
@@ -91,11 +99,17 @@ public class ItemContentBean implements Serializable{
     public void setRecipeFittings(String recipeFittings) {
         this.recipeFittings = recipeFittings;
     }
+    public int getProduceProcess() {
+        return produceProcess;
+    }
+    public void setProduceProcess(int produceProcess) {
+        this.produceProcess = produceProcess;
+    }
 
     @Override
     public String toString() {
         return "ItemContentBean{" +
-                ", product='" + product + '\'' +
+                "product='" + product + '\'' +
                 ", orderId=" + orderId +
                 ", unit='" + unit + '\'' +
                 ", price=" + price +
@@ -103,6 +117,7 @@ public class ItemContentBean implements Serializable{
                 ", totalPrice=" + totalPrice +
                 ", coldHotProperty=" + coldHotProperty +
                 ", recipeFittings='" + recipeFittings + '\'' +
+                ", produceProcess=" + produceProcess +
                 '}';
     }
 }

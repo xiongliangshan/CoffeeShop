@@ -42,52 +42,21 @@
 
         </android.support.constraint.ConstraintLayout>
 
-        <!--<android.support.constraint.ConstraintLayout
-            android:id="@+id/ll_naigai_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:visibility="gone">
-            <TextView
-                android:id="@+id/constant_hongyu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textColor="@color/gray5"
-                android:text = "芝士云顶红玉"/>
-            <TextView
-                android:id="@+id/tv_amount_hongyu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                app:layout_constraintLeft_toRightOf="@id/constant_hongyu"
-                app:layout_constraintBaseline_toBaselineOf="@id/constant_hongyu"
-                android:textStyle="bold"
-                android:textColor="@color/white1"
-                android:textSize="18sp"
-                android:text="15杯"/>
+       <android.support.constraint.ConstraintLayout
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           app:layout_constraintLeft_toLeftOf="parent">
 
+           <Button
+               android:id="@+id/btn_summarize"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:textSize="16sp"
+               android:background="@drawable/bg_native_button"
+               android:text="汇总模式"
+               android:visibility="gone"/>
 
-            <TextView
-                android:id="@+id/constant_moli"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/constant_hongyu"
-                android:textSize="16sp"
-                android:textColor="@color/gray5"
-                android:text = "芝士云顶茉莉"/>
-            <TextView
-                android:id="@+id/tv_amount_moli"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                app:layout_constraintLeft_toRightOf="@id/constant_moli"
-                app:layout_constraintBaseline_toBaselineOf="@id/constant_moli"
-                android:textStyle="bold"
-                android:textColor="@color/white1"
-                android:textSize="18sp"
-                android:text="8杯"/>
-        </android.support.constraint.ConstraintLayout>-->
+       </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="wrap_content"

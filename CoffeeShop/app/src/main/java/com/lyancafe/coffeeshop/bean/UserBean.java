@@ -11,16 +11,12 @@ public class UserBean implements Serializable{
     private int shopId;
     private String shopName;
     private String token;
+    private boolean needPrintTime;
+    private String drinkGuide;
 
     public UserBean() {
     }
 
-    public UserBean(int userId, int shopId, String shopName, String token) {
-        this.userId = userId;
-        this.shopId = shopId;
-        this.shopName = shopName;
-        this.token = token;
-    }
 
     public int getUserId() {
         return userId;
@@ -54,6 +50,21 @@ public class UserBean implements Serializable{
         this.token = token;
     }
 
+    public boolean isNeedPrintTime() {
+        return needPrintTime;
+    }
+
+    public void setNeedPrintTime(boolean needPrintTime) {
+        this.needPrintTime = needPrintTime;
+    }
+
+    public String getDrinkGuide() {
+        return drinkGuide;
+    }
+
+    public void setDrinkGuide(String drinkGuide) {
+        this.drinkGuide = drinkGuide;
+    }
 
     @Override
     public String toString() {
@@ -62,6 +73,8 @@ public class UserBean implements Serializable{
                 ", shopId=" + shopId +
                 ", shopName='" + shopName + '\'' +
                 ", token='" + token + '\'' +
+                ", needPrintTime=" + needPrintTime +
+                ", drinkGuide='" + drinkGuide + '\'' +
                 '}';
     }
 }

@@ -269,9 +269,15 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView<Ma
                 List<String> customList = new ArrayList<>();
                 customList.add("半糖");
                 customList.add("常温");
-                ItemContentBean itemContentBean = new ItemContentBean("热拿铁",65535,"大杯", 3000, 4, 3000, 3, null);
+                //"热拿铁",65535,"大杯", 3000, 4, 3000, 3, null
+                ItemContentBean item = new ItemContentBean();
+                item.setProduct("热拿铁");
+                item.setOrderId(66335);
+                item.setPrice(3000);
+                item.setQuantity(4);
+                item.setUnit("大杯");
                 List<ItemContentBean> list = new ArrayList<>();
-                list.add(itemContentBean);
+                list.add(item);
                 order.setItems(list);
                 PrintFace.getInst().printTest(order);
                 break;

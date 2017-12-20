@@ -37,6 +37,7 @@ import com.lyancafe.coffeeshop.produce.view.ToProduceView;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -55,23 +56,12 @@ import static com.lyancafe.coffeeshop.produce.ui.ListMode.SELECT;
 public class ToProduceFragment extends BaseFragment implements ToProduceView<OrderBean>,ToProduceRvAdapter.ToProduceCallback {
 
 
-//    @BindView(R.id.rv_to_produce)
     RecyclerView mRecyclerView;
-//    @BindView(R.id.ll_naigai_layout)
-//    ConstraintLayout naigaiLayout;
-//    @BindView(R.id.tv_amount_hongyu)
-//    TextView tvHongyu;
-//    @BindView(R.id.tv_amount_moli)
-//    TextView tvMoli;
-//    @BindView(R.id.cl_batch_layout)
     ConstraintLayout batchLayout;
-//    @BindView(R.id.btn_batch_select)
+    Button summarizeBtn;
     Button batchSelectBtn;
-//    @BindView(R.id.btn_cancel)
     Button cancelBtn;
-//    @BindView(R.id.et_search_key)
     EditText etSearchKey;
-//    @BindView(R.id.btn_search)
     Button btnSearch;
 
     private ToProduceRvAdapter mAdapter;
@@ -83,6 +73,9 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     private ToProducePresenter mToProducePresenter;
 
     private MyClickListener myClickListener;
+
+    //当前订单模式
+    private OrderMode currentMode = OrderMode.NORMAL;
 
     public ToProduceFragment() {
 
@@ -114,6 +107,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     private void initViews(View view) {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_to_produce);
         batchLayout = (ConstraintLayout) view.findViewById(R.id.cl_batch_layout);
+        summarizeBtn = (Button) view.findViewById(R.id.btn_summarize);
         batchSelectBtn = (Button) view.findViewById(R.id.btn_batch_select);
         cancelBtn = (Button) view.findViewById(R.id.btn_cancel);
         etSearchKey = (EditText) view.findViewById(R.id.et_search_key);
@@ -140,6 +134,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     }
 
     private void setListener(){
+        summarizeBtn.setOnClickListener(myClickListener);
         batchSelectBtn.setOnClickListener(myClickListener);
         cancelBtn.setOnClickListener(myClickListener);
         btnSearch.setOnClickListener(myClickListener);
@@ -343,8 +338,32 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
                 case R.id.btn_search:
                     search();
                     break;
+                case R.id.btn_summarize:
+                    if("汇总模式".equals(summarizeBtn.getText())){
+                        ToastUtil.show(getContext(),"开启汇总模式");
+                        summarizeBtn.setText("详单模式");
+                        switchMode(OrderMode.SUMMARIZE);
+                    }else if("详单模式".equals(summarizeBtn.getText())){
+                        ToastUtil.show(getContext(),"详单模式");
+                        summarizeBtn.setText("汇总模式");
+                        switchMode(OrderMode.NORMAL);
+                    }
+
+                    break;
             }
         }
+    }
+
+
+    //切换模式
+    private void switchMode(OrderMode mode){
+        if(mode==OrderMode.SUMMARIZE){
+            //汇总模式
+        }else{
+            //详单模式
+        }
+
+        this.currentMode = mode;
     }
 
 
