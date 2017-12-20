@@ -25,8 +25,8 @@ android {
         applicationId "com.lyancafe.coffeeshop"
         minSdkVersion 19
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 65
-        versionName "3.4.3"
+        versionCode 66
+        versionName "3.4.4"
         multiDexEnabled true
         ndk {
             // 设置支持的SO库架构
@@ -43,7 +43,7 @@ android {
     }
     buildTypes {
         release {
-            buildConfigField("String", "BASE_URL", '"https://api.lyancafe.com/shop/v3/"')
+            buildConfigField("String", "BASE_URL", '"https://api.lyancafe.com/shop/"')
             buildConfigField("boolean", "LOG_DEBUG", "false")
             minifyEnabled true
             shrinkResources true
@@ -51,7 +51,7 @@ android {
             signingConfig signingConfigs.mySignConfig
         }
         debug {
-            buildConfigField("String", "BASE_URL", '"https://apiqa.lyancafe.cn/shop/v3/"')
+            buildConfigField("String", "BASE_URL", '"https://apiqa.lyancafe.cn/shop/"')
             buildConfigField("boolean", "LOG_DEBUG", "true")
             debuggable true
             minifyEnabled true

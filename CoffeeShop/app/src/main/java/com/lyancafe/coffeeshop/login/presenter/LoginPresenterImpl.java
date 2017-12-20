@@ -93,9 +93,11 @@ public class LoginPresenterImpl implements LoginPresenter{
                     LoginHelper.saveUser(mContext.getApplicationContext(), userBean);
                     //如果是当天第一次登陆，就清空本地缓存的订单打印记录
                     if(mLoginModel.isCurrentDayFirstLogin(mContext)){
-                        Logger.getLogger().log(loginName+ " 这是今天第一次登陆");
+                        Logger.getLogger().clearAllLogs();
                         OrderHelper.clearPrintedSet(mContext);
                         OrderUtils.with().clearTable();
+                        Logger.getLogger().log(loginName+ " 这是今天第一次登陆");
+
                     }
 
                     uploadDeviceInfo(userBean.getShopId(),userBean.getUserId(),userBean.getToken());
@@ -232,9 +234,9 @@ public class LoginPresenterImpl implements LoginPresenter{
             return;
         }
         if(ip.contains("cn")||ip.contains("com")){
-            Api.BASE_URL = "https://" + ip + "/shop/v3/";
+            Api.BASE_URL = "https://" + ip + "/shop/";
         }else{
-            Api.BASE_URL = "http://" + ip + "/shop/v3/";
+            Api.BASE_URL = "http://" + ip + "/shop/";
         }
         RetrofitHttp.reset();
     }
