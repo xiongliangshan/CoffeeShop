@@ -5,12 +5,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.bean.DeliverPlatform;
 import com.lyancafe.coffeeshop.bean.SummarizeGroup;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,6 +24,7 @@ import butterknife.ButterKnife;
  */
 
 public class SummarizeAdapter extends RecyclerView.Adapter<SummarizeAdapter.ViewHolder> {
+
 
 
     private Context mContext;
@@ -39,6 +44,7 @@ public class SummarizeAdapter extends RecyclerView.Adapter<SummarizeAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         SummarizeGroup group = groupList.get(position);
         holder.tvExpected.setText(group.getGroupName());
+        createPlatformUI(holder.llPlatform,group.getDeliverPlatformMap());
     }
 
     @Override
@@ -50,10 +56,12 @@ public class SummarizeAdapter extends RecyclerView.Adapter<SummarizeAdapter.View
 
         @BindView(R.id.tv_expected)
         TextView tvExpected;
+        @BindView(R.id.ll_platform)
+        LinearLayout llPlatform;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 
@@ -61,5 +69,23 @@ public class SummarizeAdapter extends RecyclerView.Adapter<SummarizeAdapter.View
     public void setData(List<SummarizeGroup> groupList) {
         this.groupList = groupList;
         notifyDataSetChanged();
+    }
+
+    /**
+     * 展示平台订单数据
+     * @param container
+     * @param dpMap
+     */
+    private void createPlatformUI(LinearLayout container, Map<String,DeliverPlatform> dpMap){
+        Iterator<String> iterator = dpMap.keySet().iterator();
+        while (iterator.hasNext()){
+            String key = iterator.next();
+            DeliverPlatform dp = dpMap.get(key);
+            if(dp.getOrderCount()>0){
+                TextView textView = new TextView(mContext);
+                textView.setText(dp.getName()+" : "+dp.getCupCount()+" 杯, "+dp.getOrderCount()+" 单");
+                container.addView(textView);
+            }
+        }
     }
 }
