@@ -80,6 +80,8 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     TabLayout tabLayout;
     @BindView(R.id.vp_container)
     ViewPager viewPager;
+    @BindView(R.id.detail_panel)
+    View detailPanel;
     @BindView(R.id.order_id)
     TextView shopOrderNoText;
     @BindView(R.id.reach_time)
@@ -200,6 +202,14 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
                 producingFragment.refreshListForStatus(orderId, status);
                 break;
         }
+    }
+
+    /**
+     * 设置详情面板的可见性
+     * @param isVisible
+     */
+    public void setDetailPanelVisible(boolean isVisible){
+        detailPanel.setVisibility(isVisible?View.VISIBLE:View.GONE);
     }
 
     private void updateDetailView(final OrderBean order) {

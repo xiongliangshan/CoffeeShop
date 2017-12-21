@@ -16,12 +16,12 @@ public class SummarizeGroup {
     private int orderCount;//单量
     private int cupsCount;//杯量
     private int boxCount;//预装盒量
-    private List<Map<String,Integer>> deliverTeamList;  //不同配送平台对应的杯量和单量
+    private Map<String,DeliverPlatform> deliverPlatformMap;  //不同配送平台对应的杯量和单量
     private Map<String,Integer> boxOrderMap; // 2盒单，3盒单 等各占多少数量
     private Map<String,Integer> iconMap; //每个图标有少数量
     private Map<String,Integer> cupBoxMap;//单杯盒，两杯盒等各多少数量
-    private Map<String,Integer> coffeeMap;//咖啡师制作的咖啡及数量
-    private Map<String,Integer> drinkMap; //饮品师制作的咖啡及数量
+    private Map<String,Product> coffee;//咖啡师制作的咖啡及数量
+    private Map<String,Product> drink; //饮品师制作的咖啡及数量
 
 
     public String getGroupName() {
@@ -72,12 +72,12 @@ public class SummarizeGroup {
         this.boxCount = boxCount;
     }
 
-    public List<Map<String, Integer>> getDeliverTeamList() {
-        return deliverTeamList;
+    public Map<String, DeliverPlatform> getDeliverPlatformMap() {
+        return deliverPlatformMap;
     }
 
-    public void setDeliverTeamList(List<Map<String, Integer>> deliverTeamList) {
-        this.deliverTeamList = deliverTeamList;
+    public void setDeliverPlatformMap(Map<String, DeliverPlatform> deliverPlatformMap) {
+        this.deliverPlatformMap = deliverPlatformMap;
     }
 
     public Map<String, Integer> getBoxOrderMap() {
@@ -104,20 +104,20 @@ public class SummarizeGroup {
         this.cupBoxMap = cupBoxMap;
     }
 
-    public Map<String, Integer> getCoffeeMap() {
-        return coffeeMap;
+    public Map<String, Product> getCoffee() {
+        return coffee;
     }
 
-    public void setCoffeeMap(Map<String, Integer> coffeeMap) {
-        this.coffeeMap = coffeeMap;
+    public void setCoffee(Map<String, Product> coffee) {
+        this.coffee = coffee;
     }
 
-    public Map<String, Integer> getDrinkMap() {
-        return drinkMap;
+    public Map<String, Product> getDrink() {
+        return drink;
     }
 
-    public void setDrinkMap(Map<String, Integer> drinkMap) {
-        this.drinkMap = drinkMap;
+    public void setDrink(Map<String, Product> drink) {
+        this.drink = drink;
     }
 
     @Override
@@ -129,12 +129,12 @@ public class SummarizeGroup {
                 ", orderCount=" + orderCount +
                 ", cupsCount=" + cupsCount +
                 ", boxCount=" + boxCount +
-                ", deliverTeamList=" + deliverTeamList +
+                ", deliverPlatformList=" + deliverPlatformMap +
                 ", boxOrderMap=" + boxOrderMap +
                 ", iconMap=" + iconMap +
                 ", cupBoxMap=" + cupBoxMap +
-                ", coffeeMap=" + coffeeMap +
-                ", drinkMap=" + drinkMap +
+                ", coffee=" + coffee +
+                ", drink=" + drink +
                 '}';
     }
 }

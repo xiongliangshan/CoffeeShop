@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.OrderBean;
@@ -39,6 +39,7 @@ import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
+import com.lyancafe.coffeeshop.utils.VSpaceItemDecoration;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -46,7 +47,6 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static com.lyancafe.coffeeshop.produce.ui.ListMode.NORMAL;
 import static com.lyancafe.coffeeshop.produce.ui.ListMode.SELECT;
@@ -62,6 +62,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     Button summarizeBtn;
     Button batchSelectBtn;
     Button cancelBtn;
+    ConstraintLayout searchLayout;
     EditText etSearchKey;
     Button btnSearch;
 
@@ -79,6 +80,9 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     //当前订单模式
     private OrderMode currentMode = OrderMode.NORMAL;
 
+    private SpaceItemDecoration spaceItemDecoration;
+    private VSpaceItemDecoration vSpaceItemDecoration;
+
     public ToProduceFragment() {
 
     }
@@ -95,6 +99,9 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         mHandler = new Handler();
         mToProducePresenter = new ToProducePresenterImpl(this.getContext(), this);
         myClickListener = new MyClickListener();
+
+        spaceItemDecoration = new SpaceItemDecoration(4, OrderHelper.dip2Px(12, getContext()), false);
+        vSpaceItemDecoration = new VSpaceItemDecoration(OrderHelper.dip2Px(12, getContext()));
     }
 
     @Override
@@ -112,6 +119,8 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         summarizeBtn = (Button) view.findViewById(R.id.btn_summarize);
         batchSelectBtn = (Button) view.findViewById(R.id.btn_batch_select);
         cancelBtn = (Button) view.findViewById(R.id.btn_cancel);
+
+        searchLayout = (ConstraintLayout) view.findViewById(R.id.cl_search);
         etSearchKey = (EditText) view.findViewById(R.id.et_search_key);
         btnSearch = (Button) view.findViewById(R.id.btn_search);
 
@@ -120,7 +129,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         mAdapter = new ToProduceRvAdapter(getActivity());
         mAdapter.setCallback(this);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4, GridLayoutManager.VERTICAL, false));
-        mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(12, getActivity()), false));
+        mRecyclerView.addItemDecoration(spaceItemDecoration);
         mRecyclerView.setAdapter(mAdapter);
 
         etSearchKey.setOnKeyListener(new View.OnKeyListener() {
@@ -163,7 +172,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         if(size>=2){
             batchLayout.setVisibility(View.VISIBLE);
         }else{
-            batchLayout.setVisibility(View.GONE);
+            batchLayout.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -361,14 +370,58 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     private void switchMode(OrderMode mode){
         if(mode==OrderMode.SUMMARIZE){
             //汇总模式
+            long start = System.currentTimeMillis();
             List<SummarizeGroup> groups = OrderHelper.splitOrdersToGroup(mAdapter.tempList);
             OrderHelper.caculateGroupList(groups);
+            long end = System.currentTimeMillis();
+            LogUtil.d("xiong","计算数据所用时间:"+(end - start));
+            renderSummarizeUI(groups);
         }else{
             //详单模式
+            renderNormalUI();
         }
 
         this.currentMode = mode;
     }
+
+    /**
+     * 渲染普通详单模式的UI
+     */
+    private void renderNormalUI(){
+        ((MainProduceFragment)getParentFragment()).setDetailPanelVisible(true);
+        batchLayout.setVisibility(View.VISIBLE);
+        searchLayout.setVisibility(View.VISIBLE);
+        if(mAdapter==null){
+            mAdapter = new ToProduceRvAdapter(getActivity());
+            mAdapter.setCallback(this);
+        }
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4, GridLayoutManager.VERTICAL, false));
+        mRecyclerView.removeItemDecoration(vSpaceItemDecoration);
+        mRecyclerView.addItemDecoration(spaceItemDecoration);
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    /**
+     * 渲染汇总模式的UI
+     * @param groups
+     */
+    private void renderSummarizeUI(List<SummarizeGroup> groups){
+        ((MainProduceFragment)getParentFragment()).setDetailPanelVisible(false);
+        batchLayout.setVisibility(View.INVISIBLE);
+        searchLayout.setVisibility(View.INVISIBLE);
+        if(summarizeAdapter==null){
+            summarizeAdapter = new SummarizeAdapter(getContext());
+        }
+
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+        mRecyclerView.removeItemDecoration(spaceItemDecoration);
+        mRecyclerView.addItemDecoration(vSpaceItemDecoration);
+        mRecyclerView.setAdapter(summarizeAdapter);
+        summarizeAdapter.setData(groups);
+
+    }
+
+
 
 
     // 执行搜索

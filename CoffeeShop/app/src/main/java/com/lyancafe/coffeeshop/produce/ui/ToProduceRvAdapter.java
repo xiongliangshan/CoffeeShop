@@ -137,21 +137,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         }else {
             holder.saoImg.setVisibility(View.GONE);
         }
-      /*  //定制
-        if(order.getIsRecipeFittings()){
-            holder.labelFlagImg.setVisibility(View.VISIBLE);
-            holder.labelFlagImg.setImageResource(R.mipmap.flag_ding);
-        }else{
-            holder.labelFlagImg.setVisibility(View.GONE);
-        }
 
-        //抢单
-        if(order.getStatus()>=OrderStatus.ASSIGNED){
-            holder.grabFlagIV.setVisibility(View.VISIBLE);
-            holder.grabFlagIV.setImageResource(R.mipmap.flag_qiang);
-        }else{
-            holder.grabFlagIV.setVisibility(View.GONE);
-        }*/
         //备注
         if(TextUtils.isEmpty(order.getNotes()) && TextUtils.isEmpty(order.getCsrNotes())){
             holder.remarkFlagIV.setVisibility(View.GONE);

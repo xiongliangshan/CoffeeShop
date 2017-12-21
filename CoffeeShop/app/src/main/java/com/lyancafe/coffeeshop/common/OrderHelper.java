@@ -9,10 +9,11 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.bean.EvaluationBean;
+import com.lyancafe.coffeeshop.bean.DeliverPlatform;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
+import com.lyancafe.coffeeshop.bean.Product;
 import com.lyancafe.coffeeshop.bean.SummarizeGroup;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
@@ -28,6 +29,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -721,17 +723,105 @@ public class OrderHelper {
 
 
     public static void caculateGroupList(List<SummarizeGroup> groups){
+        SummarizeGroup total = new SummarizeGroup();
+        total.setGroupName("合计");
+        total.setExpetedTime(0L);
+        total.setOrderCount(0);
+        total.setOrders(new ArrayList<OrderBean>());
+        total.setCupsCount(0);
+        total.setBoxCount(0);
+        total.setDeliverPlatformMap(new HashMap<String, DeliverPlatform>());
+        total.setBoxOrderMap(new HashMap<String, Integer>());
+        total.setIconMap(new HashMap<String, Integer>());
+        total.setCupBoxMap(new HashMap<String, Integer>());
+        total.setCoffee(new HashMap<String, Product>());
+        total.setDrink(new HashMap<String, Product>());
         for(int i=0;i<groups.size();i++){
             SummarizeGroup summarizeGroup = groups.get(i);
             summarizeGroup.setOrderCount(summarizeGroup.getOrders().size());
             caculateGroup(summarizeGroup);
+
+            //计算合计
+            total.getOrders().addAll(summarizeGroup.getOrders());
+            total.setOrderCount(total.getOrderCount()+summarizeGroup.getOrderCount());
+            total.setCupsCount(total.getCupsCount()+summarizeGroup.getCupsCount());
+            total.setBoxCount(total.getBoxCount()+summarizeGroup.getBoxCount());
+            mergeDeliverPlatform(total.getDeliverPlatformMap(),summarizeGroup.getDeliverPlatformMap());
+            mergeMap(total.getBoxOrderMap(),summarizeGroup.getBoxOrderMap());
+            mergeMap(total.getIconMap(),summarizeGroup.getIconMap());
+            mergeMap(total.getCupBoxMap(),summarizeGroup.getCupBoxMap());
+            mergeProduct(total.getCoffee(),summarizeGroup.getCoffee());
+            mergeProduct(total.getDrink(),summarizeGroup.getDrink());
+        }
+
+        Collections.sort(groups, new Comparator<SummarizeGroup>() {
+            @Override
+            public int compare(SummarizeGroup o1, SummarizeGroup o2) {
+                return (int) (o1.getExpetedTime()-o2.getExpetedTime());
+            }
+        });
+        groups.add(total);
+
+        LogUtil.d(TAG,total.toString());
+    }
+
+    //两个Map<String,Product>合并,同品类数量相加
+    private static void mergeProduct(Map<String,Product> container,Map<String,Product> child){
+        Iterator<String> it = child.keySet().iterator();
+        while (it.hasNext()){
+            String key = it.next();
+            if(container.containsKey(key)){
+                Product product = container.get(key);
+                product.setCount(product.getCount()+child.get(key).getCount());
+            }else{
+                container.put(key,child.get(key));
+            }
+        }
+    }
+
+    //两个Map<String,DeliverPlatform>合并，单量杯量分别相加
+    private static void mergeDeliverPlatform(Map<String,DeliverPlatform> container,Map<String,DeliverPlatform> child){
+        Iterator<String> it = child.keySet().iterator();
+        while (it.hasNext()){
+            String key = it.next();
+            if(container.containsKey(key)){
+                DeliverPlatform dp = container.get(key);
+                dp.setOrderCount(dp.getOrderCount()+child.get(key).getOrderCount());
+                dp.setCupCount(dp.getCupCount()+child.get(key).getCupCount());
+            }else{
+                container.put(key,child.get(key));
+            }
+        }
+    }
+
+    //两个Map<String,Integer> key相同的值相加
+    private static void mergeMap(Map<String,Integer> container,Map<String,Integer> child){
+        Iterator<String> it = child.keySet().iterator();
+        while (it.hasNext()){
+            String key =it.next();
+            if(container.containsKey(key)){
+                container.put(key,container.get(key)+child.get(key));
+            }else{
+                container.put(key,child.get(key));
+            }
         }
     }
 
     private static void caculateGroup(SummarizeGroup summarizeGroup) {
 
-
         summarizeGroup.setIconMap(new HashMap<String, Integer>());
+        summarizeGroup.setBoxOrderMap(new HashMap<String, Integer>());
+        summarizeGroup.setCupBoxMap(new HashMap<String, Integer>());
+        summarizeGroup.getCupBoxMap().put("1beihe",0);
+        summarizeGroup.getCupBoxMap().put("2beihe",0);
+        summarizeGroup.getCupBoxMap().put("4beihe",0);
+        int totalCups = 0;
+        Map<String,DeliverPlatform> dpMap = new HashMap<>();
+        dpMap.put("weifuwu",new DeliverPlatform("微服务"));
+        dpMap.put("meituan",new DeliverPlatform("美团"));
+        dpMap.put("eleme",new DeliverPlatform("饿了么"));
+        dpMap.put("daodiansao",new DeliverPlatform("到店扫"));
+        Map<String,Product> mapItem = new HashMap<>();
         List<OrderBean> orders =  summarizeGroup.getOrders();
         for(OrderBean order:orders){
             if("Y".equals(order.getReminder())){
@@ -776,15 +866,82 @@ public class OrderHelper {
                 }
             }
 
+            //计算盒单
+            int boxCount = caculateBoxOrder(order);
+            Integer orderCount = summarizeGroup.getBoxOrderMap().get(boxCount+"hedan");
+            if(orderCount==null){
+                summarizeGroup.getBoxOrderMap().put(boxCount+"hedan",1);
+            }else{
+                summarizeGroup.getBoxOrderMap().put(boxCount+"hedan",summarizeGroup.getBoxOrderMap().get(boxCount+"hedan")+1);
+            }
+
+            //计算杯盒
+            Map<String,Integer> map = caculateCupBox(order);
+            summarizeGroup.getCupBoxMap().put("1beihe",summarizeGroup.getCupBoxMap().get("1beihe")+map.get("1beihe"));
+            summarizeGroup.getCupBoxMap().put("2beihe",summarizeGroup.getCupBoxMap().get("2beihe")+map.get("2beihe"));
+            summarizeGroup.getCupBoxMap().put("4beihe",summarizeGroup.getCupBoxMap().get("4beihe")+map.get("4beihe"));
+
+            //计算总杯量
+            totalCups+=getTotalQutity(order);
+
+
+            //计算不同配送平台的订单
+            if(order.getWxScan()){
+                dpMap.get("daodiansao").setOrderCount(dpMap.get("daodiansao").getOrderCount()+1);
+                dpMap.get("daodiansao").setCupCount(dpMap.get("daodiansao").getCupCount()+getTotalQutity(order));
+            }else {
+                if(DeliveryTeam.LYAN==order.getDeliveryTeam() || DeliveryTeam.HAIKUI==order.getDeliveryTeam()){
+                    //微服务
+                    dpMap.get("weifuwu").setOrderCount(dpMap.get("weifuwu").getOrderCount()+1);
+                    dpMap.get("weifuwu").setCupCount(dpMap.get("weifuwu").getCupCount()+getTotalQutity(order));
+                }else if(DeliveryTeam.MEITUAN==order.getDeliveryTeam()){
+                    //美团
+                    dpMap.get("meituan").setOrderCount(dpMap.get("meituan").getOrderCount()+1);
+                    dpMap.get("meituan").setCupCount(dpMap.get("meituan").getCupCount()+getTotalQutity(order));
+                }else if(DeliveryTeam.ELE==order.getDeliveryTeam()){
+                    //饿了么
+                    dpMap.get("eleme").setOrderCount(dpMap.get("eleme").getOrderCount()+1);
+                    dpMap.get("eleme").setCupCount(dpMap.get("eleme").getCupCount()+getTotalQutity(order));
+                }
+            }
+
+
+            //计算咖啡品类数据
+            caculateItem(order,mapItem);
+
 
         }
+        summarizeGroup.setBoxCount(summarizeGroup.getCupBoxMap().get("1beihe")+summarizeGroup.getCupBoxMap().get("2beihe")+
+                summarizeGroup.getCupBoxMap().get("4beihe"));
+        summarizeGroup.setCupsCount(totalCups);
+
+        summarizeGroup.setDeliverPlatformMap(dpMap);
+
+        Map<String,Product> front = new HashMap<>();
+        Map<String,Product> back = new HashMap<>();
+
+        Iterator<String> iterator = mapItem.keySet().iterator();
+        while (iterator.hasNext()){
+            String key = iterator.next();
+            Product product = mapItem.get(key);
+            if(product.getProduceProcess()==1 || product.getProduceProcess()==3){
+                //需要咖啡师全生产或者生产一部分的
+                front.put(key,product);
+            }else{
+                back.put(key,product);
+            }
+        }
+
+        summarizeGroup.setCoffee(front);
+        summarizeGroup.setDrink(back);
+
         LogUtil.d(TAG,summarizeGroup.toString());
 
     }
 
 
     //计算一个单子能预装几盒
-    public static int caculateBoxCountByOrder(OrderBean order){
+    public static int caculateBoxOrder(OrderBean order){
         List<ItemContentBean> items = order.getItems();
         int cold =0;
         int hot = 0;
@@ -804,6 +961,96 @@ public class OrderHelper {
         hotBox = hot>0?(hot>=4?(hot/4+hot%4):1):0;
 
         return coldBox+hotBox;
+    }
+
+    public static Map<String,Integer> caculateCupBox(OrderBean order){
+        Map<String,Integer> map = new HashMap<>();
+        map.put("1beihe",0);
+        map.put("2beihe",0);
+        map.put("4beihe",0);
+        List<ItemContentBean> items = order.getItems();
+        int cold =0;
+        int hot = 0;
+        for(ItemContentBean item:items){
+            if(item.getColdHotProperty()==1){
+                //冷
+                cold+=item.getQuantity();
+            }else if(item.getColdHotProperty()==2){
+                //热
+                hot+=item.getQuantity();
+            }
+        }
+
+        if(cold==1){
+            map.put("1beihe",map.get("1beihe")+1);
+        }else if(cold==2){
+            map.put("2beihe",map.get("2beihe")+1);
+        }else if(cold==3){
+            map.put("4beihe",map.get("4beihe")+1);
+        }else if(cold>=4){
+            int a = cold%4;
+            if(a==0){
+                map.put("4beihe",map.get("4beihe")+cold/4);
+            }else {
+                map.put("4beihe",map.get("4beihe")+cold/4);
+                if(a==3){
+                    map.put("4beihe",map.get("4beihe")+1);
+                }else {
+                    map.put(a+"beihe",map.get(a+"beihe")+1);
+                }
+
+            }
+        }
+        if(hot==1){
+            map.put("1beihe",map.get("1beihe")+1);
+        }else if(hot==2){
+            map.put("2beihe",map.get("2beihe")+1);
+        }else if(hot==3){
+            map.put("4beihe",map.get("4beihe")+1);
+        }else if(hot>=4){
+            int a = hot%4;
+            if(a==0){
+                map.put("4beihe",map.get("4beihe")+hot/4);
+            }else {
+                map.put("4beihe",map.get("4beihe")+hot/4);
+                if(a==3){
+                    map.put("4beihe",map.get("4beihe")+1);
+                }else {
+                    map.put(a+"beihe",map.get(a+"beihe")+1);
+                }
+
+            }
+        }
+
+
+        return map;
+    }
+
+    public static void caculateItem(OrderBean order,Map<String,Product> map){
+        List<ItemContentBean> items = order.getItems();
+        if(items==null){
+            return ;
+        }
+        for(ItemContentBean item:items){
+            String name = item.getProduct();
+            Product product = map.get(name);
+            if(product==null){
+                product = new Product();
+                product.setName(name);
+                product.setProduceProcess(item.getProduceProcess());
+                product.setCount(item.getQuantity());
+                if(!TextUtils.isEmpty(item.getRecipeFittings())){
+                    //有口味定制
+                    product.setCustom(true);
+                }else{
+                    product.setCustom(false);
+                }
+                map.put(name,product);
+            }else{
+                product.setCount(product.getCount()+item.getQuantity());
+            }
+
+        }
     }
 
 
