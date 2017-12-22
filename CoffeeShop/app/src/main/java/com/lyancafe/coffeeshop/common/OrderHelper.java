@@ -723,7 +723,7 @@ public class OrderHelper {
     }
 
 
-    public static void caculateGroupList(List<SummarizeGroup> groups){
+    public static List<SummarizeGroup> caculateGroupList(List<SummarizeGroup> groups){
         SummarizeGroup total = new SummarizeGroup();
         total.setGroupName("合计");
         total.setExpetedTime(0L);
@@ -763,6 +763,8 @@ public class OrderHelper {
         for(SummarizeGroup group:groups){
             LogUtil.d(TAG,group.toString());
         }
+
+        return groups;
     }
 
     //两个Map<String,Product>合并,同品类数量相加

@@ -59,8 +59,6 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
     public List<OrderBean> list = new ArrayList<OrderBean>();
     public int selected = -1;
     public ListMode curMode;
-    public List<OrderBean> tempList;
-    private List<OrderBean> searchList;
     public Map<Integer,Boolean> selectMap;
 
 
@@ -69,8 +67,6 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
     public ToProduceRvAdapter(Context context) {
         this.context = context;
         curMode = ListMode.NORMAL;
-        tempList = new ArrayList<>();
-        searchList = new ArrayList<>();
         selectMap = new HashMap<>();
     }
 
@@ -296,43 +292,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
     }
 
 
-    //搜索
-    public void searchOrder(final int shopOrderNo){
-        Observable.fromIterable(tempList)
-                .subscribeOn(Schedulers.io())
-                .filter(new Predicate<OrderBean>() {
-                    @Override
-                    public boolean test(@NonNull OrderBean orderBean) throws Exception {
-                        return orderBean.getShopOrderNo()==shopOrderNo;
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<OrderBean>() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {
-                        searchList.clear();
-                    }
 
-                    @Override
-                    public void onNext(@NonNull OrderBean orderBean) {
-                        searchList.add(orderBean);
-                        setSearchData(searchList);
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        if(searchList.size()==0){
-                            ToastUtil.show(context,"没有搜到目标订单");
-                        }
-                    }
-                });
-
-    }
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -378,8 +338,6 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         }else{
             EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
         }
-        tempList.clear();
-        tempList.addAll(list);
 
     }
 

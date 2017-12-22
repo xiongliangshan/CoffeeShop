@@ -48,6 +48,14 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Predicate;
+import io.reactivex.schedulers.Schedulers;
+
 import static com.lyancafe.coffeeshop.produce.ui.ListMode.NORMAL;
 import static com.lyancafe.coffeeshop.produce.ui.ListMode.SELECT;
 
@@ -69,7 +77,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     private ToProduceRvAdapter mAdapter;
     private SummarizeAdapter summarizeAdapter;
     private Context mContext;
-    public List<OrderBean> allOrderList = new ArrayList<>();
+    private List<OrderBean> allOrderList = new ArrayList<>();
     private Handler mHandler;
     private ToProduceTaskRunnable mRunnable;
 
@@ -82,6 +90,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
 
     private SpaceItemDecoration spaceItemDecoration;
     private VSpaceItemDecoration vSpaceItemDecoration;
+
 
     public ToProduceFragment() {
 
@@ -164,7 +173,13 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     public void bindDataToView(List<OrderBean> list) {
         allOrderList.clear();
         allOrderList.addAll(list);
-        mAdapter.setData(list);
+        if(currentMode==OrderMode.NORMAL){
+            mAdapter.setData(list);
+        }else if(currentMode==OrderMode.SUMMARIZE){
+            List<SummarizeGroup> groups = OrderHelper.splitOrdersToGroup(allOrderList);
+            summarizeAdapter.setData(OrderHelper.caculateGroupList(groups));
+        }
+
     }
 
     @Override
@@ -371,14 +386,12 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         if(mode==OrderMode.SUMMARIZE){
             //汇总模式
             long start = System.currentTimeMillis();
-            List<SummarizeGroup> groups = OrderHelper.splitOrdersToGroup(mAdapter.tempList);
-            OrderHelper.caculateGroupList(groups);
+            List<SummarizeGroup> groups = OrderHelper.splitOrdersToGroup(allOrderList);
+            List<SummarizeGroup> resultGroups = OrderHelper.caculateGroupList(groups);
             long end = System.currentTimeMillis();
             LogUtil.d("xiong","计算数据所用时间:"+(end - start));
-            for(SummarizeGroup group:groups){
-                LogUtil.d("xiong",group.toString());
-            }
-            renderSummarizeUI(groups);
+
+            renderSummarizeUI(resultGroups);
         }else{
             //详单模式
             renderNormalUI();
@@ -432,11 +445,11 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         String searchKey = etSearchKey.getText().toString();
         Logger.getLogger().log("待生产搜索 "+searchKey);
         if(TextUtils.isEmpty(searchKey)){
-            mAdapter.setSearchData(mAdapter.tempList);
+            mAdapter.setSearchData(allOrderList);
             return;
         }
         try{
-            mAdapter.searchOrder(Integer.parseInt(searchKey));
+            searchOrder(Integer.parseInt(searchKey));
         }catch (NumberFormatException e){
             showToast("数据太大或者类型不对");
             return;
@@ -444,6 +457,44 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
 
         MyUtil.hideKeyboard(etSearchKey);
         etSearchKey.setText("");
+    }
+
+    //搜索
+    public void searchOrder(final int shopOrderNo){
+        final List<OrderBean> result = new ArrayList<>();
+        Observable.fromIterable(allOrderList)
+                .subscribeOn(Schedulers.io())
+                .filter(new Predicate<OrderBean>() {
+                    @Override
+                    public boolean test(@NonNull OrderBean orderBean) throws Exception {
+                        return orderBean.getShopOrderNo()==shopOrderNo;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<OrderBean>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                    }
+
+                    @Override
+                    public void onNext(@NonNull OrderBean orderBean) {
+                        result.add(orderBean);
+                        mAdapter.setSearchData(result);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        if(result.size()==0){
+                            ToastUtil.show(getContext(),"没有搜到目标订单");
+                        }
+                    }
+                });
+
     }
 
 
