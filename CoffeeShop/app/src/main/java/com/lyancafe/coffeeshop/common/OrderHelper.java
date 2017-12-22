@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Created by Administrator on 2015/9/29.
@@ -728,9 +729,9 @@ public class OrderHelper {
         total.setExpetedTime(0L);
         total.setOrders(new ArrayList<OrderBean>());
         total.setDeliverPlatformMap(new HashMap<String, DeliverPlatform>());
-        total.setBoxOrderMap(new HashMap<String, Integer>());
+        total.setBoxOrderMap(new TreeMap<String, Integer>());
         total.setIconMap(new HashMap<String, Integer>());
-        total.setCupBoxMap(new HashMap<String, Integer>());
+        total.setCupBoxMap(new TreeMap<String, Integer>());
         total.setCoffee(new HashMap<String, Product>());
         total.setDrink(new HashMap<String, Product>());
         for(int i=0;i<groups.size();i++){
@@ -813,8 +814,8 @@ public class OrderHelper {
     private static void caculateGroup(SummarizeGroup summarizeGroup) {
 
         summarizeGroup.setIconMap(new HashMap<String, Integer>());
-        summarizeGroup.setBoxOrderMap(new HashMap<String, Integer>());
-        summarizeGroup.setCupBoxMap(new HashMap<String, Integer>());
+        summarizeGroup.setBoxOrderMap(new TreeMap<String, Integer>());
+        summarizeGroup.setCupBoxMap(new TreeMap<String, Integer>());
         summarizeGroup.getCupBoxMap().put("1beihe",0);
         summarizeGroup.getCupBoxMap().put("2beihe",0);
         summarizeGroup.getCupBoxMap().put("4beihe",0);
@@ -921,8 +922,8 @@ public class OrderHelper {
         summarizeGroup.setDeliverPlatformMap(dpMap);
 
 
-        Map<String,Product> front = new HashMap<>();
-        Map<String,Product> back = new HashMap<>();
+        Map<String,Product> front = new TreeMap<>();
+        Map<String,Product> back = new TreeMap<>();
 
         Iterator<String> iterator = mapItem.keySet().iterator();
         while (iterator.hasNext()){
@@ -940,6 +941,7 @@ public class OrderHelper {
         summarizeGroup.setDrink(back);
 
     }
+
 
 
     //计算一个单子能预装几盒

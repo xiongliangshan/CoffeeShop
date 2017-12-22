@@ -1,10 +1,12 @@
 package com.lyancafe.coffeeshop.bean;
 
+import android.support.annotation.NonNull;
+
 /**
  * Created by Administrator on 2017/12/21.
  */
 
-public class Product {
+public class Product implements Comparable<Product>{
 
     private String name;
     private int count;
@@ -41,6 +43,12 @@ public class Product {
 
     public void setProduceProcess(int produceProcess) {
         this.produceProcess = produceProcess;
+    }
+
+
+    @Override
+    public int compareTo(@NonNull Product o) {
+        return o.getCount()-this.getCount();
     }
 
     @Override

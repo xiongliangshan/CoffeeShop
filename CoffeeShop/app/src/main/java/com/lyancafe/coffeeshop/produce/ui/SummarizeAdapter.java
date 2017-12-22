@@ -1,14 +1,10 @@
 package com.lyancafe.coffeeshop.produce.ui;
 
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +18,9 @@ import com.lyancafe.coffeeshop.bean.Product;
 import com.lyancafe.coffeeshop.bean.SummarizeGroup;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -231,6 +230,7 @@ public class SummarizeAdapter extends RecyclerView.Adapter<SummarizeAdapter.View
     private void createBeiheUI(LinearLayout llBeihe,TextView total, SummarizeGroup group) {
         Map<String, Integer> cupBoxMap = group.getCupBoxMap();
         Iterator<String> it = cupBoxMap.keySet().iterator();
+
         while (it.hasNext()) {
             String key = it.next();
             String name = transformName(key);
@@ -276,10 +276,15 @@ public class SummarizeAdapter extends RecyclerView.Adapter<SummarizeAdapter.View
      * @param coffee
      */
     private void createCoffeeUI(LinearLayout llCoffee, Map<String, Product> coffee) {
-        Iterator<String> it = coffee.keySet().iterator();
-        while (it.hasNext()) {
-            String key = it.next();
-            Product product = coffee.get(key);
+        List<Map.Entry<String,Product>> list = new ArrayList<>(coffee.entrySet());
+        Collections.sort(list, new Comparator<Map.Entry<String, Product>>() {
+            @Override
+            public int compare(Map.Entry<String, Product> o1, Map.Entry<String, Product> o2) {
+                return o1.getValue().compareTo(o2.getValue());
+            }
+        });
+        for(Map.Entry<String,Product> entry:list){
+            Product product = entry.getValue();
             TextView tv = new TextView(mContext);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 tv.setTextAppearance(R.style.SummarizeText);
@@ -294,6 +299,7 @@ public class SummarizeAdapter extends RecyclerView.Adapter<SummarizeAdapter.View
 
             llCoffee.addView(tv);
         }
+
         llCoffee.invalidate();
     }
 
@@ -304,10 +310,17 @@ public class SummarizeAdapter extends RecyclerView.Adapter<SummarizeAdapter.View
      * @param drink
      */
     private void createDrinkUI(LinearLayout llDrink, Map<String, Product> drink) {
-        Iterator<String> it = drink.keySet().iterator();
-        while (it.hasNext()) {
-            String key = it.next();
-            Product product = drink.get(key);
+
+        List<Map.Entry<String,Product>> list = new ArrayList<>(drink.entrySet());
+        Collections.sort(list, new Comparator<Map.Entry<String, Product>>() {
+            @Override
+            public int compare(Map.Entry<String, Product> o1, Map.Entry<String, Product> o2) {
+                return o1.getValue().compareTo(o2.getValue());
+            }
+        });
+
+        for(Map.Entry<String,Product> entry:list){
+            Product product = entry.getValue();
             TextView tv = new TextView(mContext);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 tv.setTextAppearance(R.style.SummarizeText);
