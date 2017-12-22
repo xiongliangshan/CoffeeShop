@@ -375,6 +375,9 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
             OrderHelper.caculateGroupList(groups);
             long end = System.currentTimeMillis();
             LogUtil.d("xiong","计算数据所用时间:"+(end - start));
+            for(SummarizeGroup group:groups){
+                LogUtil.d("xiong",group.toString());
+            }
             renderSummarizeUI(groups);
         }else{
             //详单模式

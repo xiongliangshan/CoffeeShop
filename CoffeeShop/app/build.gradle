@@ -55,7 +55,7 @@ android {
             buildConfigField("String", "BASE_URL", '"https://apiqa.lyancafe.cn/shop/"')
             buildConfigField("boolean", "LOG_DEBUG", "true")
             debuggable true
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.mySignConfig
         }

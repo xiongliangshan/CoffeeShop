@@ -726,10 +726,7 @@ public class OrderHelper {
         SummarizeGroup total = new SummarizeGroup();
         total.setGroupName("合计");
         total.setExpetedTime(0L);
-        total.setOrderCount(0);
         total.setOrders(new ArrayList<OrderBean>());
-        total.setCupsCount(0);
-        total.setBoxCount(0);
         total.setDeliverPlatformMap(new HashMap<String, DeliverPlatform>());
         total.setBoxOrderMap(new HashMap<String, Integer>());
         total.setIconMap(new HashMap<String, Integer>());
@@ -762,7 +759,9 @@ public class OrderHelper {
         });
         groups.add(total);
 
-        LogUtil.d(TAG,total.toString());
+        for(SummarizeGroup group:groups){
+            LogUtil.d(TAG,group.toString());
+        }
     }
 
     //两个Map<String,Product>合并,同品类数量相加
@@ -789,7 +788,11 @@ public class OrderHelper {
                 dp.setOrderCount(dp.getOrderCount()+child.get(key).getOrderCount());
                 dp.setCupCount(dp.getCupCount()+child.get(key).getCupCount());
             }else{
-                container.put(key,child.get(key));
+                DeliverPlatform dp = child.get(key);
+                DeliverPlatform newDp = new DeliverPlatform(dp.getName());
+                newDp.setOrderCount(dp.getOrderCount());
+                newDp.setCupCount(dp.getCupCount());
+                container.put(key, newDp);
             }
         }
     }
@@ -885,7 +888,7 @@ public class OrderHelper {
             totalCups+=getTotalQutity(order);
 
 
-            //计算不同配送平台的订单
+
             if(order.getWxScan()){
                 dpMap.get("daodiansao").setOrderCount(dpMap.get("daodiansao").getOrderCount()+1);
                 dpMap.get("daodiansao").setCupCount(dpMap.get("daodiansao").getCupCount()+getTotalQutity(order));
@@ -917,6 +920,7 @@ public class OrderHelper {
 
         summarizeGroup.setDeliverPlatformMap(dpMap);
 
+
         Map<String,Product> front = new HashMap<>();
         Map<String,Product> back = new HashMap<>();
 
@@ -934,8 +938,6 @@ public class OrderHelper {
 
         summarizeGroup.setCoffee(front);
         summarizeGroup.setDrink(back);
-
-        LogUtil.d(TAG,summarizeGroup.toString());
 
     }
 

@@ -129,7 +129,7 @@ public class SummarizeGroup {
                 ", orderCount=" + orderCount +
                 ", cupsCount=" + cupsCount +
                 ", boxCount=" + boxCount +
-                ", deliverPlatformList=" + deliverPlatformMap +
+                ", deliverPlatformMap=" + deliverPlatformMap +
                 ", boxOrderMap=" + boxOrderMap +
                 ", iconMap=" + iconMap +
                 ", cupBoxMap=" + cupBoxMap +
