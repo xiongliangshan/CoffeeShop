@@ -20,13 +20,9 @@ import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.OrderCategory;
-import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
-import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,6 +49,7 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
     private int selected = -1;
     private List<OrderBean> searchList;
     public List<OrderBean> tempList;
+    private ProducedCallback callback;
 
     public ProducedRvAdapter(Context context) {
         this.context = context;
@@ -75,7 +72,8 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
                 selected = position;
                 notifyDataSetChanged();
                 if(position>=0 && position<list.size()){
-                    EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
+//                    EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
+                    callback.updateDetail(list.get(position));
                 }
 
                 Log.d(TAG, "点击了 " + position);
@@ -184,9 +182,11 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
         Collections.sort(this.list,new OrderSortComparator());
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+            callback.updateDetail(this.list.get(selected));
         }else{
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+            callback.updateDetail(null);
         }
 
         tempList.clear();
@@ -198,9 +198,11 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
         this.list = list;
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+            callback.updateDetail(this.list.get(selected));
         }else{
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+            callback.updateDetail(null);
         }
     }
 
@@ -282,15 +284,26 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
         if(list.size()>0){
             selected=0;
             notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(selected)));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(selected)));
+            callback.updateDetail(list.get(selected));
         }else{
             selected = -1;
             notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+            callback.updateDetail(null);
         }
 
 
     }
+
+    public void setCallback(ProducedRvAdapter.ProducedCallback callback) {
+        this.callback = callback;
+    }
+
+    interface ProducedCallback{
+        void updateDetail(OrderBean order);
+    }
+
 
 
 }

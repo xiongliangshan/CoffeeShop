@@ -22,11 +22,9 @@ import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
-import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
-import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
@@ -59,6 +57,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
     public ListMode curMode;
     public List<OrderBean> tempList;
     private List<OrderBean> searchList;
+    private ProducingCallback callback;
 
     public ProducingRvAdapter(Context context) {
         this.context = context;
@@ -94,7 +93,8 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
                 notifyDataSetChanged();
                 Log.d(TAG, "点击了 " + position);
                 if(position>=0 && position<list.size()){
-                    EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
+//                    EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
+                    callback.updateDetail(list.get(position));
                 }
             }
         });
@@ -122,21 +122,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         }else {
             holder.saoImg.setVisibility(View.GONE);
         }
-      /*  //定制
-        if(order.getIsRecipeFittings()){
-            holder.labelFlagImg.setVisibility(View.VISIBLE);
-            holder.labelFlagImg.setImageResource(R.mipmap.flag_ding);
-        }else{
-            holder.labelFlagImg.setVisibility(View.GONE);
-        }
 
-        //抢单
-        if(order.getStatus()>= OrderStatus.ASSIGNED){
-            holder.grabFlagIV.setVisibility(View.VISIBLE);
-            holder.grabFlagIV.setImageResource(R.mipmap.flag_qiang);
-        }else{
-            holder.grabFlagIV.setVisibility(View.GONE);
-        }*/
         //备注
         if(TextUtils.isEmpty(order.getNotes()) && TextUtils.isEmpty(order.getCsrNotes())){
             holder.remarkFlagIV.setVisibility(View.GONE);
@@ -297,9 +283,11 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         Collections.sort(this.list,new OrderSortComparator());
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+            callback.updateDetail(this.list.get(selected));
         }else{
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+            callback.updateDetail(null);
         }
         tempList.clear();
         tempList.addAll(list);
@@ -310,31 +298,12 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         this.list = list;
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+            callback.updateDetail(this.list.get(selected));
         }else{
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+            callback.updateDetail(null);
         }
-    }
-
-    private List<OrderBean> filterOrders(List<OrderBean> list,int category){
-        List<OrderBean> subList = new ArrayList<>();
-        if(category==OrderCategory.MEITUN){
-            for(OrderBean orderBean:list){
-                if(orderBean.getDeliveryTeam()==8){
-                    subList.add(orderBean);
-                }
-            }
-        }else if(category==OrderCategory.OWN){
-            for(OrderBean orderBean:list){
-                if(orderBean.getDeliveryTeam()!=8){
-                    subList.add(orderBean);
-                }
-            }
-        }else{
-            subList = list;
-        }
-
-        return subList;
     }
 
 
@@ -395,11 +364,13 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         if(list.size()>0){
             selected=0;
             notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(selected)));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(selected)));
+            callback.updateDetail(list.get(selected));
         }else{
             selected = -1;
             notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+            callback.updateDetail(null);
         }
 
 
@@ -419,13 +390,25 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         if(list.size()>0){
             selected=0;
             notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(selected)));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(selected)));
+            callback.updateDetail(list.get(selected));
         }else{
             selected = -1;
             notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+            callback.updateDetail(null);
         }
 
+    }
+
+
+
+    public void setCallback(ProducingRvAdapter.ProducingCallback callback) {
+        this.callback = callback;
+    }
+
+    interface ProducingCallback{
+        void updateDetail(OrderBean order);
     }
 
 

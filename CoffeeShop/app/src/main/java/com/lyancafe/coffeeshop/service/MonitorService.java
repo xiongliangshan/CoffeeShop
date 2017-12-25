@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.gson.JsonObject;
+import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.Device;
 import com.lyancafe.coffeeshop.bean.DeviceGroup;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import cn.jpush.android.api.JPushInterface;
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -117,6 +119,7 @@ public class MonitorService extends Service {
 
     private DeviceGroup getDevicesInfo(int type){
         DeviceGroup deviceGroup = new DeviceGroup();
+        deviceGroup.setDeviceId(JPushInterface.getRegistrationID(getApplicationContext()));
         deviceGroup.setType(type);
         UserBean user = LoginHelper.getUser(getApplicationContext());
         if(user!=null){

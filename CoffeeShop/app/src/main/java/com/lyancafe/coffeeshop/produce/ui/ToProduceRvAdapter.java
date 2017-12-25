@@ -26,9 +26,7 @@ import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.NotNeedProduceEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
-import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ReplenishWindow;
 
 import org.greenrobot.eventbus.EventBus;
@@ -41,13 +39,6 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Predicate;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2015/9/21.
@@ -104,7 +95,8 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
                 selected = position;
                 notifyDataSetChanged();
                 if(position>=0 && position<list.size()){
-                    EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
+//                    EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
+                    callback.updateDetail(list.get(position));
                 }
 
                 Log.d(TAG, "点击了 " + position);
@@ -334,9 +326,11 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         }
 
         if(selected>=0 && selected<this.list.size()){
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+            callback.updateDetail(this.list.get(selected));
         }else{
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+            callback.updateDetail(null);
         }
 
     }
@@ -345,9 +339,11 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         this.list = list;
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+            callback.updateDetail(this.list.get(selected));
         }else{
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+            callback.updateDetail(null);
         }
     }
 
@@ -367,11 +363,13 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         if(list.size()>0){
             selected=0;
             notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(selected)));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(selected)));
+            callback.updateDetail(list.get(selected));
         }else{
             selected = -1;
             notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+            callback.updateDetail(null);
         }
 
         //更新批量操作按钮可见性
@@ -395,11 +393,13 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         if(list.size()>0){
             selected=0;
             notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(selected)));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(selected)));
+            callback.updateDetail(list.get(selected));
         }else{
             selected = -1;
             notifyDataSetChanged();
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+            callback.updateDetail(null);
         }
 
         //更新批量操作按钮可见性
@@ -414,6 +414,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
 
     interface ToProduceCallback{
         void updateBatchUI(int size);
+        void updateDetail(OrderBean order);
     }
 
 

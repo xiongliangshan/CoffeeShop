@@ -9,6 +9,11 @@ import java.util.List;
 public class DeviceGroup {
 
     /**
+     * 推送唯一标识
+     */
+    private String deviceId;
+
+    /**
      * 门店Id
      */
     private int shopId;
@@ -22,6 +27,14 @@ public class DeviceGroup {
      * 具体的设备集合
      */
     private List<Device> group;
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
 
     public int getShopId() {
         return shopId;

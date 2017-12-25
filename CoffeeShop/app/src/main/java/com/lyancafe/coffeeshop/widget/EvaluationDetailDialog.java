@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.DialogFragment;
@@ -19,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -31,7 +29,6 @@ import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
-import com.lyancafe.coffeeshop.constant.OrderStatus;
 
 import java.util.List;
 
@@ -64,7 +61,7 @@ public class EvaluationDetailDialog extends DialogFragment {
     TextView deliverTeamText;
     @BindView(R.id.deliver_name)
     TextView deliverNameTxt;
-    @BindView(R.id.deliver_phone)
+    @BindView(R.id.tv_deliver_phone)
     TextView deliverPhoneTxt;
     @BindView(R.id.items_container_layout)
     LinearLayout itemsContainerLayout;

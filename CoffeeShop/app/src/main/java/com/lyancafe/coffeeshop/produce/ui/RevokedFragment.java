@@ -18,6 +18,7 @@ import com.lyancafe.coffeeshop.produce.presenter.RevokedPresenter;
 import com.lyancafe.coffeeshop.produce.presenter.RevokedPresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.RevokedView;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
+import com.lyancafe.coffeeshop.widget.DetailView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -32,12 +33,14 @@ import butterknife.Unbinder;
  * Created by Administrator on 2017/8/11.
  */
 
-public class RevokedFragment extends BaseFragment implements RevokedView<OrderBean> {
+public class RevokedFragment extends BaseFragment implements RevokedView<OrderBean>,RevokedRvAdapter.RevokedCallback {
 
 
     @BindView(R.id.rv_revoked)
     RecyclerView mRecyclerView;
     Unbinder unbinder;
+    @BindView(R.id.detail_view)
+    DetailView detailView;
 
     private RevokedRvAdapter mAdapter;
     private RevokedPresenter mRevokedPresenter;
@@ -50,7 +53,7 @@ public class RevokedFragment extends BaseFragment implements RevokedView<OrderBe
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mRevokedPresenter = new RevokedPresenterImpl(getContext(),this);
+        mRevokedPresenter = new RevokedPresenterImpl(getContext(), this);
     }
 
 
@@ -67,7 +70,8 @@ public class RevokedFragment extends BaseFragment implements RevokedView<OrderBe
 
     private void initViews() {
         mAdapter = new RevokedRvAdapter(getContext());
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),4,GridLayoutManager.VERTICAL,false));
+        mAdapter.setCallback(this);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4, GridLayoutManager.VERTICAL, false));
         mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(12, getActivity()), false));
         mRecyclerView.setAdapter(mAdapter);
     }
@@ -75,12 +79,16 @@ public class RevokedFragment extends BaseFragment implements RevokedView<OrderBe
 
     @Override
     public void bindDataToView(List<OrderBean> list) {
-        if(list==null){
+        if (list == null) {
             return;
         }
         mAdapter.setData(list);
     }
 
+    @Override
+    public void updateDetail(OrderBean order) {
+        detailView.updateData(order);
+    }
 
     //订单撤销事件
     @Subscribe
@@ -98,7 +106,7 @@ public class RevokedFragment extends BaseFragment implements RevokedView<OrderBe
     @Override
     public void onVisible() {
         super.onVisible();
-        if(!isResumed()){
+        if (!isResumed()) {
             return;
         }
         mRevokedPresenter.loadRevokedOrders();

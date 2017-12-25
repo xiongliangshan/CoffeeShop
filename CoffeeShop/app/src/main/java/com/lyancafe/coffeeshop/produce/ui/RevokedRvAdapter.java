@@ -22,10 +22,7 @@ import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
-import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.utils.OrderIdComparator;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,6 +41,7 @@ public class RevokedRvAdapter extends RecyclerView.Adapter<RevokedRvAdapter.View
     public List<OrderBean> list = new ArrayList<OrderBean>();
     public int selected = -1;
     public ListMode curMode;
+    private RevokedCallback callback;
 
     public RevokedRvAdapter(Context context) {
         this.context = context;
@@ -77,7 +75,8 @@ public class RevokedRvAdapter extends RecyclerView.Adapter<RevokedRvAdapter.View
                 notifyDataSetChanged();
                 Log.d(TAG, "点击了 " + position);
                 if(position>=0 && position<list.size()){
-                    EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
+//                    EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
+                    callback.updateDetail(list.get(position));
                 }
             }
         });
@@ -222,11 +221,22 @@ public class RevokedRvAdapter extends RecyclerView.Adapter<RevokedRvAdapter.View
         Collections.sort(this.list,new OrderIdComparator());
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+            callback.updateDetail(this.list.get(selected));
         }else{
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+            callback.updateDetail(null);
         }
 
+    }
+
+
+    public void setCallback(RevokedRvAdapter.RevokedCallback callback) {
+        this.callback = callback;
+    }
+
+    interface RevokedCallback{
+        void updateDetail(OrderBean order);
     }
 
 

@@ -29,6 +29,8 @@ import com.lyancafe.coffeeshop.produce.view.ProducedView;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
+import com.lyancafe.coffeeshop.widget.DetailView;
+import com.lyancafe.coffeeshop.widget.ReportIssueDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -42,7 +44,8 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
-public class ProducedFragment extends BaseFragment implements ProducedView<OrderBean> {
+public class ProducedFragment extends BaseFragment implements ProducedView<OrderBean>,
+        ProducedRvAdapter.ProducedCallback, DetailView.ActionCallback {
 
     public List<OrderBean> allOrderList = new ArrayList<>();
 
@@ -52,6 +55,8 @@ public class ProducedFragment extends BaseFragment implements ProducedView<Order
     EditText etSearchKey;
     @BindView(R.id.btn_search)
     Button btnSearch;
+    @BindView(R.id.detail_view)
+    DetailView detailView;
     private ProducedRvAdapter mAdapter;
     private Unbinder unbinder;
 
@@ -89,14 +94,17 @@ public class ProducedFragment extends BaseFragment implements ProducedView<Order
 
     private void initViews() {
         mAdapter = new ProducedRvAdapter(getActivity());
+        mAdapter.setCallback(this);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4, GridLayoutManager.VERTICAL, false));
         mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(4, getActivity()), false));
         mRecyclerView.setAdapter(mAdapter);
 
+        detailView.setCallback(this);
+
         etSearchKey.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(keyCode==KeyEvent.KEYCODE_ENTER && event.getAction()==KeyEvent.ACTION_UP){
+                if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP) {
                     search();
                     return true;
                 }
@@ -120,17 +128,28 @@ public class ProducedFragment extends BaseFragment implements ProducedView<Order
         mAdapter.setData(list);
     }
 
+    @Override
+    public void updateDetail(OrderBean order) {
+        detailView.updateData(order);
+    }
+
+    @Override
+    public void reportIssue(long orderId) {
+        ReportIssueDialog rid = ReportIssueDialog.newInstance(orderId);
+        rid.show(getChildFragmentManager(), "report_issue");
+    }
+
     // 执行搜索
-    private void search(){
+    private void search() {
         String searchKey = etSearchKey.getText().toString();
-        Logger.getLogger().log("已生产搜索 "+searchKey);
-        if(TextUtils.isEmpty(searchKey)){
+        Logger.getLogger().log("已生产搜索 " + searchKey);
+        if (TextUtils.isEmpty(searchKey)) {
             mAdapter.setSearchData(mAdapter.tempList);
             return;
         }
-        try{
+        try {
             mAdapter.searchOrder(Integer.parseInt(searchKey));
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             showToast("数据太大或者类型不对");
             return;
         }

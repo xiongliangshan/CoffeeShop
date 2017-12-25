@@ -21,11 +21,8 @@ import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
-import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.printer.PrintFace;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,6 +40,7 @@ public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.Vi
     private Context context;
     public List<OrderBean> list = new ArrayList<OrderBean>();
     public int selected = -1;
+    private TomorrowCallback callback;
 
     public TomorrowRvAdapter(Context context) {
         this.context = context;
@@ -63,7 +61,8 @@ public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.Vi
                 selected = position;
                 notifyDataSetChanged();
                 if(position>=0 && position<list.size()){
-                    EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
+//                    EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
+                    callback.updateDetail(list.get(position));
                 }
 
                 Log.d(TAG, "点击了 " + position);
@@ -233,11 +232,22 @@ public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.Vi
         Collections.sort(this.list,new OrderSortComparator());
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
+            callback.updateDetail(this.list.get(selected));
         }else{
-            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
+            callback.updateDetail(null);
         }
 
+    }
+
+
+    public void setCallback(TomorrowRvAdapter.TomorrowCallback callback) {
+        this.callback = callback;
+    }
+
+    interface TomorrowCallback{
+        void updateDetail(OrderBean order);
     }
 
 }

@@ -28,6 +28,8 @@ import com.lyancafe.coffeeshop.produce.presenter.FinishedPresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.FinishedView;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
+import com.lyancafe.coffeeshop.widget.DetailView;
+import com.lyancafe.coffeeshop.widget.ReportIssueDialog;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
 import java.text.SimpleDateFormat;
@@ -44,7 +46,8 @@ import butterknife.Unbinder;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreRecyclerView.PullLoadMoreListener, FinishedView<OrderBean> {
+public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreRecyclerView.PullLoadMoreListener,
+        FinishedView<OrderBean>,FinishedRvAdapter.FinishedCallback,DetailView.ActionCallback {
 
     @BindView(R.id.plmgv_order_list)
     PullLoadMoreRecyclerView pullLoadMoreRecyclerView;
@@ -54,6 +57,8 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     EditText etSearchKey;
     @BindView(R.id.btn_search)
     Button btnSearch;
+    @BindView(R.id.detail_view)
+    DetailView detailView;
     private FinishedRvAdapter mAdapter;
     private long mLastOrderId = 0;
     private Context mContext;
@@ -109,16 +114,20 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
         pullLoadMoreRecyclerView.setPushRefreshEnable(true);
 
         mAdapter = new FinishedRvAdapter(getActivity());
+        mAdapter.setCallback(this);
         pullLoadMoreRecyclerView.setAdapter(mAdapter);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         dateText.setText(sdf.format(new Date()));
 
 
+        detailView.setCallback(this);
+
+
         etSearchKey.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(keyCode==KeyEvent.KEYCODE_ENTER && event.getAction()==KeyEvent.ACTION_UP){
+                if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP) {
                     search();
                     return true;
                 }
@@ -149,6 +158,11 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     }
 
     @Override
+    public void updateDetail(OrderBean order) {
+        detailView.updateData(order);
+    }
+
+    @Override
     public void appendListData(List<OrderBean> list) {
         mAdapter.addData(list);
     }
@@ -163,12 +177,18 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
 
     @Override
+    public void reportIssue(long orderId) {
+        ReportIssueDialog rid = ReportIssueDialog.newInstance(orderId);
+        rid.show(getChildFragmentManager(), "report_issue");
+    }
+
+    @Override
     public void saveLastOrderId() {
         if (mAdapter.list.size() > 0) {
             Collections.sort(mAdapter.list, new Comparator<OrderBean>() {
                 @Override
                 public int compare(OrderBean o1, OrderBean o2) {
-                    return (int) (o1.getId()-o2.getId());
+                    return (int) (o1.getId() - o2.getId());
                 }
             });
             mLastOrderId = mAdapter.list.get(mAdapter.list.size() - 1).getId();
@@ -244,16 +264,16 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
 
     // 执行搜索
-    private void search(){
+    private void search() {
         String searchKey = etSearchKey.getText().toString();
-        Logger.getLogger().log("已完成搜索 "+searchKey);
-        if(TextUtils.isEmpty(searchKey)){
+        Logger.getLogger().log("已完成搜索 " + searchKey);
+        if (TextUtils.isEmpty(searchKey)) {
             mAdapter.setSearchData(mAdapter.tempList);
             return;
         }
         try {
             mAdapter.searchOrder(Integer.parseInt(searchKey));
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             showToast("数据太大或者类型不对");
             return;
         }

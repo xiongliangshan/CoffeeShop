@@ -113,7 +113,7 @@
         <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="20">
+            android:layout_weight="2">
 
 
             <TextView
@@ -134,6 +134,13 @@
                 />
 
         </FrameLayout>
+
+        <com.lyancafe.coffeeshop.widget.DetailView
+            android:id="@+id/detail_view"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="12dp"
+            android:layout_weight="1"/>
 
 
     </LinearLayout>

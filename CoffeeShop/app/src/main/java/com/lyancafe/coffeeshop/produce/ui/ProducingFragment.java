@@ -33,6 +33,8 @@ import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
+import com.lyancafe.coffeeshop.widget.DetailView;
+import com.lyancafe.coffeeshop.widget.ReportIssueDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -48,7 +50,8 @@ import butterknife.Unbinder;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ProducingFragment extends BaseFragment implements ProducingView<OrderBean> {
+public class ProducingFragment extends BaseFragment implements ProducingView<OrderBean>,
+        ProducingRvAdapter.ProducingCallback,DetailView.ActionCallback {
 
     @BindView(R.id.et_search_key)
     EditText etSearchKey;
@@ -56,6 +59,8 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
     Button btnSearch;
     @BindView(R.id.btn_finish_all)
     Button btnFinishAll;
+    @BindView(R.id.detail_view)
+    DetailView detailView;
     private ProducingPresenter mProducingPresenter;
 
     @BindView(R.id.rv_producing)
@@ -97,9 +102,12 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
 
     private void initViews() {
         mAdapter = new ProducingRvAdapter(getActivity());
+        mAdapter.setCallback(this);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4, GridLayoutManager.VERTICAL, false));
         mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(12, getActivity()), false));
         mRecyclerView.setAdapter(mAdapter);
+
+        detailView.setCallback(this);
 
         etSearchKey.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -128,6 +136,11 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
 
 
     @Override
+    public void updateDetail(OrderBean order) {
+        detailView.updateData(order);
+    }
+
+    @Override
     public void removeItemFromList(int id) {
         mAdapter.removeOrderFromList(id);
     }
@@ -135,6 +148,12 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
     @Override
     public void removeItemsFromList(List<Long> ids) {
         mAdapter.removeOrdersFromList(ids);
+    }
+
+    @Override
+    public void reportIssue(long orderId) {
+        ReportIssueDialog rid = ReportIssueDialog.newInstance(orderId);
+        rid.show(getChildFragmentManager(), "report_issue");
     }
 
     @Override
@@ -168,14 +187,14 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
     // 执行搜索
     private void search() {
         String searchKey = etSearchKey.getText().toString();
-        Logger.getLogger().log("生产中搜索 "+searchKey);
+        Logger.getLogger().log("生产中搜索 " + searchKey);
         if (TextUtils.isEmpty(searchKey)) {
             mAdapter.setSearchData(mAdapter.tempList);
             return;
         }
         try {
             mAdapter.searchOrder(Integer.parseInt(searchKey));
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             showToast("数据太大或者类型不对");
             return;
         }
@@ -247,15 +266,15 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
         }
     }
 
-    @OnClick({R.id.btn_search,R.id.btn_finish_all})
+    @OnClick({R.id.btn_search, R.id.btn_finish_all})
     public void onViewClicked(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.btn_search:
                 search();
                 break;
             case R.id.btn_finish_all:
                 List<Long> orderIs = OrderHelper.getIdsFromOrders(mAdapter.list);
-                if(orderIs.size()==0){
+                if (orderIs.size() == 0) {
                     showToast("没有可操作的订单");
                     return;
                 }
@@ -264,7 +283,6 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
         }
 
     }
-
 
 
     class ProducingTaskRunnable implements Runnable {

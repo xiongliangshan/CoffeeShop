@@ -41,6 +41,8 @@ import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.utils.VSpaceItemDecoration;
 import com.lyancafe.coffeeshop.widget.ConfirmDialog;
+import com.lyancafe.coffeeshop.widget.DetailView;
+import com.lyancafe.coffeeshop.widget.ReportIssueDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -62,17 +64,19 @@ import static com.lyancafe.coffeeshop.produce.ui.ListMode.SELECT;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ToProduceFragment extends BaseFragment implements ToProduceView<OrderBean>,ToProduceRvAdapter.ToProduceCallback {
+public class ToProduceFragment extends BaseFragment implements ToProduceView<OrderBean>,
+        ToProduceRvAdapter.ToProduceCallback,DetailView.ActionCallback {
 
 
-    RecyclerView mRecyclerView;
-    ConstraintLayout batchLayout;
-    Button summarizeBtn;
-    Button batchSelectBtn;
-    Button cancelBtn;
-    ConstraintLayout searchLayout;
-    EditText etSearchKey;
-    Button btnSearch;
+    private RecyclerView mRecyclerView;
+    private ConstraintLayout batchLayout;
+    private Button summarizeBtn;
+    private Button batchSelectBtn;
+    private Button cancelBtn;
+    private ConstraintLayout searchLayout;
+    private EditText etSearchKey;
+    private Button btnSearch;
+    private DetailView detailView;
 
     private ToProduceRvAdapter mAdapter;
     private SummarizeAdapter summarizeAdapter;
@@ -133,6 +137,9 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         etSearchKey = (EditText) view.findViewById(R.id.et_search_key);
         btnSearch = (Button) view.findViewById(R.id.btn_search);
 
+        detailView = (DetailView) view.findViewById(R.id.detail_view);
+        detailView.setCallback(this);
+
         setListener();
 
         mAdapter = new ToProduceRvAdapter(getActivity());
@@ -189,6 +196,18 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         }else{
             batchLayout.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @Override
+    public void updateDetail(OrderBean order) {
+        detailView.updateData(order);
+    }
+
+
+    @Override
+    public void reportIssue(long orderId) {
+        ReportIssueDialog rid = ReportIssueDialog.newInstance(orderId);
+        rid.show(getChildFragmentManager(), "report_issue");
     }
 
 
@@ -385,6 +404,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     private void switchMode(OrderMode mode){
         if(mode==OrderMode.SUMMARIZE){
             //汇总模式
+            detailView.setVisibility(View.GONE);
             long start = System.currentTimeMillis();
             List<SummarizeGroup> groups = OrderHelper.splitOrdersToGroup(allOrderList);
             List<SummarizeGroup> resultGroups = OrderHelper.caculateGroupList(groups);
@@ -394,6 +414,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
             renderSummarizeUI(resultGroups);
         }else{
             //详单模式
+            detailView.setVisibility(View.VISIBLE);
             renderNormalUI();
         }
 
@@ -404,7 +425,6 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
      * 渲染普通详单模式的UI
      */
     private void renderNormalUI(){
-        ((MainProduceFragment)getParentFragment()).setDetailPanelVisible(true);
         batchLayout.setVisibility(View.VISIBLE);
         searchLayout.setVisibility(View.VISIBLE);
         if(mAdapter==null){
@@ -422,7 +442,6 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
      * @param groups
      */
     private void renderSummarizeUI(List<SummarizeGroup> groups){
-        ((MainProduceFragment)getParentFragment()).setDetailPanelVisible(false);
         batchLayout.setVisibility(View.INVISIBLE);
         searchLayout.setVisibility(View.INVISIBLE);
         if(summarizeAdapter==null){

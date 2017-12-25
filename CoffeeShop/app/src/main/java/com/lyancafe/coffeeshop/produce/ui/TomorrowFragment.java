@@ -19,6 +19,7 @@ import com.lyancafe.coffeeshop.produce.presenter.TomorrowPresenter;
 import com.lyancafe.coffeeshop.produce.presenter.TomorrowPresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.TomorrowView;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
+import com.lyancafe.coffeeshop.widget.DetailView;
 
 import java.util.List;
 
@@ -30,12 +31,14 @@ import butterknife.Unbinder;
  * Created by Administrator on 2017/7/28.
  */
 
-public class TomorrowFragment extends BaseFragment implements TomorrowView<OrderBean> {
+public class TomorrowFragment extends BaseFragment implements TomorrowView<OrderBean>,TomorrowRvAdapter.TomorrowCallback {
 
 
     @BindView(R.id.rv_tomorrow)
     RecyclerView rvTomorrow;
     Unbinder unbinder;
+    @BindView(R.id.detail_view)
+    DetailView detailView;
 
     private Context mContext;
     private TomorrowPresenter mPresenter;
@@ -53,7 +56,7 @@ public class TomorrowFragment extends BaseFragment implements TomorrowView<Order
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mHandler = new Handler();
-        mPresenter = new TomorrowPresenterImpl(getContext(),this);
+        mPresenter = new TomorrowPresenterImpl(getContext(), this);
     }
 
     @Nullable
@@ -68,7 +71,8 @@ public class TomorrowFragment extends BaseFragment implements TomorrowView<Order
 
     private void initViews() {
         mAdapter = new TomorrowRvAdapter(getActivity());
-        rvTomorrow.setLayoutManager(new GridLayoutManager(getActivity(),4,GridLayoutManager.VERTICAL,false));
+        mAdapter.setCallback(this);
+        rvTomorrow.setLayoutManager(new GridLayoutManager(getActivity(), 4, GridLayoutManager.VERTICAL, false));
         rvTomorrow.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(12, getActivity()), false));
         rvTomorrow.setAdapter(mAdapter);
     }
@@ -81,10 +85,15 @@ public class TomorrowFragment extends BaseFragment implements TomorrowView<Order
 
 
     @Override
+    public void updateDetail(OrderBean order) {
+        detailView.updateData(order);
+    }
+
+    @Override
     public void onVisible() {
         super.onVisible();
-        Log.d("xls","tomorrowFragment is Visible");
-        if(!isResumed()){
+        Log.d("xls", "tomorrowFragment is Visible");
+        if (!isResumed()) {
             return;
         }
         mRunnable = new TomorrowTaskRunnable();
@@ -96,8 +105,8 @@ public class TomorrowFragment extends BaseFragment implements TomorrowView<Order
     @Override
     public void onInVisible() {
         super.onInVisible();
-        Log.d("xls","tomorrowFragment is InVisible");
-        if(mHandler!=null){
+        Log.d("xls", "tomorrowFragment is InVisible");
+        if (mHandler != null) {
             mHandler.removeCallbacks(mRunnable);
         }
     }
@@ -109,7 +118,7 @@ public class TomorrowFragment extends BaseFragment implements TomorrowView<Order
     }
 
 
-    class TomorrowTaskRunnable implements Runnable{
+    class TomorrowTaskRunnable implements Runnable {
         @Override
         public void run() {
             mPresenter.loadTomorrowOrders();

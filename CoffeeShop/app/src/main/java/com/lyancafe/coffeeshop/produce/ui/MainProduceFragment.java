@@ -65,12 +65,12 @@ import butterknife.Unbinder;
 public class MainProduceFragment extends BaseFragment implements TabLayout.OnTabSelectedListener, MainProduceView {
 
     private static final String TAG = "MainProduceFragment";
-    @BindView(R.id.tv_relationOrderId)
+  /*  @BindView(R.id.tv_relationOrderId)
     TextView tvRelationOrderId;
     @BindView(R.id.tv_reason)
     TextView tvReason;
     @BindView(R.id.cl_replenish_layout)
-    ConstraintLayout clReplenishLayout;
+    ConstraintLayout clReplenishLayout;*/
     private Context mContext;
     public static int tabIndex = 0;
     public static int category = OrderCategory.ALL;
@@ -80,9 +80,8 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     TabLayout tabLayout;
     @BindView(R.id.vp_container)
     ViewPager viewPager;
-    @BindView(R.id.detail_panel)
-    View detailPanel;
-    @BindView(R.id.order_id)
+
+   /* @BindView(R.id.order_id)
     TextView shopOrderNoText;
     @BindView(R.id.reach_time)
     TextView reachTimeTxt;
@@ -100,7 +99,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     TextView deliverTeamText;
     @BindView(R.id.deliver_name)
     TextView deliverNameTxt;
-    @BindView(R.id.deliver_phone)
+    @BindView(R.id.tv_deliver_phone)
     TextView deliverPhoneTxt;
     @BindView(R.id.items_container_layout)
     LinearLayout itemsContainerLayout;
@@ -125,7 +124,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     @BindView(R.id.ll_onebtn)
     LinearLayout oneBtnLayout;
     @BindView(R.id.contant_issue_feedback)
-    UnderLineTextView reportIssueBtn;
+    UnderLineTextView reportIssueBtn;*/
 
 
     private ProduceFragmentPagerAdapter mPagerAdapter;
@@ -204,15 +203,8 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
         }
     }
 
-    /**
-     * 设置详情面板的可见性
-     * @param isVisible
-     */
-    public void setDetailPanelVisible(boolean isVisible){
-        detailPanel.setVisibility(isVisible?View.VISIBLE:View.GONE);
-    }
 
-    private void updateDetailView(final OrderBean order) {
+   /* private void updateDetailView(final OrderBean order) {
         if (order == null) {
             shopOrderNoText.setText("");
             orderIdText.setText("");
@@ -399,7 +391,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
 
         ll.invalidate();
     }
-
+*/
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
@@ -550,17 +542,17 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     @Subscribe
     public void onUpdateOrderDetailEvent(UpdateOrderDetailEvent event) {
         mOrder = event.orderBean;
-        updateDetailView(mOrder);
+//        updateDetailView(mOrder);
         LogUtil.d(LogUtil.TAG_PRODUCE, "getChildFragment:" + tabLayout.getSelectedTabPosition());
     }
 
     //更新详情面板
     public void updateOrderDetail(OrderBean orderBean) {
         mOrder = orderBean;
-        updateDetailView(mOrder);
+//        updateDetailView(mOrder);
     }
 
-    @OnClick({R.id.contant_issue_feedback,R.id.ll_user_remark, R.id.ll_csad_remark, R.id.btn_finish_produce, R.id.btn_print_order, R.id.btn_produce_print})
+   /* @OnClick({R.id.contant_issue_feedback,R.id.ll_user_remark, R.id.ll_csad_remark, R.id.btn_finish_produce, R.id.btn_print_order, R.id.btn_produce_print})
     public void onClick(View view) {
         if (mOrder == null) {
             return;
@@ -592,7 +584,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
                 break;
         }
     }
-
+*/
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_ASSIGN && resultCode == 1) {
