@@ -6,7 +6,6 @@
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_order"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -356,62 +355,61 @@
         </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/ll_button_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:baselineAligned="false"
-        android:gravity="bottom"
-        android:orientation="horizontal"
         android:visibility="invisible">
 
         <LinearLayout
             android:id="@+id/ll_two_button"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:orientation="horizontal"
             android:visibility="gone">
 
-            <Button
+            <TextView
                 android:id="@+id/btn_finish_produce"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:background="@color/red1"
+                android:background="@drawable/bg_btn_produce"
                 android:text="生产完成"
+                android:gravity="center"
                 android:textColor="@color/white_font"
                 android:textSize="16sp" />
 
-            <Button
+            <TextView
                 android:id="@+id/btn_print"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
                 android:layout_weight="1"
-                android:background="@color/gray2"
+                android:background="@drawable/bg_native_button"
                 android:text="打印"
+                android:gravity="center"
                 android:textColor="@color/white1"
                 android:textSize="16sp" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ll_one_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <Button
+            <TextView
                 android:id="@+id/btn_produce_print"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/red1"
+                android:background="@drawable/bg_btn_produce"
                 android:text="生产/打印"
+                android:gravity="center"
                 android:textColor="@color/white_font"
                 android:textSize="16sp" />
         </LinearLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>
 

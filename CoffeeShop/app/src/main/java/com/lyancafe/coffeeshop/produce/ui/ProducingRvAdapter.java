@@ -3,6 +3,7 @@ package com.lyancafe.coffeeshop.produce.ui;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextPaint;
 import android.text.TextUtils;
@@ -256,7 +257,8 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         @BindView(R.id.rl_select_view) RelativeLayout selectView;
         @BindView(R.id.checkbox)
         CheckBox checkBox;
-        @BindView(R.id.root_view) LinearLayout rootLayout;
+        @BindView(R.id.root_view)
+        CardView rootLayout;
         @BindView(R.id.ll_first_row) LinearLayout firstRowLayout;
         @BindView(R.id.iv_reminder) ImageView reminderImg;
         @BindView(R.id.iv_sao_flag) ImageView saoImg;

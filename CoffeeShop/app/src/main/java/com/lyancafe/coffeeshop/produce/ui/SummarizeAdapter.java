@@ -67,6 +67,13 @@ public class SummarizeAdapter extends RecyclerView.Adapter<SummarizeAdapter.View
         createBeiheUI(holder.llBeiheContent,holder.tvBeiheTotal,group);
         createCoffeeUI(holder.llCoffee, group.getCoffee());
         createDrinkUI(holder.llDrink, group.getDrink());
+
+        holder.btnProduce.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
 
@@ -102,7 +109,7 @@ public class SummarizeAdapter extends RecyclerView.Adapter<SummarizeAdapter.View
         @BindView(R.id.ll_drink)
         LinearLayout llDrink;
         @BindView(R.id.btn_produce)
-        Button btnProduce;
+        TextView btnProduce;
         @BindView(R.id.ll_platform_content)
         LinearLayout llPlatformContent;
         @BindView(R.id.tv_platform_total)

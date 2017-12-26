@@ -59,12 +59,12 @@ public class DetailView extends CardView implements View.OnClickListener{
     private TextView  tvCustomerRemark;
     private LinearLayout llCsadRemark;
     private TextView tvCsadRemark;
-    private LinearLayout llButtonContainer;
+    private RelativeLayout llButtonContainer;
     private LinearLayout llTwoButton;
-    private Button btnFinishProduce;
-    private Button btnPrint;
+    private TextView btnFinishProduce;
+    private TextView btnPrint;
     private LinearLayout llOneButton;
-    private Button btnProducePrint;
+    private TextView btnProducePrint;
 
 
     private OrderBean mOrder;
@@ -89,7 +89,7 @@ public class DetailView extends CardView implements View.OnClickListener{
 
     private void initView(Context context){
         LayoutInflater.from(context).inflate(R.layout.view_detail,this,true);
-
+        setBackground(ContextCompat.getDrawable(context,R.drawable.bg_order));
         rootLayout = (LinearLayout) findViewById(R.id.root_layout);
         tvShopNo = (TextView) findViewById(R.id.tv_shop_no);
         tvReachTime = (TextView) findViewById(R.id.tv_reach_time);
@@ -111,12 +111,12 @@ public class DetailView extends CardView implements View.OnClickListener{
         tvCustomerRemark = (TextView) findViewById(R.id.tv_customer_remark);
         llCsadRemark = (LinearLayout) findViewById(R.id.ll_csad_remark);
         tvCsadRemark = (TextView) findViewById(R.id.tv_csad_remark);
-        llButtonContainer = (LinearLayout) findViewById(R.id.ll_button_container);
+        llButtonContainer = (RelativeLayout) findViewById(R.id.ll_button_container);
         llTwoButton = (LinearLayout) findViewById(R.id.ll_two_button);
-        btnFinishProduce = (Button) findViewById(R.id.btn_finish_produce);
-        btnPrint = (Button) findViewById(R.id.btn_print);
+        btnFinishProduce = (TextView) findViewById(R.id.btn_finish_produce);
+        btnPrint = (TextView) findViewById(R.id.btn_print);
         llOneButton = (LinearLayout) findViewById(R.id.ll_one_button);
-        btnProducePrint = (Button) findViewById(R.id.btn_produce_print);
+        btnProducePrint = (TextView) findViewById(R.id.btn_produce_print);
 
         setListener();
     }
