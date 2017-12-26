@@ -169,8 +169,6 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_btn_produce"
                     android:gravity="center"
-                    android:paddingBottom="8dp"
-                    android:paddingTop="8dp"
                     android:text="生产完成"
                     android:textColor="@color/white_font"
                     android:textSize="13sp" />

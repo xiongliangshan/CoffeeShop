@@ -53,7 +53,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
 
     private static final String TAG  ="OrderGridViewAdapter";
     private Context context;
-    private List<OrderBean> list = new ArrayList<OrderBean>();
+    private List<OrderBean> list = new ArrayList<>();
     public int selected = -1;
     public ListMode curMode;
     private List<OrderBean> searchList;
@@ -90,7 +90,6 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
                 //通知详情板块内容变更
                 selected = position;
                 notifyDataSetChanged();
-                Log.d(TAG, "点击了 " + position);
                 if(position>=0 && position<list.size()){
                     callback.updateDetail(list.get(position));
                 }

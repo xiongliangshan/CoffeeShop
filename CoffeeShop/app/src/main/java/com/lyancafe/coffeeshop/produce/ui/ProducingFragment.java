@@ -230,7 +230,8 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
      */
     @Subscribe
     public void onFinishProduceEvent(FinishProduceEvent event) {
-        showFinishProduceConfirmDialog(event.order);
+//        showFinishProduceConfirmDialog(event.order);
+        mProducingPresenter.doFinishProduced(event.order.getId());
     }
 
 

@@ -288,7 +288,11 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
      */
     @Subscribe
     public void onStartProduceEvent(StartProduceEvent event) {
-        showStartProduceConfirmDialog(event.order);
+        /**
+         * 开始生产&&打印
+         */
+        mToProducePresenter.doStartProduce(event.order.getId(), event.order.getWxScan());
+        PrintFace.getInst().startPrintWholeOrderTask(event.order);
     }
 
     /**

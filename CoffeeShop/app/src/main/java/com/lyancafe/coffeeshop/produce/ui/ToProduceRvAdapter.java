@@ -48,7 +48,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
     private static final String TAG  ="OrderGridViewAdapter";
     private Context context;
 
-    private List<OrderBean> list = new ArrayList<OrderBean>();
+    private List<OrderBean> list = new ArrayList<>();
     public int selected = -1;
     public ListMode curMode;
     public Map<Integer,Boolean> selectMap;
@@ -327,15 +327,11 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         this.list = list;
         Collections.sort(this.list,new OrderSortComparator());
         notifyDataSetChanged();
-        /*if(callback!=null){
-            callback.updateBatchUI(this.list.size());
-        }*/
+
 
         if(selected>=0 && selected<this.list.size()){
-//            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
             callback.updateDetail(this.list.get(selected));
         }else{
-//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
             callback.updateDetail(null);
         }
 
@@ -345,10 +341,8 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         this.list = list;
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
-//            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
             callback.updateDetail(this.list.get(selected));
         }else{
-//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
             callback.updateDetail(null);
         }
     }
@@ -369,19 +363,13 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         if(list.size()>0){
             selected=0;
             notifyDataSetChanged();
-//            EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(selected)));
             callback.updateDetail(list.get(selected));
         }else{
             selected = -1;
             notifyDataSetChanged();
-//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
             callback.updateDetail(null);
         }
 
-       /* //更新批量操作按钮可见性
-        if(callback!=null){
-            callback.updateBatchUI(this.list.size());
-        }*/
 
     }
 
@@ -399,19 +387,13 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         if(list.size()>0){
             selected=0;
             notifyDataSetChanged();
-//            EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(selected)));
             callback.updateDetail(list.get(selected));
         }else{
             selected = -1;
             notifyDataSetChanged();
-//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
             callback.updateDetail(null);
         }
 
-       /* //更新批量操作按钮可见性
-        if(callback!=null){
-            callback.updateBatchUI(this.list.size());
-        }*/
     }
 
     public void setCallback(ToProduceCallback callback) {
