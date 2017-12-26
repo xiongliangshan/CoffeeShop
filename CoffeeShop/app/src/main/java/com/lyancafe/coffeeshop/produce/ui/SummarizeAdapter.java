@@ -12,10 +12,12 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.DeliverPlatform;
 import com.lyancafe.coffeeshop.bean.Product;
 import com.lyancafe.coffeeshop.bean.SummarizeGroup;
+import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import java.util.ArrayList;
@@ -303,10 +305,13 @@ public class SummarizeAdapter extends RecyclerView.Adapter<SummarizeAdapter.View
             }else {
                 tv.setTextAppearance(mContext,R.style.SummarizeText);
             }
+            tv.setText(product.getName() + " * " + product.getCount());
+
             if (product.isCustom()) {
-                tv.setText(product.getName() + " * " + product.getCount() + " 定");
-            } else {
-                tv.setText(product.getName() + " * " + product.getCount());
+                Drawable drawable = ContextCompat.getDrawable(CSApplication.getInstance(),R.mipmap.flag_ding);
+                drawable.setBounds(0,0, OrderHelper.dip2Px(12,mContext),OrderHelper.dip2Px(12,mContext));
+                tv.setCompoundDrawablePadding(OrderHelper.dip2Px(4,mContext));
+                tv.setCompoundDrawables(null, null,drawable,null);
             }
 
             llCoffee.addView(tv);

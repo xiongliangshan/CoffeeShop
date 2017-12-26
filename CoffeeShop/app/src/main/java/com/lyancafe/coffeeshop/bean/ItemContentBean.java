@@ -1,5 +1,7 @@
 package com.lyancafe.coffeeshop.bean;
 
+import android.support.annotation.NonNull;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Index;
@@ -13,7 +15,7 @@ import java.io.Serializable;
 @Entity(indexes = {
         @Index(value = "product,orderId ASC", unique = true)
 })
-public class ItemContentBean implements Serializable{
+public class ItemContentBean implements Serializable,Comparable<ItemContentBean>{
 
     private static final long serialVersionUID = 33565800L;
 
@@ -50,7 +52,11 @@ public class ItemContentBean implements Serializable{
     }
 
 
-   
+    @Override
+    public int compareTo(@NonNull ItemContentBean o) {
+        return o.getQuantity()-this.getQuantity();
+    }
+
     public String getProduct() {
         return this.product;
     }

@@ -205,6 +205,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
     //填充item数据
     private void fillItemListData(LinearLayout ll,List<ItemContentBean> items){
         ll.removeAllViews();
+        Collections.sort(items);
         for(ItemContentBean item:items){
             TextView tv1 = new TextView(context);
             tv1.setText(item.getProduct());
