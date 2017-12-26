@@ -189,14 +189,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
 
     }
 
-    @Override
-    public void updateBatchUI(int size) {
-        if(size>=2){
-            batchLayout.setVisibility(View.VISIBLE);
-        }else{
-            batchLayout.setVisibility(View.INVISIBLE);
-        }
-    }
+
 
     @Override
     public void updateDetail(OrderBean order) {
@@ -312,11 +305,15 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     @Override
     public void removeItemFromList(int id) {
         mAdapter.removeOrderFromList(id);
+        allOrderList.clear();
+        allOrderList.addAll(mAdapter.getList());
     }
 
     @Override
     public void removeItemsFromList(List<Long> ids) {
         mAdapter.removeOrdersFromList(ids);
+        allOrderList.clear();
+        allOrderList.addAll(mAdapter.getList());
     }
 
     //订单状态改变后刷新列表UI
@@ -324,8 +321,8 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         if (mAdapter == null) {
             return;
         }
-        for (int i = 0; i < mAdapter.list.size(); i++) {
-            OrderBean order = mAdapter.list.get(i);
+        for (int i = 0; i < mAdapter.getList().size(); i++) {
+            OrderBean order = mAdapter.getList().get(i);
             if (orderId == order.getId()) {
                 order.setStatus(status);
                 mAdapter.notifyItemChanged(i);
@@ -360,6 +357,10 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
                 case R.id.btn_batch_select:
                     if (getString(R.string.batch_select).equals(batchSelectBtn.getText().toString())) {
                         //点击批量选择
+                        if(allOrderList.size()<2){
+                            ToastUtil.show(getContext(),"订单数少于2，无法批量");
+                            return;
+                        }
                         mAdapter.selectMap.clear();
                         setMode(SELECT);
 
@@ -385,6 +386,10 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
                     break;
                 case R.id.btn_summarize:
                     if("汇总模式".equals(summarizeBtn.getText())){
+                        if(allOrderList.size()<1){
+                            ToastUtil.show(getContext(),"没有可以汇总的订单!");
+                            return;
+                        }
                         summarizeBtn.setText("详单模式");
                         switchMode(OrderMode.SUMMARIZE);
                     }else if("详单模式".equals(summarizeBtn.getText())){

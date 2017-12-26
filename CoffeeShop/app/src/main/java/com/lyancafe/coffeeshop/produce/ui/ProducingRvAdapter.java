@@ -53,17 +53,15 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
 
     private static final String TAG  ="OrderGridViewAdapter";
     private Context context;
-    public List<OrderBean> list = new ArrayList<OrderBean>();
+    private List<OrderBean> list = new ArrayList<OrderBean>();
     public int selected = -1;
     public ListMode curMode;
-    public List<OrderBean> tempList;
     private List<OrderBean> searchList;
     private ProducingCallback callback;
 
     public ProducingRvAdapter(Context context) {
         this.context = context;
         curMode = ListMode.NORMAL;
-        tempList = new ArrayList<>();
         searchList = new ArrayList<>();
     }
 
@@ -94,7 +92,6 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
                 notifyDataSetChanged();
                 Log.d(TAG, "点击了 " + position);
                 if(position>=0 && position<list.size()){
-//                    EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
                     callback.updateDetail(list.get(position));
                 }
             }
@@ -159,10 +156,9 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
 
 
         fillItemListData(holder.itemContainerll, order.getItems());
-//        holder.cupCountText.setText(context.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
         if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
-            holder.twobtnContainerLayout.setVisibility(View.GONE);
-            holder.onebtnContainerlayout.setVisibility(View.VISIBLE);
+            holder.llProducingContainer.setVisibility(View.GONE);
+            holder.llToproduceContainer.setVisibility(View.VISIBLE);
             holder.produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -171,8 +167,8 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
                 }
             });
         }else if(order.getProduceStatus() == OrderStatus.PRODUCING){
-            holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
-            holder.onebtnContainerlayout.setVisibility(View.GONE);
+            holder.llProducingContainer.setVisibility(View.VISIBLE);
+            holder.llToproduceContainer.setVisibility(View.GONE);
             holder.produceBtn.setVisibility(View.VISIBLE);
             holder.produceBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -183,8 +179,8 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
             });
 
         }else{
-            holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
-            holder.onebtnContainerlayout.setVisibility(View.GONE);
+            holder.llProducingContainer.setVisibility(View.VISIBLE);
+            holder.llToproduceContainer.setVisibility(View.GONE);
             holder.produceBtn.setVisibility(View.GONE);
         }
 
@@ -201,6 +197,10 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    public List<OrderBean> getList() {
+        return list;
     }
 
     //填充item数据
@@ -270,8 +270,8 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         @BindView(R.id.item_remark_flag) ImageView remarkFlagIV;
         @BindView(R.id.item_replenish_flag) ImageView replenishIV;
         @BindView(R.id.item_container) LinearLayout itemContainerll;
-        @BindView(R.id.ll_twobtn_container) LinearLayout twobtnContainerLayout;
-        @BindView(R.id.ll_onebtn_container) LinearLayout onebtnContainerlayout;
+        @BindView(R.id.ll_producing_container) LinearLayout llProducingContainer;
+        @BindView(R.id.ll_toproduce_container) LinearLayout llToproduceContainer;
         @BindView(R.id.item_produce_and_print) TextView produceAndPrintBtn;
         @BindView(R.id.item_produce) TextView produceBtn;
 
@@ -287,14 +287,10 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         Collections.sort(this.list,new OrderSortComparator());
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
-//            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
             callback.updateDetail(this.list.get(selected));
         }else{
-//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
             callback.updateDetail(null);
         }
-        tempList.clear();
-        tempList.addAll(list);
 
     }
 
@@ -302,10 +298,8 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         this.list = list;
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
-//            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
             callback.updateDetail(this.list.get(selected));
         }else{
-//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
             callback.updateDetail(null);
         }
     }
@@ -313,7 +307,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
 
     //搜索
     public void searchOrder(final int shopOrderNo){
-        Observable.fromIterable(tempList)
+        Observable.fromIterable(this.list)
                 .subscribeOn(Schedulers.io())
                 .filter(new Predicate<OrderBean>() {
                     @Override
@@ -368,12 +362,10 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         if(list.size()>0){
             selected=0;
             notifyDataSetChanged();
-//            EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(selected)));
             callback.updateDetail(list.get(selected));
         }else{
             selected = -1;
             notifyDataSetChanged();
-//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
             callback.updateDetail(null);
         }
 
@@ -394,12 +386,10 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         if(list.size()>0){
             selected=0;
             notifyDataSetChanged();
-//            EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(selected)));
             callback.updateDetail(list.get(selected));
         }else{
             selected = -1;
             notifyDataSetChanged();
-//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
             callback.updateDetail(null);
         }
 

@@ -204,8 +204,8 @@ public class RevokedRvAdapter extends RecyclerView.Adapter<RevokedRvAdapter.View
         @BindView(R.id.item_remark_flag) ImageView remarkFlagIV;
         @BindView(R.id.item_container) LinearLayout itemContainerll;
         @BindView(R.id.tv_cup_count) TextView cupCountText;
-        @BindView(R.id.ll_twobtn_container) LinearLayout twobtnContainerLayout;
-        @BindView(R.id.ll_onebtn_container) LinearLayout onebtnContainerlayout;
+        @BindView(R.id.ll_producing_container) LinearLayout twobtnContainerLayout;
+        @BindView(R.id.ll_toproduce_container) LinearLayout onebtnContainerlayout;
         @BindView(R.id.item_produce_and_print) TextView produceAndPrintBtn;
         @BindView(R.id.item_produce) TextView produceBtn;
 

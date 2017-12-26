@@ -7,7 +7,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextPaint;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +47,8 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
 
     private static final String TAG  ="OrderGridViewAdapter";
     private Context context;
-    public List<OrderBean> list = new ArrayList<OrderBean>();
+
+    private List<OrderBean> list = new ArrayList<OrderBean>();
     public int selected = -1;
     public ListMode curMode;
     public Map<Integer,Boolean> selectMap;
@@ -162,8 +162,8 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
 
         fillItemListData(holder.itemContainerll, order.getItems());
         if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
-            holder.twobtnContainerLayout.setVisibility(View.GONE);
-            holder.onebtnContainerlayout.setVisibility(View.VISIBLE);
+            holder.llProducingContainer.setVisibility(View.GONE);
+            holder.llToproduceContainer.setVisibility(View.VISIBLE);
             holder.produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -192,8 +192,8 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
                 }
             });
         }else if(order.getProduceStatus() == OrderStatus.PRODUCING){
-            holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
-            holder.onebtnContainerlayout.setVisibility(View.GONE);
+            holder.llProducingContainer.setVisibility(View.VISIBLE);
+            holder.llToproduceContainer.setVisibility(View.GONE);
             holder.produceBtn.setVisibility(View.VISIBLE);
             holder.produceBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -204,8 +204,8 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
             });
 
         }else{
-            holder.twobtnContainerLayout.setVisibility(View.VISIBLE);
-            holder.onebtnContainerlayout.setVisibility(View.GONE);
+            holder.llProducingContainer.setVisibility(View.VISIBLE);
+            holder.llToproduceContainer.setVisibility(View.GONE);
             holder.produceBtn.setVisibility(View.GONE);
 
         }
@@ -223,6 +223,10 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    public List<OrderBean> getList() {
+        return list;
     }
 
 
@@ -306,8 +310,8 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         @BindView(R.id.item_replenish_flag) ImageView replenishIV;
         @BindView(R.id.item_container) LinearLayout itemContainerll;
         @BindView(R.id.tv_deliver_status) TextView deliverStatusText;
-        @BindView(R.id.ll_twobtn_container) LinearLayout twobtnContainerLayout;
-        @BindView(R.id.ll_onebtn_container) LinearLayout onebtnContainerlayout;
+        @BindView(R.id.ll_producing_container) LinearLayout llProducingContainer;
+        @BindView(R.id.ll_toproduce_container) LinearLayout llToproduceContainer;
         @BindView(R.id.item_produce_and_print) TextView produceAndPrintBtn;
         @BindView(R.id.item_produce) TextView produceBtn;
 
@@ -323,9 +327,9 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         this.list = list;
         Collections.sort(this.list,new OrderSortComparator());
         notifyDataSetChanged();
-        if(callback!=null){
+        /*if(callback!=null){
             callback.updateBatchUI(this.list.size());
-        }
+        }*/
 
         if(selected>=0 && selected<this.list.size()){
 //            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
@@ -374,10 +378,10 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
             callback.updateDetail(null);
         }
 
-        //更新批量操作按钮可见性
+       /* //更新批量操作按钮可见性
         if(callback!=null){
             callback.updateBatchUI(this.list.size());
-        }
+        }*/
 
     }
 
@@ -404,10 +408,10 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
             callback.updateDetail(null);
         }
 
-        //更新批量操作按钮可见性
+       /* //更新批量操作按钮可见性
         if(callback!=null){
             callback.updateBatchUI(this.list.size());
-        }
+        }*/
     }
 
     public void setCallback(ToProduceCallback callback) {
@@ -415,7 +419,6 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
     }
 
     interface ToProduceCallback{
-        void updateBatchUI(int size);
         void updateDetail(OrderBean order);
     }
 

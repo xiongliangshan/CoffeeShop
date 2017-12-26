@@ -189,7 +189,7 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
         String searchKey = etSearchKey.getText().toString();
         Logger.getLogger().log("生产中搜索 " + searchKey);
         if (TextUtils.isEmpty(searchKey)) {
-            mAdapter.setSearchData(mAdapter.tempList);
+            mAdapter.setSearchData(mAdapter.getList());
             return;
         }
         try {
@@ -253,8 +253,8 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
         if (mAdapter == null) {
             return;
         }
-        for (int i = 0; i < mAdapter.list.size(); i++) {
-            OrderBean order = mAdapter.list.get(i);
+        for (int i = 0; i < mAdapter.getList().size(); i++) {
+            OrderBean order = mAdapter.getList().get(i);
             if (orderId == order.getId()) {
                 order.setStatus(status);
                 mAdapter.notifyItemChanged(i);
@@ -273,7 +273,7 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
                 search();
                 break;
             case R.id.btn_finish_all:
-                List<Long> orderIs = OrderHelper.getIdsFromOrders(mAdapter.list);
+                List<Long> orderIs = OrderHelper.getIdsFromOrders(mAdapter.getList());
                 if (orderIs.size() == 0) {
                     showToast("没有可操作的订单");
                     return;

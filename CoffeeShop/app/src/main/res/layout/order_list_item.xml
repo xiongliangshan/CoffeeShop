@@ -17,7 +17,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:descendantFocusability="blocksDescendants"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="4dp">
 
             <LinearLayout
                 android:id="@+id/ll_first_row"
@@ -155,7 +156,7 @@
             </RelativeLayout>
 
             <LinearLayout
-                android:id="@+id/ll_twobtn_container"
+                android:id="@+id/ll_producing_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -166,7 +167,7 @@
                     android:id="@+id/item_produce"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/red1"
+                    android:background="@drawable/bg_btn_produce"
                     android:gravity="center"
                     android:paddingBottom="8dp"
                     android:paddingTop="8dp"
@@ -176,7 +177,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/ll_onebtn_container"
+                android:id="@+id/ll_toproduce_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
