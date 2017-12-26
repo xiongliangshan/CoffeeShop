@@ -3,6 +3,8 @@ package com.lyancafe.coffeeshop.common;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
@@ -51,23 +53,6 @@ public class OrderHelper {
     public static Map<String,Integer> contentMap = new HashMap<>();
 
     public static long DELAY_LOAD_TIME = 200;  //单位 ms
-
-    public static final int GOOD_COMMENT = 4;  //好评
-    public static final int BAD_COMMENT = 5;   //差评
-
-
-    /**
-     * 排序规则
-     */
-    public static final int ORDER_TIME = 1;    //按下单时间
-    public static final int PRODUCE_TIME = 2;  //按生产时效
-
-    /**
-     * 筛选订单类型
-     */
-    public static final int APPOINTMENT = 0;    //预约单
-    public static final int INSTANT = 1;    //尽快送达
-    public static final int ALL = 99;       //全部
 
 
     /**
@@ -183,6 +168,7 @@ public class OrderHelper {
 
         return  min;
     }
+
 
     //计算某个订单的总杯数
     public static int getTotalQutity(OrderBean orderBean){
@@ -1057,6 +1043,16 @@ public class OrderHelper {
             }
 
         }
+    }
+
+
+
+    public static Spanned getBoxCupByOrder(OrderBean order){
+        int boxCount = caculateBoxOrder(order);
+        int cupCount = getTotalQutity(order);
+        String htmlStr = "<font color = '#9B9B9B'>总盒</font><font color ='#000000'>"+boxCount+"," +
+                "</font><font color = '#9B9B9B'>总杯</font><font color ='#000000'>"+cupCount+"</font>";
+        return Html.fromHtml(htmlStr);
     }
 
 

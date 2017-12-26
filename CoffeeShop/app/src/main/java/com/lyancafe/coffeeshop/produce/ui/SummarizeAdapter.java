@@ -134,6 +134,7 @@ public class SummarizeAdapter extends RecyclerView.Adapter<SummarizeAdapter.View
      * @param group
      */
     private void createPlatformUI(LinearLayout container,TextView total, final SummarizeGroup group) {
+        container.removeAllViews();
         Map<String, DeliverPlatform> dpMap = group.getDeliverPlatformMap();
         Iterator<String> iterator = dpMap.keySet().iterator();
         while (iterator.hasNext()) {
@@ -163,6 +164,7 @@ public class SummarizeAdapter extends RecyclerView.Adapter<SummarizeAdapter.View
      * @param boxOrderMap
      */
     private void createHedanUI(LinearLayout llHedan, Map<String, Integer> boxOrderMap) {
+        llHedan.removeAllViews();
         Iterator<String> it = boxOrderMap.keySet().iterator();
         while (it.hasNext()) {
             String key = it.next();
@@ -187,6 +189,7 @@ public class SummarizeAdapter extends RecyclerView.Adapter<SummarizeAdapter.View
      * @param iconMap
      */
     private void createIconUI(LinearLayout llIcon, Map<String, Integer> iconMap) {
+        llIcon.removeAllViews();
         Iterator<String> it = iconMap.keySet().iterator();
         while (it.hasNext()) {
             String key = it.next();
@@ -228,6 +231,7 @@ public class SummarizeAdapter extends RecyclerView.Adapter<SummarizeAdapter.View
      * @param group
      */
     private void createBeiheUI(LinearLayout llBeihe,TextView total, SummarizeGroup group) {
+        llBeihe.removeAllViews();
         Map<String, Integer> cupBoxMap = group.getCupBoxMap();
         Iterator<String> it = cupBoxMap.keySet().iterator();
 
@@ -276,6 +280,7 @@ public class SummarizeAdapter extends RecyclerView.Adapter<SummarizeAdapter.View
      * @param coffee
      */
     private void createCoffeeUI(LinearLayout llCoffee, Map<String, Product> coffee) {
+        llCoffee.removeAllViews();
         List<Map.Entry<String,Product>> list = new ArrayList<>(coffee.entrySet());
         Collections.sort(list, new Comparator<Map.Entry<String, Product>>() {
             @Override
@@ -310,7 +315,7 @@ public class SummarizeAdapter extends RecyclerView.Adapter<SummarizeAdapter.View
      * @param drink
      */
     private void createDrinkUI(LinearLayout llDrink, Map<String, Product> drink) {
-
+        llDrink.removeAllViews();
         List<Map.Entry<String,Product>> list = new ArrayList<>(drink.entrySet());
         Collections.sort(list, new Comparator<Map.Entry<String, Product>>() {
             @Override

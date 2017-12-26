@@ -53,6 +53,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
     public Map<Integer,Boolean> selectMap;
 
 
+
     private ToProduceCallback callback;
 
     public ToProduceRvAdapter(Context context) {
@@ -148,6 +149,8 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
             holder.checkImg.setVisibility(View.INVISIBLE);
         }
 
+        holder.tvBoxCup.setText(OrderHelper.getBoxCupByOrder(order));
+
 
         if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN) {
             holder.expectedTimeText.setText(order.getInstant() == 1 ? "立即送出" : OrderHelper.getFormatTimeToStr(order.getExpectedTime()));
@@ -159,7 +162,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         holder.deliverStatusText.setText(OrderHelper.getStatusName(order.getStatus(),order.getWxScan()));
 
         fillItemListData(holder.itemContainerll, order.getItems());
-        holder.cupCountText.setText(context.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
+//        holder.cupCountText.setText(context.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
         if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
             holder.twobtnContainerLayout.setVisibility(View.GONE);
             holder.onebtnContainerlayout.setVisibility(View.VISIBLE);
@@ -297,13 +300,13 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         @BindView(R.id.iv_reminder) ImageView reminderImg;
         @BindView(R.id.iv_sao_flag) ImageView saoImg;
         @BindView(R.id.iv_check) ImageView checkImg;
+        @BindView(R.id.tv_box_cup) TextView tvBoxCup;
         @BindView(R.id.item_order_id) TextView orderIdTxt;
         @BindView(R.id.item_expected_time) TextView expectedTimeText;
         @BindView(R.id.item_remark_flag) ImageView remarkFlagIV;
         @BindView(R.id.item_replenish_flag) ImageView replenishIV;
         @BindView(R.id.item_container) LinearLayout itemContainerll;
         @BindView(R.id.tv_deliver_status) TextView deliverStatusText;
-        @BindView(R.id.tv_cup_count) TextView cupCountText;
         @BindView(R.id.ll_twobtn_container) LinearLayout twobtnContainerLayout;
         @BindView(R.id.ll_onebtn_container) LinearLayout onebtnContainerlayout;
         @BindView(R.id.item_produce_and_print) TextView produceAndPrintBtn;

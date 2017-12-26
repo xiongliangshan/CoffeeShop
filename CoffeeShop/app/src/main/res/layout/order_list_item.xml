@@ -76,11 +76,21 @@
             android:orientation="horizontal"
             android:layout_marginTop="4dp"
             >
+
+            <ImageView
+                android:id="@+id/iv_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/eye"
+                android:visibility="gone"
+                tools:visibility="visible"/>
+
             <ImageView
                 android:id="@+id/iv_reminder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/flag_reminder"
+                android:layout_toRightOf="@id/iv_check"
                 android:visibility="gone"
                 tools:visibility="visible"
                 />
@@ -119,13 +129,15 @@
                 android:layout_marginLeft="4dp"/>
 
 
-            <ImageView
-                android:id="@+id/iv_check"
+
+
+
+            <TextView
+                android:id="@+id/tv_box_cup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:src="@mipmap/eye"
-                android:visibility="invisible"/>
+                tools:text="总盒4，总杯12"/>
 
 
 
@@ -150,14 +162,14 @@
                 android:gravity="center_horizontal"
                 android:padding="2dp"
                 />
-            <TextView
+           <!-- <TextView
                 android:id="@+id/tv_cup_count"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:gravity="center"
                 android:layout_alignParentBottom="true"
-                android:text=""/>
+                android:text=""/>-->
         </RelativeLayout>
         <LinearLayout
             android:id="@+id/ll_twobtn_container"

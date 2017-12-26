@@ -385,11 +385,9 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
                     break;
                 case R.id.btn_summarize:
                     if("汇总模式".equals(summarizeBtn.getText())){
-                        ToastUtil.show(getContext(),"开启汇总模式");
                         summarizeBtn.setText("详单模式");
                         switchMode(OrderMode.SUMMARIZE);
                     }else if("详单模式".equals(summarizeBtn.getText())){
-                        ToastUtil.show(getContext(),"详单模式");
                         summarizeBtn.setText("汇总模式");
                         switchMode(OrderMode.NORMAL);
                     }
