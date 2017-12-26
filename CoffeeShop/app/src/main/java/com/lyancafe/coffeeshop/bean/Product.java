@@ -48,7 +48,11 @@ public class Product implements Comparable<Product>{
 
     @Override
     public int compareTo(@NonNull Product o) {
-        return o.getCount()-this.getCount();
+        if (o.getCount() != this.getCount()) {
+            return o.getCount() - this.getCount();
+        } else {
+            return o.getName().compareTo(this.getName());
+        }
     }
 
     @Override
