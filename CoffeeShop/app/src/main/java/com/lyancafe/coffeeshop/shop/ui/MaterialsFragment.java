@@ -292,6 +292,9 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView<Ma
         if (materials != null && materials.size() > 0) {
             mAdapter.setList(materials.get(currentItem).getItems());
         }
+
+        mRunnable = new ManagerTaskRunnable();
+        mHandler.postDelayed(mRunnable, OrderHelper.DELAY_LOAD_TIME);
     }
 
     @Override

@@ -35,7 +35,7 @@ public class MainShopFragment extends BaseFragment implements TabLayout.OnTabSel
     private ShopFragmentPagerAdapter mPagerAdapter;
 
 
-    private EvaluationFragment evaluationFragment;
+//    private EvaluationFragment evaluationFragment;
     private MaterialsFragment materialFragment;
     private ManagerFragment managerFragment;
     private StatementFragment statementFragment;
@@ -55,19 +55,19 @@ public class MainShopFragment extends BaseFragment implements TabLayout.OnTabSel
 
     private void initViews() {
         List<Fragment> fragments = new ArrayList<>();
-        evaluationFragment = new EvaluationFragment();
+//        evaluationFragment = new EvaluationFragment();
         materialFragment = new MaterialsFragment();
         managerFragment = new ManagerFragment();
         statementFragment = new StatementFragment();
         trainingVideoFragment = new TrainingVideoFragment();
-        fragments.add(evaluationFragment);
+//        fragments.add(evaluationFragment);
         fragments.add(materialFragment);
         fragments.add(managerFragment);
         fragments.add(statementFragment);
         fragments.add(trainingVideoFragment);
         mPagerAdapter = new ShopFragmentPagerAdapter(getChildFragmentManager(),getActivity(),fragments);
         viewPager.setAdapter(mPagerAdapter);
-        viewPager.setOffscreenPageLimit(4);
+        viewPager.setOffscreenPageLimit(3);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.addOnTabSelectedListener(this);
     }
@@ -75,8 +75,11 @@ public class MainShopFragment extends BaseFragment implements TabLayout.OnTabSel
     @Override
     public void onResume() {
         super.onResume();
-        if(evaluationFragment!=null){
+        /*if(evaluationFragment!=null){
             evaluationFragment.onVisible();
+        }*/
+        if(materialFragment!=null){
+            managerFragment.onVisible();
         }
     }
 

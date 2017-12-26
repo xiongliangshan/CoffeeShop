@@ -42,6 +42,7 @@ import com.lyancafe.coffeeshop.printer.PrintOrderActivity;
 import com.lyancafe.coffeeshop.produce.presenter.MainProducePresenter;
 import com.lyancafe.coffeeshop.produce.presenter.MainProducePresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.MainProduceView;
+import com.lyancafe.coffeeshop.shop.ui.EvaluationFragment;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.widget.InfoDetailDialog;
 import com.lyancafe.coffeeshop.widget.ReportIssueDialog;
@@ -135,6 +136,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
     private FinishedOrderFragment finishedOrderFragment;
     private RevokedFragment revokedFragment;
     private TomorrowFragment tomorrowFragment;
+    private EvaluationFragment evaluationFragment;
 
     private OrderBean mOrder = null;
     private Unbinder unbinder;
@@ -174,15 +176,17 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
         finishedOrderFragment = new FinishedOrderFragment();
         revokedFragment = new RevokedFragment();
         tomorrowFragment = new TomorrowFragment();
+        evaluationFragment = new EvaluationFragment();
         fragments.add(toProduceFragment);
         fragments.add(producingFragment);
         fragments.add(producedFragment);
         fragments.add(finishedOrderFragment);
         fragments.add(revokedFragment);
         fragments.add(tomorrowFragment);
+        fragments.add(evaluationFragment);
         mPagerAdapter = new ProduceFragmentPagerAdapter(getChildFragmentManager(), getActivity(), fragments);
         viewPager.setAdapter(mPagerAdapter);
-        viewPager.setOffscreenPageLimit(5);
+        viewPager.setOffscreenPageLimit(6);
         viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.addOnTabSelectedListener(this);

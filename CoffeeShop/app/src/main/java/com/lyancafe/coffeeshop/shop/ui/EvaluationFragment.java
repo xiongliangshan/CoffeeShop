@@ -89,8 +89,8 @@ public class EvaluationFragment extends BaseFragment implements EvaluationView<E
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mRunnable = new EvaluationTaskRunnable();
-        mHandler.postDelayed(mRunnable,OrderHelper.DELAY_LOAD_TIME);
+       /* mRunnable = new EvaluationTaskRunnable();
+        mHandler.postDelayed(mRunnable,OrderHelper.DELAY_LOAD_TIME);*/
     }
 
 
