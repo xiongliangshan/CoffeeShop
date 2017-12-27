@@ -1056,4 +1056,25 @@ public class OrderHelper {
     }
 
 
+    /**
+     * 骑手接单相对于现在过了几分钟
+     * @param acceptTime
+     * @return
+     */
+    public static String getAcceptOverTime(long acceptTime){
+        long delta = System.currentTimeMillis()-acceptTime;
+        long minute = delta/(60*1000);
+        return minute+"分钟";
+    }
+
+    public static String getToArriveTime(long expectedTime){
+        long delta = expectedTime + 45*60*1000 - System.currentTimeMillis();
+        if(delta<0){
+            return "超时"+Math.abs(delta)/(60*1000)+"分钟";
+        }else {
+            return delta/(60*1000)+"分钟";
+        }
+    }
+
+
 }

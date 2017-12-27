@@ -61,8 +61,9 @@ public class OrderUtils {
                 long startTime = System.currentTimeMillis();
                 for (int i = 0; i < list.size(); i++) {
                     List<ItemContentBean> items = list.get(i).getItems();
+                    long orderId = list.get(i).getId();
                     for (int j = 0; j < items.size(); j++) {
-                        items.get(j).setOrderId(list.get(i).getId());
+                        items.get(j).setOrderId(orderId);
                     }
                     mItemOrderDao.insertOrReplaceInTx(items);
                 }

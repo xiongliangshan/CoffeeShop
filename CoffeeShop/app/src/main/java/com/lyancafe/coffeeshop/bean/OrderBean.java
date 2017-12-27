@@ -44,6 +44,8 @@ public class OrderBean implements Serializable{
 
     private String phone;                //收货人联系电话
 
+    private long acceptTime;             //指派给骑手的时间
+
     private String courierName;          //小哥名字
 
     private String courierPhone;         //小哥联系电话
@@ -89,16 +91,17 @@ public class OrderBean implements Serializable{
     @Generated(hash = 627331561)
     private transient OrderBeanDao myDao;
 
-    
 
 
-    @Generated(hash = 93762891)
+
+
+
+    @Generated(hash = 134031691)
     public OrderBean(long id, String reminder, String orderSn, int shopOrderNo, boolean wxScan, boolean isRecipeFittings,
             long expectedTime, long orderTime, long distributeTime, long produceEffect, String recipient, String address,
-            String phone, String courierName, String courierPhone, int status, int produceStatus, boolean issueOrder,
-            int instant, String notes, String csrNotes, long handoverTime, int feedbackType, int deliveryTeam,
-            int thirdShopOrderNo, double orderDistance, long relationOrderId, String reason, boolean revoked,
-            boolean checkAddress) {
+            String phone, long acceptTime, String courierName, String courierPhone, int status, int produceStatus, boolean issueOrder,
+            int instant, String notes, String csrNotes, long handoverTime, int feedbackType, int deliveryTeam, int thirdShopOrderNo,
+            double orderDistance, long relationOrderId, String reason, boolean revoked, boolean checkAddress) {
         this.id = id;
         this.reminder = reminder;
         this.orderSn = orderSn;
@@ -112,6 +115,7 @@ public class OrderBean implements Serializable{
         this.recipient = recipient;
         this.address = address;
         this.phone = phone;
+        this.acceptTime = acceptTime;
         this.courierName = courierName;
         this.courierPhone = courierPhone;
         this.status = status;
@@ -131,10 +135,12 @@ public class OrderBean implements Serializable{
         this.checkAddress = checkAddress;
     }
 
-
     @Generated(hash = 1725534308)
     public OrderBean() {
     }
+
+
+
 
     
     public long getId() {
@@ -480,6 +486,14 @@ public class OrderBean implements Serializable{
 
     public void setCheckAddress(boolean checkAddress) {
         this.checkAddress = checkAddress;
+    }
+
+    public long getAcceptTime() {
+        return this.acceptTime;
+    }
+
+    public void setAcceptTime(long acceptTime) {
+        this.acceptTime = acceptTime;
     }
 
     /** called by internal mechanisms, do not call yourself. */

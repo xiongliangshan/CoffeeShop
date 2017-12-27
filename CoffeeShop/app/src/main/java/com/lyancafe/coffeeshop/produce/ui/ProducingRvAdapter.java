@@ -29,6 +29,7 @@ import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
+import com.lyancafe.coffeeshop.widget.ProgressPercent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -104,6 +105,8 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         final OrderBean order = list.get(position);
 
         holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
+
+        holder.deliverProgress.updateProgress(order.getAcceptTime(),order.getExpectedTime()+45*60*1000);
 
         //加急
         if("Y".equalsIgnoreCase(order.getReminder())){
@@ -274,6 +277,9 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         @BindView(R.id.ll_toproduce_container) LinearLayout llToproduceContainer;
         @BindView(R.id.item_produce_and_print) TextView produceAndPrintBtn;
         @BindView(R.id.item_produce) TextView produceBtn;
+        @BindView(R.id.deliver_progress)
+        ProgressPercent deliverProgress;
+
 
 
         public ViewHolder(View itemView) {
