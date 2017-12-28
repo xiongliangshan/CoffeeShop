@@ -55,23 +55,20 @@ public class OrderUtils {
         if(list==null || list.size()==0){
             return;
         }
-        tpl.execute(new Runnable() {
-            @Override
-            public void run() {
-                long startTime = System.currentTimeMillis();
-                for (int i = 0; i < list.size(); i++) {
-                    List<ItemContentBean> items = list.get(i).getItems();
-                    long orderId = list.get(i).getId();
-                    for (int j = 0; j < items.size(); j++) {
-                        items.get(j).setOrderId(orderId);
-                    }
-                    mItemOrderDao.insertOrReplaceInTx(items);
-                }
-                mOrderDao.insertOrReplaceInTx(list);
-                long endTime = System.currentTimeMillis();
-                LogUtil.d(TAG,"插入: "+list.size()+" 条记录,所用时间: "+(endTime-startTime)+" ms");
+
+        long startTime = System.currentTimeMillis();
+        for (int i = 0; i < list.size(); i++) {
+            List<ItemContentBean> items = list.get(i).getItems();
+            long orderId = list.get(i).getId();
+            for (int j = 0; j < items.size(); j++) {
+                items.get(j).setOrderId(orderId);
             }
-        });
+            mItemOrderDao.insertOrReplaceInTx(items);
+        }
+        mOrderDao.insertOrReplaceInTx(list);
+        long endTime = System.currentTimeMillis();
+        LogUtil.d(TAG,"插入: "+list.size()+" 条记录,所用时间: "+(endTime-startTime)+" ms");
+
 
     }
 
