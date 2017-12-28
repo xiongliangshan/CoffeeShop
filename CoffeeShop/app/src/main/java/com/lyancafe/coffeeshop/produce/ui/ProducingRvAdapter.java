@@ -106,7 +106,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
 
         holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
 
-        holder.deliverProgress.updateProgress(order.getAcceptTime(),order.getExpectedTime()+45*60*1000);
+//        holder.deliverProgress.updateProgress(order.getAcceptTime(),order.getExpectedTime()+45*60*1000);
 
         //加急
         if("Y".equalsIgnoreCase(order.getReminder())){

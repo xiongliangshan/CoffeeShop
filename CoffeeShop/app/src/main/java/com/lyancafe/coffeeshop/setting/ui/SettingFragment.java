@@ -65,7 +65,7 @@ public class SettingFragment extends BaseFragment implements SettingView {
     }
 
     private void initViews(){
-        tvCurrentVersion.setText(MyUtil.getVersion(getContext()));
+        tvCurrentVersion.setText(MyUtil.getVersion(getContext())+" ("+MyUtil.getVersionCode(getContext())+")");
     }
 
     @Override

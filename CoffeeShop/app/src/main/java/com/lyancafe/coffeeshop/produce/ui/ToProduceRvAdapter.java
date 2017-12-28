@@ -112,7 +112,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
 
         holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
 
-        long nowTime = System.currentTimeMillis();
+        /*long nowTime = System.currentTimeMillis();
         if(position==0){
             holder.deliverProgress.updateProgress(nowTime-45*60*1000,nowTime-5*60*1000);
         }else if(position==1){
@@ -121,7 +121,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
             holder.deliverProgress.updateProgress(nowTime+15*60*1000,nowTime+50*60*1000);
         }else {
             holder.deliverProgress.updateProgress(order.getAcceptTime(),order.getExpectedTime()+45*60*1000);
-        }
+        }*/
 
 
         //加急

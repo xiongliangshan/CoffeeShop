@@ -75,7 +75,8 @@
                 android:layout_height="wrap_content"
                 android:padding="1dp"
                 app:startText="接单"
-                app:endText="送达"/>
+                app:endText="送达"
+                android:visibility="gone"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
