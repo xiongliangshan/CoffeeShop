@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardElevation="8dp"
-    app:cardMaxElevation="10dp">
+    app:cardMaxElevation="10dp"
+    android:background="@drawable/bg_order">
 
     <LinearLayout
-        android:id="@+id/ll_root"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_finished_order"
         android:descendantFocusability="blocksDescendants"
+        android:padding="4dp"
         >
 
         <RelativeLayout
@@ -25,7 +26,7 @@
                 android:id="@+id/tv_shop_order_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/black1"
                 android:text="001"/>
@@ -56,6 +57,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/font_gray"
                 android:text="下单时间:"
                 />
             <TextView
@@ -76,6 +78,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/font_gray"
                 android:text="期望时间:"/>
             <TextView
                 android:id="@+id/tv_expected_reach_time"
@@ -95,6 +98,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/font_gray"
                 android:text="实际送达:"
                 />
 
@@ -116,6 +120,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/font_gray"
                 android:text="客户评价:"/>
             <TextView
                 android:id="@+id/tv_custom_evaluation"

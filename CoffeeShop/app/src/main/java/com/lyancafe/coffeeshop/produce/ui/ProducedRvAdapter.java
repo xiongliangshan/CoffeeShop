@@ -3,6 +3,7 @@ package com.lyancafe.coffeeshop.produce.ui;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextPaint;
 import android.text.TextUtils;
@@ -72,11 +73,9 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
                 selected = position;
                 notifyDataSetChanged();
                 if(position>=0 && position<list.size()){
-//                    EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
                     callback.updateDetail(list.get(position));
                 }
 
-                Log.d(TAG, "点击了 " + position);
             }
         });
 
@@ -161,7 +160,8 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
 
-        @BindView(R.id.root_view) LinearLayout rootLayout;
+        @BindView(R.id.root_view)
+        CardView rootLayout;
         @BindView(R.id.ll_first_row) LinearLayout firstRowLayout;
         @BindView(R.id.tv_shop_order_id) TextView shopOrderIdText;
         @BindView(R.id.tv_service_effect) TextView serviceEffectText;

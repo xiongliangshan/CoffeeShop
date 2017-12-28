@@ -3,10 +3,12 @@ package com.lyancafe.coffeeshop.produce.ui;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +22,6 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
-import com.lyancafe.coffeeshop.constant.OrderStatus;
-import com.lyancafe.coffeeshop.printer.PrintFace;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
 
 import java.util.ArrayList;
@@ -61,7 +61,6 @@ public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.Vi
                 selected = position;
                 notifyDataSetChanged();
                 if(position>=0 && position<list.size()){
-//                    EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
                     callback.updateDetail(list.get(position));
                 }
 
@@ -79,6 +78,13 @@ public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.Vi
         holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
         holder.expectedTimeText.setText(OrderHelper.getPeriodOfExpectedtime(order));
 
+        //重点关注地址
+        if (order.getCheckAddress()) {
+            holder.checkImg.setVisibility(View.VISIBLE);
+        } else {
+            holder.checkImg.setVisibility(View.GONE);
+        }
+
         //加急
         if("Y".equalsIgnoreCase(order.getReminder())){
             holder.reminderImg.setVisibility(View.VISIBLE);
@@ -93,21 +99,7 @@ public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.Vi
         }else {
             holder.saoImg.setVisibility(View.GONE);
         }
-        //定制
-        if(order.getIsRecipeFittings()){
-            holder.labelFlagImg.setVisibility(View.VISIBLE);
-            holder.labelFlagImg.setImageResource(R.mipmap.flag_ding);
-        }else{
-            holder.labelFlagImg.setVisibility(View.GONE);
-        }
 
-        //抢单
-        if(order.getStatus()== OrderStatus.UNASSIGNED){
-            holder.grabFlagIV.setVisibility(View.GONE);
-        }else{
-            holder.grabFlagIV.setVisibility(View.VISIBLE);
-            holder.grabFlagIV.setImageResource(R.mipmap.flag_qiang);
-        }
         //备注
         if(TextUtils.isEmpty(order.getNotes()) && TextUtils.isEmpty(order.getCsrNotes())){
             holder.remarkFlagIV.setVisibility(View.GONE);
@@ -116,28 +108,13 @@ public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.Vi
             holder.remarkFlagIV.setImageResource(R.mipmap.flag_bei);
         }
 
+        holder.tvBoxCup.setText(OrderHelper.getBoxCupByOrder(order));
+
 
 
         holder.deliverStatusText.setText(OrderHelper.getStatusName(order.getStatus(),order.getWxScan()));
 
         fillItemListData(holder.itemContainerll, order.getItems());
-        holder.cupCountText.setText(context.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
-
-        holder.advancePrintBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //点击预打印按钮
-                PrintFace.getInst().startPrintWholeOrderTask(order);
-                notifyDataSetChanged();
-            }
-        });
-
-        if (OrderHelper.isPrinted(context, order.getOrderSn())) {
-            holder.advancePrintBtn.setText(R.string.print_again);
-
-        } else {
-            holder.advancePrintBtn.setText(R.string.print);
-        }
 
 
     }
@@ -158,7 +135,13 @@ public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.Vi
     //填充item数据
     private void fillItemListData(LinearLayout ll,List<ItemContentBean> items){
         ll.removeAllViews();
-        for(ItemContentBean item:items){
+        boolean isMore = false;
+        for(int i=0;i<items.size();i++){
+            if(i==5){
+                isMore = true;
+                break;
+            }
+            ItemContentBean item = items.get(i);
             TextView tv1 = new TextView(context);
             tv1.setText(item.getProduct());
             tv1.setMaxEms(7);
@@ -199,6 +182,18 @@ public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.Vi
             lp.topMargin = OrderHelper.dip2Px(2,context);
             ll.addView(rl,lp);
         }
+        if(isMore){
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            TextView tvMore = new TextView(context);
+            tvMore.setTextSize(context.getResources().getDimension(R.dimen.flag_more_size));
+            tvMore.setTextColor(context.getResources().getColor(R.color.black2));
+            tvMore.setText("•••");
+            tvMore.setGravity(Gravity.CENTER);
+            ll.addView(tvMore,lp);
+        }
         ll.invalidate();
     }
 
@@ -206,19 +201,22 @@ public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.Vi
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.root_view) LinearLayout rootLayout;
+        @BindView(R.id.root_view)
+        CardView rootLayout;
+
+        @BindView(R.id.tv_box_cup)
+        TextView tvBoxCup;
         @BindView(R.id.ll_first_row) LinearLayout firstRowLayout;
+        @BindView(R.id.iv_check)
+        ImageView checkImg;
         @BindView(R.id.iv_reminder) ImageView reminderImg;
         @BindView(R.id.iv_sao_flag) ImageView saoImg;
-        @BindView(R.id.iv_label_flag) ImageView labelFlagImg;
         @BindView(R.id.item_order_id) TextView orderIdTxt;
         @BindView(R.id.tv_expected_time) TextView expectedTimeText;
-        @BindView(R.id.item_grab_flag) ImageView grabFlagIV;
         @BindView(R.id.item_remark_flag) ImageView remarkFlagIV;
         @BindView(R.id.item_container) LinearLayout itemContainerll;
         @BindView(R.id.tv_deliver_status) TextView deliverStatusText;
-        @BindView(R.id.tv_cup_count) TextView cupCountText;
-        @BindView(R.id.tv_advance_print) TextView advancePrintBtn;
+
 
 
         public ViewHolder(View itemView) {

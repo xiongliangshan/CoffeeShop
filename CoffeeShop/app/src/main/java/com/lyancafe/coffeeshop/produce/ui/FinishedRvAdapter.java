@@ -1,6 +1,7 @@
 package com.lyancafe.coffeeshop.produce.ui;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -120,7 +121,8 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Vi
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.ll_root) LinearLayout rootLayout;
+        @BindView(R.id.root_view)
+        CardView rootLayout;
         @BindView(R.id.tv_shop_order_id) TextView shopOrderIdText;
         @BindView(R.id.tv_deliver_result) TextView deliverResultText;
         @BindView(R.id.tv_order_time) TextView orderTimeText;

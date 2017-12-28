@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardElevation="8dp"
-    app:cardMaxElevation="10dp">
+    app:cardMaxElevation="10dp"
+    android:background="@drawable/bg_order">
     <LinearLayout
-        android:id="@+id/root_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/bg_order"
+        android:padding="4dp"
         android:descendantFocusability="blocksDescendants">
 
         <LinearLayout
@@ -26,7 +27,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/black1"
                 android:text="003约"

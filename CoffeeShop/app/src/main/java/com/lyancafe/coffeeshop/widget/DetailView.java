@@ -195,7 +195,7 @@ public class DetailView extends CardView implements View.OnClickListener{
             tvCustomerRemark.setText(order.getNotes());
             tvCsadRemark.setText(order.getCsrNotes());
 
-            if(order.getRevoked() || order.getProduceStatus()>=OrderStatus.FINISHED){
+            if(order.getRevoked() || order.getStatus()>=OrderStatus.FINISHED){
                 llButtonContainer.setVisibility(View.INVISIBLE);
             }else {
                 llButtonContainer.setVisibility(View.VISIBLE);

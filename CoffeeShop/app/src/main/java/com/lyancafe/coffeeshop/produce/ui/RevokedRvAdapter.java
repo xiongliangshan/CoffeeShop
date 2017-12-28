@@ -3,10 +3,12 @@ package com.lyancafe.coffeeshop.produce.ui;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,26 +58,13 @@ public class RevokedRvAdapter extends RecyclerView.Adapter<RevokedRvAdapter.View
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        if(curMode==ListMode.SELECT){
-            holder.selectView.setVisibility(View.VISIBLE);
-            holder.selectView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    holder.checkBox.setChecked(!holder.checkBox.isChecked());
-                }
-            });
-        }else {
-            holder.selectView.setVisibility(View.GONE);
-        }
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //通知详情板块内容变更
                 selected = position;
                 notifyDataSetChanged();
-                Log.d(TAG, "点击了 " + position);
                 if(position>=0 && position<list.size()){
-//                    EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(position)));
                     callback.updateDetail(list.get(position));
                 }
             }
@@ -89,6 +78,13 @@ public class RevokedRvAdapter extends RecyclerView.Adapter<RevokedRvAdapter.View
         final OrderBean order = list.get(position);
 
         holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
+
+        //重点关注地址
+        if (order.getCheckAddress()) {
+            holder.checkImg.setVisibility(View.VISIBLE);
+        } else {
+            holder.checkImg.setVisibility(View.GONE);
+        }
 
         //加急
         if("Y".equalsIgnoreCase(order.getReminder())){
@@ -113,6 +109,8 @@ public class RevokedRvAdapter extends RecyclerView.Adapter<RevokedRvAdapter.View
             holder.remarkFlagIV.setImageResource(R.mipmap.flag_bei);
         }
 
+        holder.tvBoxCup.setText(OrderHelper.getBoxCupByOrder(order));
+
 
         if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN) {
             holder.expectedTimeText.setText(order.getInstant() == 1 ? "立即送出" : OrderHelper.getFormatTimeToStr(order.getExpectedTime()));
@@ -124,7 +122,7 @@ public class RevokedRvAdapter extends RecyclerView.Adapter<RevokedRvAdapter.View
 
 
         fillItemListData(holder.itemContainerll, order.getItems());
-        holder.cupCountText.setText(context.getResources().getString(R.string.total_quantity, OrderHelper.getTotalQutity(order)));
+
     }
 
 
@@ -143,7 +141,13 @@ public class RevokedRvAdapter extends RecyclerView.Adapter<RevokedRvAdapter.View
     //填充item数据
     private void fillItemListData(LinearLayout ll,List<ItemContentBean> items){
         ll.removeAllViews();
-        for(ItemContentBean item:items){
+        boolean isMore = false;
+        for(int i=0;i<items.size();i++){
+            if(i==5){
+                isMore = true;
+                break;
+            }
+            ItemContentBean item = items.get(i);
             TextView tv1 = new TextView(context);
             tv1.setText(item.getProduct());
             tv1.setMaxEms(7);
@@ -184,6 +188,18 @@ public class RevokedRvAdapter extends RecyclerView.Adapter<RevokedRvAdapter.View
             lp.topMargin = OrderHelper.dip2Px(2,context);
             ll.addView(rl,lp);
         }
+        if(isMore){
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            TextView tvMore = new TextView(context);
+            tvMore.setTextSize(context.getResources().getDimension(R.dimen.flag_more_size));
+            tvMore.setTextColor(context.getResources().getColor(R.color.black2));
+            tvMore.setText("•••");
+            tvMore.setGravity(Gravity.CENTER);
+            ll.addView(tvMore,lp);
+        }
         ll.invalidate();
     }
 
@@ -191,11 +207,13 @@ public class RevokedRvAdapter extends RecyclerView.Adapter<RevokedRvAdapter.View
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.rl_select_view) RelativeLayout selectView;
-        @BindView(R.id.checkbox)
-        CheckBox checkBox;
-        @BindView(R.id.root_view) LinearLayout rootLayout;
+        @BindView(R.id.root_view)
+        CardView rootLayout;
         @BindView(R.id.ll_first_row) LinearLayout firstRowLayout;
+        @BindView(R.id.iv_check)
+        ImageView checkImg;
+        @BindView(R.id.tv_box_cup)
+        TextView tvBoxCup;
         @BindView(R.id.iv_reminder) ImageView reminderImg;
         @BindView(R.id.iv_sao_flag) ImageView saoImg;
         @BindView(R.id.item_order_id) TextView orderIdTxt;
@@ -203,7 +221,6 @@ public class RevokedRvAdapter extends RecyclerView.Adapter<RevokedRvAdapter.View
         @BindView(R.id.tv_deliver_status) TextView deliverStatusText;
         @BindView(R.id.item_remark_flag) ImageView remarkFlagIV;
         @BindView(R.id.item_container) LinearLayout itemContainerll;
-        @BindView(R.id.tv_cup_count) TextView cupCountText;
         @BindView(R.id.ll_producing_container) LinearLayout twobtnContainerLayout;
         @BindView(R.id.ll_toproduce_container) LinearLayout onebtnContainerlayout;
         @BindView(R.id.item_produce_and_print) TextView produceAndPrintBtn;

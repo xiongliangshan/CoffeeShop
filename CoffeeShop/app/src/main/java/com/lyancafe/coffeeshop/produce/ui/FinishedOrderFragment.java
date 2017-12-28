@@ -107,7 +107,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
         pullLoadMoreRecyclerView.getRecyclerView().setLayoutManager(new GridLayoutManager(getActivity(), 4, GridLayoutManager.VERTICAL, false));
         pullLoadMoreRecyclerView.getRecyclerView().setHasFixedSize(true);
         pullLoadMoreRecyclerView.getRecyclerView().setItemAnimator(new DefaultItemAnimator());
-        pullLoadMoreRecyclerView.getRecyclerView().addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(4, mContext), false));
+        pullLoadMoreRecyclerView.getRecyclerView().addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(12, mContext), false));
         pullLoadMoreRecyclerView.setOnPullLoadMoreListener(this);
         pullLoadMoreRecyclerView.setRefreshing(false);
         pullLoadMoreRecyclerView.setPullRefreshEnable(false);

@@ -626,7 +626,7 @@ public class OrderHelper {
 
     public static String getDeliverTeamName(int deliverTeam){
         String teamName;
-        switch (deliverTeam){
+        switch (deliverTeam) {
             case DeliveryTeam.LYAN:
                 teamName = "自有";
                 break;
@@ -636,8 +636,11 @@ public class OrderHelper {
             case DeliveryTeam.MEITUAN:
                 teamName = "美团";
                 break;
+            case DeliveryTeam.ELE:
+                teamName = "饿了么";
+                break;
             default:
-                teamName = "未知（"+deliverTeam+")";
+                teamName = "未知（" + deliverTeam + ")";
         }
         return teamName;
     }

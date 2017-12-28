@@ -96,7 +96,7 @@ public class ProducedFragment extends BaseFragment implements ProducedView<Order
         mAdapter = new ProducedRvAdapter(getActivity());
         mAdapter.setCallback(this);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4, GridLayoutManager.VERTICAL, false));
-        mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(4, getActivity()), false));
+        mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(12, getActivity()), false));
         mRecyclerView.setAdapter(mAdapter);
 
         detailView.setCallback(this);

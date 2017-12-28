@@ -105,8 +105,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginLeft="12dp"
-            app:cardElevation="2dp"
-            app:cardMaxElevation="4dp"/>
+            />
 
 
     </LinearLayout>

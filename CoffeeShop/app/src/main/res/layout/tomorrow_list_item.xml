@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_view"
     app:cardElevation="8dp"
-    app:cardMaxElevation="10dp">
+    app:cardMaxElevation="10dp"
+    android:background="@drawable/bg_order">
     <LinearLayout
-        android:id="@+id/root_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/bg_order"
+        android:padding="4dp"
         android:descendantFocusability="blocksDescendants"
         >
 
@@ -28,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@color/black1"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 android:text="003约"
                 />
@@ -40,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black1"
                 android:textStyle="bold"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 />
         </LinearLayout>
 
@@ -71,10 +72,20 @@
             android:orientation="horizontal"
             android:layout_marginTop="4dp"
             >
+
+            <ImageView
+                android:id="@+id/iv_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/eye"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
             <ImageView
                 android:id="@+id/iv_reminder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/iv_check"
                 android:src="@mipmap/flag_reminder"
                 />
 
@@ -86,14 +97,6 @@
                 android:layout_marginLeft="4dp"
                 android:src="@mipmap/flag_sao"/>
 
-            <ImageView
-                android:id="@+id/iv_label_flag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/iv_sao_flag"
-                android:src="@mipmap/flag_ding"
-                android:layout_marginLeft="4dp"
-                />
 
             <ImageView
                 android:id="@+id/item_remark_flag"
@@ -101,22 +104,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
                 android:src="@mipmap/flag_bei"
-                android:layout_toRightOf="@id/iv_label_flag"
+                android:layout_toRightOf="@id/iv_sao_flag"
                 />
 
-            <ImageView
-                android:id="@+id/item_grab_flag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/item_remark_flag"
-                android:src="@mipmap/flag_qiang"
-                android:layout_marginLeft="4dp"/>
-            <ImageView
+            <TextView
+                android:id="@+id/tv_box_cup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:src="@mipmap/flag_placeholder"
-                android:visibility="invisible"/>
+                tools:text="总盒4，总杯12" />
 
 
 
@@ -141,36 +137,7 @@
                 android:gravity="center_horizontal"
                 android:padding="2dp"
                 />
-            <TextView
-                android:id="@+id/tv_cup_count"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:layout_alignParentBottom="true"
-                android:text=""/>
         </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_toproduce_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="4dp"
-            >
-            <TextView
-                android:id="@+id/tv_advance_print"
-                android:layout_width="match_parent"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="预打印"
-                android:textSize="13sp"
-                android:textColor="@color/white_font"
-                android:background="@color/red1"
-                />
-        </LinearLayout>
 
     </LinearLayout>
 </android.support.v7.widget.CardView>
