@@ -5,7 +5,8 @@
     <!--公司门店联想pad-->
     <dimen name="activity_horizontal_margin">64dp</dimen>
     <dimen name="content_item_text_size">9sp</dimen>
-    <dimen name="order_item_content_height">150dp</dimen>
+    <dimen name="flag_more_size">15sp</dimen>
+    <dimen name="order_item_content_height">132dp</dimen>
     <dimen name="effect_time_text_size">21sp</dimen>
 
     <dimen name="sf_group_height">350dp</dimen>

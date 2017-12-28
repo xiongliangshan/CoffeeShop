@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,7 +107,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
 
         holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
 
-//        holder.deliverProgress.updateProgress(order.getAcceptTime(),order.getExpectedTime()+45*60*1000);
+        holder.deliverProgress.updateProgress(order.getAcceptTime(),order.getExpectedTime()+45*60*1000);
 
         //加急
         if("Y".equalsIgnoreCase(order.getReminder())){
@@ -209,7 +210,13 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
     private void fillItemListData(LinearLayout ll,List<ItemContentBean> items){
         ll.removeAllViews();
         Collections.sort(items);
-        for(ItemContentBean item:items){
+        boolean isMore = false;
+        for(int i=0;i<items.size();i++){
+            if(i==5){
+                isMore = true;
+                break;
+            }
+            ItemContentBean item = items.get(i);
             TextView tv1 = new TextView(context);
             tv1.setText(item.getProduct());
             tv1.setMaxEms(7);
@@ -249,6 +256,18 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
             );
             lp.topMargin = OrderHelper.dip2Px(2,context);
             ll.addView(rl,lp);
+        }
+        if(isMore){
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            TextView tvMore = new TextView(context);
+            tvMore.setTextSize(context.getResources().getDimension(R.dimen.flag_more_size));
+            tvMore.setTextColor(context.getResources().getColor(R.color.black2));
+            tvMore.setText("•••");
+            tvMore.setGravity(Gravity.CENTER);
+            ll.addView(tvMore,lp);
         }
         ll.invalidate();
     }
