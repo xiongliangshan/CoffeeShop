@@ -3,6 +3,8 @@ package com.lyancafe.coffeeshop.bean;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +41,21 @@ public class PrintObject {
         if(coffeeMap.size()==0){
             return printObjects;
         }
-        Iterator<String> iterator = coffeeMap.keySet().iterator();
+
+        List<Map.Entry<String,Integer>> list = new ArrayList<>(coffeeMap.entrySet());
+        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
+            @Override
+            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+                if(o2.getValue()!=o1.getValue()){
+                    return o2.getValue()-o1.getValue();
+                }else {
+                    return o2.getKey().compareTo(o1.getKey());
+                }
+            }
+        });
+
+        Iterator<Map.Entry<String,Integer>> iterator = list.iterator();
+//        Iterator<String> iterator = coffeeMap.keySet().iterator();
         int coffeeSize = coffeeMap.size();
         int fittingSize = getMapSize(recipeFittingsMap);
         int totalSize = coffeeSize+fittingSize;
@@ -51,9 +67,11 @@ public class PrintObject {
         int t = 30;
         int i = 0;
         while (iterator.hasNext()){
-            String name = iterator.next();
-            LogUtil.d("xls",name+" x "+coffeeMap.get(name));
-            printObjects.get(i/6).getContent().add("A"+l+","+t+",0,230,2,2,N,\""+name+" x "+coffeeMap.get(name)+"\""+"\n");
+            Map.Entry<String,Integer> entry = iterator.next();
+            String name = entry.getKey();
+            int value = entry.getValue();
+            LogUtil.d("xls",name+" x "+value);
+            printObjects.get(i/6).getContent().add("A"+l+","+t+",0,230,2,2,N,\""+name+" x "+value+"\""+"\n");
             t+=60;
             i++;
             if(i%6==0){
@@ -80,13 +98,13 @@ public class PrintObject {
 
         }
 
-        //构造头和尾
+       /* //构造头和尾
         PrintObject start = new PrintObject();
         start.getContent().add("A0,200,0,230,2,2,N,\"----------生产汇总------------ \""+"\n");
         PrintObject end = new PrintObject();
         end.getContent().add("A0,200,0,230,2,2,N,\"----------生产汇总------------ \""+"\n");
         printObjects.add(0,start);
-        printObjects.add(end);
+        printObjects.add(end);*/
         return printObjects;
     }
 
