@@ -143,7 +143,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         if(order.getCheckAddress()){
             holder.checkImg.setVisibility(View.VISIBLE);
         }else {
-            holder.checkImg.setVisibility(View.INVISIBLE);
+            holder.checkImg.setVisibility(View.GONE);
         }
 
         holder.tvBoxCup.setText(OrderHelper.getBoxCupByOrder(order));
