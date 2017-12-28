@@ -101,7 +101,6 @@
         <attr name="desTextColor" format="color"/>
         <attr name="desTextSize" format="dimension"/>
         <attr name="passColor" format="color"/>
-        <attr name="unpassColor" format="color"/>
     </declare-styleable>
 
 </resources>
