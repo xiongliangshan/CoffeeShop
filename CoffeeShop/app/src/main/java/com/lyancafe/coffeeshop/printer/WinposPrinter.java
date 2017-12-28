@@ -10,6 +10,8 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.PrintCupBean;
 import com.lyancafe.coffeeshop.bean.PrintObject;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
+import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.utils.OrderIdComparator;
@@ -22,8 +24,10 @@ import java.io.Writer;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -241,17 +245,36 @@ public class WinposPrinter implements NetPrint {
 
     @Override
     public String OTCForSmallLabel(PrintCupBean orderBean) {
-        return  "N"+"\n"+
-                "OD"+"\n"+
-                "q240"+"\n"+
-                "Q160,16"+"\n"+
-                "S3"+"\n"+
-                "D8"+"\n"+
-                "A20,40,0,230,1,1,N,\""+orderBean.getShopOrderNo()+"\""+"\n"+
+        UserBean user = LoginHelper.getUser(CSApplication.getInstance());
+        boolean needPrintTime =  user.isNeedPrintTime();
+        String drinkGuide = user.getDrinkGuide();
+        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date(System.currentTimeMillis()));
+        if(needPrintTime){
+            return  "N"+"\n"+
+                    "OD"+"\n"+
+                    "q240"+"\n"+
+                    "Q160,16"+"\n"+
+                    "S3"+"\n"+
+                    "D8"+"\n"+
+                    "A18,16,0,230,1,1,N,\""+orderBean.getShopOrderNo()+"\""+"\n"+
+                    "A18,43,0,230,1,1,N,\""+orderBean.getCoffee()+"\""+"\n"+
+                    "A18,68,0,230,1,1,N,\""+orderBean.getLabel()+"\""+"\n"+
+                    "A18,101,0,230,1,1,N,\""+time+"\""+"\n"+
+                    "A18,126,0,230,1,1,N,\""+drinkGuide+"\""+"\n"+
+                    "P1"+"\n";
+        }else {
+            return  "N"+"\n"+
+                    "OD"+"\n"+
+                    "q240"+"\n"+
+                    "Q160,16"+"\n"+
+                    "S3"+"\n"+
+                    "D8"+"\n"+
+                    "A20,40,0,230,1,1,N,\""+orderBean.getShopOrderNo()+"\""+"\n"+
 //                "A110,40,0,230,1,1,N,\""+orderBean.getBoxAmount()+"-"+orderBean.getBoxNumber()+"|"+orderBean.getCupAmount()+"-" +orderBean.getCupNumber()+"\""+"\n"+ //杯数盒子信息
-                "A20,70,0,230,1,1,N,\""+orderBean.getCoffee()+"\""+"\n"+
-                "A20,100,0,230,1,1,N,\""+orderBean.getLabel()+"\""+"\n"+
-                "P1"+"\n";
+                    "A20,70,0,230,1,1,N,\""+orderBean.getCoffee()+"\""+"\n"+
+                    "A20,100,0,230,1,1,N,\""+orderBean.getLabel()+"\""+"\n"+
+                    "P1"+"\n";
+        }
     }
 
     @Override
