@@ -180,6 +180,7 @@ public class Calculator {
                 printCupBean.setInstant(orderBean.getInstant());
                 printCupBean.setCoffee(item.getProduct());
                 printCupBean.setColdHotProperty(item.getColdHotProperty());
+                printCupBean.setProduceProcess(item.getProduceProcess());
                 hotCuplist.add(printCupBean);
 
                 pos++;
@@ -201,6 +202,7 @@ public class Calculator {
                 printCupBean.setInstant(orderBean.getInstant());
                 printCupBean.setCoffee(item.getProduct());
                 printCupBean.setColdHotProperty(item.getColdHotProperty());
+                printCupBean.setProduceProcess(item.getProduceProcess());
                 coolCuplist.add(printCupBean);
 
                 index++;

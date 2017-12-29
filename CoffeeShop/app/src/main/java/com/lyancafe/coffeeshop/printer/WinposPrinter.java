@@ -195,6 +195,7 @@ public class WinposPrinter implements NetPrint {
     @Override
     public void printSmallLabels(List<OrderBean> orderBeanList) {
         List<PrintCupBean> cupBeanList = Calculator.calculateBatchCupList(orderBeanList);
+        Collections.sort(cupBeanList);
         for(PrintCupBean bean:cupBeanList){
             String printCommand = OTCForSmallLabel(bean);
             writeCommand(smallLabelIP,port,printCommand);

@@ -1,9 +1,11 @@
 package com.lyancafe.coffeeshop.bean;
 
+import android.support.annotation.NonNull;
+
 /**
  * Created by Administrator on 2016/1/26.
  */
-public class PrintCupBean {
+public class PrintCupBean implements Comparable<PrintCupBean>{
 
     private long orderId;  //此杯咖啡所属的订单id
     private String shopOrderNo;  //门店单号
@@ -16,6 +18,7 @@ public class PrintCupBean {
     private String posStr; //编号位置，如 "1-1|2-2",可以作为此杯在本订单中的唯一标识
     private int coldHotProperty;   //1.冷  2.热  3.常温
     private String label;    //个性化
+    private int produceProcess;    //0 ：null,1：咖啡师生产,咖啡师出品,2：饮品师生产，饮品师出品,3：咖啡师生产，饮品师生产，饮品师出品
 
 
     public PrintCupBean() {
@@ -29,6 +32,15 @@ public class PrintCupBean {
         this.posStr = boxAmount+"-"+boxNumber+"|"+cupAmount+"-" +cupNumber;
     }
 
+    @Override
+    public int compareTo(@NonNull PrintCupBean o) {
+        if(this.getProduceProcess()!=o.getProduceProcess()){
+            return this.getProduceProcess()-o.getProduceProcess();
+        }else{
+            return this.getCoffee().compareTo(o.getCoffee());
+        }
+
+    }
 
     public long getOrderId() {
         return orderId;
@@ -118,6 +130,13 @@ public class PrintCupBean {
         this.label = label;
     }
 
+    public int getProduceProcess() {
+        return produceProcess;
+    }
+
+    public void setProduceProcess(int produceProcess) {
+        this.produceProcess = produceProcess;
+    }
 
     @Override
     public String toString() {
@@ -133,6 +152,7 @@ public class PrintCupBean {
                 ", posStr='" + posStr + '\'' +
                 ", coldHotProperty=" + coldHotProperty +
                 ", label='" + label + '\'' +
+                ", produceProcess=" + produceProcess +
                 '}';
     }
 }
