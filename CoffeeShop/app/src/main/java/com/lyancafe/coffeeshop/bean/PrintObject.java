@@ -35,27 +35,24 @@ public class PrintObject {
         this.content = printObject.getContent();
     }
 
-    public static List<PrintObject> transformPrintObjects(Map<String,Integer> coffeeMap, Map<String,Map<String,Integer>> recipeFittingsMap) {
+    public static List<PrintObject> transformPrintObjects(Map<String,Product> coffeeMap, Map<String,Map<String,Integer>> recipeFittingsMap) {
 
         List<PrintObject> printObjects = new ArrayList<>();
         if(coffeeMap.size()==0){
             return printObjects;
         }
 
-        List<Map.Entry<String,Integer>> list = new ArrayList<>(coffeeMap.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
+        List<Map.Entry<String,Product>> list = new ArrayList<>(coffeeMap.entrySet());
+        Collections.sort(list, new Comparator<Map.Entry<String, Product>>() {
             @Override
-            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-                if(o2.getValue()!=o1.getValue()){
-                    return o2.getValue()-o1.getValue();
-                }else {
-                    return o2.getKey().compareTo(o1.getKey());
-                }
+            public int compare(Map.Entry<String, Product> o1, Map.Entry<String, Product> o2) {
+
+                return o1.getValue().compareTo(o2.getValue());
+
             }
         });
 
-        Iterator<Map.Entry<String,Integer>> iterator = list.iterator();
-//        Iterator<String> iterator = coffeeMap.keySet().iterator();
+        Iterator<Map.Entry<String,Product>> iterator = list.iterator();
         int coffeeSize = coffeeMap.size();
         int fittingSize = getMapSize(recipeFittingsMap);
         int totalSize = coffeeSize+fittingSize;
@@ -67,9 +64,9 @@ public class PrintObject {
         int t = 30;
         int i = 0;
         while (iterator.hasNext()){
-            Map.Entry<String,Integer> entry = iterator.next();
+            Map.Entry<String,Product> entry = iterator.next();
             String name = entry.getKey();
-            int value = entry.getValue();
+            int value = entry.getValue().getCount();
             LogUtil.d("xls",name+" x "+value);
             printObjects.get(i/6).getContent().add("A"+l+","+t+",0,230,2,2,N,\""+name+" x "+value+"\""+"\n");
             t+=60;
@@ -85,13 +82,16 @@ public class PrintObject {
                 while (iterator1.hasNext()){
 
                     String fitting = iterator1.next();
-                    printObjects.get(i/6).getContent().add("A"+(l+150)+","+t+",0,230,1,1,N,\""+fitting+" x "+fittingsMap.get(fitting)+"\""+"\n");
-                    t+=60;
-                    i++;
-                    if(i%6==0){
-                        l = 30;
-                        t = 30;
+                    if("少冰".equals(fitting)){
+                        printObjects.get(i/6).getContent().add("A"+(l+150)+","+t+",0,230,1,1,N,\""+fitting+" x "+fittingsMap.get(fitting)+"\""+"\n");
+                        t+=60;
+                        i++;
+                        if(i%6==0){
+                            l = 30;
+                            t = 30;
+                        }
                     }
+
                 }
             }
 
@@ -105,6 +105,56 @@ public class PrintObject {
         end.getContent().add("A0,200,0,230,2,2,N,\"----------生产汇总------------ \""+"\n");
         printObjects.add(0,start);
         printObjects.add(end);*/
+        return printObjects;
+    }
+
+    public static List<PrintObject> transformPrintObjects(List<Product> list,Map<String,Map<String,Integer>> recipeFittingsMap ){
+        List<PrintObject> printObjects = new ArrayList<>();
+        if(list.size()==0){
+            return printObjects;
+        }
+
+        int coffeeSize = list.size();
+        int fittingSize = getMapSize(recipeFittingsMap);
+        int totalSize = coffeeSize+fittingSize;
+        int size = totalSize%6==0?totalSize/6:totalSize/6+1;
+        for(int i=0;i<size;i++){
+            printObjects.add(new PrintObject());
+        }
+        int l = 30;
+        int t = 30;
+        int i = 0;
+        for(Product product:list){
+            String name = product.getName();
+            int count = product.getCount();
+            printObjects.get(i/6).getContent().add("A"+l+","+t+",0,230,2,2,N,\""+name+" x "+count+"\""+"\n");
+            t+=60;
+            i++;
+            if(i%6==0){
+                l = 30;
+                t = 30;
+            }
+
+            Map<String ,Integer> fittingsMap = recipeFittingsMap.get(name);
+            if(fittingsMap!=null){
+                Iterator<String> iterator1 = fittingsMap.keySet().iterator();
+                while (iterator1.hasNext()){
+
+                    String fitting = iterator1.next();
+                    if("少冰".equals(fitting)){
+                        printObjects.get(i/6).getContent().add("A"+(l+150)+","+t+",0,230,1,1,N,\""+fitting+" x "+fittingsMap.get(fitting)+"\""+"\n");
+                        t+=60;
+                        i++;
+                        if(i%6==0){
+                            l = 30;
+                            t = 30;
+                        }
+                    }
+
+                }
+            }
+        }
+
         return printObjects;
     }
 

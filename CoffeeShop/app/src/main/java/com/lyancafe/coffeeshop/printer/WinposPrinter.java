@@ -10,6 +10,7 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.PrintCupBean;
 import com.lyancafe.coffeeshop.bean.PrintObject;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
+import com.lyancafe.coffeeshop.bean.Product;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -52,16 +54,84 @@ public class WinposPrinter implements NetPrint {
 
     @Override
     public void printSummaryInfo(List<OrderBean> orderBeanList) {
-        Map<String,Integer> coffeeMap = new HashMap<>();
+        Map<String,Product> productMap = new HashMap<>();
         Map<String,Map<String,Integer>> recipeFittingsMap = new HashMap<>();
+        caculateItems(orderBeanList,productMap,recipeFittingsMap);
+
+        List<Product> coffeeList = new ArrayList<>();
+        List<Product> mixtureList = new ArrayList<>();
+        List<Product> drinkList = new ArrayList<>();
+
+        Iterator<String> iterator = productMap.keySet().iterator();
+        while (iterator.hasNext()){
+            String key = iterator.next();
+            Product value = productMap.get(key);
+            LogUtil.d(TAG,key+"-------"+value.getProduceProcess());
+            if(value.getProduceProcess()==1){
+                coffeeList.add(value);
+            }else if(value.getProduceProcess()==2) {
+                drinkList.add(value);
+            }else{
+                mixtureList.add(value);
+            }
+        }
+        Collections.sort(coffeeList);
+        Collections.sort(drinkList);
+        Collections.sort(mixtureList);
+
+        List<PrintObject> firstList = PrintObject.transformPrintObjects(coffeeList,recipeFittingsMap);
+        List<Product> list = new ArrayList<>();
+        list.addAll(drinkList);
+        list.addAll(0,mixtureList);
+        List<PrintObject> secondList = PrintObject.transformPrintObjects(list,recipeFittingsMap);
+
+//        List<PrintObject> printObjects = PrintObject.transformPrintObjects(coffeeMap,recipeFittingsMap);
+
+        if(secondList.size()>0){
+            for(int i=secondList.size()-1;i>=0;i--){
+                writeCommand(bigLabelIP,port,secondList.get(i).getPrintContent());
+            }
+        }
+
+        if(firstList.size()>0){
+            for(int i=firstList.size()-1;i>=0;i--){
+                writeCommand(bigLabelIP,port,firstList.get(i).getPrintContent());
+            }
+        }
+
+
+
+    }
+
+    //计算品类和对应数量的map
+    private void caculateItems(List<OrderBean> orderBeanList,Map<String,Product> productMap,Map<String,Map<String,Integer>> recipeFittingsMap){
         for(OrderBean order:orderBeanList){
             List<ItemContentBean> items = order.getItems();
             for(ItemContentBean item:items){
-                if(!coffeeMap.containsKey(item.getProduct())){
+                String name = item.getProduct();
+                Product product = productMap.get(name);
+                if(product==null){
+                    product = new Product();
+                    product.setName(name);
+                    product.setProduceProcess(item.getProduceProcess());
+                    product.setCount(item.getQuantity());
+                    if(!TextUtils.isEmpty(item.getRecipeFittings())){
+                        //有口味定制
+                        product.setCustom(true);
+                    }else{
+                        product.setCustom(false);
+                    }
+                    productMap.put(name,product);
+                }else{
+                    product.setCount(product.getCount()+item.getQuantity());
+                }
+
+
+                /*if(!coffeeMap.containsKey(item.getProduct())){
                     coffeeMap.put(item.getProduct(),item.getQuantity());
                 }else{
                     coffeeMap.put(item.getProduct(),coffeeMap.get(item.getProduct())+item.getQuantity());
-                }
+                }*/
 
                 //个性化口味
                 String fittings = item.getRecipeFittings();
@@ -84,13 +154,6 @@ public class WinposPrinter implements NetPrint {
 
             }
         }
-        List<PrintObject> printObjects = PrintObject.transformPrintObjects(coffeeMap,recipeFittingsMap);
-        if(printObjects.size()>0){
-            for(int i=printObjects.size()-1;i>=0;i--){
-                writeCommand(bigLabelIP,port,printObjects.get(i).getPrintContent());
-            }
-        }
-
     }
 
 
@@ -308,7 +371,7 @@ public class WinposPrinter implements NetPrint {
 
     @Override
     public void writeCommand(String ip, int port, String command) {
-        Log.d(TAG,"writeCommand,command = "+command);
+//        Log.d(TAG,"writeCommand,command = "+command);
         Socket client = null;
         try {
             client = new Socket(ip, port);
