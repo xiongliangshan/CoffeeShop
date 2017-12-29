@@ -34,7 +34,7 @@ public class ExceptionalPresenterImpl implements ExceptionalPresenter {
     @Override
     public void loadExceptionalOrders() {
         UserBean user = LoginHelper.getUser(CSApplication.getInstance());
-        mExceptionalModel.loadExceptionalOrdes(user.getShopId(), user.getToken(), new CustomObserver<List<ExceptionalOrder>>(mContext) {
+        mExceptionalModel.loadExceptionalOrdes(user.getShopId(), new CustomObserver<List<ExceptionalOrder>>(mContext) {
             @Override
             protected void onHandleSuccess(List<ExceptionalOrder> exceptionalOrders) {
                 mExceptionalView.bindDataToView(exceptionalOrders);
@@ -46,7 +46,7 @@ public class ExceptionalPresenterImpl implements ExceptionalPresenter {
     @Override
     public void doRePush(final long orderId, int deliverTeam) {
         UserBean user = LoginHelper.getUser(CSApplication.getInstance());
-        mExceptionalModel.doRePush(user.getShopId(), orderId, deliverTeam, user.getToken(), new CustomObserver<JsonObject>(mContext,true) {
+        mExceptionalModel.doRePush(user.getShopId(), orderId, deliverTeam, new CustomObserver<JsonObject>(mContext,true) {
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
                 mExceptionalView.showToast("操作成功");

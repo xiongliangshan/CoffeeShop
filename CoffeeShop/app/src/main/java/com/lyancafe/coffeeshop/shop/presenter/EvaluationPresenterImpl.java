@@ -35,7 +35,7 @@ public class EvaluationPresenterImpl implements EvaluationPresenter{
     @Override
     public void loadEvaluations(int lastId,final boolean isLoadMore) {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        mEvaluationModel.loadEvaluations(user.getShopId(), lastId,user.getToken(), new CustomObserver<List<EvaluationBean>>(mContext) {
+        mEvaluationModel.loadEvaluations(user.getShopId(), lastId, new CustomObserver<List<EvaluationBean>>(mContext) {
             @Override
             protected void onHandleSuccess(List<EvaluationBean> evaluationBeenList) {
                 List<EvaluationBean> evaluationsList = evaluationBeenList;

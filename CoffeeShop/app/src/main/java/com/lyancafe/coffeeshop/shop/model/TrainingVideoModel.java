@@ -12,5 +12,5 @@ import java.util.List;
 public interface TrainingVideoModel {
 
     //加载视频列表
-    void loadVideos(int shopId, String token, CustomObserver<List<VideoBean>> observer);
+    void loadVideos(int shopId, CustomObserver<List<VideoBean>> observer);
 }

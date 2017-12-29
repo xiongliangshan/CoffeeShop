@@ -38,7 +38,7 @@ public class FinishedPresenterImpl implements FinishedPresenter {
     @Override
     public void loadFinishedOrders(long lastOrderId, final boolean isLoadMore) {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        mFinishedModel.loadFinishedOrders(user.getShopId(), lastOrderId, user.getToken(), new CustomObserver<List<OrderBean>>(mContext) {
+        mFinishedModel.loadFinishedOrders(user.getShopId(), lastOrderId, new CustomObserver<List<OrderBean>>(mContext) {
             @Override
             protected void onHandleSuccess(List<OrderBean> orderBeanList) {
                 List<OrderBean> finishedList = orderBeanList;
@@ -73,7 +73,7 @@ public class FinishedPresenterImpl implements FinishedPresenter {
     @Override
     public void loadOrderAmount() {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        mFinishedModel.loadOrderAmount(user.getShopId(), user.getToken(), new CustomObserver<JsonObject>(mContext) {
+        mFinishedModel.loadOrderAmount(user.getShopId(), new CustomObserver<JsonObject>(mContext) {
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
                 int ordersAmount = jsonObject.get("totalOrdersAmount").getAsInt();

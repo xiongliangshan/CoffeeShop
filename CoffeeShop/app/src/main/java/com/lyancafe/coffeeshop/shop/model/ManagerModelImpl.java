@@ -15,15 +15,15 @@ public class ManagerModelImpl implements ManagerModel {
 
 
     @Override
-    public void loadShopInfo(int shopId, String token, CustomObserver<ShopInfo> observer) {
-        RetrofitHttp.getRetrofit().loadShopInfo(shopId,token)
+    public void loadShopInfo(int shopId, CustomObserver<ShopInfo> observer) {
+        RetrofitHttp.getRetrofit().loadShopInfo(shopId)
                 .compose(RxHelper.<BaseEntity<ShopInfo>>io_main())
                 .subscribe(observer);
     }
 
     @Override
-    public void modifyShopTelephone(int shopId, String phoneNubmer, String token, CustomObserver<JsonObject> observer) {
-        RetrofitHttp.getRetrofit().modifyShopTelephone(shopId,phoneNubmer,token)
+    public void modifyShopTelephone(int shopId, String phoneNubmer, CustomObserver<JsonObject> observer) {
+        RetrofitHttp.getRetrofit().modifyShopTelephone(shopId,phoneNubmer)
                 .compose(RxHelper.<BaseEntity<JsonObject>>io_main())
                 .subscribe(observer);
     }

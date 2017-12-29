@@ -13,11 +13,11 @@ import java.util.List;
 public interface ProducingModel{
 
     //加载生产中数据列表
-    void loadProducingOrders(int shopId, String token, CustomObserver<List<OrderBean>> observer);
+    void loadProducingOrders(int shopId, CustomObserver<List<OrderBean>> observer);
 
     //上产完成
-    void dodoFinishProduced(int shopId, long orderId, String token, CustomObserver<JsonObject> observer);
+    void dodoFinishProduced(int shopId, long orderId, CustomObserver<JsonObject> observer);
 
     //批量完成生产
-    void doCompleteBatchProduce(int shopId,List<Long> orderIds,String token,CustomObserver<JsonObject> observer);
+    void doCompleteBatchProduce(int shopId,List<Long> orderIds,CustomObserver<JsonObject> observer);
 }

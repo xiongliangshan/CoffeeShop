@@ -30,7 +30,7 @@ public class ManagerPresenterImpl implements ManagerPresenter {
     @Override
     public void loadShopInfo() {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        mManagerModel.loadShopInfo(user.getShopId(), user.getToken(), new CustomObserver<ShopInfo>(mContext) {
+        mManagerModel.loadShopInfo(user.getShopId(), new CustomObserver<ShopInfo>(mContext) {
             @Override
             protected void onHandleSuccess(ShopInfo shopInfo) {
                 mManagerView.bindShopInfoDataToView(shopInfo);
@@ -42,7 +42,7 @@ public class ManagerPresenterImpl implements ManagerPresenter {
     @Override
     public void modifyShopTelephone(String newPhoneNubmer) {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        mManagerModel.modifyShopTelephone(user.getShopId(), newPhoneNubmer, user.getToken(), new CustomObserver<JsonObject>(mContext,true) {
+        mManagerModel.modifyShopTelephone(user.getShopId(), newPhoneNubmer, new CustomObserver<JsonObject>(mContext,true) {
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
                 JsonObject object = jsonObject;

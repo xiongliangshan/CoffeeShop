@@ -16,15 +16,15 @@ import java.util.List;
 public class ExceptionalModelImpl implements ExceptionalModel {
 
     @Override
-    public void loadExceptionalOrdes(int shopId, String token, CustomObserver<List<ExceptionalOrder>> observer) {
-        RetrofitHttp.getRetrofit().loadExceptionalOrders(shopId,token)
+    public void loadExceptionalOrdes(int shopId, CustomObserver<List<ExceptionalOrder>> observer) {
+        RetrofitHttp.getRetrofit().loadExceptionalOrders(shopId)
                 .compose(RxHelper.<BaseEntity<List<ExceptionalOrder>>>io_main())
                 .subscribe(observer);
     }
 
     @Override
-    public void doRePush(int shopId, long orderId, int deliverTeam, String token, CustomObserver<JsonObject> observer) {
-        RetrofitHttp.getRetrofit().doRePush(shopId,orderId,deliverTeam,token)
+    public void doRePush(int shopId, long orderId, int deliverTeam, CustomObserver<JsonObject> observer) {
+        RetrofitHttp.getRetrofit().doRePush(shopId,orderId,deliverTeam)
                 .compose(RxHelper.<BaseEntity<JsonObject>>io_main())
                 .subscribe(observer);
     }

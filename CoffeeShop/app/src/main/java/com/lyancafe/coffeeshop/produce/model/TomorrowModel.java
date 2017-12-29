@@ -12,5 +12,5 @@ import java.util.List;
 public interface TomorrowModel {
 
     //加载明日订单列表数据
-    void loadTomorrowOrders(int shopId, String token, CustomObserver<List<OrderBean>> observer);
+    void loadTomorrowOrders(int shopId, CustomObserver<List<OrderBean>> observer);
 }

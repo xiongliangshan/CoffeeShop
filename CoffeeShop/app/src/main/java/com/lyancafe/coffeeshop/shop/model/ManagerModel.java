@@ -16,7 +16,7 @@ public interface ManagerModel {
      * @param token
      * @param observer
      */
-    void loadShopInfo(int shopId, String token, CustomObserver<ShopInfo> observer);
+    void loadShopInfo(int shopId, CustomObserver<ShopInfo> observer);
 
 
     /**
@@ -26,5 +26,5 @@ public interface ManagerModel {
      * @param token
      * @param observer
      */
-    void modifyShopTelephone(int shopId, String phoneNubmer, String token, CustomObserver<JsonObject> observer);
+    void modifyShopTelephone(int shopId, String phoneNubmer, CustomObserver<JsonObject> observer);
 }

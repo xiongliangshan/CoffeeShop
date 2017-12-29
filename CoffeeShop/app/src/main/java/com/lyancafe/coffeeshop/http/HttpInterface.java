@@ -56,114 +56,103 @@ public interface HttpInterface {
     /**
      * 待生产订单列表
      * @param shopId
-     * @param token
      * @return
      */
     @GET("v3/{shopId}/today/toproduce/orders")
-    Observable<BaseEntity<List<OrderBean>>> loadToProduceOrders(@Path("shopId") int shopId,@Query("token") String token);
+    Observable<BaseEntity<List<OrderBean>>> loadToProduceOrders(@Path("shopId") int shopId);
 
 
     /**
      * 开始生产
      * @param shopId
      * @param orderId
-     * @param token
      * @return
      */
     @POST("v3/{shopId}/order/{orderId}/beginproduce")
-    Observable<BaseEntity<JsonObject>> doStartProduce(@Path("shopId") int shopId, @Path("orderId") long orderId, @Query("token") String token);
+    Observable<BaseEntity<JsonObject>> doStartProduce(@Path("shopId") int shopId, @Path("orderId") long orderId);
 
     /**
      * 针对补单的无需操作
      * @param shopId
      * @param orderId
-     * @param token
      * @return
      */
     @POST("v3/{shopId}/order/{orderId}/needlessProduce")
-    Observable<BaseEntity<JsonObject>> doNoProduce(@Path("shopId") int shopId, @Path("orderId") long orderId,@Query("token") String token);
+    Observable<BaseEntity<JsonObject>> doNoProduce(@Path("shopId") int shopId, @Path("orderId") long orderId);
 
 
     /**
      * 批量生产接口
      * @param shopId
      * @param orderIds
-     * @param token
      * @return
      */
     @POST("v3/{shopId}/order/batchBeginProduce")
-    Observable<BaseEntity<JsonObject>> doStartBatchProduce(@Path("shopId") int shopId, @Query("orderIds") List<Long> orderIds, @Query("token") String token);
+    Observable<BaseEntity<JsonObject>> doStartBatchProduce(@Path("shopId") int shopId, @Query("orderIds") List<Long> orderIds);
 
     /**
      * 生产中订单列表
      * @param shopId
-     * @param token
      * @return
      */
     @GET("v3/{shopId}/today/producing/orders")
-    Observable<BaseEntity<List<OrderBean>>> loadProducingOrders(@Path("shopId") int shopId,@Query("token") String token);
+    Observable<BaseEntity<List<OrderBean>>> loadProducingOrders(@Path("shopId") int shopId);
 
     /**
      * 生产完成
      * @param shopId
      * @param orderId
-     * @param token
      * @return
      */
     @POST("v3/{shopId}/order/{orderId}/produce")
-    Observable<BaseEntity<JsonObject>> doFinishProduced(@Path("shopId") int shopId, @Path("orderId") long orderId, @Query("token") String token);
+    Observable<BaseEntity<JsonObject>> doFinishProduced(@Path("shopId") int shopId, @Path("orderId") long orderId);
 
 
     /**
      * 批量完成生产
      * @param shopId
      * @param orderIds
-     * @param token
      * @return
      */
     @POST("v3/{shopId}/order/batchCompleteProduce")
-    Observable<BaseEntity<JsonObject>> doCompleteBatchProduce(@Path("shopId") int shopId,@Query("orderIds") List<Long> orderIds,@Query("token") String token);
+    Observable<BaseEntity<JsonObject>> doCompleteBatchProduce(@Path("shopId") int shopId,@Query("orderIds") List<Long> orderIds);
 
 
     /**
      * 已生产列表
      * @param shopId
-     * @param token
      * @return
      */
     @GET("v3/{shopId}/today/produced/orders")
-    Observable<BaseEntity<List<OrderBean>>> loadToFetchOrders(@Path("shopId") int shopId,@Query("token") String token);
+    Observable<BaseEntity<List<OrderBean>>> loadToFetchOrders(@Path("shopId") int shopId);
 
 
     /**
      * 明日订单列表
      * @param shopId
-     * @param token
      * @return
      */
     @GET("v3/{shopId}/orders/tomorrow")
-    Observable<BaseEntity<List<OrderBean>>> loadTomorrowOrders(@Path("shopId") int shopId,@Query("token") String token);
+    Observable<BaseEntity<List<OrderBean>>> loadTomorrowOrders(@Path("shopId") int shopId);
 
 
     /**
      * 已完成订单列表
      * @param shopId
      * @param orderId
-     * @param token
      * @return
      */
     @GET("v3/{shopId}/orders/today/finished")
-    Observable<BaseEntity<List<OrderBean>>> loadFinishedOrders(@Path("shopId") int shopId,@Query("orderId") long orderId,@Query("token") String token);
+    Observable<BaseEntity<List<OrderBean>>> loadFinishedOrders(@Path("shopId") int shopId,@Query("orderId") long orderId);
 
 
     /**
      * 已完成订单单量和杯量
      * @param shopId
-     * @param token
      * @return
      */
     @GET("v3/{shopId}/orders/today/finishedTotal")
-    Observable<BaseEntity<JsonObject>> loadOrderAmount(@Path("shopId") int shopId,@Query("token") String token);
+    Observable<BaseEntity<JsonObject>> loadOrderAmount(@Path("shopId") int shopId);
 
 
     /**
@@ -174,19 +163,18 @@ public interface HttpInterface {
      * @return
      */
     @GET("v3/{shopId}/orders/feedbackList")
-    Observable<BaseEntity<List<EvaluationBean>>> loadEvaluations(@Path("shopId") int shopId,@Query("id") int id, @Query("token") String token);
+    Observable<BaseEntity<List<EvaluationBean>>> loadEvaluations(@Path("shopId") int shopId,@Query("id") int id);
 
 
 
     /**
      * 加载物料列表内容
      * @param shopId
-     * @param token
      * @return
      */
     @Headers("Cache-Control:public,max-age=60,max-stale=1200")
     @GET("v3/{shopId}/supplies")
-    Observable<BaseEntity<List<Material>>> loadMaterials(@Path("shopId") int shopId, @Query("token") String token);
+    Observable<BaseEntity<List<Material>>> loadMaterials(@Path("shopId") int shopId);
 
 
     /**
@@ -200,11 +188,10 @@ public interface HttpInterface {
 
     /**
      * 退出登录
-     * @param token
      * @return
      */
     @POST("v3/token/delete")
-    Observable<BaseEntity> exitLogin(@Query("token") String token);
+    Observable<BaseEntity> exitLogin();
 
 
     /**
@@ -221,11 +208,10 @@ public interface HttpInterface {
     /**
      * 可以指派的小哥列表
      * @param shopId
-     * @param token
      * @return
      */
     @GET("v3/{shopId}/couriersforassign")
-    Observable<BaseEntity<List<DeliverBean>>> loadDeliversForAssign(@Path("shopId") int shopId,@Query("token") String token);
+    Observable<BaseEntity<List<DeliverBean>>> loadDeliversForAssign(@Path("shopId") int shopId);
 
 
     /**
@@ -233,33 +219,29 @@ public interface HttpInterface {
      * @param shopId
      * @param orderId
      * @param courierId
-     * @param token
      * @return
      */
     @POST("v3/{shopId}/order/{orderId}/assigntocourier")
-    Observable<BaseEntity<JsonObject>> doAssignOrder(@Path("shopId") int shopId,@Path("orderId") long orderId,@Query("courierId") long courierId,
-                                         @Query("token") String token);
+    Observable<BaseEntity<JsonObject>> doAssignOrder(@Path("shopId") int shopId,@Path("orderId") long orderId,@Query("courierId") long courierId);
 
     /**
      * 订单从小哥手中撤回
      * @param shopId
      * @param orderId
-     * @param token
      * @return
      */
     @POST("v3/{shopId}/order/{orderId}/recall")
-    Observable<BaseEntity<JsonObject>> doRecallOrder(@Path("shopId") int shopId,@Path("orderId") long orderId,@Query("token") String token);
+    Observable<BaseEntity<JsonObject>> doRecallOrder(@Path("shopId") int shopId,@Path("orderId") long orderId);
 
 
     /**
      * 获取门店基本信息
      * @param shopId
-     * @param token
      * @return
      */
     @Headers("Cache-Control:public,max-age=1,max-stale=2")
     @GET("v3/{shopId}/shop/info")
-    Observable<BaseEntity<ShopInfo>> loadShopInfo(@Path("shopId") int shopId,@Query("token") String token);
+    Observable<BaseEntity<ShopInfo>> loadShopInfo(@Path("shopId") int shopId);
 
     /**
      * 修改门店电话号码
@@ -269,16 +251,15 @@ public interface HttpInterface {
      * @return
      */
     @POST("v3/{shopId}/shop/update")
-    Observable<BaseEntity<JsonObject>> modifyShopTelephone(@Path("shopId") int shopId,@Query("shopTelephone") String shopTelephone,@Query("token") String token);
+    Observable<BaseEntity<JsonObject>> modifyShopTelephone(@Path("shopId") int shopId,@Query("shopTelephone") String shopTelephone);
 
     /**
      * 获取异常订单
      * @param shopId
-     * @param token
      * @return
      */
     @GET("v3/{shopId}/orders/today/haikuiTimeOutOrders")
-    Observable<BaseEntity<List<ExceptionalOrder>>> loadExceptionalOrders(@Path("shopId") int shopId,@Query("token") String token);
+    Observable<BaseEntity<List<ExceptionalOrder>>> loadExceptionalOrders(@Path("shopId") int shopId);
 
     /**
      * 重新派发订单给指定配送团队
@@ -289,19 +270,18 @@ public interface HttpInterface {
      * @return
      */
     @POST("v3/{shopId}/order/{orderId}/{deliveryTeam}/rePushOrderToDelivery")
-    Observable<BaseEntity<JsonObject>> doRePush(@Path("shopId") int shopId,@Path("orderId") long orderId,@Path("deliveryTeam") int team,@Query("token") String token);
+    Observable<BaseEntity<JsonObject>> doRePush(@Path("shopId") int shopId,@Path("orderId") long orderId,@Path("deliveryTeam") int team);
 
 
     /**
      * 加载视频列表数据
      * @param shopId
-     * @param token
      * @return
      */
 
     @Headers("Cache-Control:public,max-age=60,max-stale=300")
     @GET("v3/{shopId}/shop/videolist")
-    Observable<BaseEntity<List<VideoBean>>> loadVideos(@Path("shopId") int shopId,@Query("token") String token);
+    Observable<BaseEntity<List<VideoBean>>> loadVideos(@Path("shopId") int shopId);
 
 
     /**

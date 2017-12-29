@@ -12,6 +12,6 @@ import java.util.List;
 public interface MaterialsModel {
 
     //加载物料列表
-    void loadMaterials(int shopId,String token,CustomObserver<List<Material>> observer);
+    void loadMaterials(int shopId,CustomObserver<List<Material>> observer);
 
 }

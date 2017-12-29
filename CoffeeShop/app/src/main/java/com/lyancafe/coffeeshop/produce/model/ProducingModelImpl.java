@@ -18,24 +18,24 @@ public class ProducingModelImpl implements ProducingModel{
 
 
     @Override
-    public void loadProducingOrders(int shopId, String token, CustomObserver<List<OrderBean>> observer) {
-        RetrofitHttp.getRetrofit().loadProducingOrders(shopId,token)
+    public void loadProducingOrders(int shopId, CustomObserver<List<OrderBean>> observer) {
+        RetrofitHttp.getRetrofit().loadProducingOrders(shopId)
                 .compose(RxHelper.<BaseEntity<List<OrderBean>>>io_main())
                 .subscribe(observer);
     }
 
 
     @Override
-    public void dodoFinishProduced(int shopId, long orderId, String token, CustomObserver<JsonObject> observer) {
-        RetrofitHttp.getRetrofit().doFinishProduced(shopId,orderId,token)
+    public void dodoFinishProduced(int shopId, long orderId, CustomObserver<JsonObject> observer) {
+        RetrofitHttp.getRetrofit().doFinishProduced(shopId,orderId)
                 .compose(RxHelper.<BaseEntity<JsonObject>>io_main())
                 .subscribe(observer);
     }
 
 
     @Override
-    public void doCompleteBatchProduce(int shopId, List<Long> orderIds, String token, CustomObserver<JsonObject> observer) {
-        RetrofitHttp.getRetrofit().doCompleteBatchProduce(shopId,orderIds,token)
+    public void doCompleteBatchProduce(int shopId, List<Long> orderIds, CustomObserver<JsonObject> observer) {
+        RetrofitHttp.getRetrofit().doCompleteBatchProduce(shopId,orderIds)
                 .compose(RxHelper.<BaseEntity<JsonObject>>io_main())
                 .subscribe(observer);
     }

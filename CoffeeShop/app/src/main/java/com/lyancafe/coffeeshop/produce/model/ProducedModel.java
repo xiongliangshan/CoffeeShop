@@ -13,6 +13,6 @@ public interface ProducedModel {
 
 
     //加载列表数据
-    void loadToFetchOrders(int shopId, String token, CustomObserver<List<OrderBean>> observer);
+    void loadToFetchOrders(int shopId, CustomObserver<List<OrderBean>> observer);
 
 }

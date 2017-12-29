@@ -45,7 +45,7 @@ public class ProducingPresenterImpl implements ProducingPresenter{
     @Override
     public void loadProducingOrders() {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        mProducingModel.loadProducingOrders(user.getShopId(), user.getToken(), new CustomObserver<List<OrderBean>>(mContext) {
+        mProducingModel.loadProducingOrders(user.getShopId(), new CustomObserver<List<OrderBean>>(mContext) {
             @Override
             protected void onHandleSuccess(List<OrderBean> orderBeanList) {
                 List<OrderBean> producingList = orderBeanList;
@@ -61,7 +61,7 @@ public class ProducingPresenterImpl implements ProducingPresenter{
     @Override
     public void doFinishProduced(final long orderId) {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        mProducingModel.dodoFinishProduced(user.getShopId(), orderId, user.getToken(), new CustomObserver<JsonObject>(mContext,true) {
+        mProducingModel.dodoFinishProduced(user.getShopId(), orderId, new CustomObserver<JsonObject>(mContext,true) {
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
                 mProducingView.showToast(mContext.getString(R.string.do_success));
@@ -77,7 +77,7 @@ public class ProducingPresenterImpl implements ProducingPresenter{
     @Override
     public void doCompleteBatchProduce(final List<Long> orderIds) {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        mProducingModel.doCompleteBatchProduce(user.getShopId(), orderIds, user.getToken(), new CustomObserver<JsonObject>(mContext,true) {
+        mProducingModel.doCompleteBatchProduce(user.getShopId(), orderIds, new CustomObserver<JsonObject>(mContext,true) {
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
                 mProducingView.showToast(mContext.getString(R.string.do_success));

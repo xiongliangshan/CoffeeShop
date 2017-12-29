@@ -13,8 +13,8 @@ import java.util.List;
 public interface FinishedModel{
 
     //加载订单一览列表
-    void loadFinishedOrders(int shopId, long orderId, String token, CustomObserver<List<OrderBean>> observer);
+    void loadFinishedOrders(int shopId, long orderId, CustomObserver<List<OrderBean>> observer);
 
     //加载订单单量和杯量
-    void loadOrderAmount(int shopId, String token, CustomObserver<JsonObject> observer);
+    void loadOrderAmount(int shopId, CustomObserver<JsonObject> observer);
 }

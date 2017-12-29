@@ -17,8 +17,8 @@ public class MaterialsModelImpl implements MaterialsModel {
 
 
     @Override
-    public void loadMaterials(int shopId, String token, CustomObserver<List<Material>> observer) {
-        RetrofitHttp.getRetrofit().loadMaterials(shopId,token)
+    public void loadMaterials(int shopId, CustomObserver<List<Material>> observer) {
+        RetrofitHttp.getRetrofit().loadMaterials(shopId)
                 .compose(RxHelper.<BaseEntity<List<Material>>>io_main())
                 .subscribe(observer);
     }

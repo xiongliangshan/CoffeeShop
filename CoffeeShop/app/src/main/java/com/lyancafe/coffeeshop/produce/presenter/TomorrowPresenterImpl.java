@@ -38,7 +38,7 @@ public class TomorrowPresenterImpl implements TomorrowPresenter {
     @Override
     public void loadTomorrowOrders() {
         UserBean user = LoginHelper.getUser(mContext);
-        mTomorrowModel.loadTomorrowOrders(user.getShopId(), user.getToken(), new CustomObserver<List<OrderBean>>(mContext) {
+        mTomorrowModel.loadTomorrowOrders(user.getShopId(), new CustomObserver<List<OrderBean>>(mContext) {
             @Override
             protected void onHandleSuccess(List<OrderBean> orderBeanList) {
                 List<OrderBean> tomorrowList = orderBeanList;

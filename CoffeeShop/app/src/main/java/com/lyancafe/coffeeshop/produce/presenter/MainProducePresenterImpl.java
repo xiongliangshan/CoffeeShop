@@ -36,7 +36,7 @@ public class MainProducePresenterImpl implements MainProducePresenter{
     @Override
     public void doRecallOrder(long orderId) {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        RetrofitHttp.getRetrofit().doRecallOrder(user.getShopId(),orderId,user.getToken())
+        RetrofitHttp.getRetrofit().doRecallOrder(user.getShopId(),orderId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BaseEntity<JsonObject>>() {

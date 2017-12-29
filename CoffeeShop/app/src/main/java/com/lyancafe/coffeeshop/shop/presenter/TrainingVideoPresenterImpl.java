@@ -32,7 +32,7 @@ public class TrainingVideoPresenterImpl implements TrainingVideoPresenter {
     @Override
     public void loadVideos() {
         UserBean user = LoginHelper.getUser(context);
-        trainingVideoModel.loadVideos(user.getShopId(), user.getToken(), new CustomObserver<List<VideoBean>>(context) {
+        trainingVideoModel.loadVideos(user.getShopId(), new CustomObserver<List<VideoBean>>(context) {
             @Override
             protected void onHandleSuccess(List<VideoBean> videoBeen) {
                 LogUtil.d("xls","loadVideos success :"+videoBeen.size());

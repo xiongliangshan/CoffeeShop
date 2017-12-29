@@ -37,7 +37,7 @@ public class MaterialsPresenterImpl implements MaterialsPresenter{
     @Override
     public void loadMaterials() {
         UserBean user = LoginHelper.getUser(CSApplication.getInstance());
-        mMaterialModel.loadMaterials(user.getShopId(), user.getToken(), new CustomObserver<List<Material>>(mContext) {
+        mMaterialModel.loadMaterials(user.getShopId(), new CustomObserver<List<Material>>(mContext) {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
                 super.onSubscribe(d);

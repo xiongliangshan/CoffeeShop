@@ -15,8 +15,8 @@ import java.util.List;
 public class TomorrowModelImpl implements TomorrowModel {
 
     @Override
-    public void loadTomorrowOrders(int shopId, String token, CustomObserver<List<OrderBean>> observer) {
-        RetrofitHttp.getRetrofit().loadTomorrowOrders(shopId,token)
+    public void loadTomorrowOrders(int shopId, CustomObserver<List<OrderBean>> observer) {
+        RetrofitHttp.getRetrofit().loadTomorrowOrders(shopId)
                 .compose(RxHelper.<BaseEntity<List<OrderBean>>>io_main())
                 .subscribe(observer);
     }

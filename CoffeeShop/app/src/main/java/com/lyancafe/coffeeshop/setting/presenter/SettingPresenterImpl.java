@@ -54,7 +54,7 @@ public class SettingPresenterImpl implements SettingPresenter {
     @Override
     public void exitLogin() {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        RetrofitHttp.getRetrofit().exitLogin(user.getToken())
+        RetrofitHttp.getRetrofit().exitLogin()
                 .compose(RxHelper.<BaseEntity>io_main())
                 .subscribe(new Consumer<BaseEntity>() {
                     @Override

@@ -50,7 +50,7 @@ public class ToProducePresenterImpl implements ToProducePresenter{
     @Override
     public void loadToProduceOrders() {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        mToProduceModel.loadToProduceOrders(user.getShopId(), user.getToken(), new CustomObserver<List<OrderBean>>(mContext) {
+        mToProduceModel.loadToProduceOrders(user.getShopId(), new CustomObserver<List<OrderBean>>(mContext) {
             @Override
             protected void onHandleSuccess(List<OrderBean> orderBeanList) {
                 List<OrderBean> toProduceList = orderBeanList;
@@ -65,7 +65,7 @@ public class ToProducePresenterImpl implements ToProducePresenter{
     @Override
     public void doStartProduce(final long orderId, final boolean isScanCode) {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        mToProduceModel.doStartProduce(user.getShopId(), orderId, user.getToken(), new CustomObserver<JsonObject>(mContext,true) {
+        mToProduceModel.doStartProduce(user.getShopId(), orderId, new CustomObserver<JsonObject>(mContext,true) {
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
                 mToProduceView.showToast(mContext.getString(R.string.do_success));
@@ -84,7 +84,7 @@ public class ToProducePresenterImpl implements ToProducePresenter{
     public void doStartBatchProduce(final List<OrderBean> orders) {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
         final List<Long> orderIds = OrderHelper.getIdsFromOrders(orders);
-        mToProduceModel.doStartBatchProduce(user.getShopId(), orderIds, user.getToken(), new CustomObserver<JsonObject>(mContext,true) {
+        mToProduceModel.doStartBatchProduce(user.getShopId(), orderIds, new CustomObserver<JsonObject>(mContext,true) {
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
                 mToProduceView.showToast(mContext.getString(R.string.do_success));
@@ -103,7 +103,7 @@ public class ToProducePresenterImpl implements ToProducePresenter{
     @Override
     public void doNoPruduce(final long orderId) {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        mToProduceModel.doNoProduce(user.getShopId(), orderId, user.getToken(), new CustomObserver<JsonObject>(mContext,true) {
+        mToProduceModel.doNoProduce(user.getShopId(), orderId, new CustomObserver<JsonObject>(mContext,true) {
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
                 mToProduceView.showToast(mContext.getString(R.string.do_success));

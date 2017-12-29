@@ -15,8 +15,8 @@ import java.util.List;
 public class TrainingVideoModelImpl implements TrainingVideoModel {
 
     @Override
-    public void loadVideos(int shopId, String token, CustomObserver<List<VideoBean>> observer) {
-        RetrofitHttp.getRetrofit().loadVideos(shopId,token)
+    public void loadVideos(int shopId, CustomObserver<List<VideoBean>> observer) {
+        RetrofitHttp.getRetrofit().loadVideos(shopId)
                 .compose(RxHelper.<BaseEntity<List<VideoBean>>>io_main())
                 .subscribe(observer);
     }

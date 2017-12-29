@@ -18,15 +18,15 @@ public class FinishedModelImpl implements FinishedModel{
 
 
     @Override
-    public void loadFinishedOrders(int shopId, long orderId, String token, CustomObserver<List<OrderBean>> observer) {
-        RetrofitHttp.getRetrofit().loadFinishedOrders(shopId,orderId,token)
+    public void loadFinishedOrders(int shopId, long orderId, CustomObserver<List<OrderBean>> observer) {
+        RetrofitHttp.getRetrofit().loadFinishedOrders(shopId,orderId)
                 .compose(RxHelper.<BaseEntity<List<OrderBean>>>io_main())
                 .subscribe(observer);
     }
 
     @Override
-    public void loadOrderAmount(int shopId, String token, CustomObserver<JsonObject> observer) {
-        RetrofitHttp.getRetrofit().loadOrderAmount(shopId,token)
+    public void loadOrderAmount(int shopId, CustomObserver<JsonObject> observer) {
+        RetrofitHttp.getRetrofit().loadOrderAmount(shopId)
                 .compose(RxHelper.<BaseEntity<JsonObject>>io_main())
                 .subscribe(observer);
     }

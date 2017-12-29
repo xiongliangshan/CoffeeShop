@@ -20,30 +20,30 @@ public class ToProduceModelImpl implements ToProduceModel{
 
 
     @Override
-    public void loadToProduceOrders(int shopId, String token, CustomObserver<List<OrderBean>> observer) {
-        RetrofitHttp.getRetrofit().loadToProduceOrders(shopId,token)
+    public void loadToProduceOrders(int shopId, CustomObserver<List<OrderBean>> observer) {
+        RetrofitHttp.getRetrofit().loadToProduceOrders(shopId)
                 .compose(RxHelper.<BaseEntity<List<OrderBean>>>io_main())
                 .subscribe(observer);
     }
 
     @Override
-    public void doStartProduce(int shopId, long orderId, String token, CustomObserver<JsonObject> observer) {
-        RetrofitHttp.getRetrofit().doStartProduce(shopId,orderId,token)
+    public void doStartProduce(int shopId, long orderId, CustomObserver<JsonObject> observer) {
+        RetrofitHttp.getRetrofit().doStartProduce(shopId,orderId)
                 .compose(RxHelper.<BaseEntity<JsonObject>>io_main())
                 .subscribe(observer);
 
     }
 
     @Override
-    public void doStartBatchProduce(int shopId, List<Long> orderIds, String token, CustomObserver<JsonObject> observer) {
-        RetrofitHttp.getRetrofit().doStartBatchProduce(shopId,orderIds,token)
+    public void doStartBatchProduce(int shopId, List<Long> orderIds, CustomObserver<JsonObject> observer) {
+        RetrofitHttp.getRetrofit().doStartBatchProduce(shopId,orderIds)
                 .compose(RxHelper.<BaseEntity<JsonObject>>io_main())
                 .subscribe(observer);
     }
 
     @Override
-    public void doNoProduce(int shopId, long orderId, String token, CustomObserver<JsonObject> observer) {
-        RetrofitHttp.getRetrofit().doNoProduce(shopId,orderId,token)
+    public void doNoProduce(int shopId, long orderId,CustomObserver<JsonObject> observer) {
+        RetrofitHttp.getRetrofit().doNoProduce(shopId,orderId)
                 .compose(RxHelper.<BaseEntity<JsonObject>>io_main())
                 .subscribe(observer);
     }

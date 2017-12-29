@@ -13,18 +13,18 @@ import java.util.List;
 public interface ToProduceModel{
 
     //加载列表数据
-    void loadToProduceOrders(int shopId, String token, CustomObserver<List<OrderBean>> observer);
+    void loadToProduceOrders(int shopId,CustomObserver<List<OrderBean>> observer);
 
 
     //开始生产
-    void doStartProduce(int shopId, long orderId, String token, CustomObserver<JsonObject> observer);
+    void doStartProduce(int shopId, long orderId,CustomObserver<JsonObject> observer);
 
 
     //批量开始生产
-    void doStartBatchProduce(int shopId,List<Long> orderIds,String token,CustomObserver<JsonObject> observer);
+    void doStartBatchProduce(int shopId,List<Long> orderIds,CustomObserver<JsonObject> observer);
 
 
     //无需生产
-    void doNoProduce(int shopId,long orderId,String token,CustomObserver<JsonObject> observer);
+    void doNoProduce(int shopId,long orderId,CustomObserver<JsonObject> observer);
 
 }

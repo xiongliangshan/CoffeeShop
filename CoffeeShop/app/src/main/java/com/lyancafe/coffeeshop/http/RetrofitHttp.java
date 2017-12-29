@@ -1,6 +1,8 @@
 package com.lyancafe.coffeeshop.http;
 
 import com.lyancafe.coffeeshop.CSApplication;
+import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import java.io.File;
@@ -37,10 +39,10 @@ public class RetrofitHttp {
 
 
     private static Retrofit createRetrofit() {
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.addInterceptor(interceptor);
+        builder.addInterceptor(loggingInterceptor);
         builder.addInterceptor(commomInterceptor);
         builder.addInterceptor(cacheInterceptor);
         builder.retryOnConnectionFailure(true);
@@ -71,11 +73,15 @@ public class RetrofitHttp {
     private final static Interceptor commomInterceptor = new Interceptor() {
         @Override
         public Response intercept(Chain chain) throws IOException {
-            LogUtil.d("http","普通拦截器");
+            LogUtil.d("xiong","普通拦截器");
+            UserBean user = LoginHelper.getUser(CSApplication.getInstance());
+            String token = user.getToken();
             Request request = chain.request()
                     .newBuilder()
                     .addHeader("content-type","application/x-www-form-urlencoded; charset=UTF-8")
+                    .addHeader("token",token)
                     .build();
+            LogUtil.d("xiong",request.url().toString()  +" | token = "+token);
             return chain.proceed(request);
         }
     };
@@ -86,7 +92,7 @@ public class RetrofitHttp {
     private final static Interceptor cacheInterceptor = new Interceptor() {
         @Override
         public Response intercept(Chain chain) throws IOException {
-            LogUtil.d("http","缓存拦截器");
+            LogUtil.d("xiong","缓存拦截器");
             Request request = chain.request();
 
             Response response = chain.proceed(request);

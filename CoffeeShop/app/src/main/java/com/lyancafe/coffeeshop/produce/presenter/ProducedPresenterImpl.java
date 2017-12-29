@@ -40,7 +40,7 @@ public class ProducedPresenterImpl implements ProducedPresenter{
     @Override
     public void loadToFetchOrders() {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        mProduceModel.loadToFetchOrders(user.getShopId(), user.getToken(), new CustomObserver<List<OrderBean>>(mContext) {
+        mProduceModel.loadToFetchOrders(user.getShopId(), new CustomObserver<List<OrderBean>>(mContext) {
             @Override
             protected void onHandleSuccess(List<OrderBean> orderBeanList) {
                 List<OrderBean> toFetchList = orderBeanList;

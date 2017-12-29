@@ -17,8 +17,8 @@ public class ProducedModelImpl implements ProducedModel{
 
 
     @Override
-    public void loadToFetchOrders(int shopId, String token, CustomObserver<List<OrderBean>> observer) {
-        RetrofitHttp.getRetrofit().loadToFetchOrders(shopId,token)
+    public void loadToFetchOrders(int shopId, CustomObserver<List<OrderBean>> observer) {
+        RetrofitHttp.getRetrofit().loadToFetchOrders(shopId)
                 .compose(RxHelper.<BaseEntity<List<OrderBean>>>io_main())
                 .subscribe(observer);
     }
