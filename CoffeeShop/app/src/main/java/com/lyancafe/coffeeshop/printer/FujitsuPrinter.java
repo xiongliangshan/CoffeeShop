@@ -169,6 +169,12 @@ public class FujitsuPrinter implements NetPrint {
         writeCommand(smallLabelIP,port,pasterContent);
     }
 
+
+    @Override
+    public void printBigLabelTest(List<String> contents) {
+
+    }
+
     @Override
     public void printMaterialBigLabel(MaterialItem materialItem) {
         String printMaterialContent =

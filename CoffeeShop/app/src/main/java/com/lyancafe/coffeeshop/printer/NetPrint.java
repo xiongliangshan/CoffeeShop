@@ -51,4 +51,7 @@ public interface NetPrint {
 
     //往打印机中写入命令
     void writeCommand(String ip,int port,String command);
+
+
+    void printBigLabelTest(List<String> contents);
 }

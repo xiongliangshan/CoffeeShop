@@ -156,6 +156,66 @@ public class WinposPrinter implements NetPrint {
         }
     }
 
+    @Override
+    public void printBigLabelTest(List<String> contents) {
+
+        String printMaterialContent =  "N"+"\n"+
+                "OD"+"\n"+
+                "q640"+"\n"+
+                "Q400,16"+"\n"+
+                "S3"+"\n"+
+                "D8"+"\n"+
+                "A10,18,0,230,1,1,N,\""+contents.get(0)+"\""+"\n"+
+                "A10,43,0,230,1,1,N,\""+contents.get(1)+"\""+"\n"+
+                "A10,68,0,230,1,1,N,\""+contents.get(2)+"\""+"\n"+
+                "A10,93,0,230,1,1,N,\""+contents.get(3)+"\""+"\n"+
+                "A10,118,0,230,1,1,N,\""+contents.get(4)+"\""+"\n"+
+                "A10,143,0,230,1,1,N,\""+contents.get(5)+"\""+"\n"+
+                "A10,168,0,230,1,1,N,\""+contents.get(6)+"\""+"\n"+
+                "A10,203,0,230,1,1,N,\""+contents.get(7)+"\""+"\n"+
+                "A10,228,0,230,1,1,N,\""+contents.get(8)+"\""+"\n"+
+                "A10,253,0,230,1,1,N,\""+contents.get(9)+"\""+"\n"+
+                "A10,285,0,230,1,1,N,\""+contents.get(10)+"\""+"\n"+
+                "A10,310,0,230,1,1,N,\""+contents.get(11)+"\""+"\n"+
+                "A10,335,0,230,1,1,N,\""+contents.get(12)+"\""+"\n"+
+                "A10,360,0,230,1,1,N,\""+contents.get(13)+"\""+"\n"+
+                "P1"+"\n";
+
+
+        writeCommand(bigLabelIP,port,printMaterialContent);
+    }
+
+    /*public void printBigLabelTest(List<String> contents){
+        String printMaterialContent = null;
+
+        printMaterialContent =  "N"+"\n"+
+                "OD"+"\n"+
+                "q640"+"\n"+
+                "Q400,16"+"\n"+
+                "S3"+"\n"+
+                "D8"+"\n"+
+                "A10,12,0,230,1,1,N,\""+contents.get(0)+"\""+"\n"+
+                "A10,37,0,230,1,1,N,\""+contents.get(1)+"\""+"\n"+
+                "A10,62,0,230,1,1,N,\""+contents.get(2)+"\""+"\n"+
+                "A10,87,0,230,1,1,N,\""+contents.get(3)+"\""+"\n"+
+                "A10,112,0,230,1,1,N,\""+contents.get(4)+"\""+"\n"+
+                "A10,137,0,230,1,1,N,\""+contents.get(5)+"\""+"\n"+
+                "A10,162,0,230,1,1,N,\""+contents.get(6)+"\""+"\n"+
+                "A10,187,0,230,1,1,N,\""+contents.get(7)+"\""+"\n"+
+                "A10,212,0,230,1,1,N,\""+contents.get(8)+"\""+"\n"+
+                "A10,237,0,230,1,1,N,\""+contents.get(9)+"\""+"\n"+
+                "A10,262,0,230,1,1,N,\""+contents.get(10)+"\""+"\n"+
+                "A10,287,0,230,1,1,N,\""+contents.get(11)+"\""+"\n"+
+                "A10,312,0,230,1,1,N,\""+contents.get(12)+"\""+"\n"+
+                "A10,337,0,230,1,1,N,\""+contents.get(13)+"\""+"\n"+
+                "A10,362,0,230,1,1,N,\""+contents.get(14)+"\""+"\n"+
+                "P1"+"\n";
+
+
+        writeCommand(bigLabelIP,port,printMaterialContent);
+
+    }*/
+
 
     @Override
     public void printBigLabel(OrderBean orderBean) {
