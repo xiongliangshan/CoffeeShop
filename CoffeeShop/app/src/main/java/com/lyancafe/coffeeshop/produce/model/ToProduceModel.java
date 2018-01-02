@@ -21,7 +21,7 @@ public interface ToProduceModel{
 
 
     //批量开始生产
-    void doStartBatchProduce(int shopId,List<Long> orderIds,CustomObserver<JsonObject> observer);
+    void doStartBatchProduce(int shopId,List<Long> orderIds,List<Long> scanIds,CustomObserver<JsonObject> observer);
 
 
     //无需生产

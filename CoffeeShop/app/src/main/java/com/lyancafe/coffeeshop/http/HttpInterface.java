@@ -88,7 +88,7 @@ public interface HttpInterface {
      * @return
      */
     @POST("v3/{shopId}/order/batchBeginProduce")
-    Observable<BaseEntity<JsonObject>> doStartBatchProduce(@Path("shopId") int shopId, @Query("orderIds") List<Long> orderIds);
+    Observable<BaseEntity<JsonObject>> doStartBatchProduce(@Path("shopId") int shopId, @Query("orderIds") List<Long> orderIds,@Query("scanIds") List<Long> scanIds);
 
     /**
      * 生产中订单列表

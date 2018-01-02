@@ -26,6 +26,7 @@ import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -83,8 +84,13 @@ public class ToProducePresenterImpl implements ToProducePresenter{
     @Override
     public void doStartBatchProduce(final List<OrderBean> orders) {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        final List<Long> orderIds = OrderHelper.getIdsFromOrders(orders);
-        mToProduceModel.doStartBatchProduce(user.getShopId(), orderIds, new CustomObserver<JsonObject>(mContext,true) {
+        final List<Long> orderIds = new ArrayList<>();
+        final List<Long> scanIds = new ArrayList<>();
+        OrderHelper.getIdsFromOrders(orders,orderIds,scanIds);
+        final List<Long> allOrderIds = new ArrayList<>();
+        allOrderIds.addAll(orderIds);
+        allOrderIds.addAll(scanIds);
+        mToProduceModel.doStartBatchProduce(user.getShopId(),orderIds,scanIds,new CustomObserver<JsonObject>(mContext,true) {
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
                 mToProduceView.showToast(mContext.getString(R.string.do_success));
@@ -93,9 +99,14 @@ public class ToProducePresenterImpl implements ToProducePresenter{
                 PrintFace.getInst().printBatch(orders);
                 mToProduceView.setMode(ListMode.NORMAL);
                 JsonArray jsonArray = jsonObject.get("orderIds").getAsJsonArray();
-                mToProduceView.removeItemsFromList(orderIds);
+                mToProduceView.removeItemsFromList(allOrderIds);
                 EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,orderIds.size(),false));
                 OrderUtils.with().updateBatchOrder(orderIds,4005);
+                if(scanIds.size()>0){
+                    EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,scanIds.size(),true));
+                    OrderUtils.with().updateBatchOrder(scanIds,4010);
+                }
+
             }
         });
     }

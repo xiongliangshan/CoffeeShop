@@ -662,7 +662,18 @@ public class OrderHelper {
         return isPrinted(CSApplication.getInstance(),orderSn)?"重复打印":"";
     }
 
-    public static List<Long> getIdsFromOrders(List<OrderBean> selectedList) {
+    public static void getIdsFromOrders(List<OrderBean> selectedList,List<Long> orderIds,List<Long> scanIds) {
+        for(OrderBean order:selectedList){
+            if(order.getWxScan()){
+                scanIds.add(order.getId());
+            }else{
+                orderIds.add(order.getId());
+            }
+
+        }
+    }
+
+    public static List<Long> getIdsFromOrders(List<OrderBean> selectedList){
         List<Long> orderIds = new ArrayList<>();
         for(OrderBean order:selectedList){
             orderIds.add(order.getId());

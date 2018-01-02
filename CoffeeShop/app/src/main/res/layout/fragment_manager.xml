@@ -148,7 +148,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:padding="24dp"
-            android:background="@color/white1">
+            android:background="@drawable/bg_order">
 
             <TextView
                 android:id="@+id/tv_select_printer"

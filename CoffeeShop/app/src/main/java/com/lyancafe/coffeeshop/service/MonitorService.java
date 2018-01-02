@@ -1,11 +1,14 @@
 package com.lyancafe.coffeeshop.service;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 import com.lyancafe.coffeeshop.CSApplication;
@@ -14,12 +17,14 @@ import com.lyancafe.coffeeshop.bean.Device;
 import com.lyancafe.coffeeshop.bean.DeviceGroup;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
+import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.http.RetrofitHttp;
 import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.printer.PrintFace;
 import com.lyancafe.coffeeshop.printer.PrintSetting;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.MyUtil;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 
 import cn.jpush.android.api.JPushInterface;
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -101,11 +107,20 @@ public class MonitorService extends Service {
         DeviceGroup deviceGroup = getDevicesInfo(type);
         RetrofitHttp.getRetrofit().heartbeat(deviceGroup)
                 .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                .subscribe(new Consumer<BaseEntity<JsonObject>>() {
                    @Override
                    public void accept(BaseEntity<JsonObject> jsonObjectBaseEntity) throws Exception {
                         LogUtil.d(TAG,"收到服务器的返回");
+                        if(jsonObjectBaseEntity.getStatus()==0){
+                            long serverTime = jsonObjectBaseEntity.getData().get("serverTime").getAsLong();
+                            String str1 = OrderHelper.formatOrderDate(serverTime);
+                            String str2 = OrderHelper.formatOrderDate(System.currentTimeMillis());
+                            LogUtil.d(TAG,"服务器时间:"+str1+", 本地时间:"+str2);
+                            if(Math.abs(serverTime-System.currentTimeMillis())>2*60*60*1000){
+                                Toast.makeText(getApplicationContext(), "当前设备日期时间不准确，请及时调整!", Toast.LENGTH_LONG).show();
+                            }
+                        }
                    }
                }, new Consumer<Throwable>() {
                    @Override

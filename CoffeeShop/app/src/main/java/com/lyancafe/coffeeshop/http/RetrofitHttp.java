@@ -76,6 +76,9 @@ public class RetrofitHttp {
             LogUtil.d("xiong","普通拦截器");
             UserBean user = LoginHelper.getUser(CSApplication.getInstance());
             String token = user.getToken();
+            if(token==null){
+                token = "";
+            }
             Request request = chain.request()
                     .newBuilder()
                     .addHeader("content-type","application/x-www-form-urlencoded; charset=UTF-8")
