@@ -29,6 +29,7 @@ import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
 import com.lyancafe.coffeeshop.event.NotNeedProduceEvent;
 import com.lyancafe.coffeeshop.event.RevokeEvent;
+import com.lyancafe.coffeeshop.event.StartProduceBatchEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.printer.PrintFace;
@@ -296,6 +297,18 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     }
 
     /**
+     * 批量开始生产打印
+     */
+    @Subscribe
+    public void onStartProduceBatchEvent(StartProduceBatchEvent event){
+        if (event.orders==null || event.orders.size()==0) {
+            showToast("汇总数据异常");
+            return;
+        }
+        mToProducePresenter.doStartBatchProduce(event.orders);
+    }
+
+    /**
      * 点击无需生产按钮
      * @param event
      */
@@ -313,11 +326,22 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         allOrderList.addAll(mAdapter.getList());
     }
 
+    /**
+     * 批量删除
+     * @param ids
+     */
     @Override
     public void removeItemsFromList(List<Long> ids) {
         mAdapter.removeOrdersFromList(ids);
         allOrderList.clear();
         allOrderList.addAll(mAdapter.getList());
+
+        if(currentMode==OrderMode.SUMMARIZE){
+            List<SummarizeGroup> groups = OrderHelper.splitOrdersToGroup(allOrderList);
+            List<SummarizeGroup> resultGroups = OrderHelper.caculateGroupList(groups);
+
+            renderSummarizeUI(resultGroups);
+        }
     }
 
     //订单状态改变后刷新列表UI
@@ -352,6 +376,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
                 cancelBtn.setVisibility(View.VISIBLE);
                 break;
         }
+
     }
 
     class MyClickListener implements View.OnClickListener{

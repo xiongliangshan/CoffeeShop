@@ -18,7 +18,10 @@ import com.lyancafe.coffeeshop.bean.DeliverPlatform;
 import com.lyancafe.coffeeshop.bean.Product;
 import com.lyancafe.coffeeshop.bean.SummarizeGroup;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.event.StartProduceBatchEvent;
 import com.lyancafe.coffeeshop.utils.LogUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,7 +76,7 @@ public class SummarizeAdapter extends RecyclerView.Adapter<SummarizeAdapter.View
         holder.btnProduce.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                EventBus.getDefault().post(new StartProduceBatchEvent(group.getOrders()));
             }
         });
     }

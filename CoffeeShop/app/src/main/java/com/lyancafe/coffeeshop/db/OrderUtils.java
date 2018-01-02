@@ -90,15 +90,19 @@ public class OrderUtils {
     }
 
     //批量更新订单的生产状态
-    public void updateBatchOrder(final List<Long> orderIds, final int produceStatus){
-        tpl.execute(new Runnable() {
-            @Override
-            public void run() {
-                for(int i=0;i<orderIds.size();i++){
-                    updateOrder(orderIds.get(i),produceStatus);
-                }
-            }
-        });
+    public void updateBatchOrder(final List<Long> orderIds, final int produceStatus) {
+
+        for (int i = 0; i < orderIds.size(); i++) {
+            updateOrder(orderIds.get(i), produceStatus);
+        }
+
+    }
+
+    //批量更新订单的配送状态
+    public void updateStatusBatch(final List<Long> orderIds,final int status){
+        for(int i=0;i<orderIds.size();i++){
+            updateStatus(orderIds.get(i),status);
+        }
     }
 
     //更新被撤回订单

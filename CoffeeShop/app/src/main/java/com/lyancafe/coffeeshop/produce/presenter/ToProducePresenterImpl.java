@@ -98,13 +98,14 @@ public class ToProducePresenterImpl implements ToProducePresenter{
                 LogUtil.d("xls"," 批量生产 onHandleSuccess 开始打印");
                 PrintFace.getInst().printBatch(orders);
                 mToProduceView.setMode(ListMode.NORMAL);
-                JsonArray jsonArray = jsonObject.get("orderIds").getAsJsonArray();
                 mToProduceView.removeItemsFromList(allOrderIds);
                 EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,orderIds.size(),false));
+
                 OrderUtils.with().updateBatchOrder(orderIds,4005);
                 if(scanIds.size()>0){
                     EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,scanIds.size(),true));
                     OrderUtils.with().updateBatchOrder(scanIds,4010);
+                    OrderUtils.with().updateStatusBatch(scanIds,6000);
                 }
 
             }
