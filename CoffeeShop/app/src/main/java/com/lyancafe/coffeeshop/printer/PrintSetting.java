@@ -3,6 +3,8 @@ package com.lyancafe.coffeeshop.printer;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.ConcurrentModificationException;
+
 /**
  * Created by Administrator on 2017/10/31.
  */
@@ -14,6 +16,7 @@ public class PrintSetting {
     public static final int FUJITSU = 222;
     private static final String KEY_SMALL = "small";
     private static final String KEY_BIG = "big";
+    private static final String KEY_SIMPLIFY_SWITCH = "simplify_switch";
 
     public static void saveSmallPrinter(Context context,int printer){
         SharedPreferences sharedPreferences = context.getSharedPreferences(PRINTER,Context.MODE_PRIVATE);
@@ -33,5 +36,15 @@ public class PrintSetting {
     public static int getBigPrinter(Context context){
         SharedPreferences sharedPreferences = context.getSharedPreferences(PRINTER,Context.MODE_PRIVATE);
         return sharedPreferences.getInt(KEY_BIG,WINPOS);
+    }
+
+    public static void saveSimplifyEnable(Context context,boolean isOpen){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PRINTER,Context.MODE_PRIVATE);
+        sharedPreferences.edit().putBoolean(KEY_SIMPLIFY_SWITCH,isOpen).apply();
+    }
+
+    public static boolean isSimplifyEnable(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PRINTER,Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(KEY_SIMPLIFY_SWITCH,false);
     }
 }

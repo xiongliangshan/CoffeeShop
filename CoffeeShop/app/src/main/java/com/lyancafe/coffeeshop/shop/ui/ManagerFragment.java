@@ -69,6 +69,12 @@ public class ManagerFragment extends BaseFragment implements ManagerView {
     RadioButton rbFujitsuBig;
     @BindView(R.id.radio_group_big)
     RadioGroup radioGroupBig;
+    @BindView(R.id.rb_off)
+    RadioButton rbOff;
+    @BindView(R.id.rb_on)
+    RadioButton rbOn;
+    @BindView(R.id.radio_simplify)
+    RadioGroup radioSimplify;
     private LoadingDialog loadingDialog;
 
     private ManagerPresenter mManagerPresenter;
@@ -97,15 +103,22 @@ public class ManagerFragment extends BaseFragment implements ManagerView {
     private void initRadioButton() {
         int bigPrinter = PrintSetting.getBigPrinter(getContext());
         int smallPrinter = PrintSetting.getSmallPrinter(getContext());
-        if(bigPrinter==PrintSetting.FUJITSU){
+        boolean simplify = PrintSetting.isSimplifyEnable(getContext());
+        if (bigPrinter == PrintSetting.FUJITSU) {
             radioGroupBig.check(R.id.rb_fujitsu_big);
-        }else {
+        } else {
             radioGroupBig.check(R.id.rb_winpos_big);
         }
-        if(smallPrinter == PrintSetting.FUJITSU){
+        if (smallPrinter == PrintSetting.FUJITSU) {
             radioGroupSmall.check(R.id.rb_fujitsu_small);
-        }else{
+        } else {
             radioGroupSmall.check(R.id.rb_winpos_small);
+        }
+
+        if(simplify){
+            radioSimplify.check(R.id.rb_on);
+        }else {
+            radioSimplify.check(R.id.rb_off);
         }
     }
 
@@ -189,26 +202,33 @@ public class ManagerFragment extends BaseFragment implements ManagerView {
         }
     }
 
-    @OnClick({R.id.rb_winpos_small, R.id.rb_fujitsu_small, R.id.rb_winpos_big, R.id.rb_fujitsu_big})
+    @OnClick({R.id.rb_winpos_small, R.id.rb_fujitsu_small, R.id.rb_winpos_big, R.id.rb_fujitsu_big,R.id.rb_off, R.id.rb_on})
     public void onRadioButtonClicked(View view) {
         switch (view.getId()) {
             case R.id.rb_winpos_small:
-                PrintSetting.saveSmallPrinter(getContext(),PrintSetting.WINPOS);
+                PrintSetting.saveSmallPrinter(getContext(), PrintSetting.WINPOS);
                 Logger.getLogger().log("设置小标签打印---WINPOS");
                 break;
             case R.id.rb_fujitsu_small:
-                PrintSetting.saveSmallPrinter(getContext(),PrintSetting.FUJITSU);
+                PrintSetting.saveSmallPrinter(getContext(), PrintSetting.FUJITSU);
                 Logger.getLogger().log("设置小标签打印---富士通");
                 break;
             case R.id.rb_winpos_big:
-                PrintSetting.saveBigPrinter(getContext(),PrintSetting.WINPOS);
+                PrintSetting.saveBigPrinter(getContext(), PrintSetting.WINPOS);
                 Logger.getLogger().log("设置大标签打印---WINPOS");
                 break;
             case R.id.rb_fujitsu_big:
-                PrintSetting.saveBigPrinter(getContext(),PrintSetting.FUJITSU);
+                PrintSetting.saveBigPrinter(getContext(), PrintSetting.FUJITSU);
                 Logger.getLogger().log("设置大标签打印---富士通");
+                break;
+            case R.id.rb_off:
+                PrintSetting.saveSimplifyEnable(getContext(),false);
+                break;
+            case R.id.rb_on:
+                PrintSetting.saveSimplifyEnable(getContext(),true);
                 break;
         }
         PrintFace.reset();
     }
+
 }

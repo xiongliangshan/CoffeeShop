@@ -323,47 +323,71 @@ public class WinposPrinter implements NetPrint {
             cupList[i] = pc.getCoffee()+Calculator.formatLabel(pc.getLabel());
         }
 
-        String addressCMD, addr1,addr2,addr3;
-        int length = bean.getAddress().length();
-        if (length <= 22) {
-            addressCMD = "A100,300,0,230,1,1,N,\""+bean.getAddress()+"\""+"\n";
-        } else if(length>22 && length<43){
-            addr1 = bean.getAddress().substring(0, 22);
-            addr2 = bean.getAddress().substring(22);
-            addressCMD = "A100,300,0,230,1,1,N,\""+addr1+"\""+"\n" +
-                    "A100,330,0,230,1,1,N,\""+addr2+"\""+"\n";
-        }else{
-            addr1 = bean.getAddress().substring(0, 22);
-            addr2 = bean.getAddress().substring(22,43);
-            addr3 = bean.getAddress().substring(43);
-            addressCMD = "A100,300,0,230,1,1,N,\""+addr1+"\""+"\n" +
-                    "A100,330,0,230,1,1,N,\""+addr2+"\""+"\n"+
-                    "A100,360,0,230,1,1,N,\""+addr3+"\""+"\n";
+        boolean isSimplify = PrintSetting.isSimplifyEnable(CSApplication.getInstance());
+        if(bean.getCupAmount()==1 && isSimplify){
+            String expectedTime = bean.getInstant()==1?":尽快送达":OrderHelper.getPeriodOfExpectedtime(bean);
+            return  "N"+"\n"+
+                    "q640"+"\n"+
+                    "Q400,16"+"\n"+
+                    "S3"+"\n"+
+                    "D8"+"\n"+
+                    "A20,20,0,230,2,2,N,\""+Calculator.getCheckShopNo(bean)+"\""+"\n"+
+                    "A300,20,0,230,2,2,N,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
+                    "A20,70,0,230,1,1,N,\"单号:\""+"\n"+ //订单编号
+                    "A70,70,0,230,1,1,N,\""+bean.getOrderId()+OrderHelper.getWxScanStrForPrint(bean)+","+"\""+"\n"+
+                    "A170,70,0,230,1,1,N,\""+bean.getReceiverName()+","+"\""+"\n"+
+                    "A250,70,0,230,1,1,N,\"送达时间\""+"\n"+
+                    "A350,70,0,230,1,1,N,\""+expectedTime+"\""+"\n"+
+                    "A510,70,0,230,1,1,N,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
+                    "A20,100,0,230,1,1,N,\""+bean.getAddress()+"\""+"\n"+
+                    "A20,130,0,230,1,1,N,\""+cupList[0]+"\""+"\n"+
+                    "P1"+"\n";
+        }else {
+            String addressCMD, addr1,addr2,addr3;
+            int length = bean.getAddress().length();
+            if (length <= 22) {
+                addressCMD = "A100,300,0,230,1,1,N,\""+bean.getAddress()+"\""+"\n";
+            } else if(length>22 && length<43){
+                addr1 = bean.getAddress().substring(0, 22);
+                addr2 = bean.getAddress().substring(22);
+                addressCMD = "A100,300,0,230,1,1,N,\""+addr1+"\""+"\n" +
+                        "A100,330,0,230,1,1,N,\""+addr2+"\""+"\n";
+            }else{
+                addr1 = bean.getAddress().substring(0, 22);
+                addr2 = bean.getAddress().substring(22,43);
+                addr3 = bean.getAddress().substring(43);
+                addressCMD = "A100,300,0,230,1,1,N,\""+addr1+"\""+"\n" +
+                        "A100,330,0,230,1,1,N,\""+addr2+"\""+"\n"+
+                        "A100,360,0,230,1,1,N,\""+addr3+"\""+"\n";
+            }
+
+            return  "N"+"\n"+
+                    "q640"+"\n"+
+                    "Q400,16"+"\n"+
+                    "S3"+"\n"+
+                    "D8"+"\n"+
+                    "A20,30,0,230,2,2,N,\""+Calculator.getCheckShopNo(bean)+"\""+"\n"+
+                    "A300,30,0,230,2,2,N,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
+                    "A20,100,0,230,1,1,N,\"订单编号:\""+"\n"+ //订单编号
+                    "A140,100,0,230,1,1,N,\""+bean.getOrderId()+OrderHelper.getWxScanStrForPrint(bean)+"\""+"\n"+
+                    "A450,100,0,230,1,1,N,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
+                    "A20,120,0,230,1,1,N,\"-------------------------------------------------- \""+"\n"+
+                    "A20,150,0,230,1,1,N,\""+cupList[0]+"\""+"\n"+
+                    "A320,150,0,230,1,1,N,\""+cupList[1]+"\""+"\n"+
+                    "A20,200,0,230,1,1,N,\""+cupList[2]+"\""+"\n"+
+                    "A320,200,0,230,1,1,N,\""+cupList[3]+"\""+"\n"+
+                    "A20,230,0,230,1,1,N,\"-------------------------------------------------- \""+"\n"+
+                    "A20,260,0,230,1,1,N,\"收货人 \""+"\n"+
+                    "A120,260,0,230,1,1,N,\""+bean.getReceiverName()+"\""+"\n"+
+                    "A300,260,0,230,1,1,N,\"送达时间 \""+"\n"+
+                    "A420,260,0,230,1,1,N,\""+OrderHelper.getPeriodOfExpectedtime(bean)+"\""+"\n"+
+                    "A20,300,0,230,1,1,N,\"地址 \""+"\n"+
+                    addressCMD +                             //配送地址
+                    "P1"+"\n";
+
         }
 
-        return  "N"+"\n"+
-                "q640"+"\n"+
-                "Q400,16"+"\n"+
-                "S3"+"\n"+
-                "D8"+"\n"+
-                "A20,30,0,230,2,2,N,\""+Calculator.getCheckShopNo(bean)+"\""+"\n"+
-                "A300,30,0,230,2,2,N,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
-                "A20,100,0,230,1,1,N,\"订单编号:\""+"\n"+ //订单编号
-                "A140,100,0,230,1,1,N,\""+bean.getOrderId()+OrderHelper.getWxScanStrForPrint(bean)+"\""+"\n"+
-                "A450,100,0,230,1,1,N,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
-                "A20,120,0,230,1,1,N,\"-------------------------------------------------- \""+"\n"+
-                "A20,150,0,230,1,1,N,\""+cupList[0]+"\""+"\n"+
-                "A320,150,0,230,1,1,N,\""+cupList[1]+"\""+"\n"+
-                "A20,200,0,230,1,1,N,\""+cupList[2]+"\""+"\n"+
-                "A320,200,0,230,1,1,N,\""+cupList[3]+"\""+"\n"+
-                "A20,230,0,230,1,1,N,\"-------------------------------------------------- \""+"\n"+
-                "A20,260,0,230,1,1,N,\"收货人 \""+"\n"+
-                "A120,260,0,230,1,1,N,\""+bean.getReceiverName()+"\""+"\n"+
-                "A300,260,0,230,1,1,N,\"送达时间 \""+"\n"+
-                "A420,260,0,230,1,1,N,\""+OrderHelper.getPeriodOfExpectedtime(bean)+"\""+"\n"+
-                "A20,300,0,230,1,1,N,\"地址 \""+"\n"+
-                addressCMD +                             //配送地址
-                "P1"+"\n";
+
 
     }
 
