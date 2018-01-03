@@ -6,6 +6,7 @@ import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.PrintCupBean;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
+import com.lyancafe.coffeeshop.bean.Product;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 
 import java.text.SimpleDateFormat;
@@ -13,8 +14,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2017/10/27.
@@ -343,6 +346,53 @@ public class Calculator {
             return "*"+bean.getShopOrderNo()+"*";
         }else{
             return bean.getShopOrderNo();
+        }
+    }
+
+    //计算品类和对应数量的map
+    public static void caculateItems(List<OrderBean> orderBeanList, Map<String,Product> productMap, Map<String,Map<String,Integer>> recipeFittingsMap){
+        for(OrderBean order:orderBeanList){
+            List<ItemContentBean> items = order.getItems();
+            for(ItemContentBean item:items){
+                String name = item.getProduct();
+                Product product = productMap.get(name);
+                if(product==null){
+                    product = new Product();
+                    product.setName(name);
+                    product.setProduceProcess(item.getProduceProcess());
+                    product.setCount(item.getQuantity());
+                    if(!TextUtils.isEmpty(item.getRecipeFittings())){
+                        //有口味定制
+                        product.setCustom(true);
+                    }else{
+                        product.setCustom(false);
+                    }
+                    productMap.put(name,product);
+                }else{
+                    product.setCount(product.getCount()+item.getQuantity());
+                }
+
+
+                //个性化口味
+                String fittings = item.getRecipeFittings();
+                if(!TextUtils.isEmpty(fittings)&& "少冰".equals(fittings)){
+                    Map<String,Integer> fittingsMap = null;
+                    if(recipeFittingsMap.containsKey(item.getProduct())){
+                        fittingsMap = recipeFittingsMap.get(item.getProduct());
+                    }else{
+                        fittingsMap = new HashMap<>();
+                        recipeFittingsMap.put(item.getProduct(),fittingsMap);
+                    }
+
+                    if(fittingsMap.containsKey(fittings)){
+                        fittingsMap.put(fittings,fittingsMap.get(fittings)+1);
+                    }else{
+                        fittingsMap.put(fittings,1);
+                    }
+
+                }
+
+            }
         }
     }
 

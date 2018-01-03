@@ -181,9 +181,8 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     public void bindDataToView(List<OrderBean> list) {
         allOrderList.clear();
         allOrderList.addAll(list);
-        if(currentMode==OrderMode.NORMAL){
-            mAdapter.setData(list);
-        }else if(currentMode==OrderMode.SUMMARIZE){
+        mAdapter.setData(list);
+        if (currentMode == OrderMode.SUMMARIZE) {
             List<SummarizeGroup> groups = OrderHelper.splitOrdersToGroup(allOrderList);
             summarizeAdapter.setData(OrderHelper.caculateGroupList(groups));
         }

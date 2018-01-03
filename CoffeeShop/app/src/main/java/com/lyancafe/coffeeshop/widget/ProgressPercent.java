@@ -104,8 +104,8 @@ public class ProgressPercent extends View {
      */
     public void updateProgress(long startTime,long endTime){
         long nowTime = System.currentTimeMillis();
-        if(nowTime<=startTime){
-           this.status = -1;
+        if(startTime==0||nowTime<=startTime){
+            this.status = -1;
         }else if(nowTime>startTime && nowTime<=endTime){
             this.status = 0;
             passMinute = (int) ((nowTime-startTime)/(60*1000));
@@ -118,7 +118,7 @@ public class ProgressPercent extends View {
 
         invalidate();
 
-        LogUtil.d(TAG,"acceptTime = "+startTime+"|status = "+status+"|pass ="+passMinute+"|unpass="+unPassMinute+"|over ="+overMinute);
+        LogUtil.d(TAG,"acceptTime = "+OrderHelper.formatOrderDate(startTime)+"|status = "+status+"|pass ="+passMinute+"|unpass="+unPassMinute+"|over ="+overMinute);
     }
 
 
@@ -225,7 +225,7 @@ public class ProgressPercent extends View {
             //已超时
             rectPaint.setStyle(Paint.Style.FILL_AND_STROKE);
             rectPaint.setColor(Color.RED);
-            canvas.drawRoundRect(mProgressRect,24,24,rectPaint);
+            canvas.drawRoundRect(mProgressRect,20,20,rectPaint);
             textPaint.setColor(Color.WHITE);
             float overTextWidth = textPaint.measureText(mOverText);
             canvas.drawText(mOverText,mProgressRect.left+(mProgressRect.width()-overTextWidth)/2.0f,baseLineY,textPaint);

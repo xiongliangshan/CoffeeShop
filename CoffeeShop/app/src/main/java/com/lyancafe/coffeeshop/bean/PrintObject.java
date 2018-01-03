@@ -98,13 +98,6 @@ public class PrintObject {
 
         }
 
-       /* //构造头和尾
-        PrintObject start = new PrintObject();
-        start.getContent().add("A0,200,0,230,2,2,N,\"----------生产汇总------------ \""+"\n");
-        PrintObject end = new PrintObject();
-        end.getContent().add("A0,200,0,230,2,2,N,\"----------生产汇总------------ \""+"\n");
-        printObjects.add(0,start);
-        printObjects.add(end);*/
         return printObjects;
     }
 
@@ -138,19 +131,15 @@ public class PrintObject {
             Map<String ,Integer> fittingsMap = recipeFittingsMap.get(name);
             if(fittingsMap!=null){
                 Iterator<String> iterator1 = fittingsMap.keySet().iterator();
-                while (iterator1.hasNext()){
-
+                while (iterator1.hasNext()) {
                     String fitting = iterator1.next();
-                    if("少冰".equals(fitting)){
-                        printObjects.get(i/6).getContent().add("A"+(l+150)+","+t+",0,230,1,1,N,\""+fitting+" x "+fittingsMap.get(fitting)+"\""+"\n");
-                        t+=60;
-                        i++;
-                        if(i%6==0){
-                            l = 30;
-                            t = 30;
-                        }
+                    printObjects.get(i / 6).getContent().add("A" + (l + 150) + "," + t + ",0,230,1,1,N,\"" + fitting + " x " + fittingsMap.get(fitting) + "\"" + "\n");
+                    t += 60;
+                    i++;
+                    if (i % 6 == 0) {
+                        l = 30;
+                        t = 30;
                     }
-
                 }
             }
         }

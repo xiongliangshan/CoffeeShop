@@ -80,10 +80,8 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
             holder.selectView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!order.getWxScan() && order.getRelationOrderId() == 0) {
-                        holder.checkBox.setChecked(!holder.checkBox.isChecked());
-                        selectMap.put(position, holder.checkBox.isChecked());
-                    }
+                    holder.checkBox.setChecked(!holder.checkBox.isChecked());
+                    selectMap.put(position, holder.checkBox.isChecked());
 
                 }
             });

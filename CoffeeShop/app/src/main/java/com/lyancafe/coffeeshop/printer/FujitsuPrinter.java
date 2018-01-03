@@ -8,7 +8,11 @@ import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.MaterialItem;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.PrintCupBean;
+import com.lyancafe.coffeeshop.bean.PrintObject;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
+import com.lyancafe.coffeeshop.bean.Product;
+import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.utils.OrderIdComparator;
@@ -22,9 +26,11 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -49,44 +55,50 @@ public class FujitsuPrinter implements NetPrint {
 
     @Override
     public void printSummaryInfo(List<OrderBean> orderBeanList) {
-        Map<String,Integer> coffeeMap = new HashMap<>();
+        Map<String,Product> productMap = new HashMap<>();
         Map<String,Map<String,Integer>> recipeFittingsMap = new HashMap<>();
-        for(OrderBean order:orderBeanList){
-            List<ItemContentBean> items = order.getItems();
-            for(ItemContentBean item:items){
-                if(!coffeeMap.containsKey(item.getProduct())){
-                    coffeeMap.put(item.getProduct(),item.getQuantity());
-                }else{
-                    coffeeMap.put(item.getProduct(),coffeeMap.get(item.getProduct())+item.getQuantity());
-                }
+        Calculator.caculateItems(orderBeanList,productMap,recipeFittingsMap);
 
-                //个性化口味
-                String fittings = item.getRecipeFittings();
-                if(!TextUtils.isEmpty(fittings)){
-                    Map<String,Integer> fittingsMap = null;
-                    if(recipeFittingsMap.containsKey(item.getProduct())){
-                        fittingsMap = recipeFittingsMap.get(item.getProduct());
-                    }else{
-                        fittingsMap = new HashMap<>();
-                        recipeFittingsMap.put(item.getProduct(),fittingsMap);
-                    }
+        List<Product> coffeeList = new ArrayList<>();
+        List<Product> mixtureList = new ArrayList<>();
+        List<Product> drinkList = new ArrayList<>();
 
-                    if(fittingsMap.containsKey(fittings)){
-                        fittingsMap.put(fittings,fittingsMap.get(fittings)+1);
-                    }else{
-                        fittingsMap.put(fittings,1);
-                    }
-
-                }
-
+        Iterator<String> iterator = productMap.keySet().iterator();
+        while (iterator.hasNext()){
+            String key = iterator.next();
+            Product value = productMap.get(key);
+            LogUtil.d(TAG,key+"-------"+value.getProduceProcess());
+            if(value.getProduceProcess()==1){
+                coffeeList.add(value);
+            }else if(value.getProduceProcess()==2) {
+                drinkList.add(value);
+            }else{
+                mixtureList.add(value);
             }
         }
-        List<PrintSummaryObject> printObjects = PrintSummaryObject.transformPrintObjects(coffeeMap,recipeFittingsMap);
-        if(printObjects.size()>0){
-            for(int i=printObjects.size()-1;i>=0;i--){
-                writeCommand(bigLabelIP,port,printObjects.get(i).getPrintContent());
+        Collections.sort(coffeeList);
+        Collections.sort(drinkList);
+        Collections.sort(mixtureList);
+
+        List<PrintSummaryObject> firstList = PrintSummaryObject.transformPrintObjects(coffeeList,recipeFittingsMap);
+        List<Product> list = new ArrayList<>();
+        list.addAll(drinkList);
+        list.addAll(0,mixtureList);
+        List<PrintSummaryObject> secondList = PrintSummaryObject.transformPrintObjects(list,recipeFittingsMap);
+
+
+        if(secondList.size()>0){
+            for(int i=secondList.size()-1;i>=0;i--){
+                writeCommand(bigLabelIP,port,secondList.get(i).getPrintContent());
             }
         }
+
+        if(firstList.size()>0){
+            for(int i=firstList.size()-1;i>=0;i--){
+                writeCommand(bigLabelIP,port,firstList.get(i).getPrintContent());
+            }
+        }
+
     }
 
     @Override
@@ -128,6 +140,7 @@ public class FujitsuPrinter implements NetPrint {
     public void printSmallLabels(List<OrderBean> orderBeanList) {
         LogUtil.d(TAG,"printSmallLabels");
         List<PrintCupBean> cupBeanList = Calculator.calculateBatchCupList(orderBeanList);
+        Collections.sort(cupBeanList);
         for(PrintCupBean bean:cupBeanList){
             String printCommand = OTCForSmallLabel(bean);
             writeCommand(smallLabelIP,port,printCommand);
@@ -322,16 +335,36 @@ public class FujitsuPrinter implements NetPrint {
 
     @Override
     public String OTCForSmallLabel(PrintCupBean bean) {
-        return  "SIZE 30 mm, 20 mm\n" +
-                "GAP 3 mm, 0 mm\n" +
-                "SET RIBBON OFF\n" +
-                "DIRECTION 1,0\n" +
-                "CLS\n" +
-                "TEXT 20,40,\"TSS24.BF2\",0,1,1,\""+ bean.getShopOrderNo() +"\"\n" +
+        UserBean user = LoginHelper.getUser(CSApplication.getInstance());
+        boolean needPrintTime =  user.isNeedPrintTime();
+        String drinkGuide = user.getDrinkGuide();
+        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date(System.currentTimeMillis()));
+        if(needPrintTime){
+            return  "SIZE 30 mm, 20 mm\n" +
+                    "GAP 3 mm, 0 mm\n" +
+                    "SET RIBBON OFF\n" +
+                    "DIRECTION 1,0\n" +
+                    "CLS\n" +
+                    "TEXT 12,16,\"TSS24.BF2\",0,1,1,\""+ bean.getShopOrderNo() +"\"\n" +
+                    "TEXT 12,43,\"TSS24.BF2\",0,1,1,\""+bean.getCoffee()+"\"\n" +
+                    "TEXT 12,68,\"TSS24.BF2\",0,1,1,\""+bean.getLabel()+"\"\n" +
+                    "TEXT 12,101,\"TSS24.BF2\",0,1,1,\""+time+"\""+"\n"+
+                    "TEXT 12,126,\"TSS24.BF2\",0,1,1,\""+drinkGuide+"\""+"\n"+
+                    "PRINT 1,1\n";
+
+        }else {
+            return  "SIZE 30 mm, 20 mm\n" +
+                    "GAP 3 mm, 0 mm\n" +
+                    "SET RIBBON OFF\n" +
+                    "DIRECTION 1,0\n" +
+                    "CLS\n" +
+                    "TEXT 20,40,\"TSS24.BF2\",0,1,1,\""+ bean.getShopOrderNo() +"\"\n" +
 //                "TEXT 110,40,\"TSS24.BF2\",0,1,1,\""+bean.getBoxAmount()+"-"+bean.getBoxNumber()+"|"+bean.getCupAmount()+"-" +bean.getCupNumber()+"\"\n" +
-                "TEXT 20,70,\"TSS24.BF2\",0,1,1,\""+bean.getCoffee()+"\"\n" +
-                "TEXT 20,100,\"TSS24.BF2\",0,1,1,\""+bean.getLabel()+"\"\n" +
-                "PRINT 1,1\n";
+                    "TEXT 20,70,\"TSS24.BF2\",0,1,1,\""+bean.getCoffee()+"\"\n" +
+                    "TEXT 20,100,\"TSS24.BF2\",0,1,1,\""+bean.getLabel()+"\"\n" +
+                    "PRINT 1,1\n";
+        }
+
     }
 
     public void printQRcode(){
@@ -482,41 +515,28 @@ public class FujitsuPrinter implements NetPrint {
             this.content = new ArrayList<>();
         }
 
-        public static List<PrintSummaryObject> transformPrintObjects(Map<String,Integer> coffeeMap, Map<String,Map<String,Integer>> recipeFittingsMap) {
 
+        public static List<PrintSummaryObject> transformPrintObjects(List<Product> list, Map<String,Map<String,Integer>> recipeFittingsMap ){
             List<PrintSummaryObject> printObjects = new ArrayList<>();
-            if(coffeeMap.size()==0){
+            if(list.size()==0){
                 return printObjects;
             }
-            List<Map.Entry<String,Integer>> list = new ArrayList<>(coffeeMap.entrySet());
-            Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
-                @Override
-                public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-                    if(o2.getValue()!=o1.getValue()){
-                        return o2.getValue()-o1.getValue();
-                    }else {
-                        return o2.getKey().compareTo(o1.getKey());
-                    }
-                }
-            });
-            Iterator<Map.Entry<String,Integer>> iterator = list.iterator();
-//            Iterator<String> iterator = coffeeMap.keySet().iterator();
-            int coffeeSize = coffeeMap.size();
+
+            int coffeeSize = list.size();
             int fittingSize = getMapSize(recipeFittingsMap);
             int totalSize = coffeeSize+fittingSize;
             int size = totalSize%6==0?totalSize/6:totalSize/6+1;
+            LogUtil.d(TAG,"transformPrintObjects: coffeeSize ="+coffeeSize+"|fittingSize ="+fittingSize+"|totalSize="+totalSize+"|size ="+size);
             for(int i=0;i<size;i++){
                 printObjects.add(new PrintSummaryObject());
             }
             int l = 30;
             int t = 30;
             int i = 0;
-            while (iterator.hasNext()){
-                Map.Entry<String,Integer> entry = iterator.next();
-                String name = entry.getKey();
-                int value = entry.getValue();
-                LogUtil.d("xls",name+" x "+value);
-                printObjects.get(i/6).getContent().add("TEXT "+l+","+t+",\"TSS24.BF2\",0,2,2,\""+name+" x "+value+"\"\n");
+            for(Product product:list){
+                String name = product.getName();
+                int count = product.getCount();
+                printObjects.get(i/6).getContent().add("TEXT "+l+","+t+",\"TSS24.BF2\",0,2,2,\""+name+" x "+count+"\"\n");
                 t+=60;
                 i++;
                 if(i%6==0){
@@ -527,29 +547,19 @@ public class FujitsuPrinter implements NetPrint {
                 Map<String ,Integer> fittingsMap = recipeFittingsMap.get(name);
                 if(fittingsMap!=null){
                     Iterator<String> iterator1 = fittingsMap.keySet().iterator();
-                    while (iterator1.hasNext()){
-
+                    while (iterator1.hasNext()) {
                         String fitting = iterator1.next();
-                        printObjects.get(i/6).getContent().add("TEXT "+(l+150)+","+t+",\"TSS24.BF2\",0,1,1,\""+fitting+" x "+fittingsMap.get(fitting)+"\"\n");
-                        t+=60;
+                        printObjects.get(i / 6).getContent().add("TEXT " + (l + 150) + "," + t + ",\"TSS24.BF2\",0,1,1,\"" + fitting + " x " + fittingsMap.get(fitting) + "\"\n");
+                        t += 60;
                         i++;
-                        if(i%6==0){
+                        if (i % 6 == 0) {
                             l = 30;
                             t = 30;
                         }
                     }
                 }
-
-
             }
 
-           /* //构造头和尾
-            PrintSummaryObject start = new PrintSummaryObject();
-            start.getContent().add("TEXT 0,200,\"TSS24.BF2\",0,2,2,\"----------生产汇总------------\""+"\n");
-            PrintSummaryObject end = new PrintSummaryObject();
-            end.getContent().add("TEXT 0,200,\"TSS24.BF2\",0,2,2,\"----------生产汇总------------\""+"\n");
-            printObjects.add(0,start);
-            printObjects.add(end);*/
             return printObjects;
         }
 

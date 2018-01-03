@@ -56,7 +56,7 @@ public class WinposPrinter implements NetPrint {
     public void printSummaryInfo(List<OrderBean> orderBeanList) {
         Map<String,Product> productMap = new HashMap<>();
         Map<String,Map<String,Integer>> recipeFittingsMap = new HashMap<>();
-        caculateItems(orderBeanList,productMap,recipeFittingsMap);
+        Calculator.caculateItems(orderBeanList,productMap,recipeFittingsMap);
 
         List<Product> coffeeList = new ArrayList<>();
         List<Product> mixtureList = new ArrayList<>();
@@ -85,7 +85,6 @@ public class WinposPrinter implements NetPrint {
         list.addAll(0,mixtureList);
         List<PrintObject> secondList = PrintObject.transformPrintObjects(list,recipeFittingsMap);
 
-//        List<PrintObject> printObjects = PrintObject.transformPrintObjects(coffeeMap,recipeFittingsMap);
 
         if(secondList.size()>0){
             for(int i=secondList.size()-1;i>=0;i--){
@@ -103,52 +102,7 @@ public class WinposPrinter implements NetPrint {
 
     }
 
-    //计算品类和对应数量的map
-    private void caculateItems(List<OrderBean> orderBeanList,Map<String,Product> productMap,Map<String,Map<String,Integer>> recipeFittingsMap){
-        for(OrderBean order:orderBeanList){
-            List<ItemContentBean> items = order.getItems();
-            for(ItemContentBean item:items){
-                String name = item.getProduct();
-                Product product = productMap.get(name);
-                if(product==null){
-                    product = new Product();
-                    product.setName(name);
-                    product.setProduceProcess(item.getProduceProcess());
-                    product.setCount(item.getQuantity());
-                    if(!TextUtils.isEmpty(item.getRecipeFittings())){
-                        //有口味定制
-                        product.setCustom(true);
-                    }else{
-                        product.setCustom(false);
-                    }
-                    productMap.put(name,product);
-                }else{
-                    product.setCount(product.getCount()+item.getQuantity());
-                }
 
-
-                //个性化口味
-                String fittings = item.getRecipeFittings();
-                if(!TextUtils.isEmpty(fittings)){
-                    Map<String,Integer> fittingsMap = null;
-                    if(recipeFittingsMap.containsKey(item.getProduct())){
-                        fittingsMap = recipeFittingsMap.get(item.getProduct());
-                    }else{
-                        fittingsMap = new HashMap<>();
-                        recipeFittingsMap.put(item.getProduct(),fittingsMap);
-                    }
-
-                    if(fittingsMap.containsKey(fittings)){
-                        fittingsMap.put(fittings,fittingsMap.get(fittings)+1);
-                    }else{
-                        fittingsMap.put(fittings,1);
-                    }
-
-                }
-
-            }
-        }
-    }
 
     @Override
     public void printBigLabelTest(List<String> contents) {
