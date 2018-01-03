@@ -227,48 +227,83 @@ public class FujitsuPrinter implements NetPrint {
             cupList[i] = pc.getCoffee()+Calculator.formatLabel(pc.getLabel());
         }
 
-        String addressCMD, addr1,addr2,addr3;
-        int length = bean.getAddress().length();
-        if (length <= 22) {
-            addressCMD = "TEXT 90,280,\"TSS24.BF2\",0,1,1,\""+bean.getAddress()+"\""+"\n";
-        } else if(length>22 && length<43){
-            addr1 = bean.getAddress().substring(0, 22);
-            addr2 = bean.getAddress().substring(22);
-            addressCMD = "TEXT 90,280,\"TSS24.BF2\",0,1,1,\""+addr1+"\""+"\n" +
-                    "TEXT 90,310,\"TSS24.BF2\",0,1,1,\""+addr2+"\""+"\n";
-        }else{
-            addr1 = bean.getAddress().substring(0, 22);
-            addr2 = bean.getAddress().substring(22,43);
-            addr3 = bean.getAddress().substring(43);
-            addressCMD = "TEXT 90,280,\"TSS24.BF2\",0,1,1,\""+addr1+"\""+"\n" +
-                    "TEXT 90,310,\"TSS24.BF2\",0,1,1,\""+addr2+"\""+"\n"+
-                    "TEXT 90,340,\"TSS24.BF2\",0,1,1,\""+addr3+"\""+"\n";
+        boolean isSimplify = PrintSetting.isSimplifyEnable(CSApplication.getInstance());
+        if(bean.getCupAmount()==1 && isSimplify){
+            String expectedTime = bean.getInstant()==1?":尽快送达":OrderHelper.getPeriodOfExpectedtime(bean);
+            String address = bean.getAddress();
+            String bestAddress = "";
+            if(!TextUtils.isEmpty(address)&& address.length()>25){
+                int startIndex = address.indexOf("市");
+                LogUtil.d(TAG,"startIndex = "+startIndex);
+                if(startIndex!=-1){
+                    bestAddress = address.substring(startIndex+1);
+                }else {
+                    bestAddress = address;
+                }
+            }else {
+                bestAddress = address;
+            }
+            return  "SIZE 80 mm, 49 mm\n" +
+                    "GAP 2 mm, 0 mm\n" +
+                    "SET RIBBON OFF\n" +
+                    "DIRECTION 1,0\n" +
+                    "CLS\n" +
+                    "TEXT 10,10,\"TSS24.BF2\",0,2,2,\""+Calculator.getCheckShopNo(bean)+"\""+"\n"+
+                    "TEXT 300,10,\"TSS24.BF2\",0,2,2,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
+                    "TEXT 10,60,\"TSS24.BF2\",0,1,1,\"单号:\""+"\n"+ //订单编号
+                    "TEXT 70,60,\"TSS24.BF2\",0,1,1,\""+bean.getOrderId()+OrderHelper.getWxScanStrForPrint(bean)+","+"\""+"\n"+
+                    "TEXT 180,60,\"TSS24.BF2\",0,1,1,\""+bean.getReceiverName()+","+"\""+"\n"+
+                    "TEXT 270,60,\"TSS24.BF2\",0,1,1,\"送达时间\""+"\n"+
+                    "TEXT 370,60,\"TSS24.BF2\",0,1,1,\""+expectedTime+"\""+"\n"+
+                    "TEXT 520,60,\"TSS24.BF2\",0,1,1,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
+                    "TEXT 10,90,\"TSS24.BF2\",0,1,1,\""+bestAddress+"\""+"\n"+
+                    "TEXT 10,120,\"TSS24.BF2\",0,1,1,\""+cupList[0]+"\""+"\n"+
+                    "PRINT 1,1\n";
+        }else {
+            String addressCMD, addr1,addr2,addr3;
+            int length = bean.getAddress().length();
+            if (length <= 22) {
+                addressCMD = "TEXT 90,280,\"TSS24.BF2\",0,1,1,\""+bean.getAddress()+"\""+"\n";
+            } else if(length>22 && length<43){
+                addr1 = bean.getAddress().substring(0, 22);
+                addr2 = bean.getAddress().substring(22);
+                addressCMD = "TEXT 90,280,\"TSS24.BF2\",0,1,1,\""+addr1+"\""+"\n" +
+                        "TEXT 90,310,\"TSS24.BF2\",0,1,1,\""+addr2+"\""+"\n";
+            }else{
+                addr1 = bean.getAddress().substring(0, 22);
+                addr2 = bean.getAddress().substring(22,43);
+                addr3 = bean.getAddress().substring(43);
+                addressCMD = "TEXT 90,280,\"TSS24.BF2\",0,1,1,\""+addr1+"\""+"\n" +
+                        "TEXT 90,310,\"TSS24.BF2\",0,1,1,\""+addr2+"\""+"\n"+
+                        "TEXT 90,340,\"TSS24.BF2\",0,1,1,\""+addr3+"\""+"\n";
+            }
+
+            return  "SIZE 80 mm, 49 mm\n" +
+                    "GAP 2 mm, 0 mm\n" +
+                    "SET RIBBON OFF\n" +
+                    "DIRECTION 1,0\n" +
+                    "CLS\n" +
+                    "TEXT 10,10,\"TSS24.BF2\",0,2,2,\""+ Calculator.getCheckShopNo(bean) +"\"\n" +
+                    "TEXT 300,10,\"TSS24.BF2\",0,2,2,\""+ bean.getLocalStr() +"\"\n" +
+                    "TEXT 10,80,\"TSS24.BF2\",0,1,1,\"订单编号:\"\n" +
+                    "TEXT 130,80,\"TSS24.BF2\",0,1,1,\""+bean.getOrderId()+OrderHelper.getWxScanStrForPrint(bean)+"\"\n" +
+                    "TEXT 440,80,\"TSS24.BF2\",0,1,1,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\"\n" +
+                    "BOX 8,110,616,220,1,10\n"+
+
+                    "TEXT 14,130,\"TSS24.BF2\",0,1,1,\""+cupList[0]+"\""+"\n"+
+                    "TEXT 314,130,\"TSS24.BF2\",0,1,1,\""+cupList[1]+"\""+"\n"+
+                    "TEXT 14,180,\"TSS24.BF2\",0,1,1,\""+cupList[2]+"\""+"\n"+
+                    "TEXT 314,180,\"TSS24.BF2\",0,1,1,\""+cupList[3]+"\""+"\n"+
+
+                    "TEXT 10,240,\"TSS24.BF2\",0,1,1,\"收货人:\"\n" +
+                    "TEXT 110,240,\"TSS24.BF2\",0,1,1,\""+bean.getReceiverName()+"\"\n" +
+                    "TEXT 290,240,\"TSS24.BF2\",0,1,1,\"送达时间:\"\n" +
+                    "TEXT 410,240,\"TSS24.BF2\",0,1,1,\""+OrderHelper.getPeriodOfExpectedtime(bean)+"\"\n" +
+                    "TEXT 10,280,\"TSS24.BF2\",0,1,1,\"地址:\"\n" +
+                    addressCMD +
+                    "PRINT 1,1\n";
+
         }
-
-        return  "SIZE 80 mm, 49 mm\n" +
-                "GAP 2 mm, 0 mm\n" +
-                "SET RIBBON OFF\n" +
-                "DIRECTION 1,0\n" +
-                "CLS\n" +
-                "TEXT 10,10,\"TSS24.BF2\",0,2,2,\""+ Calculator.getCheckShopNo(bean) +"\"\n" +
-                "TEXT 300,10,\"TSS24.BF2\",0,2,2,\""+ bean.getLocalStr() +"\"\n" +
-                "TEXT 10,80,\"TSS24.BF2\",0,1,1,\"订单编号:\"\n" +
-                "TEXT 130,80,\"TSS24.BF2\",0,1,1,\""+bean.getOrderId()+OrderHelper.getWxScanStrForPrint(bean)+"\"\n" +
-                "TEXT 440,80,\"TSS24.BF2\",0,1,1,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\"\n" +
-                "BOX 8,110,616,220,1,10\n"+
-
-                "TEXT 14,130,\"TSS24.BF2\",0,1,1,\""+cupList[0]+"\""+"\n"+
-                "TEXT 314,130,\"TSS24.BF2\",0,1,1,\""+cupList[1]+"\""+"\n"+
-                "TEXT 14,180,\"TSS24.BF2\",0,1,1,\""+cupList[2]+"\""+"\n"+
-                "TEXT 314,180,\"TSS24.BF2\",0,1,1,\""+cupList[3]+"\""+"\n"+
-
-                "TEXT 10,240,\"TSS24.BF2\",0,1,1,\"收货人:\"\n" +
-                "TEXT 110,240,\"TSS24.BF2\",0,1,1,\""+bean.getReceiverName()+"\"\n" +
-                "TEXT 290,240,\"TSS24.BF2\",0,1,1,\"送达时间:\"\n" +
-                "TEXT 410,240,\"TSS24.BF2\",0,1,1,\""+OrderHelper.getPeriodOfExpectedtime(bean)+"\"\n" +
-                "TEXT 10,280,\"TSS24.BF2\",0,1,1,\"地址:\"\n" +
-                addressCMD +
-                "PRINT 1,1\n";
 
     }
 

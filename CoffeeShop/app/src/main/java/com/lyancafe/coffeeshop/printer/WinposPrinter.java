@@ -127,12 +127,6 @@ public class WinposPrinter implements NetPrint {
                 }
 
 
-                /*if(!coffeeMap.containsKey(item.getProduct())){
-                    coffeeMap.put(item.getProduct(),item.getQuantity());
-                }else{
-                    coffeeMap.put(item.getProduct(),coffeeMap.get(item.getProduct())+item.getQuantity());
-                }*/
-
                 //个性化口味
                 String fittings = item.getRecipeFittings();
                 if(!TextUtils.isEmpty(fittings)){
@@ -185,36 +179,6 @@ public class WinposPrinter implements NetPrint {
         writeCommand(bigLabelIP,port,printMaterialContent);
     }
 
-    /*public void printBigLabelTest(List<String> contents){
-        String printMaterialContent = null;
-
-        printMaterialContent =  "N"+"\n"+
-                "OD"+"\n"+
-                "q640"+"\n"+
-                "Q400,16"+"\n"+
-                "S3"+"\n"+
-                "D8"+"\n"+
-                "A10,12,0,230,1,1,N,\""+contents.get(0)+"\""+"\n"+
-                "A10,37,0,230,1,1,N,\""+contents.get(1)+"\""+"\n"+
-                "A10,62,0,230,1,1,N,\""+contents.get(2)+"\""+"\n"+
-                "A10,87,0,230,1,1,N,\""+contents.get(3)+"\""+"\n"+
-                "A10,112,0,230,1,1,N,\""+contents.get(4)+"\""+"\n"+
-                "A10,137,0,230,1,1,N,\""+contents.get(5)+"\""+"\n"+
-                "A10,162,0,230,1,1,N,\""+contents.get(6)+"\""+"\n"+
-                "A10,187,0,230,1,1,N,\""+contents.get(7)+"\""+"\n"+
-                "A10,212,0,230,1,1,N,\""+contents.get(8)+"\""+"\n"+
-                "A10,237,0,230,1,1,N,\""+contents.get(9)+"\""+"\n"+
-                "A10,262,0,230,1,1,N,\""+contents.get(10)+"\""+"\n"+
-                "A10,287,0,230,1,1,N,\""+contents.get(11)+"\""+"\n"+
-                "A10,312,0,230,1,1,N,\""+contents.get(12)+"\""+"\n"+
-                "A10,337,0,230,1,1,N,\""+contents.get(13)+"\""+"\n"+
-                "A10,362,0,230,1,1,N,\""+contents.get(14)+"\""+"\n"+
-                "P1"+"\n";
-
-
-        writeCommand(bigLabelIP,port,printMaterialContent);
-
-    }*/
 
 
     @Override
