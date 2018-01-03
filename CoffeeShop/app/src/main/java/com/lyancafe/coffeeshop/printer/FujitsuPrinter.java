@@ -173,6 +173,31 @@ public class FujitsuPrinter implements NetPrint {
     @Override
     public void printBigLabelTest(List<String> contents) {
 
+        String printTestContent =
+                "SIZE 80 mm, 49 mm\n" +
+                "GAP 2 mm, 0 mm\n" +
+                "SET RIBBON OFF\n" +
+                "DIRECTION 1,0\n" +
+                "CLS\n" +
+                "TEXT 8,10,\"TSS24.BF2\",0,1,1,\"" + contents.get(0) + "\"\n" +
+                "TEXT 8,35,\"TSS24.BF2\",0,1,1,\"" + contents.get(1) + "\"\n" +
+                "TEXT 8,60,\"TSS24.BF2\",0,1,1,\"" + contents.get(2) + "\"\n" +
+                "TEXT 8,85,\"TSS24.BF2\",0,1,1,\"" + contents.get(3) + "\"\n" +
+                "TEXT 8,110,\"TSS24.BF2\",0,1,1,\"" + contents.get(4) + "\"\n" +
+                "TEXT 8,135,\"TSS24.BF2\",0,1,1,\"" + contents.get(5) + "\"\n" +
+                "TEXT 8,160,\"TSS24.BF2\",0,1,1,\"" + contents.get(6) + "\"\n" +
+
+                "TEXT 8,196,\"TSS24.BF2\",0,1,1,\"" + contents.get(7) + "\"\n" +
+                "TEXT 8,221,\"TSS24.BF2\",0,1,1,\"" + contents.get(8) + "\"\n" +
+                "TEXT 8,246,\"TSS24.BF2\",0,1,1,\"" + contents.get(9) + "\"\n" +
+
+                "TEXT 8,282,\"TSS24.BF2\",0,1,1,\"" + contents.get(10) + "\"\n" +
+                "TEXT 8,307,\"TSS24.BF2\",0,1,1,\"" + contents.get(11) + "\"\n" +
+                "TEXT 8,332,\"TSS24.BF2\",0,1,1,\"" + contents.get(12) + "\"\n" +
+                "TEXT 8,357,\"TSS24.BF2\",0,1,1,\"" + contents.get(13) + "\"\n" +
+                "PRINT 1,1\n";
+
+        writeCommand(bigLabelIP, port, printTestContent);
     }
 
     @Override
