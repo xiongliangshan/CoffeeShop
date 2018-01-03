@@ -957,14 +957,17 @@ public class OrderHelper {
             if(item.getColdHotProperty()==1){
                 //冷
                 cold+=item.getQuantity();
-            }else if(item.getColdHotProperty()==2){
+            }else{
                 //热
                 hot+=item.getQuantity();
             }
         }
-
-        coldBox = cold>0?(cold>=4?(cold/4+cold%4):1):0;
-        hotBox = hot>0?(hot>=4?(hot/4+hot%4):1):0;
+        if(cold>0){
+            coldBox = cold%4==0?cold/4:(cold/4+1);
+        }
+        if(hot>0){
+            hotBox = hot%4==0?hot/4:(hot/4+1);
+        }
 
         return coldBox+hotBox;
     }
