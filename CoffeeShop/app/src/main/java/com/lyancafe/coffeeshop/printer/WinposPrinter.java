@@ -326,6 +326,19 @@ public class WinposPrinter implements NetPrint {
         boolean isSimplify = PrintSetting.isSimplifyEnable(CSApplication.getInstance());
         if(bean.getCupAmount()==1 && isSimplify){
             String expectedTime = bean.getInstant()==1?":尽快送达":OrderHelper.getPeriodOfExpectedtime(bean);
+            String address = bean.getAddress();
+            String bestAddress = "";
+            if(!TextUtils.isEmpty(address)&& address.length()>25){
+                int startIndex = address.indexOf("市");
+                LogUtil.d(TAG,"startIndex = "+startIndex);
+                if(startIndex!=-1){
+                    bestAddress = address.substring(startIndex+1);
+                }else {
+                    bestAddress = address;
+                }
+            }else {
+                bestAddress = address;
+            }
             return  "N"+"\n"+
                     "q640"+"\n"+
                     "Q400,16"+"\n"+
@@ -335,11 +348,11 @@ public class WinposPrinter implements NetPrint {
                     "A300,20,0,230,2,2,N,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
                     "A20,70,0,230,1,1,N,\"单号:\""+"\n"+ //订单编号
                     "A70,70,0,230,1,1,N,\""+bean.getOrderId()+OrderHelper.getWxScanStrForPrint(bean)+","+"\""+"\n"+
-                    "A170,70,0,230,1,1,N,\""+bean.getReceiverName()+","+"\""+"\n"+
-                    "A250,70,0,230,1,1,N,\"送达时间\""+"\n"+
-                    "A350,70,0,230,1,1,N,\""+expectedTime+"\""+"\n"+
-                    "A510,70,0,230,1,1,N,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
-                    "A20,100,0,230,1,1,N,\""+bean.getAddress()+"\""+"\n"+
+                    "A180,70,0,230,1,1,N,\""+bean.getReceiverName()+","+"\""+"\n"+
+                    "A270,70,0,230,1,1,N,\"送达时间\""+"\n"+
+                    "A370,70,0,230,1,1,N,\""+expectedTime+"\""+"\n"+
+                    "A520,70,0,230,1,1,N,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
+                    "A20,100,0,230,1,1,N,\""+bestAddress+"\""+"\n"+
                     "A20,130,0,230,1,1,N,\""+cupList[0]+"\""+"\n"+
                     "P1"+"\n";
         }else {
