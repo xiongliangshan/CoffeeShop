@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.lyancafe.coffeeshop.bean.DaoMaster;
 import com.lyancafe.coffeeshop.bean.DaoSession;
+import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.service.MonitorService;
 import com.lyancafe.coffeeshop.utils.LogUtil;
@@ -104,6 +105,7 @@ public class CSApplication extends Application {
         manager.getDefaultDisplay().getMetrics(dm);
         screenWidth = dm.widthPixels;
         screenHeight = dm.heightPixels;
+        LogUtil.d(TAG,"screenWidth = "+screenWidth+" |screenHeight = "+screenHeight+" | density = "+dm.density+" |densityDpi = "+dm.densityDpi);
     }
 
     @Override

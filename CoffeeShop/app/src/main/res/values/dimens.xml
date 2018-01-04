@@ -14,6 +14,7 @@
     <dimen name="flag_more_size">15sp</dimen>
     <dimen name="order_item_content_height">200dp</dimen>
     <dimen name="effect_time_text_size">21sp</dimen>
+    <dimen name="order_item_padding">4dp</dimen>
 
     <dimen name="tab_text">18sp</dimen>
 </resources>
