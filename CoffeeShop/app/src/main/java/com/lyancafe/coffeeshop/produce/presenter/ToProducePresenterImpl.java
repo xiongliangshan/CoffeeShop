@@ -3,9 +3,9 @@ package com.lyancafe.coffeeshop.produce.presenter;
 
 import android.content.Context;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.bean.BatchOrder;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
@@ -87,10 +87,11 @@ public class ToProducePresenterImpl implements ToProducePresenter{
         final List<Long> orderIds = new ArrayList<>();
         final List<Long> scanIds = new ArrayList<>();
         OrderHelper.getIdsFromOrders(orders,orderIds,scanIds);
+        BatchOrder batchOrder = new BatchOrder(orderIds,scanIds);
         final List<Long> allOrderIds = new ArrayList<>();
         allOrderIds.addAll(orderIds);
         allOrderIds.addAll(scanIds);
-        mToProduceModel.doStartBatchProduce(user.getShopId(),orderIds,scanIds,new CustomObserver<JsonObject>(mContext,true) {
+        mToProduceModel.doStartBatchProduce(user.getShopId(),batchOrder,new CustomObserver<JsonObject>(mContext,true) {
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
                 mToProduceView.showToast(mContext.getString(R.string.do_success));

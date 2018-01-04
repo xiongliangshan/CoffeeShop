@@ -1,6 +1,7 @@
 package com.lyancafe.coffeeshop.produce.model;
 
 import com.google.gson.JsonObject;
+import com.lyancafe.coffeeshop.bean.BatchOrder;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.http.CustomObserver;
 
@@ -21,7 +22,7 @@ public interface ToProduceModel{
 
 
     //批量开始生产
-    void doStartBatchProduce(int shopId,List<Long> orderIds,List<Long> scanIds,CustomObserver<JsonObject> observer);
+    void doStartBatchProduce(int shopId, BatchOrder batchOrder, CustomObserver<JsonObject> observer);
 
 
     //无需生产

@@ -3,6 +3,7 @@ package com.lyancafe.coffeeshop.produce.model;
 
 import com.google.gson.JsonObject;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
+import com.lyancafe.coffeeshop.bean.BatchOrder;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.http.CustomObserver;
 import com.lyancafe.coffeeshop.http.RetrofitHttp;
@@ -35,8 +36,8 @@ public class ToProduceModelImpl implements ToProduceModel{
     }
 
     @Override
-    public void doStartBatchProduce(int shopId, List<Long> orderIds,List<Long> scanIds,CustomObserver<JsonObject> observer) {
-        RetrofitHttp.getRetrofit().doStartBatchProduce(shopId,orderIds,scanIds)
+    public void doStartBatchProduce(int shopId, BatchOrder batchOrder, CustomObserver<JsonObject> observer) {
+        RetrofitHttp.getRetrofit().doStartBatchProduce(shopId,batchOrder)
                 .compose(RxHelper.<BaseEntity<JsonObject>>io_main())
                 .subscribe(observer);
     }

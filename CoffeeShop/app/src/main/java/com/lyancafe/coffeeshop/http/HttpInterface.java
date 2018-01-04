@@ -3,6 +3,7 @@ package com.lyancafe.coffeeshop.http;
 import com.google.gson.JsonObject;
 import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
+import com.lyancafe.coffeeshop.bean.BatchOrder;
 import com.lyancafe.coffeeshop.bean.DeliverBean;
 import com.lyancafe.coffeeshop.bean.DeviceGroup;
 import com.lyancafe.coffeeshop.bean.EvaluationBean;
@@ -87,11 +88,10 @@ public interface HttpInterface {
     /**
      * 批量生产接口
      * @param shopId
-     * @param orderIds
      * @return
      */
     @POST("v3/{shopId}/order/batchBeginProduce")
-    Observable<BaseEntity<JsonObject>> doStartBatchProduce(@Path("shopId") int shopId, @Query("orderIds") List<Long> orderIds,@Query("scanIds") List<Long> scanIds);
+    Observable<BaseEntity<JsonObject>> doStartBatchProduce(@Path("shopId") int shopId, @Body BatchOrder batchOrder);
 
     /**
      * 生产中订单列表
@@ -162,7 +162,6 @@ public interface HttpInterface {
      * 评价列表
      * @param shopId
      * @param id
-     * @param token
      * @return
      */
     @GET("v3/{shopId}/orders/feedbackList")
@@ -250,7 +249,6 @@ public interface HttpInterface {
      * 修改门店电话号码
      * @param shopId
      * @param shopTelephone
-     * @param token
      * @return
      */
     @POST("v3/{shopId}/shop/update")
