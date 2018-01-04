@@ -72,8 +72,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="1dp"
+                app:roundRadius="@dimen/progress_percent_radius"
                 app:startText="接单"
                 app:endText="送达"
+
                 />
 
             <RelativeLayout

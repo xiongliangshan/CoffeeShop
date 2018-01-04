@@ -30,6 +30,7 @@ public class ProgressPercent extends View {
     private int mDesTextColor;
     private float mDesTextSize;
     private int mPassColor;
+    private float mRoundRadius;
     private Paint textPaint;
     private Paint rectPaint;
 
@@ -62,6 +63,8 @@ public class ProgressPercent extends View {
         mDesTextColor = a.getColor(R.styleable.ProgressPercent_desTextColor, Color.BLACK);
         mDesTextSize = a.getDimension(R.styleable.ProgressPercent_desTextSize,16f);
         mPassColor = a.getColor(R.styleable.ProgressPercent_passColor,Color.GREEN);
+        mRoundRadius = a.getDimension(R.styleable.ProgressPercent_roundRadius,20f);
+        LogUtil.d(TAG,"mRoundRadius = "+mRoundRadius);
         a.recycle();
         initDraw();
     }
@@ -172,9 +175,9 @@ public class ProgressPercent extends View {
         canvas.drawText(mStartText,getPaddingLeft()+2,baseLineY,textPaint);
         canvas.drawText(mEndText,getWidth()-getPaddingRight()-endTextWidth-2,baseLineY,textPaint);
         if(mProgressRect==null){
-            mProgressRect = new RectF(paddingLeft+startTextWidth+4,paddingTop,getWidth()-paddingRight-endTextWidth-4,height);
+            mProgressRect = new RectF(paddingLeft+startTextWidth+4,paddingTop+1,getWidth()-paddingRight-endTextWidth-4,height-1);
         }else {
-            mProgressRect.set(paddingLeft+startTextWidth+4,paddingTop,getWidth()-paddingRight-endTextWidth-4,height);
+            mProgressRect.set(paddingLeft+startTextWidth+4,paddingTop+1,getWidth()-paddingRight-endTextWidth-4,height-1);
         }
 
         if(status==-1){
@@ -183,7 +186,7 @@ public class ProgressPercent extends View {
             rectPaint.setAntiAlias(true);
             rectPaint.setStrokeWidth(1f);
             rectPaint.setColor(Color.BLACK);
-            canvas.drawRoundRect(mProgressRect,20,20,rectPaint);
+            canvas.drawRoundRect(mProgressRect,mRoundRadius,mRoundRadius,rectPaint);
             textPaint.setColor(Color.BLACK);
             float beforeStartWidth = textPaint.measureText(mBeforeStartText);
             canvas.drawText(mBeforeStartText,mProgressRect.left+(mProgressRect.width()-beforeStartWidth)/2.0f,baseLineY,textPaint);
@@ -208,11 +211,11 @@ public class ProgressPercent extends View {
             rectPaint.setDither(true);
             rectPaint.setStrokeWidth(1f);
             rectPaint.setColor(Color.BLACK);
-            canvas.drawRoundRect(mProgressRect,20,20,rectPaint);
+            canvas.drawRoundRect(mProgressRect,mRoundRadius,mRoundRadius,rectPaint);
 
             rectPaint.setStyle(Paint.Style.FILL);
             rectPaint.setColor(mPassColor);
-            canvas.drawRoundRect(mPassRect,20,20,rectPaint);
+            canvas.drawRoundRect(mPassRect,mRoundRadius,mRoundRadius,rectPaint);
 
             float passTextWidth = textPaint.measureText(String.valueOf(passMinute));
             textPaint.setColor(Color.BLACK);
@@ -225,7 +228,7 @@ public class ProgressPercent extends View {
             //已超时
             rectPaint.setStyle(Paint.Style.FILL_AND_STROKE);
             rectPaint.setColor(Color.RED);
-            canvas.drawRoundRect(mProgressRect,20,20,rectPaint);
+            canvas.drawRoundRect(mProgressRect,mRoundRadius,mRoundRadius,rectPaint);
             textPaint.setColor(Color.WHITE);
             float overTextWidth = textPaint.measureText(mOverText);
             canvas.drawText(mOverText,mProgressRect.left+(mProgressRect.width()-overTextWidth)/2.0f,baseLineY,textPaint);
