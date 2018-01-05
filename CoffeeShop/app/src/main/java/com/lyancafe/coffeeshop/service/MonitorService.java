@@ -26,6 +26,7 @@ import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -38,9 +39,13 @@ import java.util.concurrent.TimeUnit;
 
 import cn.jpush.android.api.JPushInterface;
 import io.reactivex.Observable;
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 /**
  * Created by Administrator on 2017/12/19.
@@ -78,6 +83,32 @@ public class MonitorService extends Service {
                         }
                     }
                 });
+
+        Observable.interval(30,TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+                        checkUploadFile();
+                    }
+                });
+    }
+
+    private void checkUploadFile() {
+        LogUtil.d(TAG,"checkUploadFile");
+        File logDir = new File(CSApplication.LOG_DIR);
+        if(!logDir.exists()){
+            LogUtil.w(TAG,"日志目录不存在!");
+            return;
+        }
+        File[] files = logDir.listFiles();
+        if(files.length==0){
+            return;
+        }
+        for(File file:files){
+            uploadFile(file);
+        }
     }
 
 
@@ -268,6 +299,31 @@ public class MonitorService extends Service {
             result = 100;
         }
         return result;
+    }
+
+
+    private void uploadFile(final File file){
+//        RequestBody description = RequestBody.create(MediaType.parse("text/plain"),"文件说明");
+        RequestBody logFile = RequestBody.create(MediaType.parse("application/octet-stream"), file);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("logFile",file.getName(),logFile);
+        LogUtil.d(TAG,"开始上传文件:"+file.getName());
+        RetrofitHttp.getRetrofit().uploadFile(part)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(new Consumer<BaseEntity<JsonObject>>() {
+                    @Override
+                    public void accept(BaseEntity<JsonObject> jsonObjectBaseEntity) throws Exception {
+                        if (jsonObjectBaseEntity.getStatus() == 0) {
+                            LogUtil.d(TAG, "上传文件成功，删除本地文件 " + file.getName());
+                            file.delete();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        LogUtil.e(TAG,"上传文件失败"+throwable.getMessage());
+                    }
+                });
     }
 
 

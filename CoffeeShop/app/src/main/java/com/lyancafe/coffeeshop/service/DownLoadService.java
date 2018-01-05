@@ -14,6 +14,7 @@ import android.util.Log;
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ApkInfoBean;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.io.File;
@@ -54,16 +55,19 @@ public class DownLoadService extends IntentService {
     public void onCreate() {
         super.onCreate();
         initNotification();
+        Logger.getLogger().log("DownLoadService onCreate");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Logger.getLogger().log("DownLoadService onDestroy");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "service  onStartCommand");
+        Logger.getLogger().log("DownLoadService onStartCommand");
         return super.onStartCommand(intent, flags, startId);
     }
 

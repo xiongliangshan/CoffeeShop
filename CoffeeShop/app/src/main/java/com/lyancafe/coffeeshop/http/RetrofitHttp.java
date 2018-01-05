@@ -79,6 +79,10 @@ public class RetrofitHttp {
             if(token==null){
                 token = "";
             }
+            if(chain.request().url().toString().contains("upload")){
+                LogUtil.d("xiong","upload 不拦截");
+                return chain.proceed(chain.request());
+            }
             Request request = chain.request()
                     .newBuilder()
                     .addHeader("content-type","application/x-www-form-urlencoded; charset=UTF-8")
