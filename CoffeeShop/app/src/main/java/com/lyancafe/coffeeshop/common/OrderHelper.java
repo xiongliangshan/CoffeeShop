@@ -19,6 +19,7 @@ import com.lyancafe.coffeeshop.bean.Product;
 import com.lyancafe.coffeeshop.bean.SummarizeGroup;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
+import com.lyancafe.coffeeshop.printer.PrintSetting;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import java.text.DecimalFormat;
@@ -948,6 +949,7 @@ public class OrderHelper {
 
     //计算一个单子能预装几盒
     public static int caculateBoxOrder(OrderBean order){
+
         List<ItemContentBean> items = order.getItems();
         int cold =0;
         int hot = 0;
@@ -962,17 +964,29 @@ public class OrderHelper {
                 hot+=item.getQuantity();
             }
         }
-        if(cold>0){
-            coldBox = cold%4==0?cold/4:(cold/4+1);
+        boolean isSimplify = PrintSetting.isSimplifyEnable(CSApplication.getInstance());
+        if(isSimplify){
+            if(cold>0){
+                coldBox = cold%2==0?cold/2:(cold/2+1);
+            }
+            if(hot>0){
+                hotBox = hot%2==0?hot/2:(hot/2+1);
+            }
+        }else {
+            if(cold>0){
+                coldBox = cold%4==0?cold/4:(cold/4+1);
+            }
+            if(hot>0){
+                hotBox = hot%4==0?hot/4:(hot/4+1);
+            }
         }
-        if(hot>0){
-            hotBox = hot%4==0?hot/4:(hot/4+1);
-        }
+
 
         return coldBox+hotBox;
     }
 
     public static Map<String,Integer> caculateCupBox(OrderBean order){
+        boolean isSimplify = PrintSetting.isSimplifyEnable(CSApplication.getInstance());
         Map<String,Integer> map = new HashMap<>();
         map.put("1beihe",0);
         map.put("2beihe",0);
@@ -989,48 +1003,63 @@ public class OrderHelper {
                 hot+=item.getQuantity();
             }
         }
+        if(isSimplify){
 
-        if(cold==1){
-            map.put("1beihe",map.get("1beihe")+1);
-        }else if(cold==2){
-            map.put("2beihe",map.get("2beihe")+1);
-        }else if(cold==3){
-            map.put("4beihe",map.get("4beihe")+1);
-        }else if(cold>=4){
-            int a = cold%4;
-            if(a==0){
-                map.put("4beihe",map.get("4beihe")+cold/4);
+            if(cold%2==0){
+                map.put("2beihe",map.get("2beihe")+cold/2);
             }else {
-                map.put("4beihe",map.get("4beihe")+cold/4);
-                if(a==3){
-                    map.put("4beihe",map.get("4beihe")+1);
-                }else {
-                    map.put(a+"beihe",map.get(a+"beihe")+1);
-                }
+                map.put("2beihe",map.get("2beihe")+cold/2);
+                map.put("1beihe",map.get("1beihe")+1);
+            }
+            if(hot%2==0){
+                map.put("2beihe",map.get("2beihe")+hot/2);
+            }else {
+                map.put("2beihe",map.get("2beihe")+hot/2);
+                map.put("1beihe",map.get("1beihe")+1);
+            }
 
+        }else {
+            if(cold==1){
+                map.put("1beihe",map.get("1beihe")+1);
+            }else if(cold==2){
+                map.put("2beihe",map.get("2beihe")+1);
+            }else if(cold==3){
+                map.put("4beihe",map.get("4beihe")+1);
+            }else if(cold>=4){
+                int a = cold%4;
+                if(a==0){
+                    map.put("4beihe",map.get("4beihe")+cold/4);
+                }else {
+                    map.put("4beihe",map.get("4beihe")+cold/4);
+                    if(a==3){
+                        map.put("4beihe",map.get("4beihe")+1);
+                    }else {
+                        map.put(a+"beihe",map.get(a+"beihe")+1);
+                    }
+
+                }
+            }
+            if(hot==1){
+                map.put("1beihe",map.get("1beihe")+1);
+            }else if(hot==2){
+                map.put("2beihe",map.get("2beihe")+1);
+            }else if(hot==3){
+                map.put("4beihe",map.get("4beihe")+1);
+            }else if(hot>=4){
+                int a = hot%4;
+                if(a==0){
+                    map.put("4beihe",map.get("4beihe")+hot/4);
+                }else {
+                    map.put("4beihe",map.get("4beihe")+hot/4);
+                    if(a==3){
+                        map.put("4beihe",map.get("4beihe")+1);
+                    }else {
+                        map.put(a+"beihe",map.get(a+"beihe")+1);
+                    }
+
+                }
             }
         }
-        if(hot==1){
-            map.put("1beihe",map.get("1beihe")+1);
-        }else if(hot==2){
-            map.put("2beihe",map.get("2beihe")+1);
-        }else if(hot==3){
-            map.put("4beihe",map.get("4beihe")+1);
-        }else if(hot>=4){
-            int a = hot%4;
-            if(a==0){
-                map.put("4beihe",map.get("4beihe")+hot/4);
-            }else {
-                map.put("4beihe",map.get("4beihe")+hot/4);
-                if(a==3){
-                    map.put("4beihe",map.get("4beihe")+1);
-                }else {
-                    map.put(a+"beihe",map.get(a+"beihe")+1);
-                }
-
-            }
-        }
-
 
         return map;
     }
