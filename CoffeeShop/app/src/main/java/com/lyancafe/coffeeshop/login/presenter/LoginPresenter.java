@@ -14,11 +14,6 @@ public interface LoginPresenter {
      */
     void login();
 
-    /**
-     * 上传设备信息
-     * @param token
-     */
-    void uploadDeviceInfo(int shopId,int userId,String token);
 
     /**
      * 保存调试服务器IP地址

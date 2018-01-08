@@ -27,19 +27,12 @@ public class LoginModelImpl implements LoginModel{
     private static final String TAG = "login";
 
     @Override
-    public void login(String loginName, String password,String regId,Observer<BaseEntity<UserBean>> observer) {
-        RetrofitHttp.getRetrofit().login(loginName,password,regId)
+    public void login(Map<String,Object> params,Observer<BaseEntity<UserBean>> observer) {
+        RetrofitHttp.getRetrofit().login(params)
                 .compose(RxHelper.<BaseEntity<UserBean>>io_main())
                 .subscribe(observer);
     }
 
-
-    @Override
-    public void uploadDeviceInfo(int shopId,int userId,Map<String,Object> params, Observer<BaseEntity> observer) {
-        RetrofitHttp.getRetrofit().uploadDeviceInfo(shopId,userId,params)
-                .compose(RxHelper.<BaseEntity>io_main())
-                .subscribe(observer);
-    }
 
     @Override
     public boolean isCurrentDayFirstLogin(Context context) {

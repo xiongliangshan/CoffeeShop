@@ -137,7 +137,14 @@ public class WinposPrinter implements NetPrint {
 
     @Override
     public void printBigLabel(OrderBean orderBean) {
-        List<PrintOrderBean> printList = Calculator.calculatePinterOrderBeanList(orderBean);
+        List<PrintOrderBean> printList = null;
+        boolean isSimplify = PrintSetting.isSimplifyEnable(CSApplication.getInstance());
+        if(isSimplify){
+            printList = Calculator.calculateBigLabelObjects(orderBean);
+        }else{
+            printList = Calculator.calculatePinterOrderBeanList(orderBean);
+        }
+
         for(PrintOrderBean bean:printList){
             String printCommand = OTCForBigLabel(bean);
             writeCommand(bigLabelIP,port,printCommand);

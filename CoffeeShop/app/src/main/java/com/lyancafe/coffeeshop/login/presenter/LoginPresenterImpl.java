@@ -76,7 +76,15 @@ public class LoginPresenterImpl implements LoginPresenter{
             Log.e("login", e.getMessage());
         }
         final String redId = JPushInterface.getRegistrationID(CSApplication.getInstance());
-        mLoginModel.login(loginName, password,redId,new Observer<BaseEntity<UserBean>>() {
+        final String mType = android.os.Build.MODEL; // 手机型号
+        final int appVer = MyUtil.getVersionCode(CSApplication.getInstance());
+        Map<String,Object> params = new HashMap<>();
+        params.put("loginName",loginName);
+        params.put("password",password);
+        params.put("regId",redId);
+        params.put("mType",mType);
+        params.put("appVer",appVer);
+        mLoginModel.login(params,new Observer<BaseEntity<UserBean>>() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
                 mLoginView.showLoadingDlg();
@@ -100,7 +108,6 @@ public class LoginPresenterImpl implements LoginPresenter{
 
                     }
 
-                    uploadDeviceInfo(userBean.getShopId(),userBean.getUserId(),userBean.getToken());
 
                     mLoginView.stepToMain();
 
@@ -164,56 +171,6 @@ public class LoginPresenterImpl implements LoginPresenter{
         }
     }
 
-
-    /**
-     * 上传设备信息
-     * @param token
-     */
-    @Override
-    public void uploadDeviceInfo(int shopId,int userId,String token) {
-
-        final String deviceId = "";
-        final String mType = android.os.Build.MODEL; // 手机型号
-        final int appCode = MyUtil.getVersionCode(CSApplication.getInstance());
-        final String redId = JPushInterface.getRegistrationID(CSApplication.getInstance());
-        if(TextUtils.isEmpty(redId)){
-            LogUtil.w("jpush","Jpush  getRegistrationID 获取regId失败");
-            return;
-        }
-        Map<String,Object> params = new HashMap<String,Object>();
-        params.put("deviceId",deviceId);
-        params.put("mType",mType);
-        params.put("appCode",appCode);
-        params.put("regId", redId);
-        params.put("token",token);
-
-        mLoginModel.uploadDeviceInfo(shopId,userId,params,new Observer<BaseEntity>(){
-            @Override
-            public void onSubscribe(@NonNull Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(@NonNull BaseEntity baseEntity) {
-                if(baseEntity.getStatus()==0){
-                    Log.i(TAG,"上传设备信息成功:"+mType+"|"+appCode+"|"+redId);
-                }else{
-                    Log.w(TAG,"上传失败:"+baseEntity.getMessage());
-                }
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
-
-    }
 
     @Override
     public void saveDebugIp(String ip) {

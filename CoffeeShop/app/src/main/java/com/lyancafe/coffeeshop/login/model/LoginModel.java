@@ -22,21 +22,8 @@ public interface LoginModel{
 
     /**
      * 登录
-     * @param loginName
-     * @param password
-     * @param regId
      */
-    void login(String loginName, String password,String regId,Observer<BaseEntity<UserBean>> Observer);
-
-
-    /**
-     * 上传设备信息
-     * @param shopId
-     * @param userId
-     * @param params
-     * @param observer
-     */
-    void uploadDeviceInfo(int shopId,int userId,Map<String,Object> params, Observer<BaseEntity> observer);
+    void login(Map<String,Object> params,Observer<BaseEntity<UserBean>> Observer);
 
 
 

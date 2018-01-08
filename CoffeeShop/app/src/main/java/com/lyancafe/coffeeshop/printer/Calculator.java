@@ -8,6 +8,7 @@ import com.lyancafe.coffeeshop.bean.PrintCupBean;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
 import com.lyancafe.coffeeshop.bean.Product;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ import java.util.Map;
 
 public class Calculator {
 
+    private static final String TAG = "Calculator";
+
     /**
      * 根据订单的总杯数计算盒子数
      * @param totalQuantity 总杯数
@@ -39,6 +42,19 @@ public class Calculator {
         }
     }
 
+    /**
+     * 计算新版盒子数
+     * @param totalQuantity
+     * @return
+     */
+    public static int caculateBoxAmount(int totalQuantity){
+        if(totalQuantity%2==0){
+            return totalQuantity/2;
+        }else {
+            return totalQuantity/2 + 1;
+        }
+    }
+
 
     /**
      * 生成一个订单对应的大标签数据模型
@@ -46,6 +62,7 @@ public class Calculator {
      * @return 大标签对象集合
      */
     public static List<PrintOrderBean> calculatePinterOrderBeanList(OrderBean orderBean){
+        LogUtil.d(TAG,"calculatePinterOrderBeanList");
         List<PrintCupBean> hotCupList = new ArrayList<>();
         List<PrintCupBean> coolCupList = new ArrayList<>();
         calculatePinterCupBeanList(orderBean,hotCupList,coolCupList);
@@ -151,6 +168,119 @@ public class Calculator {
         return boxList;
     }
 
+    /**
+     * 只有一杯盒，两杯盒的情况
+     * @param order
+     * @return
+     */
+    public static List<PrintOrderBean> calculateBigLabelObjects(OrderBean order){
+        LogUtil.d(TAG,"calculateBigLabelObjects");
+        List<PrintCupBean> hotCupList = new ArrayList<>();
+        List<PrintCupBean> coolCupList = new ArrayList<>();
+        calculateSmallLabelObjects(order,hotCupList,coolCupList);
+        ArrayList<PrintOrderBean> boxList = new ArrayList<>();
+        int hotBoxAmount = caculateBoxAmount(hotCupList.size());
+        int coolBoxAmount = caculateBoxAmount(coolCupList.size());
+        int totalBoxAmount = hotBoxAmount+coolBoxAmount; //盒子总数
+        int i = 0;      //盒子号
+        for(i=0;i<hotCupList.size()/2;i++){
+            PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,i+1,2);
+            bean.setCoffeeList(hotCupList.subList(i * 2, i * 2 + 2));
+            bean.setOrderId(order.getId());
+            bean.setShopOrderNo(OrderHelper.getShopOrderSn(order));
+            bean.setWxScan(order.getWxScan());
+            bean.setInstant(order.getInstant());
+            bean.setOrderSn(order.getOrderSn());
+            bean.setCheckAddress(order.getCheckAddress());
+            if(TextUtils.isEmpty(order.getNotes()) && TextUtils.isEmpty(order.getCsrNotes())){
+                bean.setIsHaveRemarks(false);
+            }else{
+                bean.setIsHaveRemarks(true);
+            }
+            bean.setDeliveryTeam(order.getDeliveryTeam());
+            bean.setReceiverName(order.getRecipient());
+            bean.setReceiverPhone(OrderHelper.getHidePhone(order));
+            bean.setAddress(order.getAddress());
+            bean.setExpectedTime(order.getExpectedTime());
+            bean.setDeliverName(order.getCourierName()==null?"":order.getCourierName());
+            boxList.add(bean);
+        }
+        int hot_left_cup = hotCupList.size()%2;
+        if(hot_left_cup!=0){
+            PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,i+1,hot_left_cup);
+            bean.setCoffeeList(hotCupList.subList(i * 2, hotCupList.size()));
+            bean.setOrderId(order.getId());
+            bean.setShopOrderNo(OrderHelper.getShopOrderSn(order));
+            bean.setWxScan(order.getWxScan());
+            bean.setInstant(order.getInstant());
+            bean.setOrderSn(order.getOrderSn());
+            bean.setCheckAddress(order.getCheckAddress());
+            if(TextUtils.isEmpty(order.getNotes()) && TextUtils.isEmpty(order.getCsrNotes())){
+                bean.setIsHaveRemarks(false);
+            }else{
+                bean.setIsHaveRemarks(true);
+            }
+            bean.setDeliveryTeam(order.getDeliveryTeam());
+            bean.setReceiverName(order.getRecipient());
+            bean.setReceiverPhone(OrderHelper.getHidePhone(order));
+            bean.setAddress(order.getAddress());
+            bean.setExpectedTime(order.getExpectedTime());
+            bean.setDeliverName(order.getCourierName()==null?"":order.getCourierName());
+            boxList.add(bean);
+        }
+
+        int j = 0;      //盒子号
+        for(j=0;j<coolCupList.size()/2;j++){
+            PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,hotBoxAmount+j+1,2);
+            bean.setCoffeeList(coolCupList.subList(j * 2, j * 2 + 2));
+            bean.setOrderId(order.getId());
+            bean.setShopOrderNo(OrderHelper.getShopOrderSn(order));
+            bean.setWxScan(order.getWxScan());
+            bean.setInstant(order.getInstant());
+            bean.setOrderSn(order.getOrderSn());
+            bean.setCheckAddress(order.getCheckAddress());
+            if(TextUtils.isEmpty(order.getNotes()) && TextUtils.isEmpty(order.getCsrNotes())){
+                bean.setIsHaveRemarks(false);
+            }else{
+                bean.setIsHaveRemarks(true);
+            }
+            bean.setDeliveryTeam(order.getDeliveryTeam());
+            bean.setReceiverName(order.getRecipient());
+            bean.setReceiverPhone(OrderHelper.getHidePhone(order));
+            bean.setAddress(order.getAddress());
+            bean.setExpectedTime(order.getExpectedTime());
+            bean.setDeliverName(order.getCourierName()==null?"":order.getCourierName());
+            boxList.add(bean);
+        }
+        int cool_left_cup = coolCupList.size()%2;
+        if(cool_left_cup!=0){
+            PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,hotBoxAmount+j+1,cool_left_cup);
+            bean.setCoffeeList(coolCupList.subList(j * 2, coolCupList.size()));
+            bean.setOrderId(order.getId());
+            bean.setShopOrderNo(OrderHelper.getShopOrderSn(order));
+            bean.setWxScan(order.getWxScan());
+            bean.setInstant(order.getInstant());
+            bean.setOrderSn(order.getOrderSn());
+            bean.setCheckAddress(order.getCheckAddress());
+            if(TextUtils.isEmpty(order.getNotes()) && TextUtils.isEmpty(order.getCsrNotes())){
+                bean.setIsHaveRemarks(false);
+            }else{
+                bean.setIsHaveRemarks(true);
+            }
+            bean.setDeliveryTeam(order.getDeliveryTeam());
+            bean.setReceiverName(order.getRecipient());
+            bean.setReceiverPhone(OrderHelper.getHidePhone(order));
+            bean.setAddress(order.getAddress());
+            bean.setExpectedTime(order.getExpectedTime());
+            bean.setDeliverName(order.getCourierName()==null?"":order.getCourierName());
+            boxList.add(bean);
+        }
+
+
+        return boxList;
+
+    }
+
 
     /**
      * 生产一个订单对应的小标签数据模型
@@ -214,6 +344,67 @@ public class Calculator {
     }
 
     /**
+     * 针对新版盒子
+     * @param orderBean
+     * @param hotCuplist
+     * @param coolCuplist
+     */
+    public static void calculateSmallLabelObjects(OrderBean orderBean,List<PrintCupBean> hotCuplist,List<PrintCupBean> coolCuplist){
+        ArrayList<ItemContentBean> hotItemList = getCoolOrHotItemList(orderBean, true);
+        ArrayList<ItemContentBean> coolItemList = getCoolOrHotItemList(orderBean, false);
+
+        int hotTotalQuantity = getTotalQuantity(hotItemList);
+        int coolTotalQuantity = getTotalQuantity(coolItemList);
+        int hotBoxAmount = caculateBoxAmount(hotTotalQuantity);
+        int coolBoxAmount = caculateBoxAmount(coolTotalQuantity);
+        int boxAmount = hotBoxAmount + coolBoxAmount;
+        int pos = 0;
+        for(int i=0;i<hotItemList.size();i++){
+            ItemContentBean item = hotItemList.get(i);
+            int quantity = item.getQuantity();
+            for(int j=0;j<quantity;j++){
+                int boxNumber = pos/2+1;    //当前盒号
+                int cupNumber = pos%2+1;    //当前杯号
+                int cupAmount = caculateCupAmountPerBox(boxNumber,hotTotalQuantity,hotBoxAmount);  //当前盒中总杯数
+
+                PrintCupBean printCupBean = new PrintCupBean(boxAmount,boxNumber,cupAmount,cupNumber);
+                printCupBean.setLabel(item.getRecipeFittings());
+                printCupBean.setOrderId(orderBean.getId());
+                printCupBean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
+                printCupBean.setInstant(orderBean.getInstant());
+                printCupBean.setCoffee(item.getProduct());
+                printCupBean.setColdHotProperty(item.getColdHotProperty());
+                printCupBean.setProduceProcess(item.getProduceProcess());
+                hotCuplist.add(printCupBean);
+
+                pos++;
+            }
+        }
+        int index = 0;
+        for(int i=0;i<coolItemList.size();i++){
+            ItemContentBean item = coolItemList.get(i);
+            int quantity = item.getQuantity();
+            for(int j=0;j<quantity;j++){
+                int boxNumber = index/2+1;
+                int cupNumber = index%2+1;
+                int cupAmount = caculateCupAmountPerBox(boxNumber,coolTotalQuantity,coolBoxAmount);
+
+                PrintCupBean printCupBean = new PrintCupBean(boxAmount,boxNumber+hotBoxAmount,cupAmount,cupNumber);
+                printCupBean.setLabel(item.getRecipeFittings());
+                printCupBean.setOrderId(orderBean.getId());
+                printCupBean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
+                printCupBean.setInstant(orderBean.getInstant());
+                printCupBean.setCoffee(item.getProduct());
+                printCupBean.setColdHotProperty(item.getColdHotProperty());
+                printCupBean.setProduceProcess(item.getProduceProcess());
+                coolCuplist.add(printCupBean);
+
+                index++;
+            }
+        }
+    }
+
+    /**
      * 根据盒号计算当前盒中的中杯数
      * @param boxNumber
      * @param totalQuantity
@@ -228,6 +419,26 @@ public class Calculator {
                 return 4;
             }else{
                 return totalQuantity%4;
+            }
+        }
+    }
+
+
+    /**
+     * 针对新版
+     * @param boxNumber
+     * @param totalQuantity
+     * @param totalBoxAmount
+     * @return
+     */
+    public static int caculateCupAmountPerBox(int boxNumber,int totalQuantity,int totalBoxAmount){
+        if(totalQuantity%2==0){
+            return 2;
+        }else{
+            if(boxNumber<totalBoxAmount){
+                return 2;
+            }else{
+                return totalQuantity%2;
             }
         }
     }

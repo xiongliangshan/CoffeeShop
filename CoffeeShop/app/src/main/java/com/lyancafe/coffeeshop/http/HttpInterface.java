@@ -44,18 +44,9 @@ public interface HttpInterface {
      * @return
      */
     @POST("v3/token")
-    Observable<BaseEntity<UserBean>> login(@Query("loginName") String loginName,@Query("password") String password,@Query("regId") String regId);
+    Observable<BaseEntity<UserBean>> login(@QueryMap Map<String,Object> params);
 
 
-    /**
-     * 上传设备
-     * @param shopId 门店Id
-     * @param userId 咖啡师Id
-     * @param params 设备型号，APP版本号，regId
-     * @return
-     */
-    @POST("v3/{shopId}/barista/{userId}/Device")
-    Observable<BaseEntity> uploadDeviceInfo(@Path("shopId") int shopId,@Path("userId") int userId,@QueryMap Map<String,Object> params);
 
 
     /**
