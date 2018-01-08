@@ -84,7 +84,7 @@ public class MonitorService extends Service {
                     }
                 });
 
-        Observable.interval(30,TimeUnit.SECONDS)
+      /*  Observable.interval(30,TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe(new Consumer<Long>() {
@@ -92,7 +92,7 @@ public class MonitorService extends Service {
                     public void accept(Long aLong) throws Exception {
                         checkUploadFile();
                     }
-                });
+                });*/
     }
 
     private void checkUploadFile() {
