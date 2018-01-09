@@ -1,12 +1,11 @@
 package com.lyancafe.coffeeshop.service;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -24,7 +23,6 @@ import com.lyancafe.coffeeshop.printer.PrintFace;
 import com.lyancafe.coffeeshop.printer.PrintSetting;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.MyUtil;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +37,6 @@ import java.util.concurrent.TimeUnit;
 
 import cn.jpush.android.api.JPushInterface;
 import io.reactivex.Observable;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -84,7 +81,7 @@ public class MonitorService extends Service {
                     }
                 });
 
-      /*  Observable.interval(30,TimeUnit.SECONDS)
+        Observable.interval(30,TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe(new Consumer<Long>() {
@@ -92,7 +89,7 @@ public class MonitorService extends Service {
                     public void accept(Long aLong) throws Exception {
                         checkUploadFile();
                     }
-                });*/
+                });
     }
 
     private void checkUploadFile() {
@@ -303,9 +300,12 @@ public class MonitorService extends Service {
 
 
     private void uploadFile(final File file){
-//        RequestBody description = RequestBody.create(MediaType.parse("text/plain"),"文件说明");
-        RequestBody logFile = RequestBody.create(MediaType.parse("application/octet-stream"), file);
-        MultipartBody.Part part = MultipartBody.Part.createFormData("logFile",file.getName(),logFile);
+        String serverFileName = generateServerFileName(file);
+        if(TextUtils.isEmpty(serverFileName)){
+            return;
+        }
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/octet-stream"), file);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("logFile",serverFileName,requestBody);
         LogUtil.d(TAG,"开始上传文件:"+file.getName());
         RetrofitHttp.getRetrofit().uploadFile(part)
                 .subscribeOn(Schedulers.io())
@@ -324,6 +324,20 @@ public class MonitorService extends Service {
                         LogUtil.e(TAG,"上传文件失败"+throwable.getMessage());
                     }
                 });
+    }
+
+    private String generateServerFileName(File file){
+        if(file==null || !file.exists()){
+            return null;
+        }
+
+        UserBean userBean = LoginHelper.getUser(CSApplication.getInstance());
+        int shopId = userBean.getShopId();
+        if(shopId!=0){
+            return "app."+shopId+"."+file.getName();
+        }else {
+            return "app.xls."+file.getName();
+        }
     }
 
 
