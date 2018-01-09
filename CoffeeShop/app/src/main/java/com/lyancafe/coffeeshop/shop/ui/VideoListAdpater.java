@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.VideoBean;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.utils.BitmapCache;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 
@@ -68,6 +69,7 @@ public class VideoListAdpater extends RecyclerView.Adapter<VideoListAdpater.View
             public void onClick(View v) {
                 Intent intent = MyVedioActivity.newIntent(context, videoBean.getUrl(), videoBean.getTitle());
                 context.startActivity(intent);
+                Logger.getLogger().log("播放视频:{"+videoBean.getTitle()+"}");
             }
         });
         LogUtil.d("xls","holder.videoImg.drawable = "+holder.videoImg.getDrawable());

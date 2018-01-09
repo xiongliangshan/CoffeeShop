@@ -1123,4 +1123,18 @@ public class OrderHelper {
     }
 
 
+    /**
+     * 获取一组订单的id
+     * @param orders
+     * @return
+     */
+    public static List<Long> getOrderIds(List<OrderBean> orders){
+        List<Long> ids = new ArrayList<>();
+        for(OrderBean order:orders){
+            ids.add(order.getId());
+        }
+        return ids;
+    }
+
+
 }

@@ -80,11 +80,12 @@ public class SettingFragment extends BaseFragment implements SettingView {
             case R.id.btn_check_update:
                 //系统更新
                 mSettingPresenter.checkUpdate(true);
+                Logger.getLogger().log("点击 系统更新");
                 break;
             case R.id.btn_login_out:
                 //退出登录
                 mSettingPresenter.exitLogin();
-                Logger.getLogger().log("退出登录");
+                Logger.getLogger().log("点击 退出登录");
                 OrderHelper.batchList.clear();
                 mSettingPresenter.resetToken();
                 if(getContext() instanceof HomeActivity){

@@ -81,7 +81,6 @@ public class ProducingPresenterImpl implements ProducingPresenter{
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
                 mProducingView.showToast(mContext.getString(R.string.do_success));
-                Logger.getLogger().log("一键全部完成 ,size  = "+orderIds.size());
 //                mProducingView.setMode(ListMode.NORMAL);
                 JsonArray jsonArray = jsonObject.get("orderIds").getAsJsonArray();
                 mProducingView.removeItemsFromList(orderIds);

@@ -487,7 +487,7 @@ public class FujitsuPrinter implements NetPrint {
             e.printStackTrace();
             Log.e(TAG, "IOException" + e.getMessage());
             ToastUtil.showToast(CSApplication.getInstance(),TAG+"打印机"+ip+":"+port+"无法连接");
-            Logger.getLogger().log("打印机 富士通 "+ip+":"+port+" 无法连接");
+            Logger.getLogger().error("打印机 富士通 "+ip+":"+port+" 无法连接");
         } catch (InterruptedException e) {
             e.printStackTrace();
             Log.e(TAG, "InterruptedException" + e.getMessage());

@@ -15,10 +15,12 @@ import android.widget.TextView;
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.DeliverPlatform;
+import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.Product;
 import com.lyancafe.coffeeshop.bean.SummarizeGroup;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.event.StartProduceBatchEvent;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -76,7 +78,9 @@ public class SummarizeAdapter extends RecyclerView.Adapter<SummarizeAdapter.View
         holder.btnProduce.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EventBus.getDefault().post(new StartProduceBatchEvent(group.getOrders()));
+                List<OrderBean> orders = group.getOrders();
+                EventBus.getDefault().post(new StartProduceBatchEvent(orders));
+                Logger.getLogger().log("点击 汇总生产 ， 总数: "+orders.size()+"订单集合:"+OrderHelper.getOrderIds(orders));
             }
         });
     }

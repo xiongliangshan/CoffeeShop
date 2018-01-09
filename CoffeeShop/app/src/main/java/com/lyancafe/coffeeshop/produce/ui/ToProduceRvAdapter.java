@@ -27,6 +27,7 @@ import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.NotNeedProduceEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
 import com.lyancafe.coffeeshop.widget.ProgressPercent;
 import com.lyancafe.coffeeshop.widget.ReplenishWindow;
@@ -173,6 +174,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
                     //点击开始生产（打印）按钮
                     if (order.getRelationOrderId() == 0) {
                         EventBus.getDefault().post(new StartProduceEvent(order));
+                        Logger.getLogger().log("列表-生产单个订单:{"+order.getId()+"}");
                     } else {
                         //补单
                         ReplenishWindow replenishWindow = new ReplenishWindow(context, order);
@@ -181,12 +183,14 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
                             public void onProduce(OrderBean orderBean) {
                                 //正常生产
                                 EventBus.getDefault().post(new StartProduceEvent(order));
+                                Logger.getLogger().log("补单生产:{"+order.getId()+"}");
                             }
 
                             @Override
                             public void onNoProduce(OrderBean orderBean) {
                                 //无需生产
                                 EventBus.getDefault().post(new NotNeedProduceEvent(order));
+                                Logger.getLogger().log("补单无需生产:{"+order.getId()+"}");
                             }
                         });
                         replenishWindow.showPopUpWindow(v);

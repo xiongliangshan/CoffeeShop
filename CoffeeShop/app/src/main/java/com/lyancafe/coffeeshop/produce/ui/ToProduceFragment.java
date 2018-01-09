@@ -385,6 +385,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
                 case R.id.btn_batch_select:
                     if (getString(R.string.batch_select).equals(batchSelectBtn.getText().toString())) {
                         //点击批量选择
+                        Logger.getLogger().log("点击 批量选择");
                         if(allOrderList.size()<2){
                             ToastUtil.show(getContext(),"订单数少于2，无法批量");
                             return;
@@ -395,11 +396,13 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
                     } else {
                         //点击批量开始
                         LogUtil.d("xls", "被选中的订单:");
+
                         List<OrderBean> selectedList = mAdapter.getBatchOrders();
                         if (selectedList.size() == 0) {
                             showToast("未选中订单");
                             return;
                         }
+                        Logger.getLogger().log("点击 批量开始 ， 总数: "+selectedList.size()+"订单集合:"+OrderHelper.getOrderIds(selectedList));
                         mToProducePresenter.doStartBatchProduce(selectedList);
                     }
 
@@ -408,6 +411,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
                     setMode(NORMAL);
                     cancelBtn.setVisibility(View.GONE);
                     batchSelectBtn.setText(R.string.batch_select);
+                    Logger.getLogger().log("取消 批量选择");
                     break;
                 case R.id.btn_search:
                     search();
@@ -443,10 +447,12 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
             LogUtil.d("xiong","计算数据所用时间:"+(end - start));
 
             renderSummarizeUI(resultGroups);
+            Logger.getLogger().log("切换到 汇总模式");
         }else{
             //详单模式
             detailView.setVisibility(View.VISIBLE);
             renderNormalUI();
+            Logger.getLogger().log("切换到 详单模式");
         }
 
         this.currentMode = mode;
@@ -493,7 +499,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     // 执行搜索
     private void search(){
         String searchKey = etSearchKey.getText().toString();
-        Logger.getLogger().log("待生产搜索 "+searchKey);
+        Logger.getLogger().log("待生产搜索, key = "+searchKey);
         if(TextUtils.isEmpty(searchKey)){
             mAdapter.setSearchData(allOrderList);
             return;
@@ -541,6 +547,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
                     public void onComplete() {
                         if(result.size()==0){
                             ToastUtil.show(getContext(),"没有搜到目标订单");
+                            Logger.getLogger().log("待生产-没有搜到目标订单 "+shopOrderNo);
                         }
                     }
                 });

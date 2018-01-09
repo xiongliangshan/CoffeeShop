@@ -15,6 +15,7 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.db.OrderUtils;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.ShopNoComparator;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
@@ -216,6 +217,7 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Vi
                         LogUtil.d("xls","onComplete");
                         if(searchList.size()==0){
                             ToastUtil.show(context,"没有搜到目标订单");
+                            Logger.getLogger().log("已完成-没有搜到目标订单 "+shopOrderNo);
                         }
                     }
                 });

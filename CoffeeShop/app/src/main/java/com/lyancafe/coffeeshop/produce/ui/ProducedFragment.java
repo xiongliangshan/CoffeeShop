@@ -142,7 +142,7 @@ public class ProducedFragment extends BaseFragment implements ProducedView<Order
     // 执行搜索
     private void search() {
         String searchKey = etSearchKey.getText().toString();
-        Logger.getLogger().log("已生产搜索 " + searchKey);
+        Logger.getLogger().log("已生产搜索 key = " + searchKey);
         if (TextUtils.isEmpty(searchKey)) {
             mAdapter.setSearchData(mAdapter.tempList);
             return;

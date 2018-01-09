@@ -187,7 +187,7 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
     // 执行搜索
     private void search() {
         String searchKey = etSearchKey.getText().toString();
-        Logger.getLogger().log("生产中搜索 " + searchKey);
+        Logger.getLogger().log("生产中搜索 key = " + searchKey);
         if (TextUtils.isEmpty(searchKey)) {
             mAdapter.setSearchData(mAdapter.getList());
             return;
@@ -280,6 +280,7 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
                     return;
                 }
                 mProducingPresenter.doCompleteBatchProduce(orderIs);
+                Logger.getLogger().log("一键全部完成 ，总数为:"+orderIs.size()+"订单集合为:"+orderIs);
                 break;
         }
 

@@ -27,6 +27,7 @@ import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
@@ -178,6 +179,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
                 public void onClick(View v) {
                     //生产完成
                     EventBus.getDefault().post(new FinishProduceEvent(order));
+                    Logger.getLogger().log("列表-完成生产单个订单 {"+order.getId()+"}");
                 }
             });
 
@@ -365,6 +367,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
                         LogUtil.d("xls","onComplete");
                         if(searchList.size()==0){
                             ToastUtil.show(context,"没有搜到目标订单");
+                            Logger.getLogger().log("生产中-没有搜到目标订单 "+shopOrderNo);
                         }
                     }
                 });

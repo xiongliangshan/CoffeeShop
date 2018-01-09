@@ -81,7 +81,7 @@ public class MonitorService extends Service {
                     }
                 });
 
-        Observable.interval(30,TimeUnit.SECONDS)
+        Observable.interval(30,TimeUnit.MINUTES)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe(new Consumer<Long>() {

@@ -27,6 +27,7 @@ import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
+import com.lyancafe.coffeeshop.logger.Logger;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -347,14 +348,17 @@ public class DetailView extends CardView implements View.OnClickListener{
             case R.id.btn_finish_produce:
                 //生产完成
                 EventBus.getDefault().post(new FinishProduceEvent(mOrder));
+                Logger.getLogger().log("详情-完成生产:{"+mOrder.getId()+"}");
                 break;
             case R.id.btn_print:
                 //打印
                 EventBus.getDefault().post(new PrintOrderEvent(mOrder));
+                Logger.getLogger().log("详情-打印:{"+mOrder.getId()+"}");
                 break;
             case R.id.btn_produce_print:
                 //生产完成兼打印
                 EventBus.getDefault().post(new StartProduceEvent(mOrder));
+                Logger.getLogger().log("详情-开始生产:{"+mOrder.getId()+"}");
                 break;
         }
     }

@@ -410,7 +410,7 @@ public class WinposPrinter implements NetPrint {
             e.printStackTrace();
             Log.e(TAG, "IOException" + e.toString());
             ToastUtil.showToast(CSApplication.getInstance(),TAG+"打印机"+ip+":"+port+"无法连接");
-            Logger.getLogger().log("打印机 winpos "+ip+":"+port+" 无法连接");
+            Logger.getLogger().error("打印机 winpos "+ip+":"+port+" 无法连接");
         }catch (InterruptedException e){
             Log.e(TAG, "InterruptedException" + e.getMessage());
         }finally{

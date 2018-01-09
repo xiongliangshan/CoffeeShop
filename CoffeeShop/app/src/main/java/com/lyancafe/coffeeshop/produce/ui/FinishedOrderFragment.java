@@ -266,7 +266,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     // 执行搜索
     private void search() {
         String searchKey = etSearchKey.getText().toString();
-        Logger.getLogger().log("已完成搜索 " + searchKey);
+        Logger.getLogger().log("已完成搜索 key = " + searchKey);
         if (TextUtils.isEmpty(searchKey)) {
             mAdapter.setSearchData(mAdapter.tempList);
             return;

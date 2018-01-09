@@ -20,6 +20,7 @@ import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.http.RetrofitHttp;
 import com.lyancafe.coffeeshop.http.RxHelper;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.util.HashMap;
@@ -151,6 +152,7 @@ public class ReportIssueDialog extends DialogFragment implements View.OnClickLis
                     return;
                 }
                 reportIssue(mOrderId,17,3,contentEdit.getText().toString());
+                Logger.getLogger().log("问题反馈: {"+contentEdit.getText().toString()+"}");
                 break;
         }
     }

@@ -28,6 +28,13 @@ public class Logger {
         flm.writeLog(log+"\n");
     }
 
+    public void error(String log){
+        if(flm==null){
+            flm = new LogFileManager();
+        }
+        flm.writeLog("###### "+log+" ######"+"\n");
+    }
+
 
     public void clearAllLogs(){
         LogUtil.d("logger","logger clearAllLogs");

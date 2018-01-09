@@ -95,9 +95,8 @@ public class LoginPresenterImpl implements LoginPresenter{
             public void onNext(@NonNull BaseEntity<UserBean> userBeanBaseEntity) {
                 LogUtil.d(LogUtil.TAG_LOGIN,"onNext thread  ="+Thread.currentThread().getName());
                 if(userBeanBaseEntity.getStatus()==LoginHelper.LOGIN_SUCCESS){
-                    Logger.getLogger().log(loginName+ " 登陆成功");
                     UserBean userBean = userBeanBaseEntity.getData();
-
+                    Logger.getLogger().log(loginName+ " 登陆成功,"+userBean.toString());
                     LoginHelper.saveUser(mContext.getApplicationContext(), userBean);
                     //如果是当天第一次登陆，就清空本地缓存的订单打印记录
                     if(mLoginModel.isCurrentDayFirstLogin(mContext)){
@@ -119,6 +118,7 @@ public class LoginPresenterImpl implements LoginPresenter{
             @Override
             public void onError(@NonNull Throwable e) {
                 Log.e(TAG,"登录失败 :"+e.getMessage());
+                Logger.getLogger().error("登录失败:"+e.getMessage());
                 mLoginView.dismissLoadingDlg();
                 ToastUtil.show(mContext.getApplicationContext(),e.getMessage());
             }

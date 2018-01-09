@@ -23,6 +23,7 @@ import com.lyancafe.coffeeshop.bean.Material;
 import com.lyancafe.coffeeshop.bean.MaterialItem;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.printer.PrintFace;
 import com.lyancafe.coffeeshop.shop.presenter.MaterialsPresenter;
 import com.lyancafe.coffeeshop.shop.presenter.MaterialsPresenterImpl;
@@ -225,6 +226,7 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView<Ma
                     return;
                 }
                 PrintFace.getInst().startPrintPasterTask(itemSmall);
+                Logger.getLogger().log("打印时控贴:{"+itemSmall.getName()+"}");
                 break;
             case R.id.tv_print_material:
                 //打印物料大纸
@@ -234,10 +236,12 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView<Ma
                     return;
                 }
                 PrintFace.getInst().startPrintMaterialTask(itemBig);
+                Logger.getLogger().log("打印物料大标签:{"+itemBig.getName()+"}");
                 break;
             case R.id.btn_print_blank:
                 //打印空白时控贴
                 PrintFace.getInst().startPrintBlankPasterTask();
+                Logger.getLogger().log("打印空白时控贴");
                 break;
             case R.id.btn_print_test:
                 //测试打印机
@@ -280,6 +284,7 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView<Ma
                 list.add(item);
                 order.setItems(list);
                 PrintFace.getInst().printTest(order);
+                Logger.getLogger().log("打印测试");
                 break;
         }
     }

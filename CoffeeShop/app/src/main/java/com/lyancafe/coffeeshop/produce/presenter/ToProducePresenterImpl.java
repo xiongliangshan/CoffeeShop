@@ -70,12 +70,23 @@ public class ToProducePresenterImpl implements ToProducePresenter{
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
                 mToProduceView.showToast(mContext.getString(R.string.do_success));
-                Logger.getLogger().log("开始生产订单 "+orderId+" 成功");
                 int id  = jsonObject.get("id").getAsInt();
                 mToProduceView.removeItemFromList(id);
                 EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,1,isScanCode));
                 OrderUtils.with().updateOrder(orderId,4005);
 
+            }
+
+            @Override
+            protected void onHandleFailed(String msg) {
+                super.onHandleFailed(msg);
+                Logger.getLogger().error("生产订单失败:"+msg);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                Logger.getLogger().error("生产接口出错:"+e.getMessage());
             }
         });
     }
@@ -95,7 +106,6 @@ public class ToProducePresenterImpl implements ToProducePresenter{
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
                 mToProduceView.showToast(mContext.getString(R.string.do_success));
-                Logger.getLogger().log("批量生产 ,size  = "+orders.size());
                 LogUtil.d("xls"," 批量生产 onHandleSuccess 开始打印");
                 PrintFace.getInst().printBatch(orders);
                 mToProduceView.setMode(ListMode.NORMAL);
@@ -109,6 +119,18 @@ public class ToProducePresenterImpl implements ToProducePresenter{
                     OrderUtils.with().updateStatusBatch(scanIds,6000);
                 }
 
+            }
+
+            @Override
+            protected void onHandleFailed(String msg) {
+                super.onHandleFailed(msg);
+                Logger.getLogger().error("批量生产失败:"+msg);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                Logger.getLogger().error("批量生产接口出错:"+e.getMessage());
             }
         });
     }

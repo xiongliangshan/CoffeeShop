@@ -223,9 +223,11 @@ public class ManagerFragment extends BaseFragment implements ManagerView {
                 break;
             case R.id.rb_off:
                 PrintSetting.saveSimplifyEnable(getContext(),false);
+                Logger.getLogger().log("设置新版盒子方案---关闭");
                 break;
             case R.id.rb_on:
                 PrintSetting.saveSimplifyEnable(getContext(),true);
+                Logger.getLogger().log("设置新版盒子方案---开启");
                 break;
         }
         PrintFace.reset();
