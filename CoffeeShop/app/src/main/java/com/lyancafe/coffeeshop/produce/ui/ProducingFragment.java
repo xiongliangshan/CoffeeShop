@@ -137,8 +137,11 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
 
     @Override
     public void updateDetail(OrderBean order) {
-        detailView.updateData(order);
+        if(detailView!=null){
+            detailView.updateData(order);
+        }
     }
+
 
     @Override
     public void removeItemFromList(int id) {

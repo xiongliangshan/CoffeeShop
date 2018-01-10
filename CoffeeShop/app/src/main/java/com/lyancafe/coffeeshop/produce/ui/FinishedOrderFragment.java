@@ -159,7 +159,9 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
     @Override
     public void updateDetail(OrderBean order) {
-        detailView.updateData(order);
+        if(detailView!=null){
+            detailView.updateData(order);
+        }
     }
 
     @Override
