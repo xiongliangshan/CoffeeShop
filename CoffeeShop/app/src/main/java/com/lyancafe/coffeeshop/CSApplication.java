@@ -1,11 +1,15 @@
 package com.lyancafe.coffeeshop;
 
 import android.app.ActivityManager;
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Process;
+import android.os.SystemClock;
 import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -84,6 +88,9 @@ public class CSApplication extends Application {
         //启动服务
         startService(new Intent(getApplicationContext(),MonitorService.class));
 
+
+        initAlarm();
+
     }
 
     public static CSApplication getInstance(){
@@ -106,6 +113,7 @@ public class CSApplication extends Application {
         screenWidth = dm.widthPixels;
         screenHeight = dm.heightPixels;
         LogUtil.d(TAG,"screenWidth = "+screenWidth+" |screenHeight = "+screenHeight+" | density = "+dm.density+" |densityDpi = "+dm.densityDpi);
+        Logger.getLogger().log("设备屏幕信息:"+"screenWidth = "+screenWidth+" |screenHeight = "+screenHeight+" | density = "+dm.density+" |densityDpi = "+dm.densityDpi);
     }
 
     @Override
@@ -128,6 +136,18 @@ public class CSApplication extends Application {
             }
         }
         return null;
+    }
+
+    /**
+     * 初始化闹钟
+     */
+    private void initAlarm(){
+        Intent intent = new Intent("task_clock");
+        PendingIntent pi = PendingIntent.getBroadcast(this.getApplicationContext(),0,intent,0);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()+2*AlarmManager.INTERVAL_HOUR,2*AlarmManager.INTERVAL_HOUR,pi);
+
+
     }
 
     private void initTinkerPatch() {

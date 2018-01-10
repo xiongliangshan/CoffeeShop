@@ -81,32 +81,9 @@ public class MonitorService extends Service {
                     }
                 });
 
-        Observable.interval(30,TimeUnit.MINUTES)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe(new Consumer<Long>() {
-                    @Override
-                    public void accept(Long aLong) throws Exception {
-                        checkUploadFile();
-                    }
-                });
     }
 
-    private void checkUploadFile() {
-        LogUtil.d(TAG,"checkUploadFile");
-        File logDir = new File(CSApplication.LOG_DIR);
-        if(!logDir.exists()){
-            LogUtil.w(TAG,"日志目录不存在!");
-            return;
-        }
-        File[] files = logDir.listFiles();
-        if(files.length==0){
-            return;
-        }
-        for(File file:files){
-            uploadFile(file);
-        }
-    }
+
 
 
     @Override
@@ -118,7 +95,7 @@ public class MonitorService extends Service {
 
     private void runMonitor(){
         LogUtil.d(TAG,"启动运行时监控");
-        Observable.interval(monitorInterval,TimeUnit.MINUTES)
+        Observable.interval(monitorInterval,monitorInterval,TimeUnit.MINUTES)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe(new Consumer<Long>() {
@@ -299,46 +276,7 @@ public class MonitorService extends Service {
     }
 
 
-    private void uploadFile(final File file){
-        String serverFileName = generateServerFileName(file);
-        if(TextUtils.isEmpty(serverFileName)){
-            return;
-        }
-        RequestBody requestBody = RequestBody.create(MediaType.parse("application/octet-stream"), file);
-        MultipartBody.Part part = MultipartBody.Part.createFormData("logFile",serverFileName,requestBody);
-        LogUtil.d(TAG,"开始上传文件:"+file.getName());
-        RetrofitHttp.getRetrofit().uploadFile(part)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe(new Consumer<BaseEntity<JsonObject>>() {
-                    @Override
-                    public void accept(BaseEntity<JsonObject> jsonObjectBaseEntity) throws Exception {
-                        if (jsonObjectBaseEntity.getStatus() == 0) {
-                            LogUtil.d(TAG, "上传文件成功，删除本地文件 " + file.getName());
-                            file.delete();
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        LogUtil.e(TAG,"上传文件失败"+throwable.getMessage());
-                    }
-                });
-    }
 
-    private String generateServerFileName(File file){
-        if(file==null || !file.exists()){
-            return null;
-        }
-
-        UserBean userBean = LoginHelper.getUser(CSApplication.getInstance());
-        int shopId = userBean.getShopId();
-        if(shopId!=0){
-            return "app."+shopId+"."+file.getName();
-        }else {
-            return "app.xls."+file.getName();
-        }
-    }
 
 
     @Override

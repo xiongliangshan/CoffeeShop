@@ -96,7 +96,7 @@ public class LoginPresenterImpl implements LoginPresenter{
                 LogUtil.d(LogUtil.TAG_LOGIN,"onNext thread  ="+Thread.currentThread().getName());
                 if(userBeanBaseEntity.getStatus()==LoginHelper.LOGIN_SUCCESS){
                     UserBean userBean = userBeanBaseEntity.getData();
-                    Logger.getLogger().log(loginName+ " 登陆成功,"+userBean.toString());
+                    Logger.getLogger().log(loginName+ " 登陆成功,"+userBean.toString()+" , 设备信息: "+redId+" | "+mType+" | "+appVer);
                     LoginHelper.saveUser(mContext.getApplicationContext(), userBean);
                     //如果是当天第一次登陆，就清空本地缓存的订单打印记录
                     if(mLoginModel.isCurrentDayFirstLogin(mContext)){

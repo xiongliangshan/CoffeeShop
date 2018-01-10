@@ -195,6 +195,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".receiver.AlarmReceiver">
+            <intent-filter>
+                <action android:name="task_clock"/>
+            </intent-filter>
+        </receiver>
+
         <meta-data android:name="JPUSH_CHANNEL" android:value="developer-default"/>
         <meta-data android:name="JPUSH_APPKEY" android:value="1baa62e47b3d916278c45526"/>
         <!--极光推送配置结束-->

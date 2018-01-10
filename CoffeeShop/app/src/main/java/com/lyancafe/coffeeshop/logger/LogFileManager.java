@@ -27,7 +27,7 @@ public class LogFileManager {
     /**
      * 决定每个日志文件记录的log时间段长度
      */
-    private static final long interval = 2*60*60*1000;
+    private static final long interval = 4*60*60*1000;
 
     public LogFileManager() {
         if(logDir==null){
