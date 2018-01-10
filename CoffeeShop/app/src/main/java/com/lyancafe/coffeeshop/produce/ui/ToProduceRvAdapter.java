@@ -313,6 +313,46 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         return batchOrders;
     }
 
+    public void selectDefaultOrders() {
+        List<OrderBean> defaultSelectedList = new ArrayList<>();
+        for(int i=0;i<list.size();i++){
+            OrderBean order = list.get(i);
+            if(order.getInstant()==1){
+                defaultSelectedList.add(order);
+                selectMap.put(i,true);
+            }
+        }
+        if(defaultSelectedList.size()>0){
+            notifyDataSetChanged();
+            return;
+        }
+        long nowTime = System.currentTimeMillis();
+        for(int i=0;i<list.size();i++){
+            OrderBean order = list.get(i);
+            if(Math.abs(order.getExpectedTime()-nowTime)<=30*60*1000){
+                defaultSelectedList.add(order);
+                selectMap.put(i,true);
+            }
+        }
+        if(defaultSelectedList.size()>0){
+            notifyDataSetChanged();
+            return;
+        }
+        for(int i=0;i<list.size();i++){
+            OrderBean order = list.get(i);
+            if(Math.abs(order.getExpectedTime()-nowTime)<60*60*1000){
+                defaultSelectedList.add(order);
+                selectMap.put(i,true);
+            }
+        }
+        if(defaultSelectedList.size()>0){
+            notifyDataSetChanged();
+            return;
+        }
+
+
+    }
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 

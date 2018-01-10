@@ -373,10 +373,13 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
             case SELECT:
                 batchSelectBtn.setText(R.string.batch_start);
                 cancelBtn.setVisibility(View.VISIBLE);
+                //默认选中最紧急的一批订单
+                mAdapter.selectDefaultOrders();
                 break;
         }
 
     }
+
 
     class MyClickListener implements View.OnClickListener{
         @Override
