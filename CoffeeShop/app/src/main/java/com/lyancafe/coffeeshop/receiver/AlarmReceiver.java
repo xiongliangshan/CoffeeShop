@@ -36,7 +36,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         LogUtil.d(TAG,"onReceive:"+intent.toString()+" | 进程:"+getProcessName(context, Process.myPid()));
-        Logger.getLogger().log("收到闹钟事件:"+intent.getAction());
+        Logger.getLogger().log("收到闹钟事件:"+intent.getAction()+" (我要被上传了，拜拜 pad)");
         checkUploadFile();
     }
 

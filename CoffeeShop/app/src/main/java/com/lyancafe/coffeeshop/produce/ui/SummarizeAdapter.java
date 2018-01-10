@@ -80,7 +80,7 @@ public class SummarizeAdapter extends RecyclerView.Adapter<SummarizeAdapter.View
             public void onClick(View v) {
                 List<OrderBean> orders = group.getOrders();
                 EventBus.getDefault().post(new StartProduceBatchEvent(orders));
-                Logger.getLogger().log("点击 汇总生产 ， 总数: "+orders.size()+"订单集合:"+OrderHelper.getOrderIds(orders));
+                Logger.getLogger().log("点击 汇总生产 ， 总数: "+orders.size()+",订单集合:"+OrderHelper.getOrderIds(orders));
             }
         });
     }

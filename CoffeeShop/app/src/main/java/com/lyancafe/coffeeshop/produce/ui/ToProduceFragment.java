@@ -405,7 +405,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
                             showToast("未选中订单");
                             return;
                         }
-                        Logger.getLogger().log("点击 批量开始 ， 总数: "+selectedList.size()+"订单集合:"+OrderHelper.getOrderIds(selectedList));
+                        Logger.getLogger().log("点击 批量开始 ， 总数: "+selectedList.size()+",订单集合:"+OrderHelper.getOrderIds(selectedList));
                         mToProducePresenter.doStartBatchProduce(selectedList);
                     }
 
