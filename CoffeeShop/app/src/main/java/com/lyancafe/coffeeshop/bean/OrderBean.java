@@ -68,7 +68,9 @@ public class OrderBean implements Serializable{
 
     private int deliveryTeam;               //   配送团队 -1:无配送 4:lyan 5:qusong 6:wokuaidao 7:sweets 8:美团外卖 9:海葵 10.饿了么 100:仓库发货
 
-    private int thirdShopOrderNo;                  //   美团门店单号
+    private int thirdShopOrderNo;            //   第三方门店单号
+
+    private String thirdOrderNo;               //第三方订单号
 
     private double orderDistance;       //订单距离
 
@@ -95,13 +97,12 @@ public class OrderBean implements Serializable{
 
 
 
-
-    @Generated(hash = 134031691)
+    @Generated(hash = 1804425784)
     public OrderBean(long id, String reminder, String orderSn, int shopOrderNo, boolean wxScan, boolean isRecipeFittings,
             long expectedTime, long orderTime, long distributeTime, long produceEffect, String recipient, String address,
             String phone, long acceptTime, String courierName, String courierPhone, int status, int produceStatus, boolean issueOrder,
             int instant, String notes, String csrNotes, long handoverTime, int feedbackType, int deliveryTeam, int thirdShopOrderNo,
-            double orderDistance, long relationOrderId, String reason, boolean revoked, boolean checkAddress) {
+            String thirdOrderNo, double orderDistance, long relationOrderId, String reason, boolean revoked, boolean checkAddress) {
         this.id = id;
         this.reminder = reminder;
         this.orderSn = orderSn;
@@ -128,6 +129,7 @@ public class OrderBean implements Serializable{
         this.feedbackType = feedbackType;
         this.deliveryTeam = deliveryTeam;
         this.thirdShopOrderNo = thirdShopOrderNo;
+        this.thirdOrderNo = thirdOrderNo;
         this.orderDistance = orderDistance;
         this.relationOrderId = relationOrderId;
         this.reason = reason;
@@ -341,6 +343,14 @@ public class OrderBean implements Serializable{
 
     public void setThirdShopOrderNo(int thirdShopOrderNo) {
         this.thirdShopOrderNo = thirdShopOrderNo;
+    }
+
+    public String getThirdOrderNo() {
+        return thirdOrderNo;
+    }
+
+    public void setThirdOrderNo(String thirdOrderNo) {
+        this.thirdOrderNo = thirdOrderNo;
     }
 
     public double getOrderDistance() {

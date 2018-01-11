@@ -274,9 +274,9 @@ public class FujitsuPrinter implements NetPrint {
                     "TEXT 10,60,\"TSS24.BF2\",0,1,1,\"单号:\""+"\n"+ //订单编号
                     "TEXT 70,60,\"TSS24.BF2\",0,1,1,\""+bean.getOrderId()+OrderHelper.getWxScanStrForPrint(bean)+","+"\""+"\n"+
                     "TEXT 180,60,\"TSS24.BF2\",0,1,1,\""+bean.getReceiverName()+","+"\""+"\n"+
-                    "TEXT 270,60,\"TSS24.BF2\",0,1,1,\"送达时间\""+"\n"+
-                    "TEXT 370,60,\"TSS24.BF2\",0,1,1,\""+expectedTime+"\""+"\n"+
-                    "TEXT 520,60,\"TSS24.BF2\",0,1,1,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
+                    "TEXT 320,60,\"TSS24.BF2\",0,1,1,\"送达时间\""+"\n"+
+                    "TEXT 420,60,\"TSS24.BF2\",0,1,1,\""+expectedTime+"\""+"\n"+
+                    "TEXT 570,60,\"TSS24.BF2\",0,1,1,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
                     "TEXT 10,90,\"TSS24.BF2\",0,1,1,\""+bestAddress+"\""+"\n"+
                     "TEXT 10,120,\"TSS24.BF2\",0,1,1,\""+cupList[0]+"\""+"\n"+
                     "PRINT 1,1\n";

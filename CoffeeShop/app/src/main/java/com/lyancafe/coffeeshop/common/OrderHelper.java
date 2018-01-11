@@ -420,7 +420,19 @@ public class OrderHelper {
             return "美团"+orderBean.getThirdShopOrderNo();
         }
         if(orderBean.getDeliveryTeam()== DeliveryTeam.ELE){
-            return "饿"+orderBean.getThirdShopOrderNo();
+            String thirdOrderNo = orderBean.getThirdOrderNo();
+            String fetchCode = null;
+            if(!TextUtils.isEmpty(thirdOrderNo)){
+                if(thirdOrderNo.length()>4){
+                    fetchCode = "("+thirdOrderNo.substring(thirdOrderNo.length()-4)+")";
+                }else {
+                    fetchCode = "("+thirdOrderNo+")";
+                }
+            }else {
+                fetchCode = "";
+            }
+
+            return "饿"+orderBean.getThirdShopOrderNo()+fetchCode;
         }
         if(orderBean.getInstant()==1){//及时单
             return String.valueOf(orderBean.getShopOrderNo());
@@ -660,7 +672,7 @@ public class OrderHelper {
     }
 
     public static String getPrintFlag(String orderSn) {
-        return isPrinted(CSApplication.getInstance(),orderSn)?"重复打印":"";
+        return isPrinted(CSApplication.getInstance(),orderSn)?"重印":"";
     }
 
     public static void getIdsFromOrders(List<OrderBean> selectedList,List<Long> orderIds,List<Long> scanIds) {

@@ -57,14 +57,17 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     private void uploadFile(final File file){
-        String serverFileName = generateServerFileName(file);
+        /*String serverFileName = generateServerFileName(file);
         if(TextUtils.isEmpty(serverFileName)){
             return;
-        }
+        }*/
+        UserBean userBean = LoginHelper.getUser(CSApplication.getInstance());
+        int shopId = userBean.getShopId();
+        RequestBody shopIdStr = RequestBody.create(MediaType.parse("text/plain"),String.valueOf(shopId));
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/octet-stream"), file);
-        MultipartBody.Part part = MultipartBody.Part.createFormData("logFile",serverFileName,requestBody);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("logFile",file.getName(),requestBody);
         LogUtil.d(TAG,"开始上传文件:"+file.getName());
-        RetrofitHttp.getRetrofit().uploadFile(part)
+        RetrofitHttp.getRetrofit().uploadFile(shopIdStr,part)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe(new Consumer<BaseEntity<JsonObject>>() {

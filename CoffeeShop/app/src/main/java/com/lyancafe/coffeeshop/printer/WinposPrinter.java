@@ -274,9 +274,9 @@ public class WinposPrinter implements NetPrint {
                     "A20,70,0,230,1,1,N,\"单号:\""+"\n"+ //订单编号
                     "A70,70,0,230,1,1,N,\""+bean.getOrderId()+OrderHelper.getWxScanStrForPrint(bean)+","+"\""+"\n"+
                     "A180,70,0,230,1,1,N,\""+bean.getReceiverName()+","+"\""+"\n"+
-                    "A270,70,0,230,1,1,N,\"送达时间\""+"\n"+
-                    "A370,70,0,230,1,1,N,\""+expectedTime+"\""+"\n"+
-                    "A520,70,0,230,1,1,N,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
+                    "A320,70,0,230,1,1,N,\"送达时间\""+"\n"+
+                    "A420,70,0,230,1,1,N,\""+expectedTime+"\""+"\n"+
+                    "A570,70,0,230,1,1,N,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
                     "A20,100,0,230,1,1,N,\""+bestAddress+"\""+"\n"+
                     "A20,130,0,230,1,1,N,\""+cupList[0]+"\""+"\n"+
                     "P1"+"\n";

@@ -19,6 +19,7 @@ import java.util.Map;
 
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
@@ -290,6 +291,6 @@ public interface HttpInterface {
      */
     @Multipart
     @POST("log/upload")
-    Observable<BaseEntity<JsonObject>> uploadFile(@Part MultipartBody.Part file);
+    Observable<BaseEntity<JsonObject>> uploadFile(@Part("shopId") RequestBody shopId,@Part MultipartBody.Part file);
 
 }
