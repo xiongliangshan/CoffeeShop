@@ -25,9 +25,9 @@ public class LogFileManager {
     private File logDir;
 
     /**
-     * 决定每个日志文件记录的log时间段长度
+     * 决定每个日志文件最大容量,byte
      */
-    private static final long interval = 4*60*60*1000;
+    private static final long maxLength = 10*1024*1024;
 
     public LogFileManager() {
         if(logDir==null){
@@ -69,10 +69,11 @@ public class LogFileManager {
      */
     public File createLogFile(String fileName){
         LogUtil.d(TAG,"创建日志文件 "+fileName);
-        if(logDir==null){
-            createLogDir();
+        File file = new File(getLogDir()+fileName);
+        File  parentFile = file.getParentFile();
+        if(parentFile==null || !parentFile.exists()){
+            parentFile.mkdirs();
         }
-        File file = new File(logDir,fileName);
         if(!file.exists()){
             try {
                 file.createNewFile();
@@ -154,25 +155,15 @@ public class LogFileManager {
                 }
             });
             File lastFile = files.get(files.size()-1);
-            LogUtil.d(TAG,"lastFile  = "+lastFile.getName());
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
-            try {
-                String lastFileName = lastFile.getName();
-                Date date = simpleDateFormat.parse(lastFileName.substring(0,lastFileName.indexOf(".")));
-                long nowTime = System.currentTimeMillis();
-                if(nowTime-date.getTime()>=interval){
-                    currentFile = createLogFile(generateFileName(nowTime));
-                    LogUtil.d(TAG,"大于时间间隔，重新创建文件");
-                }else{
-                    currentFile = lastFile;
-                    LogUtil.d(TAG,"在间隔时间内，就用最后一个文件");
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-                LogUtil.e(TAG,e.getMessage());
+            long fileLength = lastFile.length();
+            LogUtil.d(TAG,"lastFile  = "+lastFile.getName()+" | length = "+fileLength);
+            if(fileLength>=maxLength){
                 currentFile = createLogFile(generateFileName(System.currentTimeMillis()));
+                LogUtil.d(TAG,"文件大于10M，重新创建文件");
+            }else {
+                currentFile = lastFile;
+                LogUtil.d(TAG,"文件大小不足10M，就用最后一个文件");
             }
-
         }
 
         LogUtil.d(TAG,"获取当前log文件名:"+currentFile.getName());

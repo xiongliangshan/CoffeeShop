@@ -57,10 +57,6 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     private void uploadFile(final File file){
-        /*String serverFileName = generateServerFileName(file);
-        if(TextUtils.isEmpty(serverFileName)){
-            return;
-        }*/
         UserBean userBean = LoginHelper.getUser(CSApplication.getInstance());
         int shopId = userBean.getShopId();
         RequestBody shopIdStr = RequestBody.create(MediaType.parse("text/plain"),String.valueOf(shopId));
