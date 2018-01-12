@@ -77,7 +77,7 @@ public class LoginPresenterImpl implements LoginPresenter{
         }
         final String redId = JPushInterface.getRegistrationID(CSApplication.getInstance());
         final String mType = android.os.Build.MODEL; // 手机型号
-        final int appVer = MyUtil.getVersionCode(CSApplication.getInstance());
+        final String appVer = MyUtil.getVersion(CSApplication.getInstance());
         Map<String,Object> params = new HashMap<>();
         params.put("loginName",loginName);
         params.put("password",password);
