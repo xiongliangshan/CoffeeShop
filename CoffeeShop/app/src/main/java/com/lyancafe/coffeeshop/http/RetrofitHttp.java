@@ -3,7 +3,7 @@ package com.lyancafe.coffeeshop.http;
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
-import com.lyancafe.coffeeshop.utils.LogUtil;
+import com.lyancafe.coffeeshop.logger.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,8 +43,7 @@ public class RetrofitHttp {
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.addInterceptor(loggingInterceptor);
-        builder.addInterceptor(commomInterceptor);
-        builder.addInterceptor(cacheInterceptor);
+        builder.addInterceptor(customInterceptor);
         builder.retryOnConnectionFailure(true);
         builder.connectTimeout(15, TimeUnit.SECONDS);
         builder.readTimeout(15,TimeUnit.SECONDS);
@@ -67,48 +66,34 @@ public class RetrofitHttp {
         return directory;
     }
 
+
     /**
-     * 普通拦截器
+     * 拦截器
      */
-    private final static Interceptor commomInterceptor = new Interceptor() {
+    private final static Interceptor customInterceptor = new Interceptor() {
         @Override
         public Response intercept(Chain chain) throws IOException {
-            LogUtil.d("xiong","普通拦截器");
             UserBean user = LoginHelper.getUser(CSApplication.getInstance());
             String token = user.getToken();
             if(token==null){
                 token = "";
             }
-            if(chain.request().url().toString().contains("upload")){
-                LogUtil.d("xiong","upload 不拦截");
-                return chain.proceed(chain.request());
-            }
             Request request = chain.request()
                     .newBuilder()
-                    .addHeader("content-type","application/x-www-form-urlencoded; charset=UTF-8")
-                    .addHeader("token",token)
+                    .header("token",token)
                     .build();
-            LogUtil.d("xiong",request.url().toString()  +" | token = "+token);
-            return chain.proceed(request);
-        }
-    };
 
-    /**
-     * 缓存拦截器
-     */
-    private final static Interceptor cacheInterceptor = new Interceptor() {
-        @Override
-        public Response intercept(Chain chain) throws IOException {
-            LogUtil.d("xiong","缓存拦截器");
-            Request request = chain.request();
 
             Response response = chain.proceed(request);
             String cacheControl = request.cacheControl().toString();
+            if(response.code()!=200){
+                Logger.getLogger().error("接口请求失败:{method="+request.method()+", code="+response.code()+", url="+request.url()+"}");
+            }
+
             return response.newBuilder()
                     .header("Cache-Control", cacheControl)
                     .removeHeader("Pragma")
                     .build();
-
         }
     };
 
