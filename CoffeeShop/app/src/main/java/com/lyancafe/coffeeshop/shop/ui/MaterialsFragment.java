@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -25,6 +27,7 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.printer.PrintFace;
+import com.lyancafe.coffeeshop.printer.PrintSetting;
 import com.lyancafe.coffeeshop.shop.presenter.MaterialsPresenter;
 import com.lyancafe.coffeeshop.shop.presenter.MaterialsPresenterImpl;
 import com.lyancafe.coffeeshop.shop.view.MaiterialsView;
@@ -56,6 +59,12 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView<Ma
     RecyclerView contentRV;
     @BindView(R.id.loadingProgressBar)
     ContentLoadingProgressBar loadingProgressBar;
+    @BindView(R.id.rb_off)
+    RadioButton rbOff;
+    @BindView(R.id.rb_on)
+    RadioButton rbOn;
+    @BindView(R.id.rg_material_mode)
+    RadioGroup rgMaterialMode;
 
 
     private Context mContext;
@@ -104,6 +113,7 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView<Ma
         ButterKnife.bind(this, contentView);
         linflater = LayoutInflater.from(getContext());
         initRV();
+        initRadioButton();
         return contentView;
 
     }
@@ -116,6 +126,16 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView<Ma
         ArrayList<MaterialItem> itemList = new ArrayList<>();
         mAdapter = new ContentListAdapter(itemList, getContext());
         contentRV.setAdapter(mAdapter);
+    }
+
+
+    private void initRadioButton() {
+        boolean isOpen = PrintSetting.isNewMaterialEnable(getContext());
+        if(isOpen){
+            rgMaterialMode.check(R.id.rb_on);
+        }else {
+            rgMaterialMode.check(R.id.rb_off);
+        }
     }
 
 
@@ -178,6 +198,7 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView<Ma
         @Override
         public void onClick(View v) {
             currentItem = v.getId();
+            LogUtil.d(TAG,"current = "+currentItem);
             mAdapter.setList(materials.get(currentItem).getItems());
             changeTextColor(currentItem);
             changeTextLocation(currentItem);
@@ -215,7 +236,7 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView<Ma
     }
 
 
-    @OnClick({R.id.tv_print_paster, R.id.tv_print_material, R.id.btn_print_blank,R.id.btn_print_test})
+    @OnClick({R.id.tv_print_paster, R.id.tv_print_material, R.id.btn_print_blank, R.id.btn_print_test})
     void onClickPrint(View v) {
         switch (v.getId()) {
             case R.id.tv_print_paster:
@@ -226,7 +247,7 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView<Ma
                     return;
                 }
                 PrintFace.getInst().startPrintPasterTask(itemSmall);
-                Logger.getLogger().log("打印时控贴:{"+itemSmall.getName()+"}");
+                Logger.getLogger().log("打印时控贴:{" + itemSmall.getName() + "}");
                 break;
             case R.id.tv_print_material:
                 //打印物料大纸
@@ -236,7 +257,7 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView<Ma
                     return;
                 }
                 PrintFace.getInst().startPrintMaterialTask(itemBig);
-                Logger.getLogger().log("打印物料大标签:{"+itemBig.getName()+"}");
+                Logger.getLogger().log("打印物料大标签:{" + itemBig.getName() + "}");
                 break;
             case R.id.btn_print_blank:
                 //打印空白时控贴
@@ -373,6 +394,22 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView<Ma
         Log.d("xls", "MaterialsFragment InVisible");
         if (mHandler != null) {
             mHandler.removeCallbacks(mRunnable);
+        }
+    }
+
+    @OnClick({R.id.rb_off, R.id.rb_on})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.rb_off:
+                //关闭深圳模式
+                PrintSetting.saveNewMaterialEnable(getContext(),false);
+                Logger.getLogger().log("设置物料打印深圳模式---关闭");
+                break;
+            case R.id.rb_on:
+                //打开深圳模式
+                PrintSetting.saveNewMaterialEnable(getContext(),true);
+                Logger.getLogger().log("设置物料打印深圳模式---开启");
+                break;
         }
     }
 

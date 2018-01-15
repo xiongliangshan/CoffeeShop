@@ -7,6 +7,7 @@ package com.lyancafe.coffeeshop.bean;
 public class MaterialItem {
 
     private int id;   //物料id
+    private String categoryName;//所属分类名
     private String name; //物料名
     private int overdueTime; //过期时间(天)
 
@@ -22,6 +23,14 @@ public class MaterialItem {
         return name;
     }
 
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -34,10 +43,12 @@ public class MaterialItem {
         this.overdueTime = overdueTime;
     }
 
+
     @Override
     public String toString() {
         return "MaterialItem{" +
                 "id=" + id +
+                ", categoryName=" + categoryName +
                 ", name='" + name + '\'' +
                 ", overdueTime=" + overdueTime +
                 '}';

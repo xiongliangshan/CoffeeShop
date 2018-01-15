@@ -17,6 +17,7 @@ public class PrintSetting {
     private static final String KEY_SMALL = "small";
     private static final String KEY_BIG = "big";
     private static final String KEY_SIMPLIFY_SWITCH = "simplify_switch";
+    private static final String KEY_MATERIAL = "material";
 
     public static void saveSmallPrinter(Context context,int printer){
         SharedPreferences sharedPreferences = context.getSharedPreferences(PRINTER,Context.MODE_PRIVATE);
@@ -46,5 +47,15 @@ public class PrintSetting {
     public static boolean isSimplifyEnable(Context context){
         SharedPreferences sharedPreferences = context.getSharedPreferences(PRINTER,Context.MODE_PRIVATE);
         return sharedPreferences.getBoolean(KEY_SIMPLIFY_SWITCH,false);
+    }
+
+    public static void saveNewMaterialEnable(Context context,boolean isOpen){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PRINTER,Context.MODE_PRIVATE);
+        sharedPreferences.edit().putBoolean(KEY_MATERIAL,isOpen).apply();
+    }
+
+    public static boolean isNewMaterialEnable(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PRINTER,Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(KEY_MATERIAL,false);
     }
 }
