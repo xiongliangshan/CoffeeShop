@@ -283,7 +283,7 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
                     return;
                 }
                 mProducingPresenter.doCompleteBatchProduce(orderIs);
-                Logger.getLogger().log("一键全部完成 ，总数为:"+orderIs.size()+"订单集合为:"+orderIs);
+                Logger.getLogger().log("一键全部完成 ，总数为: "+orderIs.size()+", 订单集合为:"+orderIs);
                 break;
         }
 
