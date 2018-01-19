@@ -4,17 +4,18 @@ package com.lyancafe.coffeeshop.shop.presenter;
 import android.content.Context;
 
 import com.lyancafe.coffeeshop.CSApplication;
+import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.Material;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
-import com.lyancafe.coffeeshop.http.CustomObserver;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.shop.model.MaterialsModel;
 import com.lyancafe.coffeeshop.shop.model.MaterialsModelImpl;
 import com.lyancafe.coffeeshop.shop.view.MaiterialsView;
 
 import java.util.List;
 
-import io.reactivex.annotations.NonNull;
+import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
 /**
@@ -37,28 +38,31 @@ public class MaterialsPresenterImpl implements MaterialsPresenter{
     @Override
     public void loadMaterials() {
         UserBean user = LoginHelper.getUser(CSApplication.getInstance());
-        mMaterialModel.loadMaterials(user.getShopId(), new CustomObserver<List<Material>>(mContext) {
+        mMaterialModel.loadMaterials(user.getShopId(), new Observer<BaseEntity<List<Material>>>() {
             @Override
-            public void onSubscribe(@NonNull Disposable d) {
-                super.onSubscribe(d);
+            public void onSubscribe(Disposable d) {
                 mMaterialView.showContentLoading();
             }
 
             @Override
-            protected void onHandleSuccess(List<Material> materialList) {
-                List<Material> materials = materialList;
-                mMaterialView.bindDataToView(materials);
+            public void onNext(BaseEntity<List<Material>> listBaseEntity) {
+                if(listBaseEntity.getStatus()==0){
+                    List<Material> materials = listBaseEntity.getData();
+                    mMaterialView.bindDataToView(materials);
+                }else {
+                    Logger.getLogger().log("物料数据接口返回:"+listBaseEntity.getMessage());
+                }
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mMaterialView.dismissContentLoading();
+                Logger.getLogger().error("物料数据接口请求失败,"+e.getMessage());
             }
 
             @Override
             public void onComplete() {
-                super.onComplete();
-                mMaterialView.dismissContentLoading();
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-                super.onError(e);
                 mMaterialView.dismissContentLoading();
             }
         });
