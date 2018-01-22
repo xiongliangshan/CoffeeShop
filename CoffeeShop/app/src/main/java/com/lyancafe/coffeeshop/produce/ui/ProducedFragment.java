@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
@@ -48,6 +50,7 @@ public class ProducedFragment extends BaseFragment implements ProducedView<Order
         ProducedRvAdapter.ProducedCallback, DetailView.ActionCallback {
 
     public List<OrderBean> allOrderList = new ArrayList<>();
+    private List<OrderBean> notFetchList = new ArrayList<>();
 
     @BindView(R.id.rv_to_fetch)
     RecyclerView mRecyclerView;
@@ -57,6 +60,12 @@ public class ProducedFragment extends BaseFragment implements ProducedView<Order
     Button btnSearch;
     @BindView(R.id.detail_view)
     DetailView detailView;
+    @BindView(R.id.rb_all)
+    RadioButton rbAll;
+    @BindView(R.id.rb_not_fetch)
+    RadioButton rbNotFetch;
+    @BindView(R.id.rg_category)
+    RadioGroup rgCategory;
     private ProducedRvAdapter mAdapter;
     private Unbinder unbinder;
 
@@ -64,6 +73,8 @@ public class ProducedFragment extends BaseFragment implements ProducedView<Order
     private ToFetchTaskRunnable mRunnable;
 
     private ProducedPresenter mProducedPresenter;
+
+    private boolean isOnlyNoFetch = false;
 
     public ProducedFragment() {
 
@@ -125,7 +136,13 @@ public class ProducedFragment extends BaseFragment implements ProducedView<Order
     public void bindDataToView(List<OrderBean> list) {
         allOrderList.clear();
         allOrderList.addAll(list);
-        mAdapter.setData(list);
+        updateNotFetchList(list);
+        if(isOnlyNoFetch){
+            mAdapter.setData(notFetchList);
+        }else {
+            mAdapter.setData(list);
+        }
+
     }
 
     @Override
@@ -173,7 +190,15 @@ public class ProducedFragment extends BaseFragment implements ProducedView<Order
 
     @Override
     public void removeItemFromList(int id) {
-        mAdapter.removeOrderFromList(id);
+        List<OrderBean> list = new ArrayList<>();
+        list.addAll(allOrderList);
+        for(int i=list.size()-1;i>=0;i--){
+            if(list.get(i).getId()==id){
+                list.remove(i);
+                break;
+            }
+        }
+        bindDataToView(list);
     }
 
 
@@ -224,9 +249,24 @@ public class ProducedFragment extends BaseFragment implements ProducedView<Order
         }
     }
 
-    @OnClick(R.id.btn_search)
-    public void onViewClicked() {
-        search();
+
+    @OnClick({R.id.btn_search,R.id.rb_not_fetch, R.id.rb_all})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.btn_search:
+                search();
+                break;
+            case R.id.rb_not_fetch:
+                //未取货
+                isOnlyNoFetch = true;
+                mAdapter.setData(notFetchList);
+                break;
+            case R.id.rb_all:
+                //全部
+                isOnlyNoFetch = false;
+                mAdapter.setData(allOrderList);
+                break;
+        }
     }
 
 
@@ -234,6 +274,23 @@ public class ProducedFragment extends BaseFragment implements ProducedView<Order
         @Override
         public void run() {
             mProducedPresenter.loadToFetchOrders();
+        }
+    }
+
+
+    /**
+     * 更新已经有集合
+     * @param allOrders
+     */
+    private void updateNotFetchList(List<OrderBean> allOrders){
+        notFetchList.clear();
+        if(allOrders==null || allOrders.size()==0){
+            return;
+        }
+        for(OrderBean orderBean:allOrders){
+            if(orderBean.getStatus()<=3020){
+                notFetchList.add(orderBean);
+            }
         }
     }
 }

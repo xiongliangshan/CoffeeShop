@@ -47,7 +47,7 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
 
     private static final String TAG  ="OrderGridViewAdapter";
     private Context context;
-    public List<OrderBean> list = new ArrayList<OrderBean>();
+    public List<OrderBean> list = new ArrayList<>();
     private int selected = -1;
     private List<OrderBean> searchList;
     public List<OrderBean> tempList;
@@ -183,10 +183,8 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
         Collections.sort(this.list,new OrderSortComparator());
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
-//            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
             callback.updateDetail(this.list.get(selected));
         }else{
-//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
             callback.updateDetail(null);
         }
 
@@ -199,34 +197,12 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
         this.list = list;
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
-//            EventBus.getDefault().post(new UpdateOrderDetailEvent(this.list.get(selected)));
             callback.updateDetail(this.list.get(selected));
         }else{
-//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
             callback.updateDetail(null);
         }
     }
 
-    private List<OrderBean> filterOrders(List<OrderBean> list,int category){
-        List<OrderBean> subList = new ArrayList<>();
-        if(category== OrderCategory.MEITUN){
-            for(OrderBean orderBean:list){
-                if(orderBean.getDeliveryTeam()==8){
-                    subList.add(orderBean);
-                }
-            }
-        }else if(category==OrderCategory.OWN){
-            for(OrderBean orderBean:list){
-                if(orderBean.getDeliveryTeam()!=8){
-                    subList.add(orderBean);
-                }
-            }
-        }else{
-            subList = list;
-        }
-
-        return subList;
-    }
 
     //搜索
     public void searchOrder(final int shopOrderNo){
@@ -272,31 +248,6 @@ public class ProducedRvAdapter extends RecyclerView.Adapter<ProducedRvAdapter.Vi
 
 
 
-    /**
-     * 点击开始生产，生产完成，扫码交付时从当前列表移除该订单
-     * @param orderId
-     */
-    public void removeOrderFromList(long orderId){
-        for(int i=list.size()-1;i>=0;i--){
-            if(list.get(i).getId()==orderId){
-                list.remove(i);
-                break;
-            }
-        }
-        if(list.size()>0){
-            selected=0;
-            notifyDataSetChanged();
-//            EventBus.getDefault().post(new UpdateOrderDetailEvent(list.get(selected)));
-            callback.updateDetail(list.get(selected));
-        }else{
-            selected = -1;
-            notifyDataSetChanged();
-//            EventBus.getDefault().post(new UpdateOrderDetailEvent(null));
-            callback.updateDetail(null);
-        }
-
-
-    }
 
     public void setCallback(ProducedRvAdapter.ProducedCallback callback) {
         this.callback = callback;

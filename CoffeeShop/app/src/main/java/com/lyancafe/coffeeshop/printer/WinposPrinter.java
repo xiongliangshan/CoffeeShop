@@ -7,6 +7,7 @@ import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.MaterialItem;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.bean.PrintBeanTest;
 import com.lyancafe.coffeeshop.bean.PrintCupBean;
 import com.lyancafe.coffeeshop.bean.PrintObject;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
@@ -251,6 +252,30 @@ public class WinposPrinter implements NetPrint {
                 "A120,120,0,230,1,1,N,\"____________\""+"\n"+
                 "P1"+"\n";
         writeCommand(smallLabelIP,port,pasterContent);
+    }
+
+    @Override
+    public void printCompanyTest(List<PrintBeanTest> list) {
+        for(PrintBeanTest bean:list){
+//        PrintBeanTest bean = list.get(0);
+        String name = bean.getName();
+        String fName = null;
+        if(name.length()==2){
+            fName = name.charAt(0)+" "+name.charAt(1);
+        }else {
+            fName = name;
+        }
+            String pasterContent = "N"+"\n"+
+                    "OD"+"\n"+
+                    "q240"+"\n"+
+                    "Q160,16"+"\n"+
+                    "S3"+"\n"+
+                    "D8"+"\n"+
+                    "A40,40,0,230,2,2,N,\""+fName+"\""+"\n"+
+                    "A6,120,0,230,1,1,N,\"入职日期:"+bean.getDate()+"\""+"\n"+
+                    "P1"+"\n";
+            writeCommand(smallLabelIP,port,pasterContent);
+        }
     }
 
     @Override

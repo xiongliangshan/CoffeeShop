@@ -2,6 +2,7 @@ package com.lyancafe.coffeeshop.printer;
 
 import com.lyancafe.coffeeshop.bean.MaterialItem;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.bean.PrintBeanTest;
 import com.lyancafe.coffeeshop.bean.PrintCupBean;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
 
@@ -54,4 +55,6 @@ public interface NetPrint {
 
 
     void printBigLabelTest(List<String> contents);
+
+    void printCompanyTest(List<PrintBeanTest> list);
 }

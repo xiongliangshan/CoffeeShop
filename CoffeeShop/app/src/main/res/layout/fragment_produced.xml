@@ -6,23 +6,56 @@
 
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
         android:padding="4dp"
         >
-        <EditText
-            android:id="@+id/et_search_key"
+
+        <RadioGroup
+            android:id="@+id/rg_category"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            style="@style/SearchEdit"/>
+            android:layout_height="wrap_content"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:orientation="horizontal"
+            android:background="@drawable/bg_native_button_normal"
+            app:layout_constraintLeft_toLeftOf="parent">
+
+            <RadioButton
+                android:id="@+id/rb_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:textSize="20sp"
+                android:text="全部"/>
+
+            <RadioButton
+                android:id="@+id/rb_not_fetch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:layout_marginLeft="16dp"
+                android:text="未取货"/>
+
+        </RadioGroup>
+
         <Button
             android:id="@+id/btn_search"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             style="@style/SearchButton"
-            app:layout_constraintLeft_toRightOf="@id/et_search_key"
+            app:layout_constraintRight_toRightOf="parent"
             />
+
+        <EditText
+            android:id="@+id/et_search_key"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            style="@style/SearchEdit"
+            app:layout_constraintRight_toLeftOf="@id/btn_search"/>
+
     </android.support.constraint.ConstraintLayout>
 
 

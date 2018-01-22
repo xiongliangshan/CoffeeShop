@@ -7,6 +7,7 @@ import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.MaterialItem;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.bean.PrintBeanTest;
 import com.lyancafe.coffeeshop.bean.PrintCupBean;
 import com.lyancafe.coffeeshop.bean.PrintObject;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
@@ -220,6 +221,10 @@ public class FujitsuPrinter implements NetPrint {
         writeCommand(smallLabelIP,port,pasterContent);
     }
 
+    @Override
+    public void printCompanyTest(List<PrintBeanTest> list) {
+
+    }
 
     @Override
     public void printBigLabelTest(List<String> contents) {

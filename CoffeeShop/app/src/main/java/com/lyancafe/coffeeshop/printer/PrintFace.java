@@ -3,6 +3,7 @@ package com.lyancafe.coffeeshop.printer;
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.bean.MaterialItem;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.bean.PrintBeanTest;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.http.Api;
 import com.lyancafe.coffeeshop.utils.LogUtil;
@@ -269,6 +270,27 @@ public class PrintFace {
                 contents.add("且避免叠放,开包后需将开口处密封避免产品暴露在空气中");
                 contents.add("变色,开包后的产品在7日内使用完毕,解冻后请勿重复冷冻。");
                 getBigLabelPrinter().printBigLabelTest(contents);
+
+
+               /* List<PrintBeanTest> list = new ArrayList<>();
+                list.add(new PrintBeanTest("薛菲", "2014/5/1"));
+                list.add(new PrintBeanTest("王宇", "2014/8/1"));
+                list.add(new PrintBeanTest("童琦", "2014/8/1"));
+                list.add(new PrintBeanTest("黄何寅", "2014/6/1"));
+                list.add(new PrintBeanTest("李双双", "2014/8/1"));
+                list.add(new PrintBeanTest("李秀英", "2014/9/15"));
+                list.add(new PrintBeanTest("曹政", "2014/10/14"));
+                list.add(new PrintBeanTest("徐俐俐", "2014/10/20"));
+                list.add(new PrintBeanTest("范婧", "2014/10/27"));
+                list.add(new PrintBeanTest("王首政", "2014/8/1"));
+                list.add(new PrintBeanTest("陈朵", "2014/8/1"));
+                list.add(new PrintBeanTest("陈晓光", "2014/12/10"));
+                list.add(new PrintBeanTest("徐慧怡", "2014/12/25"));
+                list.add(new PrintBeanTest("朱凯一", "2015/1/21"));
+
+                getSmallLabelPrinter().printCompanyTest(list);*/
+
+
 
             }
         });
