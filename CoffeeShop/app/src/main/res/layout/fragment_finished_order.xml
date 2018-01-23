@@ -79,7 +79,18 @@
             />
 
 
+        <Button
+            android:id="@+id/btn_summarize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            app:layout_constraintLeft_toRightOf="@id/tv_cup_count"
+            android:background="@drawable/bg_native_button"
+            android:text="汇总模式"/>
+
+
         <android.support.constraint.ConstraintLayout
+            android:id="@+id/searchLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintRight_toRightOf="parent"

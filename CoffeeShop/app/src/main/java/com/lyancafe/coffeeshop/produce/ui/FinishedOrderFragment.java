@@ -5,9 +5,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -21,18 +23,24 @@ import android.widget.TextView;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.bean.SummarizeGroup;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.produce.presenter.FinishedPresenter;
 import com.lyancafe.coffeeshop.produce.presenter.FinishedPresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.FinishedView;
+import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
+import com.lyancafe.coffeeshop.utils.VSpaceItemDecoration;
 import com.lyancafe.coffeeshop.widget.DetailView;
 import com.lyancafe.coffeeshop.widget.ReportIssueDialog;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -47,7 +55,7 @@ import butterknife.Unbinder;
  * A simple {@link Fragment} subclass.
  */
 public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreRecyclerView.PullLoadMoreListener,
-        FinishedView<OrderBean>,FinishedRvAdapter.FinishedCallback,DetailView.ActionCallback {
+        FinishedView<OrderBean>, FinishedRvAdapter.FinishedCallback, DetailView.ActionCallback {
 
     @BindView(R.id.plmgv_order_list)
     PullLoadMoreRecyclerView pullLoadMoreRecyclerView;
@@ -59,7 +67,12 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     Button btnSearch;
     @BindView(R.id.detail_view)
     DetailView detailView;
+    @BindView(R.id.btn_summarize)
+    Button btnSummarize;
+    @BindView(R.id.searchLayout)
+    ConstraintLayout searchLayout;
     private FinishedRvAdapter mAdapter;
+    private FinishedSummarizeAdapter mSummarizeAdapter;
     private long mLastOrderId = 0;
     private Context mContext;
 
@@ -75,6 +88,15 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
     private Handler mHandler;
     private FineshedTaskRunnable mRunnable;
     private FinishedPresenter mFinishedPresenter;
+
+    private List<OrderBean> serverOrders = new ArrayList<>();
+    private List<OrderBean> cacheOrders = new ArrayList<>();
+
+    //当前订单模式
+    private OrderMode currentMode = OrderMode.NORMAL;
+
+    private SpaceItemDecoration spaceItemDecoration;
+    private VSpaceItemDecoration vSpaceItemDecoration;
 
     public FinishedOrderFragment() {
 
@@ -92,6 +114,9 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
         super.onCreate(savedInstanceState);
         mHandler = new Handler();
         mFinishedPresenter = new FinishedPresenterImpl(getContext(), this);
+
+        spaceItemDecoration = new SpaceItemDecoration(4, OrderHelper.dip2Px(12, getContext()), false);
+        vSpaceItemDecoration = new VSpaceItemDecoration(OrderHelper.dip2Px(12, getContext()));
     }
 
     @Override
@@ -107,7 +132,7 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
         pullLoadMoreRecyclerView.getRecyclerView().setLayoutManager(new GridLayoutManager(getActivity(), 4, GridLayoutManager.VERTICAL, false));
         pullLoadMoreRecyclerView.getRecyclerView().setHasFixedSize(true);
         pullLoadMoreRecyclerView.getRecyclerView().setItemAnimator(new DefaultItemAnimator());
-        pullLoadMoreRecyclerView.getRecyclerView().addItemDecoration(new SpaceItemDecoration(4, OrderHelper.dip2Px(12, mContext), false));
+        pullLoadMoreRecyclerView.getRecyclerView().addItemDecoration(spaceItemDecoration);
         pullLoadMoreRecyclerView.setOnPullLoadMoreListener(this);
         pullLoadMoreRecyclerView.setRefreshing(false);
         pullLoadMoreRecyclerView.setPullRefreshEnable(false);
@@ -148,9 +173,18 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
     @Override
     public void bindDataToView(List<OrderBean> list) {
+        serverOrders.clear();
         if (list != null && list.size() > 0) {
             showEmpty(false);
+            serverOrders.addAll(list);
             mAdapter.setData(list);
+            if (currentMode == OrderMode.SUMMARIZE){
+                List<OrderBean> cacheList = OrderUtils.with().queryFinishedOrders();
+                cacheOrders.clear();
+                cacheOrders.addAll(cacheList);
+                List<SummarizeGroup> groups = OrderHelper.splitOrdersToGroup(cacheOrders);
+                mSummarizeAdapter.setData(OrderHelper.caculateGroupList(groups));
+            }
         } else {
             showEmpty(true);
         }
@@ -159,14 +193,15 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
     @Override
     public void updateDetail(OrderBean order) {
-        if(detailView!=null){
+        if (detailView != null) {
             detailView.updateData(order);
         }
     }
 
     @Override
     public void appendListData(List<OrderBean> list) {
-        mAdapter.addData(list);
+        serverOrders.addAll(list);
+        mAdapter.setData(serverOrders);
     }
 
     @Override
@@ -259,9 +294,53 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
 
     }
 
-    @OnClick(R.id.btn_search)
-    public void onViewClicked() {
-        search();
+    @OnClick({R.id.btn_search, R.id.btn_summarize})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.btn_search:
+                search();
+                break;
+            case R.id.btn_summarize:
+                //汇总模式
+                if ("汇总模式".equals(btnSummarize.getText())) {
+                    List<OrderBean> list = OrderUtils.with().queryFinishedOrders();
+                    cacheOrders.clear();
+                    cacheOrders.addAll(list);
+                    if (cacheOrders.size() < 1) {
+                        ToastUtil.show(getContext(), "没有可以汇总的订单!");
+                        return;
+                    }
+                    btnSummarize.setText("详单模式");
+                    switchMode(OrderMode.SUMMARIZE);
+                } else if ("详单模式".equals(btnSummarize.getText())) {
+                    btnSummarize.setText("汇总模式");
+                    switchMode(OrderMode.NORMAL);
+                }
+                break;
+        }
+
+    }
+
+    private void switchMode(OrderMode mode) {
+        if (mode == OrderMode.SUMMARIZE) {
+            //汇总模式
+            detailView.setVisibility(View.GONE);
+            long start = System.currentTimeMillis();
+            List<SummarizeGroup> groups = OrderHelper.splitOrdersToGroup(cacheOrders);
+            List<SummarizeGroup> resultGroups = OrderHelper.caculateGroupList(groups);
+            long end = System.currentTimeMillis();
+            LogUtil.d("xiong", "计算数据所用时间:" + (end - start));
+
+            renderSummarizeUI(resultGroups);
+            Logger.getLogger().log("切换到 汇总模式");
+        } else {
+            //详单模式
+            detailView.setVisibility(View.VISIBLE);
+            renderNormalUI();
+            Logger.getLogger().log("切换到 详单模式");
+        }
+
+        this.currentMode = mode;
     }
 
 
@@ -300,6 +379,53 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
             Log.d("xls", "removeCallbacks finished");
             mHandler.removeCallbacks(mRunnable);
         }
+    }
+
+    /**
+     * 渲染普通详单模式的UI
+     */
+    private void renderNormalUI() {
+        searchLayout.setVisibility(View.VISIBLE);
+        if (mAdapter == null) {
+            mAdapter = new FinishedRvAdapter(getContext());
+            mAdapter.setCallback(this);
+        }
+
+        pullLoadMoreRecyclerView.getRecyclerView().setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
+        pullLoadMoreRecyclerView.getRecyclerView().setHasFixedSize(true);
+        pullLoadMoreRecyclerView.getRecyclerView().setItemAnimator(new DefaultItemAnimator());
+        pullLoadMoreRecyclerView.getRecyclerView().removeItemDecoration(vSpaceItemDecoration);
+        pullLoadMoreRecyclerView.getRecyclerView().addItemDecoration(spaceItemDecoration);
+        pullLoadMoreRecyclerView.setOnPullLoadMoreListener(this);
+        pullLoadMoreRecyclerView.setRefreshing(false);
+        pullLoadMoreRecyclerView.setPullRefreshEnable(false);
+        pullLoadMoreRecyclerView.setPushRefreshEnable(true);
+        pullLoadMoreRecyclerView.setAdapter(mAdapter);
+    }
+
+    /**
+     * 渲染汇总模式的UI
+     *
+     * @param groups
+     */
+    private void renderSummarizeUI(List<SummarizeGroup> groups) {
+        searchLayout.setVisibility(View.INVISIBLE);
+        if (mSummarizeAdapter == null) {
+            mSummarizeAdapter = new FinishedSummarizeAdapter(getContext());
+        }
+
+        pullLoadMoreRecyclerView.getRecyclerView().setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        pullLoadMoreRecyclerView.getRecyclerView().setHasFixedSize(true);
+        pullLoadMoreRecyclerView.getRecyclerView().setItemAnimator(new DefaultItemAnimator());
+        pullLoadMoreRecyclerView.getRecyclerView().removeItemDecoration(spaceItemDecoration);
+        pullLoadMoreRecyclerView.getRecyclerView().addItemDecoration(vSpaceItemDecoration);
+        pullLoadMoreRecyclerView.setOnPullLoadMoreListener(this);
+        pullLoadMoreRecyclerView.setRefreshing(false);
+        pullLoadMoreRecyclerView.setPullRefreshEnable(false);
+        pullLoadMoreRecyclerView.setPushRefreshEnable(false);
+        pullLoadMoreRecyclerView.setAdapter(mSummarizeAdapter);
+        mSummarizeAdapter.setData(groups);
+
     }
 
 
