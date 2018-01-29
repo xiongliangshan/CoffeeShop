@@ -306,7 +306,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         List<OrderBean> batchOrders = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             Boolean isChecked = selectMap.get(i);
-            if (isChecked != null && isChecked.booleanValue()) {
+            if (isChecked != null && isChecked) {
                 batchOrders.add(list.get(i));
             }
         }
@@ -347,7 +347,6 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         }
         if(defaultSelectedList.size()>0){
             notifyDataSetChanged();
-            return;
         }
 
 

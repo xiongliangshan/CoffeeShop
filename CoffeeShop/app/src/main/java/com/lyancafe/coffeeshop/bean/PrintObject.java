@@ -158,7 +158,7 @@ public class PrintObject {
     }
 
     public String getPrintContent(){
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(start);
         for(String c:content){
             sb.append(c);

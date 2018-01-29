@@ -1,5 +1,4 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -106,7 +105,8 @@
                 android:layout_marginLeft="16dp"
                 android:layout_toRightOf="@id/tv_shopPhone"
                 android:layout_alignTop="@id/tv_shopPhone"
-                android:src="@mipmap/edit"/>
+                android:src="@mipmap/edit"
+                android:contentDescription="编辑" />
 
             <LinearLayout
                 android:id="@+id/ll_modify_container"
@@ -135,7 +135,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@mipmap/save"/>
+                    android:src="@mipmap/save"
+                    android:contentDescription="保存" />
 
             </LinearLayout>
 

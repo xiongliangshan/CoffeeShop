@@ -1,9 +1,9 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="android:statusBarColor">@color/gray2</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/gray2</item>
     </style>
 
 
@@ -62,7 +62,7 @@
     </style>
 
     <!--确认对话框-->
-    <style name="MyDialog" parent="@android:Theme.Dialog">
+    <style name="MyDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@drawable/corner_white_no_stroke_bg</item>
@@ -93,7 +93,7 @@
         <item name="android:windowExitAnimation">@anim/slide_out_to_bottom</item>
     </style>
 
-    <style name="CommentWindow" parent="@android:Theme.Dialog">
+    <style name="CommentWindow" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@color/white_font</item>

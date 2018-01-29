@@ -140,7 +140,7 @@ public class VideoListAdpater extends RecyclerView.Adapter<VideoListAdpater.View
         }
     }
 
-    class VideoFrameTask extends AsyncTask<VideoBean,Integer,Bitmap>{
+    static class VideoFrameTask extends AsyncTask<VideoBean,Integer,Bitmap>{
 
         private ImageView imageView;
         private VideoBean videoBean;

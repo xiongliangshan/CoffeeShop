@@ -3,8 +3,6 @@ package com.lyancafe.coffeeshop.printer;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import java.util.ConcurrentModificationException;
-
 /**
  * Created by Administrator on 2017/10/31.
  */

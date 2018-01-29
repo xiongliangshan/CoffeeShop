@@ -1,5 +1,6 @@
 package com.lyancafe.coffeeshop.receiver;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
@@ -38,12 +39,7 @@ public class MyPushReceiver extends BroadcastReceiver {
 
     private static final String TAG = "MyPushReceiver";
     NotificationManager mNotificationManager;
-    private static Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-
-        }
-    };
+    private static Handler handler = new Handler();
     @Override
     public void onReceive(Context context, Intent intent) {
 

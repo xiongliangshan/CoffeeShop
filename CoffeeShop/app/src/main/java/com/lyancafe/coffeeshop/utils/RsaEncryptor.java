@@ -46,9 +46,8 @@ public class RsaEncryptor {
 		//byte[] clear = Base64.decode(text, Base64.DEFAULT);
 		byte[] clear = text.getBytes("UTF8");
 		byte[] encrypted = cipher.doFinal(clear);
-		String encryptedText = Base64.encodeToString(encrypted, Base64.DEFAULT);
 
-		return encryptedText;
+		return Base64.encodeToString(encrypted, Base64.DEFAULT);
 	}
 
 	public String getPublicKeyFile() {

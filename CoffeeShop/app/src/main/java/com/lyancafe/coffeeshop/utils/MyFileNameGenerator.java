@@ -11,8 +11,7 @@ public class MyFileNameGenerator implements FileNameGenerator {
 
     @Override
     public String generate(String url) {
-        String name = ProxyCacheUtils.computeMD5(url);
-        return name;
+        return ProxyCacheUtils.computeMD5(url);
     }
 
 

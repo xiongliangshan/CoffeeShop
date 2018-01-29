@@ -18,7 +18,8 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="9dp"
             android:layout_marginRight="10dp"
-            android:background="@drawable/jpush_richpush_btn_selector" />
+            android:background="@drawable/jpush_richpush_btn_selector"
+            android:contentDescription="TODO" />
 
         <ImageView
             android:id="@+id/imgView"
@@ -27,7 +28,8 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/imgRichpushBtnBack"
             android:clickable="false"
-            android:src="@drawable/jpush_ic_richpush_actionbar_divider" />
+            android:src="@drawable/jpush_ic_richpush_actionbar_divider"
+            android:contentDescription="TODO" />
 
         <TextView
             android:id="@+id/tvRichpushTitle"

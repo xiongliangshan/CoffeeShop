@@ -38,7 +38,7 @@ public class TomorrowRvAdapter extends RecyclerView.Adapter<TomorrowRvAdapter.Vi
 
     private static final String TAG  ="OrderGridViewAdapter";
     private Context context;
-    public List<OrderBean> list = new ArrayList<OrderBean>();
+    public List<OrderBean> list = new ArrayList<>();
     public int selected = -1;
     private TomorrowCallback callback;
 

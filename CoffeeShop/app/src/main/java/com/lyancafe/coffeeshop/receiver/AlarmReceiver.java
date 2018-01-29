@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Process;
-import android.text.TextUtils;
 
 import com.google.gson.JsonObject;
 import com.lyancafe.coffeeshop.CSApplication;
@@ -83,26 +82,9 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
 
-    private String generateServerFileName(File file){
-        if(file==null || !file.exists()){
-            return null;
-        }
-
-        UserBean userBean = LoginHelper.getUser(CSApplication.getInstance());
-        int shopId = userBean.getShopId();
-        if(shopId!=0){
-            return "app."+shopId+"."+file.getName();
-        }else {
-            return "app.xls."+file.getName();
-        }
-    }
-
-
-
-
     private String getProcessName(Context cxt, int pid) {
         ActivityManager am = (ActivityManager) cxt.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningAppProcessInfo> runningApps = am.getRunningAppProcesses();
+        List<ActivityManager.RunningAppProcessInfo> runningApps = am != null ? am.getRunningAppProcesses() : null;
         if (runningApps == null) {
             return null;
         }

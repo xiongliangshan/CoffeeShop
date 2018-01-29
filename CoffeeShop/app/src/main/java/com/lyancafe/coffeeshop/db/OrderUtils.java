@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 public class OrderUtils {
 
     private static final String TAG  = "OrderUtils";
-    private ThreadPoolExecutor tpl;
     private static OrderUtils orderUtils;
     private OrderBeanDao mOrderDao;
     private ItemContentBeanDao mItemOrderDao;
@@ -29,7 +28,6 @@ public class OrderUtils {
     private OrderUtils() {
         mOrderDao = CSApplication.getInstance().getDaoSession().getOrderBeanDao();
         mItemOrderDao = CSApplication.getInstance().getDaoSession().getItemContentBeanDao();
-        tpl = new ThreadPoolExecutor(1, 3, 2, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     }
 
     public static OrderUtils with(){
@@ -121,8 +119,7 @@ public class OrderUtils {
     public List<OrderBean> queryRevokedOrders(){
         QueryBuilder<OrderBean> qb = mOrderDao.queryBuilder();
         qb.where(OrderBeanDao.Properties.Revoked.eq(true));
-        List<OrderBean> list = qb.list();
-        return  list;
+        return qb.list();
     }
 
 
@@ -200,16 +197,14 @@ public class OrderUtils {
     public List<OrderBean> queryToFetchOrders(){
         QueryBuilder<OrderBean> qb = mOrderDao.queryBuilder();
         qb.where(OrderBeanDao.Properties.Status.in(3020));
-        List<OrderBean> list = qb.list();
-        return  list;
+        return qb.list();
     }
 
     //查询待取货订单数量（待取货）
     public long queryFetchCount(){
         QueryBuilder<OrderBean> qb = mOrderDao.queryBuilder();
         qb.where(OrderBeanDao.Properties.Status.in(3020));
-        long count = qb.count();
-        return  count;
+        return qb.count();
     }
 
 

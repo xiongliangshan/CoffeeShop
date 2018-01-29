@@ -1,7 +1,5 @@
 package com.lyancafe.coffeeshop.base;
 
-import java.util.List;
-
 /**
  * Created by Administrator on 2017/3/16.
  */

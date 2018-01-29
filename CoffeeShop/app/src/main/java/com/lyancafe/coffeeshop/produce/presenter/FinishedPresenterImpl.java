@@ -41,14 +41,13 @@ public class FinishedPresenterImpl implements FinishedPresenter {
         mFinishedModel.loadFinishedOrders(user.getShopId(), lastOrderId, new CustomObserver<List<OrderBean>>(mContext) {
             @Override
             protected void onHandleSuccess(List<OrderBean> orderBeanList) {
-                List<OrderBean> finishedList = orderBeanList;
                 if(isLoadMore){
-                    mFinishedView.appendListData(finishedList);
+                    mFinishedView.appendListData(orderBeanList);
                 }else{
-                    mFinishedView.bindDataToView(finishedList);
+                    mFinishedView.bindDataToView(orderBeanList);
                 }
                 mFinishedView.saveLastOrderId();
-                OrderUtils.with().insertOrderList(new CopyOnWriteArrayList<OrderBean>(finishedList));
+                OrderUtils.with().insertOrderList(new CopyOnWriteArrayList<>(orderBeanList));
             }
 
             @Override

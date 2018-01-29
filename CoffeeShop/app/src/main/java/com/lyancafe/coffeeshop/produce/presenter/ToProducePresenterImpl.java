@@ -54,10 +54,9 @@ public class ToProducePresenterImpl implements ToProducePresenter{
         mToProduceModel.loadToProduceOrders(user.getShopId(), new CustomObserver<List<OrderBean>>(mContext) {
             @Override
             protected void onHandleSuccess(List<OrderBean> orderBeanList) {
-                List<OrderBean> toProduceList = orderBeanList;
-                EventBus.getDefault().post(new UpdateTabCount(TabList.TAB_TOPRODUCE, toProduceList.size()));
-                mToProduceView.bindDataToView(toProduceList);
-                OrderUtils.with().insertOrderList(new CopyOnWriteArrayList<OrderBean>(toProduceList));
+                EventBus.getDefault().post(new UpdateTabCount(TabList.TAB_TOPRODUCE, orderBeanList.size()));
+                mToProduceView.bindDataToView(orderBeanList);
+                OrderUtils.with().insertOrderList(new CopyOnWriteArrayList<>(orderBeanList));
             }
         });
     }

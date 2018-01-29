@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.R;
@@ -19,8 +18,6 @@ import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.ShopNoComparator;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +40,7 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Vi
 
     private static final String TAG  ="FinishedRvAdapter";
     private Context context;
-    public List<OrderBean> list = new ArrayList<OrderBean>();
+    public List<OrderBean> list = new ArrayList<>();
     public int selected = -1;
     private List<OrderBean> searchList;
     public List<OrderBean> tempList;

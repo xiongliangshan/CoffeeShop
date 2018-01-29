@@ -1,7 +1,6 @@
 package com.lyancafe.coffeeshop.shop.view;
 
 import com.lyancafe.coffeeshop.base.BaseView;
-import com.lyancafe.coffeeshop.bean.VideoBean;
 
 import java.util.List;
 

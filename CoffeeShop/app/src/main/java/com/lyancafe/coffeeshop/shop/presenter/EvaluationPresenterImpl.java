@@ -38,11 +38,10 @@ public class EvaluationPresenterImpl implements EvaluationPresenter{
         mEvaluationModel.loadEvaluations(user.getShopId(), lastId, new CustomObserver<List<EvaluationBean>>(mContext) {
             @Override
             protected void onHandleSuccess(List<EvaluationBean> evaluationBeenList) {
-                List<EvaluationBean> evaluationsList = evaluationBeenList;
                 if(isLoadMore){
-                    mEvaluationView.appendListData(evaluationsList);
+                    mEvaluationView.appendListData(evaluationBeenList);
                 }else{
-                    mEvaluationView.bindDataToView(evaluationsList);
+                    mEvaluationView.bindDataToView(evaluationBeenList);
                 }
                 mEvaluationView.saveLastFeedbackId();
             }

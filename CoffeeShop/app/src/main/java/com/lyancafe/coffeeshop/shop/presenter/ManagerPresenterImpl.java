@@ -45,8 +45,7 @@ public class ManagerPresenterImpl implements ManagerPresenter {
         mManagerModel.modifyShopTelephone(user.getShopId(), newPhoneNubmer, new CustomObserver<JsonObject>(mContext,true) {
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
-                JsonObject object = jsonObject;
-                String newPhone = object.get("shopTelephone").getAsString();
+                String newPhone = jsonObject.get("shopTelephone").getAsString();
                 mManagerView.setTelephone(newPhone);
             }
 

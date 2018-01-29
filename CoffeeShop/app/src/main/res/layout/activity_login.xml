@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:baselineAligned="false"
     android:orientation="horizontal">
 
     <RelativeLayout
@@ -12,6 +13,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:contentDescription="TODO"
             android:scaleType="centerCrop"
             android:src="@mipmap/login_left_image" />
 
@@ -53,23 +55,23 @@
                 android:layout_alignBaseline="@id/btn_modify_ip"
                 android:layout_marginLeft="12dp"
                 android:layout_toRightOf="@id/btn_modify_ip"
+                android:background="@color/red1"
+                android:hint="输入域名 或者 IP+端口"
+                android:maxLines="1"
                 android:minWidth="180dp"
                 android:padding="4dp"
                 android:textColor="@color/white1"
-                android:background="@color/red1"
-                android:hint="输入域名 或者 IP+端口"
                 android:textColorHint="@color/gray6"
-                android:maxLines="1"
-                android:visibility="invisible"
-                />
+                android:visibility="invisible" />
+
             <RadioGroup
                 android:id="@+id/radio_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp"
-                android:layout_below="@id/btn_modify_ip"
                 android:layout_alignLeft="@id/et_ip"
+                android:layout_below="@id/btn_modify_ip"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
                 android:visibility="invisible">
 
                 <RadioButton
@@ -78,21 +80,23 @@
                     android:layout_height="wrap_content"
                     android:checked="true"
                     android:text="其他"
-                    android:textColor="@color/red1"/>
+                    android:textColor="@color/red1" />
+
                 <RadioButton
                     android:id="@+id/rb_qa"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="2dp"
-                    android:textColor="@color/red1"
-                    android:text="QA"/>
+                    android:text="QA"
+                    android:textColor="@color/red1" />
+
                 <RadioButton
                     android:id="@+id/rb_ol"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="2dp"
-                    android:textColor="@color/red1"
-                    android:text="线上"/>
+                    android:text="线上"
+                    android:textColor="@color/red1" />
 
             </RadioGroup>
 
@@ -103,99 +107,91 @@
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        >
+        android:layout_weight="1">
 
         <TextView
             android:id="@+id/soft_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="咖啡屋管理系统"
             android:layout_centerHorizontal="true"
-            android:textColor="@android:color/black"
-            android:textSize="36sp"
             android:layout_marginTop="30dp"
-            />
+            android:text="咖啡屋管理系统"
+            android:textColor="@android:color/black"
+            android:textSize="36sp" />
 
-        <RelativeLayout
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            >
+            android:layout_marginTop="30dp"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="30dp"
-                android:focusableInTouchMode="true"
-                >
-                <LinearLayout
-                    android:layout_width="300dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="@drawable/bg_login_edit">
+                android:background="@drawable/bg_login_edit"
+                android:orientation="horizontal">
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@mipmap/icon_account"/>
-
-                    <EditText
-                        android:id="@+id/username"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="请输入用户名"
-                        android:layout_marginLeft="4dp"
-                        android:textSize="22sp"
-                        android:singleLine="true"
-                        android:background="@null"
-                        android:layout_gravity="center_vertical"
-                        />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="300dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="24dp"
-                    android:background="@drawable/bg_login_edit">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@mipmap/icon_password"/>
-
-                    <EditText
-                        android:id="@+id/password"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textPassword"
-                        android:layout_marginLeft="4dp"
-                        android:textSize="22sp"
-                        android:hint="请输入密码"
-                        android:singleLine="true"
-                        android:background="@null"
-                        android:layout_gravity="center_vertical"
-                        />
-
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/login_btn"
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="登录"
-                    android:textColor="@color/white_font"
-                    android:textSize="22sp"
-                    android:background="@drawable/bg_login"
-                    android:layout_marginTop="30dp"
-                    android:layout_gravity="center_horizontal"
-                    />
+                    android:contentDescription="TODO"
+                    android:src="@mipmap/icon_account" />
+
+                <EditText
+                    android:id="@+id/username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="4dp"
+                    android:background="@null"
+                    android:hint="请输入用户名"
+                    android:singleLine="true"
+                    android:textSize="22sp" />
+
             </LinearLayout>
-        </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_login_edit"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="TODO"
+                    android:src="@mipmap/icon_password" />
+
+                <EditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="4dp"
+                    android:background="@null"
+                    android:hint="请输入密码"
+                    android:inputType="textPassword"
+                    android:singleLine="true"
+                    android:textSize="22sp" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/login_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/bg_login"
+                android:text="登录"
+                android:textColor="@color/white_font"
+                android:textSize="22sp" />
+        </LinearLayout>
+
     </RelativeLayout>
 
 </LinearLayout>

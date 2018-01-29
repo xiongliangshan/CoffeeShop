@@ -48,10 +48,9 @@ public class ProducingPresenterImpl implements ProducingPresenter{
         mProducingModel.loadProducingOrders(user.getShopId(), new CustomObserver<List<OrderBean>>(mContext) {
             @Override
             protected void onHandleSuccess(List<OrderBean> orderBeanList) {
-                List<OrderBean> producingList = orderBeanList;
-                EventBus.getDefault().post(new UpdateTabCount(TabList.TAB_PRODUCING,producingList.size()));
-                mProducingView.bindDataToView(producingList);
-                OrderUtils.with().insertOrderList(new CopyOnWriteArrayList<OrderBean>(producingList));
+                EventBus.getDefault().post(new UpdateTabCount(TabList.TAB_PRODUCING, orderBeanList.size()));
+                mProducingView.bindDataToView(orderBeanList);
+                OrderUtils.with().insertOrderList(new CopyOnWriteArrayList<>(orderBeanList));
             }
         });
     }

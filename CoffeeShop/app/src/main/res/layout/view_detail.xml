@@ -266,7 +266,8 @@
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
         android:layout_weight="1"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:baselineAligned="false">
 
         <ScrollView
             android:id="@+id/sv_coffee"
@@ -279,7 +280,7 @@
             <LinearLayout
                 android:id="@+id/ll_items_container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="4dp" />
         </ScrollView>
@@ -315,7 +316,7 @@
                     <TextView
                         android:id="@+id/tv_customer_remark"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:textColor="@color/font_black"
                         android:textSize="16sp"/>
                 </ScrollView>
@@ -346,7 +347,7 @@
                     <TextView
                         android:id="@+id/tv_csad_remark"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:textColor="@color/font_black"
                         android:textSize="16sp" />
                 </ScrollView>

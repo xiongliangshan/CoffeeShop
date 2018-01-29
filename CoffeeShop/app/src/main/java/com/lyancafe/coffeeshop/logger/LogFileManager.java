@@ -6,12 +6,10 @@ import com.lyancafe.coffeeshop.utils.LogUtil;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,10 +44,7 @@ public class LogFileManager {
      */
     private boolean isLogDirExists(){
         File logDir = new File(CSApplication.LOG_DIR);
-        if(logDir!=null && logDir.exists()){
-            return true;
-        }
-        return false;
+        return logDir != null && logDir.exists();
     }
 
     /**
@@ -57,9 +52,12 @@ public class LogFileManager {
      * @return
      */
     private void createLogDir() {
-        LogUtil.d(TAG,"创建日志目录 ");
         logDir = new File(getLogDir());
-        logDir.mkdirs();
+        if(!logDir.exists()){
+            logDir.mkdirs();
+            LogUtil.d(TAG,"创建日志目录 ");
+        }
+
     }
 
     /**
@@ -68,12 +66,9 @@ public class LogFileManager {
      * @return
      */
     public File createLogFile(String fileName){
+        createLogDir();
         LogUtil.d(TAG,"创建日志文件 "+fileName);
         File file = new File(getLogDir()+fileName);
-        File  parentFile = file.getParentFile();
-        if(parentFile==null || !parentFile.exists()){
-            parentFile.mkdirs();
-        }
         if(!file.exists()){
             try {
                 file.createNewFile();
@@ -93,7 +88,7 @@ public class LogFileManager {
      */
     public void deleteLogFile(String fileName){
         File file = new File(getLogDir(),fileName);
-        if(file!=null && file.exists()){
+        if(file.exists()){
             file.delete();
         }
     }
@@ -105,7 +100,7 @@ public class LogFileManager {
     public synchronized void clearAllLogs(){
         LogUtil.d(TAG,"clearAllLogs");
         File file = new File(getLogDir());
-        if(file!=null && file.exists()){
+        if(file.exists()){
            File[] files = file.listFiles();
            if(files.length==0){
                file.delete();

@@ -41,10 +41,9 @@ public class TomorrowPresenterImpl implements TomorrowPresenter {
         mTomorrowModel.loadTomorrowOrders(user.getShopId(), new CustomObserver<List<OrderBean>>(mContext) {
             @Override
             protected void onHandleSuccess(List<OrderBean> orderBeanList) {
-                List<OrderBean> tomorrowList = orderBeanList;
-                EventBus.getDefault().post(new UpdateTabCount(TabList.TAB_TOMORROW, tomorrowList.size()));
-                mTomorrowView.bindDataToView(tomorrowList);
-                OrderUtils.with().insertOrderList(new CopyOnWriteArrayList<OrderBean>(tomorrowList));
+                EventBus.getDefault().post(new UpdateTabCount(TabList.TAB_TOMORROW, orderBeanList.size()));
+                mTomorrowView.bindDataToView(orderBeanList);
+                OrderUtils.with().insertOrderList(new CopyOnWriteArrayList<>(orderBeanList));
             }
         });
     }

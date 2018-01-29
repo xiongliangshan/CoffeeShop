@@ -38,7 +38,7 @@ public class RevokedRvAdapter extends RecyclerView.Adapter<RevokedRvAdapter.View
 
     private static final String TAG  ="OrderGridViewAdapter";
     private Context context;
-    public List<OrderBean> list = new ArrayList<OrderBean>();
+    public List<OrderBean> list = new ArrayList<>();
     public int selected = -1;
     public ListMode curMode;
     private RevokedCallback callback;

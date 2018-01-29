@@ -161,7 +161,7 @@ public class ReportIssueDialog extends DialogFragment implements View.OnClickLis
     private void reportIssue(long orderId, int questionType, int questionIdea,String questionDesc){
         UserBean user = LoginHelper.getUser(getContext());
 
-        Map<String,Object> params = new HashMap<String,Object>();
+        Map<String,Object> params = new HashMap<>();
         params.put("questionType",questionType);
         params.put("handleType",questionIdea);
         params.put("remark", questionDesc);

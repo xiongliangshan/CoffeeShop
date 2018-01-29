@@ -48,13 +48,12 @@ public class RetrofitHttp {
         builder.connectTimeout(15, TimeUnit.SECONDS);
         builder.readTimeout(15,TimeUnit.SECONDS);
         builder.cache(new Cache(createDirectory(CSApplication.CACHE_DIR),1024*1024*20L));
-        Retrofit retrofit = new Retrofit.Builder()
+        return new Retrofit.Builder()
                 .client(builder.build())
                 .baseUrl(Api.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
-        return retrofit;
     }
 
 

@@ -4,12 +4,10 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.lyancafe.coffeeshop.CSApplication;
-import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.MaterialItem;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.PrintBeanTest;
 import com.lyancafe.coffeeshop.bean.PrintCupBean;
-import com.lyancafe.coffeeshop.bean.PrintObject;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
 import com.lyancafe.coffeeshop.bean.Product;
 import com.lyancafe.coffeeshop.bean.UserBean;
@@ -30,7 +28,6 @@ import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -455,8 +452,8 @@ public class FujitsuPrinter implements NetPrint {
         if (src == null || src.length <= 0) {
             return null;
         }
-        for (int i = 0; i < src.length; i++) {
-            int v = src[i] & 0xFF;
+        for (byte aSrc : src) {
+            int v = aSrc & 0xFF;
             String hv = Integer.toHexString(v);
             if (hv.length() < 2) {
                 stringBuilder.append(0);
@@ -617,7 +614,7 @@ public class FujitsuPrinter implements NetPrint {
         }
 
         public String getPrintContent(){
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             sb.append(start);
             for(String c:content){
                 sb.append(c);

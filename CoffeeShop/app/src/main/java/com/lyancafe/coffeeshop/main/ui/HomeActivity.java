@@ -42,7 +42,7 @@ import butterknife.OnClick;
 public class HomeActivity extends BaseActivity implements MainView {
 
     private static final String TAG = "main";
-    public List<Fragment> fragmentsList = new ArrayList<Fragment>();
+    public List<Fragment> fragmentsList = new ArrayList<>();
 
     private MainProduceFragment orderFrag;
     private MainShopFragment shopFragment;

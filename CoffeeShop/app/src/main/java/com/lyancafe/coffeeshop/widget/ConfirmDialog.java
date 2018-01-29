@@ -15,8 +15,6 @@ public class ConfirmDialog extends Dialog {
 
 	private Context context;
 	private String content;
-	private TextView confirm_dialog_content;
-	private Button confirm_cancel, confirm_yes;
 	private int cancal_txt, yes_txt;
 	private OnClickYesListener mListener;
 
@@ -56,17 +54,17 @@ public class ConfirmDialog extends Dialog {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.confirm_dialog);
 
-		confirm_dialog_content = (TextView) findViewById(R.id.confirm_dialog_content);
+		TextView confirm_dialog_content = (TextView) findViewById(R.id.confirm_dialog_content);
 		confirm_dialog_content.setText(content);
 
-		confirm_cancel = (Button) findViewById(R.id.confirm_cancel);
+		Button confirm_cancel = (Button) findViewById(R.id.confirm_cancel);
 		confirm_cancel.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				dismiss();
 			}
 		});
-		confirm_yes = (Button) findViewById(R.id.confirm_yes);
+		Button confirm_yes = (Button) findViewById(R.id.confirm_yes);
 		confirm_yes.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

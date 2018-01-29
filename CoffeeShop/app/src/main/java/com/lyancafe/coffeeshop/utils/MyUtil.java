@@ -28,8 +28,7 @@ public class MyUtil {
         try {
             PackageManager manager = context.getPackageManager();
             PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
-            String version = info.versionName;
-            return version;
+            return info.versionName;
         } catch (Exception e) {
             e.printStackTrace();
             return "";
@@ -43,8 +42,7 @@ public class MyUtil {
         try {
             PackageManager manager = context.getPackageManager();
             PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
-            int version = info.versionCode;
-            return version;
+            return info.versionCode;
         } catch (Exception e) {
             e.printStackTrace();
             return 0;

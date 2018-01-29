@@ -43,10 +43,9 @@ public class ProducedPresenterImpl implements ProducedPresenter{
         mProduceModel.loadToFetchOrders(user.getShopId(), new CustomObserver<List<OrderBean>>(mContext) {
             @Override
             protected void onHandleSuccess(List<OrderBean> orderBeanList) {
-                List<OrderBean> toFetchList = orderBeanList;
-                EventBus.getDefault().post(new UpdateTabCount(TabList.TAB_PRODUCED,toFetchList.size()));
-                mProducedView.bindDataToView(toFetchList);
-                OrderUtils.with().insertOrderList(new CopyOnWriteArrayList<OrderBean>(toFetchList));
+                EventBus.getDefault().post(new UpdateTabCount(TabList.TAB_PRODUCED, orderBeanList.size()));
+                mProducedView.bindDataToView(orderBeanList);
+                OrderUtils.with().insertOrderList(new CopyOnWriteArrayList<>(orderBeanList));
             }
         });
     }

@@ -48,29 +48,11 @@ public class OrderHelper {
     public static String PRINT_STATUS = "print_status";
     public static final int MERGECUPLIMIT = 10; //最大合并杯数限制为10杯
     public static final int ADVANCEDHANDLETIME = 45;//预约单可提前操作的时间,单位：分钟
-    public static int batchOrderCount = 0;
-    public static int batchHandleCupCount = 0;
     public static List<OrderBean> batchList = new ArrayList<>();
     public static Map<String,Integer> contentMap = new HashMap<>();
 
     public static long DELAY_LOAD_TIME = 200;  //单位 ms
 
-
-    /**
-     * 把总价格式化显示
-     * @param money 单位为分
-     * @return
-     */
-    public static String getMoneyStr(int money) {
-        DecimalFormat df   =new  DecimalFormat("#.##");
-        return "￥" + df.format(money/100.0);
-    }
-
-    //距离显示格式化
-    public static String getDistanceFormat(int distance){
-        DecimalFormat df   =new  DecimalFormat("#.#");
-        return df.format(distance/1000.0)+"公里";
-    }
 
     //距离显示格式化
     public static String getDistanceFormat(double distance){
@@ -88,11 +70,6 @@ public class OrderHelper {
     */
     public static int dip2Px(float dip,Context context) {
         return (int) (dip * context.getResources().getDisplayMetrics().density + 0.5f);
-    }
-
-    public static int sp2px(Context context, float spValue) {
-        final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
-        return (int) (spValue * fontScale + 0.5f);
     }
 
     /*时间戳转换成字符窜*/
@@ -134,19 +111,6 @@ public class OrderHelper {
         long t2 = time+30*60*1000;
         Date d = new Date(time);
         return sf.format(d)+"~"+sf.format(new Date(t2));
-    }
-
-    /*将字符串转为时间戳*/
-    public static long getStringToDate(String time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.CHINESE);
-        Date date = new Date();
-        try{
-            date = sdf.parse(time);
-        } catch(ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return date.getTime();
     }
 
     /*时间段毫秒转化为分钟*/
@@ -196,55 +160,6 @@ public class OrderHelper {
     }
 
 
-    //计算某个订单的总金额,单位为分
-    public static int getTotalPrice(OrderBean orderBean){
-        if(orderBean.getItems().size()<=0){
-            return 0;
-        }
-        int sum = 0;
-        for(int i=0;i<orderBean.getItems().size();i++){
-            ItemContentBean item = orderBean.getItems().get(i);
-            sum += item.getTotalPrice();
-        }
-        return sum;
-    }
-    //显示时效并修改生产完成的按钮状态
-    public static void showEffect(OrderBean order,TextView produceBtn,TextView effectTimeTxt){
-        final long mms = order.getProduceEffect();
-        Log.d(TAG, "mms = " + mms);
-        if(mms<=0){
-            effectTimeTxt.setTextColor(Color.parseColor("#e2435a"));
-            if(produceBtn!=null){
-                produceBtn.setBackgroundResource(R.drawable.bg_produce_btn_red);
-            }
-            effectTimeTxt.setText(String.format("+%s", OrderHelper.getDateToMinutes(Math.abs(mms))));
-        }else{
-            if(order.getInstant()==0){
-                if(produceBtn!=null){
-                    produceBtn.setBackgroundResource(R.drawable.bg_produce_btn_blue);
-                }
-            }else{
-                if(produceBtn!=null){
-                    produceBtn.setBackgroundResource(R.drawable.bg_produce_btn);
-                }
-            }
-            effectTimeTxt.setTextColor(Color.parseColor("#000000"));
-            effectTimeTxt.setText(OrderHelper.getDateToMinutes(mms));
-        }
-    }
-
-    //单独显示待生产界面的时效
-    public static void showEffectOnly(OrderBean order,TextView effectTimeTxt){
-        final long mms = order.getProduceEffect();
-        Log.d(TAG, "mms = " + mms);
-        if(mms<=0){
-            effectTimeTxt.setTextColor(Color.parseColor("#e2435a"));
-            effectTimeTxt.setText(String.format("超%s", OrderHelper.getDateToMinutes(Math.abs(mms))));
-        }else{
-            effectTimeTxt.setTextColor(Color.parseColor("#000000"));
-            effectTimeTxt.setText(OrderHelper.getDateToMinutes(mms));
-        }
-    }
 
     //缓存订单打印状态到本地xml文件
     public static void addPrintedSet(Context context,String orderSn){
@@ -268,16 +183,7 @@ public class OrderHelper {
         Set<String> list = getPrintedSet(context);
         return list.contains(orderSn);
     }
-    //筛选出未打印的订单集合
-    public static List<OrderBean> selectUnPrintList(Context context,List<OrderBean> list){
-        List<OrderBean> unPrintList = new ArrayList<>();
-        for(OrderBean orderBean:list){
-            if(!OrderHelper.isPrinted(context,orderBean.getOrderSn())){
-                unPrintList.add(orderBean);
-            }
-        }
-        return unPrintList;
-    }
+
 
     //清空打印状态缓存记录
     public static void clearPrintedSet(Context context){
@@ -286,35 +192,6 @@ public class OrderHelper {
         Log.d(TAG, "clear print set");
     }
 
-    //计算应该合并的订单集
-    public static void calculateToMergeOrders(List<OrderBean> list){
-        batchHandleCupCount = 0;
-        batchList.clear();
-        contentMap.clear();
-        int sum = 0;
-        for(OrderBean bean:list){
-            //非待取货订单不加入合并
-            if(bean.getStatus()!= OrderStatus.ASSIGNED){
-                continue;
-            }
-            //如果没达到能操作条件的预约单不加入合并
-            if(bean.getInstant()==0){
-                if(!isCanHandle(bean)){
-                    continue;
-                }
-            }
-            sum+=getTotalQutity(bean);
-            if(sum<=MERGECUPLIMIT){
-                batchList.add(bean);
-            }else{
-                sum-=getTotalQutity(bean);
-                break;
-            }
-        }
-        batchHandleCupCount = sum;
-        batchOrderCount = batchList.size();
-        getBatchMap(batchList);
-    }
 
     //计算订单列表的的咖啡名和对应的杯数
     private static void getBatchMap(List<OrderBean> orderList){
@@ -332,48 +209,6 @@ public class OrderHelper {
         }
     }
 
-    //生成合并订单的咖啡内容信息
-    public static String createPromptStr(Context context,List<OrderBean> batchList,int cupCount){
-        int orderCount = batchList.size();
-        List<Map.Entry<String, Integer>> list_map = new ArrayList<>(contentMap.entrySet());
-        Collections.sort(list_map, new Comparator<Map.Entry<String, Integer>>() {
-            @Override
-            public int compare(Map.Entry<String, Integer> lhs, Map.Entry<String, Integer> rhs) {
-                return rhs.getValue() - lhs.getValue();
-            }
-        });
-        StringBuilder sb = new StringBuilder();
-        for(Map.Entry<String,Integer> entry:list_map){
-            sb.append(entry.getKey() + " * " + entry.getValue()+"  ");
-        }
-        return context.getResources().getString(R.string.batch_coffee_prompt,orderCount,cupCount,cupCount*2,sb.toString());
-    //    return "系统已将"+orderCount+"单合并在一起，共有"+cupCount+"杯咖啡待生产，生产时效为"+cupCount*2+"分钟\n建议生产顺序为 : "+sb.toString();
-    }
-
-
-    //判断一个订单是否已经处于批量处理中
-    public static boolean isBatchOrder(long orderId){
-        for(OrderBean orderBean:batchList){
-            if(orderBean.getId()==orderId){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    //从批量处理的订单集合中移除某个订单,返回当前的批量订单数量
-    public static int removeOrderFromBatchList(long orderId){
-        if(batchList.size()<1){
-            return 0;
-        }
-        for(int i=batchList.size()-1;i>=0;i--){
-            if(batchList.get(i).getId()==orderId){
-                batchList.remove(i);
-                break;
-            }
-        }
-        return batchList.size();
-    }
 
     //判断预约单是否可以进行打印生产操作
     public static boolean isCanHandle(OrderBean order){
@@ -389,29 +224,6 @@ public class OrderHelper {
             return mms>=0;
         }
 
-    }
-
-    //检查新订单集合中是否含有批处理订单
-    public static boolean isContainerBatchOrder(List<OrderBean> list){
-        for(OrderBean batchorder:batchList){
-            for(OrderBean order:list){
-                if(order.getId()==batchorder.getId()){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    //多个评论标签组合成一个特定字符串
-    public static String getCommentTagsStr(List<String> tags){
-        StringBuilder sb = new StringBuilder();
-        for(String tag:tags){
-            sb.append("[");
-            sb.append(tag);
-            sb.append("]");
-        }
-        return sb.toString();
     }
 
 
@@ -448,19 +260,6 @@ public class OrderHelper {
        return printOrderBean.isWxScan()?"(到店扫)":"";
    }
 
-    public static String getLabelPrintStr(List<String> list){
-        if(list==null || list.size()<=0){
-            return "";
-        }
-        StringBuilder sb = new StringBuilder();
-        for(String label:list){
-            sb.append(label);
-            sb.append("/");
-        }
-        sb.deleteCharAt(sb.length()-1);
-        return sb.toString();
-    }
-
 
     //手机号码隐藏中间四位
     public static String getHidePhone(OrderBean orderBean){
@@ -487,8 +286,7 @@ public class OrderHelper {
             }else{
                 //预约单
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm",Locale.CHINESE);
-                String start = sdf.format(new Date(pob.getExpectedTime()));
-                return start;
+                return sdf.format(new Date(pob.getExpectedTime()));
             }
         }else{
             if(pob.getInstant()==1){
@@ -514,8 +312,7 @@ public class OrderHelper {
             }else{
                 //预约单
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm",Locale.CHINESE);
-                String start = sdf.format(new Date(orderBean.getExpectedTime()));
-                return start;
+                return sdf.format(new Date(orderBean.getExpectedTime()));
             }
         }else{
             if(orderBean.getInstant()==1){
@@ -1111,27 +908,6 @@ public class OrderHelper {
         String htmlStr = "<font color = '#9B9B9B'>总盒</font><font color ='#000000'>"+boxCount+"," +
                 "</font><font color = '#9B9B9B'>总杯</font><font color ='#000000'>"+cupCount+"</font>";
         return Html.fromHtml(htmlStr);
-    }
-
-
-    /**
-     * 骑手接单相对于现在过了几分钟
-     * @param acceptTime
-     * @return
-     */
-    public static String getAcceptOverTime(long acceptTime){
-        long delta = System.currentTimeMillis()-acceptTime;
-        long minute = delta/(60*1000);
-        return minute+"分钟";
-    }
-
-    public static String getToArriveTime(long expectedTime){
-        long delta = expectedTime + 45*60*1000 - System.currentTimeMillis();
-        if(delta<0){
-            return "超时"+Math.abs(delta)/(60*1000)+"分钟";
-        }else {
-            return delta/(60*1000)+"分钟";
-        }
     }
 
 

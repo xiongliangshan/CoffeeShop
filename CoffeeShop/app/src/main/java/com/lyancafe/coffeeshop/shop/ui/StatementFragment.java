@@ -139,8 +139,8 @@ public class StatementFragment extends BaseFragment implements StatementView {
             }
         });
 
-        for(int i=0;i<animators.length;i++){
-            animators[i].start();
+        for (ValueAnimator animator : animators) {
+            animator.start();
         }
 
     }
@@ -177,9 +177,9 @@ public class StatementFragment extends BaseFragment implements StatementView {
     public void onInVisible() {
         super.onInVisible();
         LogUtil.d(TAG, "StatementFragment onInVisible "+isVisible);
-        for(int i=0;i<animators.length;i++){
-            if(animators[i]!=null&&animators[i].isRunning()){
-                animators[i].cancel();
+        for (ValueAnimator animator : animators) {
+            if (animator != null && animator.isRunning()) {
+                animator.cancel();
             }
         }
     }

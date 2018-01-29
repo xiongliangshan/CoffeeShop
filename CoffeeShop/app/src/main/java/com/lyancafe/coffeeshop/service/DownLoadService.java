@@ -84,10 +84,8 @@ public class DownLoadService extends IntentService {
                     if (downloadUpdateFile(apkInfoBean.getUrl(), mFile)) {
                         installApk(DownLoadService.this, mFile);
                     } else {
-                        return;
                     }
                 } else {
-                    return;
                 }
             }
         }
@@ -175,7 +173,7 @@ public class DownLoadService extends IntentService {
      */
     private boolean isNewestAPKexist(ApkInfoBean apkInfoBean){
         mFile = new File(CSApplication.APK_DIR+File.separator+"coffeeshop_"+apkInfoBean.getAppNo()+".apk");
-        if(mFile!=null && mFile.exists()){
+        if(mFile.exists()){
             Log.d(TAG,"newestapk file exist!");
             //F6C95DAA257080223CC4211F05744AF8
             if(getMD5Code(mFile).equalsIgnoreCase(apkInfoBean.getAppMd5())){
@@ -236,9 +234,7 @@ public class DownLoadService extends IntentService {
                     sendNotification(updateCount);
                 }
             }
-            if (httpURLConnection != null) {
-                httpURLConnection.disconnect();
-            }
+            httpURLConnection.disconnect();
             inputStream.close();
             output.close();
         }catch (Exception e){

@@ -6,7 +6,6 @@ import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Environment;
 import android.os.Process;
 import android.os.SystemClock;
@@ -18,7 +17,6 @@ import android.view.WindowManager;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.lyancafe.coffeeshop.bean.DaoMaster;
 import com.lyancafe.coffeeshop.bean.DaoSession;
-import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.service.MonitorService;
 import com.lyancafe.coffeeshop.utils.LogUtil;
@@ -126,7 +124,7 @@ public class CSApplication extends Application {
 
     private String getProcessName(Context cxt, int pid) {
         ActivityManager am = (ActivityManager) cxt.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningAppProcessInfo> runningApps = am.getRunningAppProcesses();
+        List<ActivityManager.RunningAppProcessInfo> runningApps = am != null ? am.getRunningAppProcesses() : null;
         if (runningApps == null) {
             return null;
         }

@@ -1,84 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:baselineAligned="false"
+    android:orientation="horizontal">
+
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/gray4"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:id="@+id/ll_produce_tab"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:background="@color/gray4">
-            <LinearLayout
-                android:id="@+id/ll_produce_tab"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="生产"
-                    android:ems="1"
-                    android:textSize="24sp"
-                    android:textColor="@color/gray5"/>
-            </LinearLayout>
+            android:gravity="center">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/black1"/>
-            <LinearLayout
-                android:id="@+id/ll_shop_tab"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="门店"
-                    android:ems="1"
-                    android:textSize="24sp"
-                    android:textColor="@color/gray5"/>
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/black1"/>
-            <LinearLayout
-                android:id="@+id/ll_system_tab"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="系统"
-                    android:ems="1"
-                    android:textSize="24sp"
-                    android:textColor="@color/gray5"/>
-            </LinearLayout>
-
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="1"
+                android:text="生产"
+                android:textColor="@color/gray5"
+                android:textSize="24sp" />
         </LinearLayout>
 
-        <FrameLayout
-            android:id="@+id/tab_content"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="19"
-            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/black1" />
+
+        <LinearLayout
+            android:id="@+id/ll_shop_tab"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="1"
+                android:text="门店"
+                android:textColor="@color/gray5"
+                android:textSize="24sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/black1" />
+
+        <LinearLayout
+            android:id="@+id/ll_system_tab"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="1"
+                android:text="系统"
+                android:textColor="@color/gray5"
+                android:textSize="24sp" />
+        </LinearLayout>
 
     </LinearLayout>
 
-</RelativeLayout>
+    <FrameLayout
+        android:id="@+id/tab_content"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="19" />
+
+</LinearLayout>
+

@@ -11,7 +11,7 @@ import android.widget.TextView;
  * Created by Administrator on 2017/2/18.
  */
 
-public class UnderLineTextView extends TextView {
+public class UnderLineTextView extends android.support.v7.widget.AppCompatTextView {
 
     private static final String TAG = UnderLineTextView.class.getName();
     public UnderLineTextView(Context context, AttributeSet attrs) {
