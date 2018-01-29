@@ -193,7 +193,10 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
 
     @Override
     public void updateDetail(OrderBean order) {
-        detailView.updateData(order);
+        if(detailView!=null){
+            detailView.updateData(order);
+        }
+
     }
 
 
