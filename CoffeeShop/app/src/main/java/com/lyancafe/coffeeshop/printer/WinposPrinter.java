@@ -254,30 +254,6 @@ public class WinposPrinter implements NetPrint {
     }
 
     @Override
-    public void printCompanyTest(List<PrintBeanTest> list) {
-        for(PrintBeanTest bean:list){
-//        PrintBeanTest bean = list.get(0);
-        String name = bean.getName();
-        String fName = null;
-        if(name.length()==2){
-            fName = name.charAt(0)+" "+name.charAt(1);
-        }else {
-            fName = name;
-        }
-            String pasterContent = "N"+"\n"+
-                    "OD"+"\n"+
-                    "q240"+"\n"+
-                    "Q160,16"+"\n"+
-                    "S3"+"\n"+
-                    "D8"+"\n"+
-                    "A40,40,0,230,2,2,N,\""+fName+"\""+"\n"+
-                    "A6,120,0,230,1,1,N,\"入职日期:"+bean.getDate()+"\""+"\n"+
-                    "P1"+"\n";
-            writeCommand(smallLabelIP,port,pasterContent);
-        }
-    }
-
-    @Override
     public void printMaterialBigLabel(MaterialItem materialItem) {
         String printMaterialContent =  "N"+"\n"+
                 "OD"+"\n"+
@@ -325,7 +301,7 @@ public class WinposPrinter implements NetPrint {
                     "S3"+"\n"+
                     "D8"+"\n"+
                     "A20,20,0,230,2,2,N,\""+Calculator.getCheckShopNo(bean)+"\""+"\n"+
-                    "A300,20,0,230,2,2,N,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
+                    "A280,20,0,230,2,2,N,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
                     "A20,70,0,230,1,1,N,\"单号:\""+"\n"+ //订单编号
                     "A70,70,0,230,1,1,N,\""+bean.getOrderId()+OrderHelper.getWxScanStrForPrint(bean)+","+"\""+"\n"+
                     "A180,70,0,230,1,1,N,\""+bean.getReceiverName()+","+"\""+"\n"+
@@ -360,7 +336,7 @@ public class WinposPrinter implements NetPrint {
                     "S3"+"\n"+
                     "D8"+"\n"+
                     "A20,30,0,230,2,2,N,\""+Calculator.getCheckShopNo(bean)+"\""+"\n"+
-                    "A300,30,0,230,2,2,N,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
+                    "A280,30,0,230,2,2,N,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
                     "A20,100,0,230,1,1,N,\"订单编号:\""+"\n"+ //订单编号
                     "A140,100,0,230,1,1,N,\""+bean.getOrderId()+OrderHelper.getWxScanStrForPrint(bean)+"\""+"\n"+
                     "A450,100,0,230,1,1,N,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+

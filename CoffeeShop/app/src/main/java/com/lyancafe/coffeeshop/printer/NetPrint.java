@@ -56,5 +56,4 @@ public interface NetPrint {
 
     void printBigLabelTest(List<String> contents);
 
-    void printCompanyTest(List<PrintBeanTest> list);
 }

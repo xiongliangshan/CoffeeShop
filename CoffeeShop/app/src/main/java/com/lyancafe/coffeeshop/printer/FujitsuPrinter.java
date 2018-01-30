@@ -6,7 +6,6 @@ import android.util.Log;
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.bean.MaterialItem;
 import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.bean.PrintBeanTest;
 import com.lyancafe.coffeeshop.bean.PrintCupBean;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
 import com.lyancafe.coffeeshop.bean.Product;
@@ -14,8 +13,8 @@ import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.logger.Logger;
-import com.lyancafe.coffeeshop.utils.OrderIdComparator;
 import com.lyancafe.coffeeshop.utils.LogUtil;
+import com.lyancafe.coffeeshop.utils.OrderIdComparator;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.io.IOException;
@@ -218,10 +217,6 @@ public class FujitsuPrinter implements NetPrint {
         writeCommand(smallLabelIP,port,pasterContent);
     }
 
-    @Override
-    public void printCompanyTest(List<PrintBeanTest> list) {
-
-    }
 
     @Override
     public void printBigLabelTest(List<String> contents) {
@@ -302,7 +297,7 @@ public class FujitsuPrinter implements NetPrint {
                     "DIRECTION 1,0\n" +
                     "CLS\n" +
                     "TEXT 10,10,\"TSS24.BF2\",0,2,2,\""+Calculator.getCheckShopNo(bean)+"\""+"\n"+
-                    "TEXT 300,10,\"TSS24.BF2\",0,2,2,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
+                    "TEXT 280,10,\"TSS24.BF2\",0,2,2,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
                     "TEXT 10,60,\"TSS24.BF2\",0,1,1,\"单号:\""+"\n"+ //订单编号
                     "TEXT 70,60,\"TSS24.BF2\",0,1,1,\""+bean.getOrderId()+OrderHelper.getWxScanStrForPrint(bean)+","+"\""+"\n"+
                     "TEXT 180,60,\"TSS24.BF2\",0,1,1,\""+bean.getReceiverName()+","+"\""+"\n"+
@@ -337,7 +332,7 @@ public class FujitsuPrinter implements NetPrint {
                     "DIRECTION 1,0\n" +
                     "CLS\n" +
                     "TEXT 10,10,\"TSS24.BF2\",0,2,2,\""+ Calculator.getCheckShopNo(bean) +"\"\n" +
-                    "TEXT 300,10,\"TSS24.BF2\",0,2,2,\""+ bean.getLocalStr() +"\"\n" +
+                    "TEXT 280,10,\"TSS24.BF2\",0,2,2,\""+ bean.getLocalStr() +"\"\n" +
                     "TEXT 10,80,\"TSS24.BF2\",0,1,1,\"订单编号:\"\n" +
                     "TEXT 130,80,\"TSS24.BF2\",0,1,1,\""+bean.getOrderId()+OrderHelper.getWxScanStrForPrint(bean)+"\"\n" +
                     "TEXT 440,80,\"TSS24.BF2\",0,1,1,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\"\n" +
