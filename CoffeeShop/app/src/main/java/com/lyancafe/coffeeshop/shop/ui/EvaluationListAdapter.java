@@ -124,7 +124,6 @@ public class EvaluationListAdapter extends RecyclerView.Adapter<EvaluationListAd
 
     public void setData(List<EvaluationBean> evaluationBeanList){
         this.list = evaluationBeanList;
-        Collections.sort(this.list,new EvaluationListSortComparator());
         notifyDataSetChanged();
     }
 

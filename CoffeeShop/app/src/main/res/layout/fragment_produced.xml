@@ -28,14 +28,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:textSize="20sp"
+                android:textSize="@dimen/radio_button_text_size"
                 android:text="全部"/>
 
             <RadioButton
                 android:id="@+id/rb_not_fetch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
+                android:textSize="@dimen/radio_button_text_size"
                 android:layout_marginLeft="16dp"
                 android:text="未取货"/>
 
