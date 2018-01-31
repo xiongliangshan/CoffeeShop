@@ -299,7 +299,7 @@ public class FujitsuPrinter implements NetPrint {
                     "TEXT 10,10,\"TSS24.BF2\",0,2,2,\""+Calculator.getCheckShopNo(bean)+"\""+"\n"+
                     "TEXT 280,10,\"TSS24.BF2\",0,2,2,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
                     "TEXT 10,60,\"TSS24.BF2\",0,1,1,\"单号:\""+"\n"+ //订单编号
-                    "TEXT 70,60,\"TSS24.BF2\",0,1,1,\""+bean.getOrderId()+OrderHelper.getWxScanStrForPrint(bean)+","+"\""+"\n"+
+                    "TEXT 70,60,\"TSS24.BF2\",0,1,1,\""+bean.getOrderId()+","+"\""+"\n"+
                     "TEXT 180,60,\"TSS24.BF2\",0,1,1,\""+bean.getReceiverName()+","+"\""+"\n"+
                     "TEXT 320,60,\"TSS24.BF2\",0,1,1,\"送达时间\""+"\n"+
                     "TEXT 420,60,\"TSS24.BF2\",0,1,1,\""+expectedTime+"\""+"\n"+
@@ -334,7 +334,7 @@ public class FujitsuPrinter implements NetPrint {
                     "TEXT 10,10,\"TSS24.BF2\",0,2,2,\""+ Calculator.getCheckShopNo(bean) +"\"\n" +
                     "TEXT 280,10,\"TSS24.BF2\",0,2,2,\""+ bean.getLocalStr() +"\"\n" +
                     "TEXT 10,80,\"TSS24.BF2\",0,1,1,\"订单编号:\"\n" +
-                    "TEXT 130,80,\"TSS24.BF2\",0,1,1,\""+bean.getOrderId()+OrderHelper.getWxScanStrForPrint(bean)+"\"\n" +
+                    "TEXT 130,80,\"TSS24.BF2\",0,1,1,\""+bean.getOrderId()+"\"\n" +
                     "TEXT 440,80,\"TSS24.BF2\",0,1,1,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\"\n" +
                     "BOX 8,110,616,220,1,10\n"+
 
@@ -380,7 +380,6 @@ public class FujitsuPrinter implements NetPrint {
                     "SET RIBBON OFF\n" +
                     "DIRECTION 1,0\n" +
                     "CLS\n" +
-                    "TEXT 12,16,\"TSS24.BF2\",0,1,1,\""+ bean.getShopOrderNo() +"\"\n" +
                     "TEXT 12,43,\"TSS24.BF2\",0,1,1,\""+bean.getCoffee()+"\"\n" +
                     "TEXT 12,68,\"TSS24.BF2\",0,1,1,\""+bean.getLabel()+"\"\n" +
                     "TEXT 12,101,\"TSS24.BF2\",0,1,1,\""+time+"\""+"\n"+
@@ -393,8 +392,6 @@ public class FujitsuPrinter implements NetPrint {
                     "SET RIBBON OFF\n" +
                     "DIRECTION 1,0\n" +
                     "CLS\n" +
-                    "TEXT 20,40,\"TSS24.BF2\",0,1,1,\""+ bean.getShopOrderNo() +"\"\n" +
-//                "TEXT 110,40,\"TSS24.BF2\",0,1,1,\""+bean.getBoxAmount()+"-"+bean.getBoxNumber()+"|"+bean.getCupAmount()+"-" +bean.getCupNumber()+"\"\n" +
                     "TEXT 20,70,\"TSS24.BF2\",0,1,1,\""+bean.getCoffee()+"\"\n" +
                     "TEXT 20,100,\"TSS24.BF2\",0,1,1,\""+bean.getLabel()+"\"\n" +
                     "PRINT 1,1\n";

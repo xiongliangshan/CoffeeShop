@@ -303,7 +303,7 @@ public class WinposPrinter implements NetPrint {
                     "A20,20,0,230,2,2,N,\""+Calculator.getCheckShopNo(bean)+"\""+"\n"+
                     "A280,20,0,230,2,2,N,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
                     "A20,70,0,230,1,1,N,\"单号:\""+"\n"+ //订单编号
-                    "A70,70,0,230,1,1,N,\""+bean.getOrderId()+OrderHelper.getWxScanStrForPrint(bean)+","+"\""+"\n"+
+                    "A70,70,0,230,1,1,N,\""+bean.getOrderId()+","+"\""+"\n"+
                     "A180,70,0,230,1,1,N,\""+bean.getReceiverName()+","+"\""+"\n"+
                     "A320,70,0,230,1,1,N,\"送达时间\""+"\n"+
                     "A420,70,0,230,1,1,N,\""+expectedTime+"\""+"\n"+
@@ -338,7 +338,7 @@ public class WinposPrinter implements NetPrint {
                     "A20,30,0,230,2,2,N,\""+Calculator.getCheckShopNo(bean)+"\""+"\n"+
                     "A280,30,0,230,2,2,N,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
                     "A20,100,0,230,1,1,N,\"订单编号:\""+"\n"+ //订单编号
-                    "A140,100,0,230,1,1,N,\""+bean.getOrderId()+OrderHelper.getWxScanStrForPrint(bean)+"\""+"\n"+
+                    "A140,100,0,230,1,1,N,\""+bean.getOrderId()+"\""+"\n"+
                     "A450,100,0,230,1,1,N,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
                     "A20,120,0,230,1,1,N,\"-------------------------------------------------- \""+"\n"+
                     "A20,150,0,230,1,1,N,\""+cupList[0]+"\""+"\n"+
@@ -373,7 +373,6 @@ public class WinposPrinter implements NetPrint {
                     "Q160,16"+"\n"+
                     "S3"+"\n"+
                     "D8"+"\n"+
-                    "A18,16,0,230,1,1,N,\""+orderBean.getShopOrderNo()+"\""+"\n"+
                     "A18,43,0,230,1,1,N,\""+orderBean.getCoffee()+"\""+"\n"+
                     "A18,68,0,230,1,1,N,\""+orderBean.getLabel()+"\""+"\n"+
                     "A18,101,0,230,1,1,N,\""+time+"\""+"\n"+
@@ -386,8 +385,6 @@ public class WinposPrinter implements NetPrint {
                     "Q160,16"+"\n"+
                     "S3"+"\n"+
                     "D8"+"\n"+
-                    "A20,40,0,230,1,1,N,\""+orderBean.getShopOrderNo()+"\""+"\n"+
-//                "A110,40,0,230,1,1,N,\""+orderBean.getBoxAmount()+"-"+orderBean.getBoxNumber()+"|"+orderBean.getCupAmount()+"-" +orderBean.getCupNumber()+"\""+"\n"+ //杯数盒子信息
                     "A20,70,0,230,1,1,N,\""+orderBean.getCoffee()+"\""+"\n"+
                     "A20,100,0,230,1,1,N,\""+orderBean.getLabel()+"\""+"\n"+
                     "P1"+"\n";

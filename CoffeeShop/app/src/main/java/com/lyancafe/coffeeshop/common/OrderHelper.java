@@ -246,6 +246,9 @@ public class OrderHelper {
 
             return "饿"+orderBean.getThirdShopOrderNo()+fetchCode;
         }
+        if(orderBean.getWxScan()){
+            return "到店"+String.valueOf(orderBean.getShopOrderNo());
+        }
         if(orderBean.getInstant()==1){//及时单
             return String.valueOf(orderBean.getShopOrderNo());
         }else{
