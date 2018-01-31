@@ -309,7 +309,7 @@ public class Calculator {
                 PrintCupBean printCupBean = new PrintCupBean(boxAmount,boxNumber,cupAmount,cupNumber);
                 printCupBean.setLabel(item.getRecipeFittings());
                 printCupBean.setOrderId(orderBean.getId());
-                printCupBean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
+                printCupBean.setShopOrderNo(OrderHelper.getShopOrderSnForSmall(orderBean));
                 printCupBean.setInstant(orderBean.getInstant());
                 printCupBean.setCoffee(item.getProduct());
                 printCupBean.setColdHotProperty(item.getColdHotProperty());
@@ -331,7 +331,7 @@ public class Calculator {
                 PrintCupBean printCupBean = new PrintCupBean(boxAmount,boxNumber+hotBoxAmount,cupAmount,cupNumber);
                 printCupBean.setLabel(item.getRecipeFittings());
                 printCupBean.setOrderId(orderBean.getId());
-                printCupBean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
+                printCupBean.setShopOrderNo(OrderHelper.getShopOrderSnForSmall(orderBean));
                 printCupBean.setInstant(orderBean.getInstant());
                 printCupBean.setCoffee(item.getProduct());
                 printCupBean.setColdHotProperty(item.getColdHotProperty());
@@ -370,7 +370,7 @@ public class Calculator {
                 PrintCupBean printCupBean = new PrintCupBean(boxAmount,boxNumber,cupAmount,cupNumber);
                 printCupBean.setLabel(item.getRecipeFittings());
                 printCupBean.setOrderId(orderBean.getId());
-                printCupBean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
+                printCupBean.setShopOrderNo(OrderHelper.getShopOrderSnForSmall(orderBean));
                 printCupBean.setInstant(orderBean.getInstant());
                 printCupBean.setCoffee(item.getProduct());
                 printCupBean.setColdHotProperty(item.getColdHotProperty());
@@ -392,7 +392,7 @@ public class Calculator {
                 PrintCupBean printCupBean = new PrintCupBean(boxAmount,boxNumber+hotBoxAmount,cupAmount,cupNumber);
                 printCupBean.setLabel(item.getRecipeFittings());
                 printCupBean.setOrderId(orderBean.getId());
-                printCupBean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
+                printCupBean.setShopOrderNo(OrderHelper.getShopOrderSnForSmall(orderBean));
                 printCupBean.setInstant(orderBean.getInstant());
                 printCupBean.setCoffee(item.getProduct());
                 printCupBean.setColdHotProperty(item.getColdHotProperty());

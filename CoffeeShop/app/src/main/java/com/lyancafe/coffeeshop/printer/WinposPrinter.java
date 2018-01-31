@@ -373,6 +373,7 @@ public class WinposPrinter implements NetPrint {
                     "Q160,16"+"\n"+
                     "S3"+"\n"+
                     "D8"+"\n"+
+                    "A18,16,0,230,1,1,N,\""+orderBean.getShopOrderNo()+"\""+"\n"+
                     "A18,43,0,230,1,1,N,\""+orderBean.getCoffee()+"\""+"\n"+
                     "A18,68,0,230,1,1,N,\""+orderBean.getLabel()+"\""+"\n"+
                     "A18,101,0,230,1,1,N,\""+time+"\""+"\n"+
@@ -385,6 +386,7 @@ public class WinposPrinter implements NetPrint {
                     "Q160,16"+"\n"+
                     "S3"+"\n"+
                     "D8"+"\n"+
+                    "A20,40,0,230,1,1,N,\""+orderBean.getShopOrderNo()+"\""+"\n"+
                     "A20,70,0,230,1,1,N,\""+orderBean.getCoffee()+"\""+"\n"+
                     "A20,100,0,230,1,1,N,\""+orderBean.getLabel()+"\""+"\n"+
                     "P1"+"\n";

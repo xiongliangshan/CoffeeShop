@@ -256,6 +256,14 @@ public class OrderHelper {
         }
     }
 
+    public static String getShopOrderSnForSmall(OrderBean orderBean){
+        if(orderBean.getWxScan()){
+            return "到店"+String.valueOf(orderBean.getShopOrderNo());
+        }else {
+            return "";
+        }
+    }
+
 
 
 
