@@ -9,11 +9,9 @@ import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Administrator on 2016/2/22.
@@ -184,6 +182,36 @@ public class OrderUtils {
         LogUtil.d(TAG,"查询所有订单: "+list.size()+" 条记录,所用时间: "+(endTime-startTime)+" ms");
         return  list;
     }
+
+    //按订单生产状态查询订单集合(今日订单)
+    public List<OrderBean> queryByProduceStatus(int produceStatus){
+        QueryBuilder<OrderBean> qb = mOrderDao.queryBuilder();
+        qb.where(OrderBeanDao.Properties.ProduceStatus.eq(produceStatus),OrderBeanDao.Properties.Status.lt(6000)
+        ,qb.and(OrderBeanDao.Properties.ExpectedTime.lt(getTomorrowStartTime()),OrderBeanDao.Properties.ExpectedTime.gt(getTodayStartTime())));
+        return qb.list();
+    }
+
+
+    //获取今日零点的时间戳
+    private long getTodayStartTime(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY,0);
+        calendar.set(Calendar.MINUTE,0);
+        calendar.set(Calendar.SECOND,0);
+        return calendar.getTimeInMillis();
+    }
+
+    //获取明天零点的时间戳
+    private long getTomorrowStartTime(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH,1);
+        calendar.set(Calendar.HOUR_OF_DAY,0);
+        calendar.set(Calendar.MINUTE,0);
+        calendar.set(Calendar.SECOND,0);
+        return calendar.getTimeInMillis();
+    }
+
+
 
     //查询已经配送完成的订单
     public List<OrderBean> queryFinishedOrders(){

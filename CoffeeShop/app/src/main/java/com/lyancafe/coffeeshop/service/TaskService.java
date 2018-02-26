@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
 import com.lyancafe.coffeeshop.utils.LogUtil;
@@ -26,17 +28,21 @@ public class TaskService extends Service {
     private Timer timer;
     private static final long PERIOD_TIME = 2*60*1000;
     private static final long PERIOD_CHECK = 3*60*1000;
+    private static final long PERIOD_AUTOPRODUCE = 30*1000;
     private long count = 0;
 
     //Test
     private Timer remindTimer;
+
+    private Timer autoProduceTimer;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d(TAG,"onCrate");
         startTimer();
-        startRemindTimer();
+//        startRemindTimer();
+        startAutoProduceTimer();
     }
 
     @Override
@@ -81,6 +87,29 @@ public class TaskService extends Service {
         },0,PERIOD_CHECK);
     }
 
+    private void startAutoProduceTimer(){
+        if(autoProduceTimer==null){
+            autoProduceTimer = new Timer(true);
+        }
+        autoProduceTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                List<OrderBean> producingOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.PRODUCING);
+                int cupsAmount = OrderHelper.getTotalQutity(producingOrders);
+                boolean isAutoProduce = producingOrders.size()<3 || cupsAmount<10 ;
+                LogUtil.d(TAG,"当前生产中订单为："+producingOrders.size()+"单 ，杯量为:"+cupsAmount);
+                if(isAutoProduce){
+                    List<OrderBean> toProducedOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.UNPRODUCED);
+                    LogUtil.d(TAG,"当前待生产订单为："+toProducedOrders.size());
+                    for(OrderBean order:toProducedOrders){
+                        LogUtil.d(TAG,order.toString());
+                    }
+                }
+
+            }
+        },PERIOD_AUTOPRODUCE,PERIOD_AUTOPRODUCE);
+    }
+
 
 
     @Override
@@ -92,6 +121,10 @@ public class TaskService extends Service {
         }
         if(remindTimer!=null){
             remindTimer.cancel();
+        }
+
+        if(autoProduceTimer!=null){
+            autoProduceTimer.cancel();
         }
     }
 

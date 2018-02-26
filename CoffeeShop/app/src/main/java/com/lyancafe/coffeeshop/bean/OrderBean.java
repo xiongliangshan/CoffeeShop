@@ -470,7 +470,7 @@ public class OrderBean implements Serializable{
                 ", relationOrderId=" + relationOrderId +
                 ", reason='" + reason + '\'' +
                 ", revoked=" + revoked +
-                ", items=" + items +
+                ", items=" + getItems() +
                 '}';
     }
 
