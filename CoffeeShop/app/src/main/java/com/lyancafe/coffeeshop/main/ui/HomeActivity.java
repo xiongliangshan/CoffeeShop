@@ -16,8 +16,6 @@ import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseActivity;
 import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 import com.lyancafe.coffeeshop.logger.Logger;
-import com.lyancafe.coffeeshop.main.presenter.MainPresenter;
-import com.lyancafe.coffeeshop.main.presenter.MainPresenterImpl;
 import com.lyancafe.coffeeshop.main.view.MainView;
 import com.lyancafe.coffeeshop.produce.ui.MainProduceFragment;
 import com.lyancafe.coffeeshop.service.DownLoadService;
@@ -50,7 +48,6 @@ public class HomeActivity extends BaseActivity implements MainView {
     private Context context;
     private int mSelectedIndex = 0;
 
-    private MainPresenter mMainPresenter;
     private LoadingDialog mLoadingDlg;
 
     @BindView(R.id.ll_produce_tab)
@@ -74,7 +71,6 @@ public class HomeActivity extends BaseActivity implements MainView {
         context = HomeActivity.this;
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
-        mMainPresenter = new MainPresenterImpl(this, this);
         initViews();
         updateTab(mSelectedIndex);
         Intent intent = new Intent(HomeActivity.this, TaskService.class);

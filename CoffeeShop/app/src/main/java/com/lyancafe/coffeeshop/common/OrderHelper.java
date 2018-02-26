@@ -2,15 +2,12 @@ package com.lyancafe.coffeeshop.common;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.CSApplication;
-import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.DeliverPlatform;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
@@ -18,12 +15,10 @@ import com.lyancafe.coffeeshop.bean.PrintOrderBean;
 import com.lyancafe.coffeeshop.bean.Product;
 import com.lyancafe.coffeeshop.bean.SummarizeGroup;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
-import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.printer.PrintSetting;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;

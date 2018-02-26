@@ -6,7 +6,6 @@ import android.util.Log;
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.bean.MaterialItem;
 import com.lyancafe.coffeeshop.bean.OrderBean;
-import com.lyancafe.coffeeshop.bean.PrintBeanTest;
 import com.lyancafe.coffeeshop.bean.PrintCupBean;
 import com.lyancafe.coffeeshop.bean.PrintObject;
 import com.lyancafe.coffeeshop.bean.PrintOrderBean;
@@ -15,8 +14,8 @@ import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.logger.Logger;
-import com.lyancafe.coffeeshop.utils.OrderIdComparator;
 import com.lyancafe.coffeeshop.utils.LogUtil;
+import com.lyancafe.coffeeshop.utils.OrderIdComparator;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import java.io.IOException;
