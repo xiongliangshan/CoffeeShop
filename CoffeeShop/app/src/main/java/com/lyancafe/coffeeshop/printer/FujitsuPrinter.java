@@ -277,7 +277,6 @@ public class FujitsuPrinter implements NetPrint {
 
         boolean isSimplify = PrintSetting.isSimplifyEnable(CSApplication.getInstance());
         if(bean.getCupAmount()==1 && isSimplify){
-            String expectedTime = bean.getInstant()==1?":尽快送达":OrderHelper.getPeriodOfExpectedtime(bean);
             String address = bean.getAddress();
             String bestAddress = "";
             if(!TextUtils.isEmpty(address)&& address.length()>25){
@@ -302,7 +301,7 @@ public class FujitsuPrinter implements NetPrint {
                     "TEXT 70,60,\"TSS24.BF2\",0,1,1,\""+bean.getOrderId()+","+"\""+"\n"+
                     "TEXT 180,60,\"TSS24.BF2\",0,1,1,\""+bean.getReceiverName()+","+"\""+"\n"+
                     "TEXT 320,60,\"TSS24.BF2\",0,1,1,\"送达时间\""+"\n"+
-                    "TEXT 420,60,\"TSS24.BF2\",0,1,1,\""+expectedTime+"\""+"\n"+
+                    "TEXT 420,60,\"TSS24.BF2\",0,1,1,\""+OrderHelper.getFormatTimeToStr(bean.getExpectedTime())+"\""+"\n"+
                     "TEXT 570,60,\"TSS24.BF2\",0,1,1,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
                     "TEXT 10,90,\"TSS24.BF2\",0,1,1,\""+bestAddress+"\""+"\n"+
                     "TEXT 10,120,\"TSS24.BF2\",0,1,1,\""+cupList[0]+"\""+"\n"+
@@ -346,7 +345,7 @@ public class FujitsuPrinter implements NetPrint {
                     "TEXT 10,240,\"TSS24.BF2\",0,1,1,\"收货人:\"\n" +
                     "TEXT 110,240,\"TSS24.BF2\",0,1,1,\""+bean.getReceiverName()+"\"\n" +
                     "TEXT 290,240,\"TSS24.BF2\",0,1,1,\"送达时间:\"\n" +
-                    "TEXT 410,240,\"TSS24.BF2\",0,1,1,\""+OrderHelper.getPeriodOfExpectedtime(bean)+"\"\n" +
+                    "TEXT 410,240,\"TSS24.BF2\",0,1,1,\""+OrderHelper.getFormatTimeToStr(bean.getExpectedTime())+"\"\n" +
                     "TEXT 10,280,\"TSS24.BF2\",0,1,1,\"地址:\"\n" +
                     addressCMD +
                     "PRINT 1,1\n";

@@ -287,7 +287,7 @@ public class OrderHelper {
 
 
 
-    //期望送达时间段
+   /* //期望送达时间段
     public static String getPeriodOfExpectedtime(PrintOrderBean pob){
         if(DeliveryTeam.MEITUAN==pob.getDeliveryTeam()){
             //美团订单
@@ -312,7 +312,7 @@ public class OrderHelper {
             }
         }
 
-    }
+    }*/
 
     public static String getPeriodOfExpectedtime(OrderBean orderBean){
         if(DeliveryTeam.MEITUAN==orderBean.getDeliveryTeam()){

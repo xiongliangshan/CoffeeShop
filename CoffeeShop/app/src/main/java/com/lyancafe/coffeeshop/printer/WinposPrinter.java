@@ -281,7 +281,6 @@ public class WinposPrinter implements NetPrint {
 
         boolean isSimplify = PrintSetting.isSimplifyEnable(CSApplication.getInstance());
         if(bean.getCupAmount()==1 && isSimplify){
-            String expectedTime = bean.getInstant()==1?":尽快送达":OrderHelper.getPeriodOfExpectedtime(bean);
             String address = bean.getAddress();
             String bestAddress = "";
             if(!TextUtils.isEmpty(address)&& address.length()>25){
@@ -306,7 +305,7 @@ public class WinposPrinter implements NetPrint {
                     "A70,70,0,230,1,1,N,\""+bean.getOrderId()+","+"\""+"\n"+
                     "A180,70,0,230,1,1,N,\""+bean.getReceiverName()+","+"\""+"\n"+
                     "A320,70,0,230,1,1,N,\"送达时间\""+"\n"+
-                    "A420,70,0,230,1,1,N,\""+expectedTime+"\""+"\n"+
+                    "A420,70,0,230,1,1,N,\""+OrderHelper.getFormatTimeToStr(bean.getExpectedTime())+"\""+"\n"+
                     "A570,70,0,230,1,1,N,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
                     "A20,100,0,230,1,1,N,\""+bestAddress+"\""+"\n"+
                     "A20,130,0,230,1,1,N,\""+cupList[0]+"\""+"\n"+
@@ -349,7 +348,7 @@ public class WinposPrinter implements NetPrint {
                     "A20,260,0,230,1,1,N,\"收货人 \""+"\n"+
                     "A120,260,0,230,1,1,N,\""+bean.getReceiverName()+"\""+"\n"+
                     "A300,260,0,230,1,1,N,\"送达时间 \""+"\n"+
-                    "A420,260,0,230,1,1,N,\""+OrderHelper.getPeriodOfExpectedtime(bean)+"\""+"\n"+
+                    "A420,260,0,230,1,1,N,\""+OrderHelper.getFormatTimeToStr(bean.getExpectedTime())+"\""+"\n"+
                     "A20,300,0,230,1,1,N,\"地址 \""+"\n"+
                     addressCMD +                             //配送地址
                     "P1"+"\n";

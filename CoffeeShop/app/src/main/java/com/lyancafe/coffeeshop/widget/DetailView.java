@@ -158,12 +158,9 @@ public class DetailView extends CardView implements View.OnClickListener{
         }else{
 
             tvShopNo.setText(OrderHelper.getShopOrderSn(order));
-            if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN) {
-                tvReachTime.setText(order.getInstant() == 1 ? "立即送出" : OrderHelper.getDateToString(order.getExpectedTime()));
-            } else {
-                tvReachTime.setText(order.getInstant() == 1 ? "尽快送达" : OrderHelper.getDateToMonthDay(order.getExpectedTime()));
-            }
 
+            tvReachTime.setText(OrderHelper.getFormatTimeToStr(order.getExpectedTime()));
+            
             long relationOrderId = order.getRelationOrderId();
             if(relationOrderId!=0){
                 clReplenish.setVisibility(View.VISIBLE);

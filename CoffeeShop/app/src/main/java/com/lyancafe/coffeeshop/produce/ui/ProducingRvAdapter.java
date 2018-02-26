@@ -149,11 +149,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         holder.tvBoxCup.setText(OrderHelper.getBoxCupByOrder(order));
 
 
-        if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN) {
-            holder.expectedTimeText.setText(order.getInstant() == 1 ? "立即送出" : OrderHelper.getFormatTimeToStr(order.getExpectedTime()));
-        } else {
-            holder.expectedTimeText.setText(order.getInstant() == 1 ? "尽快送达" : OrderHelper.getFormatPeriodTimeStr(order.getExpectedTime()));
-        }
+        holder.expectedTimeText.setText(OrderHelper.getFormatTimeToStr(order.getExpectedTime()));
 
         holder.deliverStatusText.setText(OrderHelper.getStatusName(order.getStatus(),order.getWxScan()));
 
