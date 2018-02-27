@@ -6,7 +6,10 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.db.OrderUtils;
@@ -35,19 +38,25 @@ public class TaskService extends Service {
     private Timer remindTimer;
 
     private Timer autoProduceTimer;
+    private AutoProduceTask autoProduceTask;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d(TAG,"onCrate");
         startTimer();
-//        startRemindTimer();
-        startAutoProduceTimer();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand");
+        UserBean user = LoginHelper.getUser(CSApplication.getInstance());
+        if(user.isAutoFlag()){
+            startAutoProduceTimer();
+            startAutoProduceTimer();
+        }else {
+            closeAutoProduceTimer();
+        }
         return START_STICKY;
     }
 
@@ -71,43 +80,27 @@ public class TaskService extends Service {
         }, PERIOD_TIME, PERIOD_TIME);
     }
 
-    private void startRemindTimer() {
-        if(remindTimer==null){
-            remindTimer = new Timer(true);
-        }
-        remindTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                //查询所有订单
-                List<OrderBean> list = OrderUtils.with().queryAllOrders();
-                for(OrderBean order:list){
-                    LogUtil.i(TAG,"order ="+order.toString());
-                }
-            }
-        },0,PERIOD_CHECK);
-    }
 
     private void startAutoProduceTimer(){
         if(autoProduceTimer==null){
             autoProduceTimer = new Timer(true);
         }
-        autoProduceTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                List<OrderBean> producingOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.PRODUCING);
-                int cupsAmount = OrderHelper.getTotalQutity(producingOrders);
-                boolean isAutoProduce = producingOrders.size()<3 || cupsAmount<10 ;
-                LogUtil.d(TAG,"当前生产中订单为："+producingOrders.size()+"单 ，杯量为:"+cupsAmount);
-                if(isAutoProduce){
-                    List<OrderBean> toProducedOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.UNPRODUCED);
-                    LogUtil.d(TAG,"当前待生产订单为："+toProducedOrders.size());
-                    for(OrderBean order:toProducedOrders){
-                        LogUtil.d(TAG,order.toString());
-                    }
-                }
+        if(autoProduceTask == null){
+            autoProduceTask = new AutoProduceTask();
+        }else {
+            autoProduceTask.cancel();
+            autoProduceTask = new AutoProduceTask();
+        }
+        LogUtil.d(TAG,"自动生产服务启动");
+        autoProduceTimer.schedule(autoProduceTask,PERIOD_AUTOPRODUCE,PERIOD_AUTOPRODUCE);
+    }
 
-            }
-        },PERIOD_AUTOPRODUCE,PERIOD_AUTOPRODUCE);
+    private void closeAutoProduceTimer(){
+        LogUtil.d(TAG,"自动生产服务关闭");
+        if(autoProduceTimer!=null){
+            autoProduceTimer.cancel();
+            autoProduceTimer = null;
+        }
     }
 
 
@@ -123,8 +116,22 @@ public class TaskService extends Service {
             remindTimer.cancel();
         }
 
-        if(autoProduceTimer!=null){
-            autoProduceTimer.cancel();
+        closeAutoProduceTimer();
+    }
+
+
+    class AutoProduceTask extends TimerTask{
+
+        @Override
+        public void run() {
+            List<OrderBean> producingOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.PRODUCING);
+            int cupsAmount = OrderHelper.getTotalQutity(producingOrders);
+            boolean isAutoProduce = producingOrders.size()<3 || cupsAmount<10 ;
+            LogUtil.d(TAG,"当前生产中订单为："+producingOrders.size()+"单 ，杯量为:"+cupsAmount);
+            if(isAutoProduce){
+                List<OrderBean> toProducedOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.UNPRODUCED);
+                LogUtil.d(TAG,"当前待生产订单为："+toProducedOrders.size());
+            }
         }
     }
 

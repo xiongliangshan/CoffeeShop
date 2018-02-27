@@ -19,10 +19,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.SummarizeGroup;
+import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
@@ -159,6 +162,16 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
                 return false;
             }
         });
+
+
+        UserBean user = LoginHelper.getUser(CSApplication.getInstance());
+        if(user.isAutoFlag()){
+            summarizeBtn.setVisibility(View.GONE);
+            batchSelectBtn.setVisibility(View.GONE);
+        }else{
+            summarizeBtn.setVisibility(View.VISIBLE);
+            batchSelectBtn.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setListener(){
