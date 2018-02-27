@@ -50,6 +50,7 @@ import com.lyancafe.coffeeshop.widget.ReportIssueDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -302,7 +303,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
      *
      * @param event
      */
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStartProduceEvent(StartProduceEvent event) {
         /**
          * 开始生产&&打印

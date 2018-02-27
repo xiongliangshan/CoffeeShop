@@ -14,6 +14,7 @@ import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
+import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -131,6 +132,15 @@ public class TaskService extends Service {
             if(isAutoProduce){
                 List<OrderBean> toProducedOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.UNPRODUCED);
                 LogUtil.d(TAG,"当前待生产订单为："+toProducedOrders.size());
+                for(OrderBean orderBean:toProducedOrders){
+                    long startProduceTime = orderBean.getExpectedTime()-20*60*1000;
+                    long nowTime = System.currentTimeMillis();
+                    if(nowTime>=startProduceTime){
+                        //开始自动生产
+                        LogUtil.d(TAG,"满足条件，开始自动生产:"+orderBean.getId());
+                        EventBus.getDefault().postSticky(new StartProduceEvent(orderBean));
+                    }
+                }
             }
         }
     }

@@ -13,7 +13,7 @@ public class UserBean implements Serializable{
     private String token;
     private boolean needPrintTime;
     private String drinkGuide;
-    private boolean autoFlag = false;
+    private boolean autoFlag = true;
 
     public UserBean() {
     }
