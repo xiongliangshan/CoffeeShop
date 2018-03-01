@@ -59,12 +59,8 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView<Ma
     RecyclerView contentRV;
     @BindView(R.id.loadingProgressBar)
     ContentLoadingProgressBar loadingProgressBar;
-    @BindView(R.id.rb_off)
-    RadioButton rbOff;
-    @BindView(R.id.rb_on)
-    RadioButton rbOn;
-    @BindView(R.id.rg_material_mode)
-    RadioGroup rgMaterialMode;
+
+
 
 
     private Context mContext;
@@ -113,7 +109,6 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView<Ma
         ButterKnife.bind(this, contentView);
         linflater = LayoutInflater.from(getContext());
         initRV();
-        initRadioButton();
         return contentView;
 
     }
@@ -129,14 +124,6 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView<Ma
     }
 
 
-    private void initRadioButton() {
-        boolean isOpen = PrintSetting.isNewMaterialEnable(getContext());
-        if(isOpen){
-            rgMaterialMode.check(R.id.rb_on);
-        }else {
-            rgMaterialMode.check(R.id.rb_off);
-        }
-    }
 
 
     /**
@@ -394,22 +381,6 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView<Ma
         Log.d("xls", "MaterialsFragment InVisible");
         if (mHandler != null) {
             mHandler.removeCallbacks(mRunnable);
-        }
-    }
-
-    @OnClick({R.id.rb_off, R.id.rb_on})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.rb_off:
-                //关闭深圳模式
-                PrintSetting.saveNewMaterialEnable(getContext(),false);
-                Logger.getLogger().log("设置物料打印深圳模式---关闭");
-                break;
-            case R.id.rb_on:
-                //打开深圳模式
-                PrintSetting.saveNewMaterialEnable(getContext(),true);
-                Logger.getLogger().log("设置物料打印深圳模式---开启");
-                break;
         }
     }
 

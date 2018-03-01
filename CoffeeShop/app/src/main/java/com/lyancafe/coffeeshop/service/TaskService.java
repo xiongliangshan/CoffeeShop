@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.lyancafe.coffeeshop.CSApplication;
+import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
@@ -16,6 +17,7 @@ import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.utils.LogUtil;
+import com.lyancafe.coffeeshop.utils.SoundPoolUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -52,7 +54,7 @@ public class TaskService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand");
         UserBean user = LoginHelper.getUser(CSApplication.getInstance());
-        if(user.isAutoFlag()){
+        if(user.isOpenFulfill()){
             startAutoProduceTimer();
             startAutoProduceTimer();
         }else {
@@ -132,6 +134,7 @@ public class TaskService extends Service {
             if(isAutoProduce){
                 List<OrderBean> toProducedOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.UNPRODUCED);
                 LogUtil.d(TAG,"当前待生产订单为："+toProducedOrders.size());
+                int n = 0;
                 for(OrderBean orderBean:toProducedOrders){
                     long startProduceTime = orderBean.getExpectedTime()-20*60*1000;
                     long nowTime = System.currentTimeMillis();
@@ -139,8 +142,15 @@ public class TaskService extends Service {
                         //开始自动生产
                         LogUtil.d(TAG,"满足条件，开始自动生产:"+orderBean.getId());
                         EventBus.getDefault().postSticky(new StartProduceEvent(orderBean));
+                        n++;
                     }
                 }
+                if(n>0){
+                    //开始生产订单语音播放
+                    SoundPoolUtil.create(CSApplication.getInstance(), R.raw.start_produce);
+                }
+            }else {
+                LogUtil.d(TAG,"任务堆积，暂缓生产");
             }
         }
     }

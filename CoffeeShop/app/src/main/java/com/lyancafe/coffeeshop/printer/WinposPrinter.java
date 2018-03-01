@@ -188,50 +188,34 @@ public class WinposPrinter implements NetPrint {
 
     @Override
     public void printTimeControlPaster(MaterialItem materialItem) {
-        boolean isNewMode = PrintSetting.isNewMaterialEnable(CSApplication.getInstance());
         String pasterContent = null;
-        if(isNewMode){
-            if("冻品类".equals(materialItem.getCategoryName())){
-                pasterContent = "N"+"\n"+
-                        "OD"+"\n"+
-                        "q240"+"\n"+
-                        "Q160,16"+"\n"+
-                        "S3"+"\n"+
-                        "D8"+"\n"+
-                        "A10,20,0,230,1,1,N,\""+"品名:"+materialItem.getName()+"\""+"\n"+
-                        "A10,55,0,230,1,1,N,\"解冻日期:____-__-___\""+"\n"+
-                        "A10,90,0,230,1,1,N,\"使用期限:____-__-___\""+"\n"+
-                        "A10,125,0,230,1,1,N,\"原始到期:____-__-___\""+"\n"+
-                        "P1"+"\n";
-            }else {
-                pasterContent = "N"+"\n"+
-                        "OD"+"\n"+
-                        "q240"+"\n"+
-                        "Q160,16"+"\n"+
-                        "S3"+"\n"+
-                        "D8"+"\n"+
-                        "A10,20,0,230,1,1,N,\""+"品名:"+materialItem.getName()+"\""+"\n"+
-                        "A10,55,0,230,1,1,N,\"开封日期:____-__-___\""+"\n"+
-                        "A10,90,0,230,1,1,N,\"废弃日期:____-__-___\""+"\n"+
-                        "A10,125,0,230,1,1,N,\"原始到期:____-__-___\""+"\n"+
-                        "P1"+"\n";
-            }
-        }else {
-            pasterContent = "N"+"\n"+
-                    "OD"+"\n"+
-                    "q240"+"\n"+
-                    "Q160,16"+"\n"+
-                    "S3"+"\n"+
-                    "D8"+"\n"+
-                    "A10,20,0,230,1,1,N,\""+materialItem.getName()+"\""+"\n"+
-                    "A10,55,0,230,1,1,N,\""+Calculator.getOverDueDate(materialItem.getOverdueTime())+"\""+"\n"+
-                    "A10,80,0,230,1,1,N,\"过期\""+"\n"+
-                    "A10,120,0,230,1,1,N,\"原始到期:\""+"\n"+
-                    "A120,120,0,230,1,1,N,\"____________\""+"\n"+
-                    "P1"+"\n";
+        if ("冻品类".equals(materialItem.getCategoryName())) {
+            pasterContent = "N" + "\n" +
+                    "OD" + "\n" +
+                    "q240" + "\n" +
+                    "Q160,16" + "\n" +
+                    "S3" + "\n" +
+                    "D8" + "\n" +
+                    "A10,20,0,230,1,1,N,\"" + "品名:" + materialItem.getName() + "\"" + "\n" +
+                    "A10,55,0,230,1,1,N,\"解冻日期:____-__-___\"" + "\n" +
+                    "A10,90,0,230,1,1,N,\"使用期限:____-__-___\"" + "\n" +
+                    "A10,125,0,230,1,1,N,\"原始到期:____-__-___\"" + "\n" +
+                    "P1" + "\n";
+        } else {
+            pasterContent = "N" + "\n" +
+                    "OD" + "\n" +
+                    "q240" + "\n" +
+                    "Q160,16" + "\n" +
+                    "S3" + "\n" +
+                    "D8" + "\n" +
+                    "A10,20,0,230,1,1,N,\"" + "品名:" + materialItem.getName() + "\"" + "\n" +
+                    "A10,55,0,230,1,1,N,\"开封日期:____-__-___\"" + "\n" +
+                    "A10,90,0,230,1,1,N,\"使用期限:____-__-___\"" + "\n" +
+                    "A10,125,0,230,1,1,N,\"原始到期:____-__-___\"" + "\n" +
+                    "P1" + "\n";
         }
 
-        writeCommand(smallLabelIP,port,pasterContent);
+        writeCommand(smallLabelIP, port, pasterContent);
     }
 
     @Override

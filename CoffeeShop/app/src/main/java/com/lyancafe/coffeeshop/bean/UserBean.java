@@ -13,7 +13,7 @@ public class UserBean implements Serializable{
     private String token;
     private boolean needPrintTime;
     private String drinkGuide;
-    private boolean autoFlag = true;
+    private boolean isOpenFulfill = false;
 
     public UserBean() {
     }
@@ -67,12 +67,12 @@ public class UserBean implements Serializable{
         this.drinkGuide = drinkGuide;
     }
 
-    public boolean isAutoFlag() {
-        return autoFlag;
+    public boolean isOpenFulfill() {
+        return isOpenFulfill;
     }
 
-    public void setAutoFlag(boolean autoFlag) {
-        this.autoFlag = autoFlag;
+    public void setOpenFulfill(boolean openFulfill) {
+        this.isOpenFulfill = openFulfill;
     }
 
     @Override
@@ -84,7 +84,7 @@ public class UserBean implements Serializable{
                 ", token='" + token + '\'' +
                 ", needPrintTime=" + needPrintTime +
                 ", drinkGuide='" + drinkGuide + '\'' +
-                ", autoFlag=" + autoFlag +
+                ", isOpenFulfill=" + isOpenFulfill +
                 '}';
     }
 }

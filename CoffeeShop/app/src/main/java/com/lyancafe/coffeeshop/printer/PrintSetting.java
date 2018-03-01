@@ -47,13 +47,4 @@ public class PrintSetting {
         return sharedPreferences.getBoolean(KEY_SIMPLIFY_SWITCH,false);
     }
 
-    public static void saveNewMaterialEnable(Context context,boolean isOpen){
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PRINTER,Context.MODE_PRIVATE);
-        sharedPreferences.edit().putBoolean(KEY_MATERIAL,isOpen).apply();
-    }
-
-    public static boolean isNewMaterialEnable(Context context){
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PRINTER,Context.MODE_PRIVATE);
-        return sharedPreferences.getBoolean(KEY_MATERIAL,false);
-    }
 }

@@ -166,7 +166,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
 
 
         UserBean user = LoginHelper.getUser(CSApplication.getInstance());
-        if(user.isAutoFlag()){
+        if(user.isOpenFulfill()){
             summarizeBtn.setVisibility(View.GONE);
             batchSelectBtn.setVisibility(View.GONE);
         }else{
