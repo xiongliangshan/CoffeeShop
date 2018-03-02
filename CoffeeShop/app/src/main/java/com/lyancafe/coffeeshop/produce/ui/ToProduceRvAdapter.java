@@ -21,6 +21,8 @@ import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
@@ -29,6 +31,7 @@ import com.lyancafe.coffeeshop.event.NotNeedProduceEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ProgressPercent;
 import com.lyancafe.coffeeshop.widget.ReplenishWindow;
 
@@ -168,7 +171,21 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
                 @Override
                 public void onClick(View v) {
                     //点击开始生产（打印）按钮
-                    if (order.getRelationOrderId() == 0) {
+                    UserBean user = LoginHelper.getUser(CSApplication.getInstance());
+                    if(user.isOpenFulfill()){
+                        long nowTime = System.currentTimeMillis();
+                        if(nowTime<order.getStartProduceTime()){
+                            ToastUtil.show(context.getApplicationContext(),"时间未到，不能提前生产");
+                            return;
+                        }
+                        EventBus.getDefault().post(new StartProduceEvent(order));
+                        Logger.getLogger().log("列表-生产单个订单:{"+order.getId()+"}");
+                    }else{
+                        EventBus.getDefault().post(new StartProduceEvent(order));
+                        Logger.getLogger().log("列表-生产单个订单:{"+order.getId()+"}");
+                    }
+
+                   /* if (order.getRelationOrderId() == 0) {
                         EventBus.getDefault().post(new StartProduceEvent(order));
                         Logger.getLogger().log("列表-生产单个订单:{"+order.getId()+"}");
                     } else {
@@ -190,7 +207,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
                             }
                         });
                         replenishWindow.showPopUpWindow(v);
-                    }
+                    }*/
 
                 }
             });

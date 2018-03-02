@@ -56,7 +56,6 @@ public class TaskService extends Service {
         UserBean user = LoginHelper.getUser(CSApplication.getInstance());
         if(user.isOpenFulfill()){
             startAutoProduceTimer();
-            startAutoProduceTimer();
         }else {
             closeAutoProduceTimer();
         }
@@ -136,9 +135,8 @@ public class TaskService extends Service {
                 LogUtil.d(TAG,"当前待生产订单为："+toProducedOrders.size());
                 int n = 0;
                 for(OrderBean orderBean:toProducedOrders){
-                    long startProduceTime = orderBean.getExpectedTime()-20*60*1000;
                     long nowTime = System.currentTimeMillis();
-                    if(nowTime>=startProduceTime){
+                    if(nowTime>=orderBean.getStartProduceTime()){
                         //开始自动生产
                         LogUtil.d(TAG,"满足条件，开始自动生产:"+orderBean.getId());
                         EventBus.getDefault().postSticky(new StartProduceEvent(orderBean));
@@ -148,6 +146,8 @@ public class TaskService extends Service {
                 if(n>0){
                     //开始生产订单语音播放
                     SoundPoolUtil.create(CSApplication.getInstance(), R.raw.start_produce);
+                }else {
+                    LogUtil.d(TAG,"时间未到，没有满足条件的订单");
                 }
             }else {
                 LogUtil.d(TAG,"任务堆积，暂缓生产");

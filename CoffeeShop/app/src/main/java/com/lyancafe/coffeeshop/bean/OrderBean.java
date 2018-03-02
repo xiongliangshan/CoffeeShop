@@ -38,6 +38,8 @@ public class OrderBean implements Serializable{
 
     private long produceEffect;         //计算生产时效的基准时间
 
+    private long startProduceTime;       //开始生产时间
+
     private String recipient;            //收货人名字
 
     private String address;              //收货人地址
@@ -97,12 +99,13 @@ public class OrderBean implements Serializable{
 
 
 
-    @Generated(hash = 1804425784)
+    @Generated(hash = 1207510859)
     public OrderBean(long id, String reminder, String orderSn, int shopOrderNo, boolean wxScan, boolean isRecipeFittings,
-            long expectedTime, long orderTime, long distributeTime, long produceEffect, String recipient, String address,
-            String phone, long acceptTime, String courierName, String courierPhone, int status, int produceStatus, boolean issueOrder,
-            int instant, String notes, String csrNotes, long handoverTime, int feedbackType, int deliveryTeam, int thirdShopOrderNo,
-            String thirdOrderNo, double orderDistance, long relationOrderId, String reason, boolean revoked, boolean checkAddress) {
+            long expectedTime, long orderTime, long distributeTime, long produceEffect, long startProduceTime, String recipient,
+            String address, String phone, long acceptTime, String courierName, String courierPhone, int status, int produceStatus,
+            boolean issueOrder, int instant, String notes, String csrNotes, long handoverTime, int feedbackType, int deliveryTeam,
+            int thirdShopOrderNo, String thirdOrderNo, double orderDistance, long relationOrderId, String reason, boolean revoked,
+            boolean checkAddress) {
         this.id = id;
         this.reminder = reminder;
         this.orderSn = orderSn;
@@ -113,6 +116,7 @@ public class OrderBean implements Serializable{
         this.orderTime = orderTime;
         this.distributeTime = distributeTime;
         this.produceEffect = produceEffect;
+        this.startProduceTime = startProduceTime;
         this.recipient = recipient;
         this.address = address;
         this.phone = phone;
@@ -504,6 +508,14 @@ public class OrderBean implements Serializable{
 
     public void setAcceptTime(long acceptTime) {
         this.acceptTime = acceptTime;
+    }
+
+    public long getStartProduceTime() {
+        return this.startProduceTime;
+    }
+
+    public void setStartProduceTime(long startProduceTime) {
+        this.startProduceTime = startProduceTime;
     }
 
     /** called by internal mechanisms, do not call yourself. */

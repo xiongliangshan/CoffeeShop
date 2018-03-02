@@ -17,6 +17,8 @@ import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.PushMessageBean;
+import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
 import com.lyancafe.coffeeshop.event.RevokeEvent;
@@ -129,7 +131,7 @@ public class MyPushReceiver extends BroadcastReceiver {
         }
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.mipmap.app_icon)
-                .setDefaults(Notification.DEFAULT_VIBRATE|Notification.DEFAULT_LIGHTS)
+                .setDefaults(Notification.DEFAULT_LIGHTS)
                 .setAutoCancel(true)
                 .setContentTitle("连咖啡消息通知");
         if(pmb!=null){
@@ -139,7 +141,13 @@ public class MyPushReceiver extends BroadcastReceiver {
         }
         if(pmb.getEventType()==1){  //新订单消息
 
-            mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.coffee_box));
+            UserBean user = LoginHelper.getUser(CSApplication.getInstance());
+            if(user.isOpenFulfill()){
+                mBuilder.setSound(null);
+            }else {
+                mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.coffee_box));
+            }
+
 
             EventBus.getDefault().post(new NewOderComingEvent(0L));
         }else if(pmb.getEventType()==10){   //小哥上报问题
