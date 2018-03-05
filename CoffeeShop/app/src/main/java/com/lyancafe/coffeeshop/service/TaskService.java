@@ -16,6 +16,7 @@ import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.SoundPoolUtil;
 
@@ -130,18 +131,28 @@ public class TaskService extends Service {
             int cupsAmount = OrderHelper.getTotalQutity(producingOrders);
             boolean isAutoProduce = producingOrders.size()<3 || cupsAmount<10 ;
             LogUtil.d(TAG,"当前生产中订单为："+producingOrders.size()+"单 ，杯量为:"+cupsAmount);
+            Logger.getLogger().log("当前生产中订单为:"+producingOrders.size()+"单,杯量为:"+cupsAmount+"}");
             if(isAutoProduce){
                 List<OrderBean> toProducedOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.UNPRODUCED);
                 LogUtil.d(TAG,"当前待生产订单为："+toProducedOrders.size());
                 int n = 0;
                 for(OrderBean orderBean:toProducedOrders){
-                    long nowTime = System.currentTimeMillis();
-                    if(nowTime>=orderBean.getStartProduceTime()){
-                        //开始自动生产
-                        LogUtil.d(TAG,"满足条件，开始自动生产:"+orderBean.getId());
+                    if(orderBean.getPriority()==0){
+                        long nowTime = System.currentTimeMillis();
+                        if(nowTime>=orderBean.getStartProduceTime()){
+                            //开始自动生产
+                            LogUtil.d(TAG,"满足条件，开始自动生产:"+orderBean.getId());
+                            Logger.getLogger().log("自动生产订单:{"+orderBean.getId()+"priority = "+orderBean.getPriority()+"}");
+                            EventBus.getDefault().postSticky(new StartProduceEvent(orderBean));
+                            n++;
+                        }
+                    }else {
+                        LogUtil.d(TAG,"特殊订单，开始自动生产:"+orderBean.getId());
+                        Logger.getLogger().log("自动生产订单:{"+orderBean.getId()+"priority = "+orderBean.getPriority()+"}");
                         EventBus.getDefault().postSticky(new StartProduceEvent(orderBean));
                         n++;
                     }
+
                 }
                 if(n>0){
                     //开始生产订单语音播放

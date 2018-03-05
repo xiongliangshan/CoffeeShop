@@ -173,13 +173,19 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
                     //点击开始生产（打印）按钮
                     UserBean user = LoginHelper.getUser(CSApplication.getInstance());
                     if(user.isOpenFulfill()){
-                        long nowTime = System.currentTimeMillis();
-                        if(nowTime<order.getStartProduceTime()){
-                            ToastUtil.show(context.getApplicationContext(),"时间未到，不能提前生产");
-                            return;
+                        if(order.getPriority()==0){
+                            long nowTime = System.currentTimeMillis();
+                            if(nowTime<order.getStartProduceTime()){
+                                ToastUtil.show(context.getApplicationContext(),"时间未到，不能提前生产");
+                                return;
+                            }
+                            EventBus.getDefault().post(new StartProduceEvent(order));
+                            Logger.getLogger().log("列表-生产单个订单:{"+order.getId()+"}");
+                        }else {
+                            EventBus.getDefault().post(new StartProduceEvent(order));
+                            Logger.getLogger().log("列表-生产单个订单:{"+order.getId()+"}");
                         }
-                        EventBus.getDefault().post(new StartProduceEvent(order));
-                        Logger.getLogger().log("列表-生产单个订单:{"+order.getId()+"}");
+
                     }else{
                         EventBus.getDefault().post(new StartProduceEvent(order));
                         Logger.getLogger().log("列表-生产单个订单:{"+order.getId()+"}");

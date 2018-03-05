@@ -84,6 +84,8 @@ public class OrderBean implements Serializable{
 
     private boolean checkAddress = false;        //是否是重点关注的地址
 
+    private int priority;                       //0:正常的  1:生产不受规则限制
+
     @ToMany(referencedJoinProperty = "orderId")
     private List<ItemContentBean> items;        //购买的咖啡内容列表
 
@@ -99,13 +101,13 @@ public class OrderBean implements Serializable{
 
 
 
-    @Generated(hash = 1207510859)
+    @Generated(hash = 1323679447)
     public OrderBean(long id, String reminder, String orderSn, int shopOrderNo, boolean wxScan, boolean isRecipeFittings,
             long expectedTime, long orderTime, long distributeTime, long produceEffect, long startProduceTime, String recipient,
             String address, String phone, long acceptTime, String courierName, String courierPhone, int status, int produceStatus,
             boolean issueOrder, int instant, String notes, String csrNotes, long handoverTime, int feedbackType, int deliveryTeam,
             int thirdShopOrderNo, String thirdOrderNo, double orderDistance, long relationOrderId, String reason, boolean revoked,
-            boolean checkAddress) {
+            boolean checkAddress, int priority) {
         this.id = id;
         this.reminder = reminder;
         this.orderSn = orderSn;
@@ -139,6 +141,7 @@ public class OrderBean implements Serializable{
         this.reason = reason;
         this.revoked = revoked;
         this.checkAddress = checkAddress;
+        this.priority = priority;
     }
 
     @Generated(hash = 1725534308)
@@ -516,6 +519,14 @@ public class OrderBean implements Serializable{
 
     public void setStartProduceTime(long startProduceTime) {
         this.startProduceTime = startProduceTime;
+    }
+
+    public int getPriority() {
+        return this.priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 
     /** called by internal mechanisms, do not call yourself. */
