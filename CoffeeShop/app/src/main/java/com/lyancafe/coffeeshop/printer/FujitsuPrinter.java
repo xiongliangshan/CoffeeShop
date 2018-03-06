@@ -283,7 +283,7 @@ public class FujitsuPrinter implements NetPrint {
                     "TEXT 10,10,\"TSS24.BF2\",0,2,2,\""+Calculator.getCheckShopNo(bean)+"\""+"\n"+
                     "TEXT 280,10,\"TSS24.BF2\",0,2,2,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
                     "TEXT 10,60,\"TSS24.BF2\",0,1,1,\"单号:\""+"\n"+ //订单编号
-                    "TEXT 70,60,\"TSS24.BF2\",0,1,1,\""+bean.getOrderId()+","+"\""+"\n"+
+                    "TEXT 70,60,\"TSS24.BF2\",0,1,1,\""+bean.getOrderHashId()+","+"\""+"\n"+
                     "TEXT 180,60,\"TSS24.BF2\",0,1,1,\""+bean.getReceiverName()+","+"\""+"\n"+
                     "TEXT 320,60,\"TSS24.BF2\",0,1,1,\"送达时间\""+"\n"+
                     "TEXT 420,60,\"TSS24.BF2\",0,1,1,\""+OrderHelper.getFormatTimeToStr(bean.getExpectedTime())+"\""+"\n"+
@@ -318,7 +318,7 @@ public class FujitsuPrinter implements NetPrint {
                     "TEXT 10,10,\"TSS24.BF2\",0,2,2,\""+ Calculator.getCheckShopNo(bean) +"\"\n" +
                     "TEXT 280,10,\"TSS24.BF2\",0,2,2,\""+ bean.getLocalStr() +"\"\n" +
                     "TEXT 10,80,\"TSS24.BF2\",0,1,1,\"订单编号:\"\n" +
-                    "TEXT 130,80,\"TSS24.BF2\",0,1,1,\""+bean.getOrderId()+"\"\n" +
+                    "TEXT 130,80,\"TSS24.BF2\",0,1,1,\""+bean.getOrderHashId()+"\"\n" +
                     "TEXT 440,80,\"TSS24.BF2\",0,1,1,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\"\n" +
                     "BOX 8,110,616,220,1,10\n"+
 

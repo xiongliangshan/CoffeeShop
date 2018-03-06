@@ -75,6 +75,7 @@ public class Calculator {
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,i+1,4);
             bean.setCoffeeList(hotCupList.subList(i * 4, i * 4 + 4));
             bean.setOrderId(orderBean.getId());
+            bean.setOrderHashId(orderBean.getOrderHashId());
             bean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
             bean.setWxScan(orderBean.getWxScan());
             bean.setInstant(orderBean.getInstant());
@@ -98,6 +99,7 @@ public class Calculator {
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,i+1,hot_left_cup);
             bean.setCoffeeList(hotCupList.subList(i * 4, hotCupList.size()));
             bean.setOrderId(orderBean.getId());
+            bean.setOrderHashId(orderBean.getOrderHashId());
             bean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
             bean.setWxScan(orderBean.getWxScan());
             bean.setInstant(orderBean.getInstant());
@@ -122,6 +124,7 @@ public class Calculator {
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,hotBoxAmount+j+1,4);
             bean.setCoffeeList(coolCupList.subList(j * 4, j * 4 + 4));
             bean.setOrderId(orderBean.getId());
+            bean.setOrderHashId(orderBean.getOrderHashId());
             bean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
             bean.setWxScan(orderBean.getWxScan());
             bean.setInstant(orderBean.getInstant());
@@ -145,6 +148,7 @@ public class Calculator {
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,hotBoxAmount+j+1,cool_left_cup);
             bean.setCoffeeList(coolCupList.subList(j * 4, coolCupList.size()));
             bean.setOrderId(orderBean.getId());
+            bean.setOrderHashId(orderBean.getOrderHashId());
             bean.setShopOrderNo(OrderHelper.getShopOrderSn(orderBean));
             bean.setWxScan(orderBean.getWxScan());
             bean.setInstant(orderBean.getInstant());
@@ -187,6 +191,7 @@ public class Calculator {
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,i+1,2);
             bean.setCoffeeList(hotCupList.subList(i * 2, i * 2 + 2));
             bean.setOrderId(order.getId());
+            bean.setOrderHashId(order.getOrderHashId());
             bean.setShopOrderNo(OrderHelper.getShopOrderSn(order));
             bean.setWxScan(order.getWxScan());
             bean.setInstant(order.getInstant());
@@ -210,6 +215,7 @@ public class Calculator {
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,i+1,hot_left_cup);
             bean.setCoffeeList(hotCupList.subList(i * 2, hotCupList.size()));
             bean.setOrderId(order.getId());
+            bean.setOrderHashId(order.getOrderHashId());
             bean.setShopOrderNo(OrderHelper.getShopOrderSn(order));
             bean.setWxScan(order.getWxScan());
             bean.setInstant(order.getInstant());
@@ -234,6 +240,7 @@ public class Calculator {
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,hotBoxAmount+j+1,2);
             bean.setCoffeeList(coolCupList.subList(j * 2, j * 2 + 2));
             bean.setOrderId(order.getId());
+            bean.setOrderHashId(order.getOrderHashId());
             bean.setShopOrderNo(OrderHelper.getShopOrderSn(order));
             bean.setWxScan(order.getWxScan());
             bean.setInstant(order.getInstant());
@@ -257,6 +264,7 @@ public class Calculator {
             PrintOrderBean bean = new PrintOrderBean(totalBoxAmount,hotBoxAmount+j+1,cool_left_cup);
             bean.setCoffeeList(coolCupList.subList(j * 2, coolCupList.size()));
             bean.setOrderId(order.getId());
+            bean.setOrderHashId(order.getOrderHashId());
             bean.setShopOrderNo(OrderHelper.getShopOrderSn(order));
             bean.setWxScan(order.getWxScan());
             bean.setInstant(order.getInstant());

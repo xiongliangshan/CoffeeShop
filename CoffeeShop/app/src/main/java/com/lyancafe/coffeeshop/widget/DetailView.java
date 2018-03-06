@@ -174,7 +174,7 @@ public class DetailView extends CardView implements View.OnClickListener{
             tvReceiverPhone.setText(order.getPhone());
             ultIssueFeedback.setEnabled(true);
             tvOrderTime.setText(OrderHelper.getDateToString(order.getOrderTime()));
-            tvOrderId.setText(String.valueOf(order.getId()));
+            tvOrderId.setText(order.getOrderHashId());
             tvReceiverAddress.setText(order.getAddress());
             if (order.getDeliveryTeam() == DeliveryTeam.HAIKUI) {
                 tvDeliverTeam.setText("(海葵)");

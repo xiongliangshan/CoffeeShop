@@ -20,6 +20,8 @@ public class OrderBean implements Serializable{
     @Id
     private long id;                     //订单id
 
+    private String orderHashId;          //订单混淆Id
+
     private String reminder;             //Y:催单，N:不催单
 
     private String orderSn;              //订单编号
@@ -101,14 +103,15 @@ public class OrderBean implements Serializable{
 
 
 
-    @Generated(hash = 1323679447)
-    public OrderBean(long id, String reminder, String orderSn, int shopOrderNo, boolean wxScan, boolean isRecipeFittings,
-            long expectedTime, long orderTime, long distributeTime, long produceEffect, long startProduceTime, String recipient,
-            String address, String phone, long acceptTime, String courierName, String courierPhone, int status, int produceStatus,
-            boolean issueOrder, int instant, String notes, String csrNotes, long handoverTime, int feedbackType, int deliveryTeam,
-            int thirdShopOrderNo, String thirdOrderNo, double orderDistance, long relationOrderId, String reason, boolean revoked,
-            boolean checkAddress, int priority) {
+    @Generated(hash = 1483098883)
+    public OrderBean(long id, String orderHashId, String reminder, String orderSn, int shopOrderNo, boolean wxScan,
+            boolean isRecipeFittings, long expectedTime, long orderTime, long distributeTime, long produceEffect,
+            long startProduceTime, String recipient, String address, String phone, long acceptTime, String courierName,
+            String courierPhone, int status, int produceStatus, boolean issueOrder, int instant, String notes, String csrNotes,
+            long handoverTime, int feedbackType, int deliveryTeam, int thirdShopOrderNo, String thirdOrderNo, double orderDistance,
+            long relationOrderId, String reason, boolean revoked, boolean checkAddress, int priority) {
         this.id = id;
+        this.orderHashId = orderHashId;
         this.reminder = reminder;
         this.orderSn = orderSn;
         this.shopOrderNo = shopOrderNo;
@@ -158,6 +161,14 @@ public class OrderBean implements Serializable{
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getOrderHashId() {
+        return orderHashId;
+    }
+
+    public void setOrderHashId(String orderHashId) {
+        this.orderHashId = orderHashId;
     }
 
     public String getReminder() {

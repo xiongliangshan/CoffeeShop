@@ -9,6 +9,7 @@ import java.util.List;
 public class PrintOrderBean {
 
     private long orderId;     //订单号
+    private String orderHashId;//订单混淆号
     private String shopOrderNo;  //门店单号
     private boolean isWxScan;  //是否是到店扫
     private boolean isHaveRemarks; //是否有备注
@@ -42,6 +43,14 @@ public class PrintOrderBean {
 
     public void setOrderId(long orderId) {
         this.orderId = orderId;
+    }
+
+    public String getOrderHashId() {
+        return orderHashId;
+    }
+
+    public void setOrderHashId(String orderHashId) {
+        this.orderHashId = orderHashId;
     }
 
     public String getShopOrderNo() {
@@ -182,6 +191,7 @@ public class PrintOrderBean {
     public String toString() {
         return "PrintOrderBean{" +
                 "orderId=" + orderId +
+                "  orderHashId=" + orderHashId +
                 ", shopOrderNo='" + shopOrderNo + '\'' +
                 ", isWxScan=" + isWxScan +
                 ", isHaveRemarks=" + isHaveRemarks +
