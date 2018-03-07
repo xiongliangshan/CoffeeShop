@@ -34,9 +34,7 @@ public class TaskService extends Service {
     private static final String TAG ="TaskService";
     private Timer timer;
     private static final long PERIOD_TIME = 2*60*1000;
-    private static final long PERIOD_CHECK = 3*60*1000;
-    private static final long PERIOD_AUTOPRODUCE = 30*1000;
-    private long count = 0;
+    private static final long PERIOD_AUTOPRODUCE = 20*1000;
 
     //Test
     private Timer remindTimer;
@@ -129,7 +127,6 @@ public class TaskService extends Service {
         public void run() {
             List<OrderBean> toProducedOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.UNPRODUCED);
             LogUtil.d(TAG, "当前待生产订单为：" + toProducedOrders.size());
-            int n = 0;
             for (OrderBean orderBean : toProducedOrders) {
                 List<OrderBean> producingOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.PRODUCING);
                 int cupsAmount = OrderHelper.getTotalQutity(producingOrders);
@@ -144,23 +141,14 @@ public class TaskService extends Service {
                             //开始自动生产
                             LogUtil.d(TAG, "满足条件，开始自动生产:" + orderBean.getId());
                             Logger.getLogger().log("自动生产订单:{" + orderBean.getId() + "priority = " + orderBean.getPriority() + "}");
-                            EventBus.getDefault().postSticky(new StartProduceEvent(orderBean));
-                            n++;
+                            EventBus.getDefault().postSticky(new StartProduceEvent(orderBean,true));
                         }
                     } else {
                         LogUtil.d(TAG, "特殊订单，开始自动生产:" + orderBean.getId());
                         Logger.getLogger().log("自动生产订单:{" + orderBean.getId() + "priority = " + orderBean.getPriority() + "}");
-                        EventBus.getDefault().postSticky(new StartProduceEvent(orderBean));
-                        n++;
+                        EventBus.getDefault().postSticky(new StartProduceEvent(orderBean,true));
                     }
 
-                    if (n > 0) {
-                        //开始生产订单语音播放
-                        SoundPoolUtil.create(CSApplication.getInstance(), R.raw.start_produce);
-                    } else {
-                        LogUtil.d(TAG, "时间未到，没有满足条件的订单");
-
-                    }
                 } else {
                     LogUtil.d(TAG, "任务堆积，暂缓生产");
                     Logger.getLogger().log("任务堆积，暂缓生产");

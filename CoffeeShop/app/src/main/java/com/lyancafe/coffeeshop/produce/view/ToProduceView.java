@@ -21,18 +21,6 @@ public interface ToProduceView<T> extends BaseView{
     //从列表中删除一个N个item
     void removeItemsFromList(List<Long> ids);
 
-    //显示开始生产对话框
-    void showStartProduceConfirmDialog(final OrderBean orderBean);
-
-   /* //显示加载进度对话框
-    void showLoading();
-
-    //关闭进度对话框
-    void dismissLoading();
-*/
-
-   /* //显示奶盖茶数量提示
-    void showNaiGaiAmount(Map<String,Integer> map);*/
 
     //设定模式
     void setMode(ListMode mode);

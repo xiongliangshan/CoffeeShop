@@ -63,16 +63,26 @@ public class ToProducePresenterImpl implements ToProducePresenter{
 
 
     @Override
-    public void doStartProduce(final long orderId, final boolean isScanCode) {
+    public void doStartProduce(final OrderBean order, final boolean isAuto) {
+        if(isAuto){
+            Logger.getLogger().log("自动生产订单:{" + order.getId() + "，priority = " +order.getPriority() + "}");
+        }else {
+            Logger.getLogger().log("手动生产订单:{" + order.getId() +  "}");
+            PrintFace.getInst().startPrintWholeOrderTask(order);
+        }
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
-        mToProduceModel.doStartProduce(user.getShopId(), orderId, new CustomObserver<JsonObject>(mContext,true) {
+        mToProduceModel.doStartProduce(user.getShopId(), order.getId(), new CustomObserver<JsonObject>(mContext,true) {
             @Override
             protected void onHandleSuccess(JsonObject jsonObject) {
                 mToProduceView.showToast(mContext.getString(R.string.do_success));
+                OrderUtils.with().updateOrder(order.getId(),4005);
                 int id  = jsonObject.get("id").getAsInt();
                 mToProduceView.removeItemFromList(id);
-                EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,1,isScanCode));
-                OrderUtils.with().updateOrder(orderId,4005);
+                EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,1,order.getWxScan()));
+                if(isAuto){
+                    PrintFace.getInst().startPrintWholeOrderTask(order);
+                }
+
 
             }
 

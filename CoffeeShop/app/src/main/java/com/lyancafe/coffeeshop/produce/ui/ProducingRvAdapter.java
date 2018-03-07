@@ -162,7 +162,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
                 @Override
                 public void onClick(View v) {
                     //点击开始生产（打印）按钮
-                    EventBus.getDefault().post(new StartProduceEvent(order));
+                    EventBus.getDefault().post(new StartProduceEvent(order,true));
                 }
             });
         }else if(order.getProduceStatus() == OrderStatus.PRODUCING){

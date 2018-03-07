@@ -41,6 +41,7 @@ import com.lyancafe.coffeeshop.produce.presenter.ToProducePresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.ToProduceView;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.MyUtil;
+import com.lyancafe.coffeeshop.utils.SoundPoolUtil;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.utils.VSpaceItemDecoration;
@@ -221,7 +222,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     }
 
 
-    @Override
+    /*@Override
     public void showStartProduceConfirmDialog(final OrderBean orderBean) {
         ConfirmDialog grabConfirmDialog = new ConfirmDialog(getActivity(), R.style.MyDialog, new ConfirmDialog.OnClickYesListener() {
             @Override
@@ -235,7 +236,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         grabConfirmDialog.setContent("订单 " + orderBean.getOrderSn() + " 开始生产？");
         grabConfirmDialog.setBtnTxt(R.string.click_error, R.string.confirm);
         grabConfirmDialog.show();
-    }
+    }*/
 
     @Override
     public void onDestroyView() {
@@ -308,8 +309,9 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         /**
          * 开始生产&&打印
          */
-        mToProducePresenter.doStartProduce(event.order.getId(), event.order.getWxScan());
-        PrintFace.getInst().startPrintWholeOrderTask(event.order);
+        SoundPoolUtil.create(CSApplication.getInstance(), R.raw.start_produce);
+        mToProducePresenter.doStartProduce(event.order,event.isAuto);
+
     }
 
     /**
