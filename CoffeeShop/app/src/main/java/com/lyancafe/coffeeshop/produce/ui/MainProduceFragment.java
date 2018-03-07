@@ -18,6 +18,7 @@ import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.constant.OrderCategory;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
+import com.lyancafe.coffeeshop.event.DBChangeEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
 import com.lyancafe.coffeeshop.event.UpdateOrderDetailEvent;
 import com.lyancafe.coffeeshop.event.UpdateTabCount;
@@ -468,6 +469,7 @@ public class MainProduceFragment extends BaseFragment implements TabLayout.OnTab
                 tabProducing.setText(tabPro <= 0 ? mPagerAdapter.getPageTitle(1) : mPagerAdapter.getPageTitle(1) + "(" + tabPro + ")");
                 tabToproduce.setTag(tabTo);
                 tabProducing.setTag(tabPro);
+                EventBus.getDefault().post(new DBChangeEvent());
                 break;
             case OrderAction.FINISHPRODUCE:
                 int tabProduceResult = producingCount - event.count;

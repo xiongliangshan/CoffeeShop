@@ -1,9 +1,11 @@
 package com.lyancafe.coffeeshop.service;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.lyancafe.coffeeshop.CSApplication;
@@ -32,6 +34,7 @@ import java.util.TimerTask;
 public class TaskService extends Service {
 
     private static final String TAG ="TaskService";
+    private static final int NOTIFICATION_ID = 111;
     private Timer timer;
     private static final long PERIOD_TIME = 2*60*1000;
     private static final long PERIOD_AUTOPRODUCE = 20*1000;
@@ -58,6 +61,13 @@ public class TaskService extends Service {
         }else {
             closeAutoProduceTimer();
         }
+        NotificationCompat.Builder  builder = new NotificationCompat.Builder(this.getApplicationContext());
+        builder.setAutoCancel(false);
+        builder.setShowWhen(false);
+        builder.setSmallIcon(R.mipmap.app_icon);
+        builder.setContentTitle("咖啡屋App正在运行");
+        builder.setContentText("应用服务");
+        startForeground(NOTIFICATION_ID,builder.build());
         return START_STICKY;
     }
 
@@ -118,6 +128,7 @@ public class TaskService extends Service {
         }
 
         closeAutoProduceTimer();
+        stopForeground(true);
     }
 
 
