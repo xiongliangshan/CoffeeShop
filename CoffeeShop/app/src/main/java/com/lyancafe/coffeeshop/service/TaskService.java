@@ -151,12 +151,10 @@ public class TaskService extends Service {
                         if (nowTime >= orderBean.getStartProduceTime()) {
                             //开始自动生产
                             LogUtil.d(TAG, "满足条件，开始自动生产:" + orderBean.getId());
-                            Logger.getLogger().log("自动生产订单:{" + orderBean.getId() + "priority = " + orderBean.getPriority() + "}");
                             EventBus.getDefault().postSticky(new StartProduceEvent(orderBean,true));
                         }
                     } else {
                         LogUtil.d(TAG, "特殊订单，开始自动生产:" + orderBean.getId());
-                        Logger.getLogger().log("自动生产订单:{" + orderBean.getId() + "priority = " + orderBean.getPriority() + "}");
                         EventBus.getDefault().postSticky(new StartProduceEvent(orderBean,true));
                     }
 
