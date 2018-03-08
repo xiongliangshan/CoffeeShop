@@ -14,7 +14,7 @@ public interface ToProducePresenter {
     void loadToProduceOrders();
 
     //点击开始生产
-    void doStartProduce(long orderId,boolean isScanCode);
+    void doStartProduce(OrderBean order,boolean isAuto);
 
     //点击批量开始生产
     void doStartBatchProduce(List<OrderBean> orders);

@@ -8,8 +8,10 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 public class StartProduceEvent {
 
     public OrderBean order;
+    public boolean isAuto;
 
-    public StartProduceEvent(OrderBean order) {
+    public StartProduceEvent(OrderBean order, boolean isAuto) {
         this.order = order;
+        this.isAuto = isAuto;
     }
 }

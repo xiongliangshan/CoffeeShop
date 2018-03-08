@@ -352,8 +352,8 @@ public class DetailView extends CardView implements View.OnClickListener{
                 Logger.getLogger().log("详情-打印:{"+mOrder.getId()+"}");
                 break;
             case R.id.btn_produce_print:
-                //生产完成兼打印
-                EventBus.getDefault().post(new StartProduceEvent(mOrder));
+                //开始生产兼打印
+                EventBus.getDefault().post(new StartProduceEvent(mOrder,true));
                 Logger.getLogger().log("详情-开始生产:{"+mOrder.getId()+"}");
                 break;
         }

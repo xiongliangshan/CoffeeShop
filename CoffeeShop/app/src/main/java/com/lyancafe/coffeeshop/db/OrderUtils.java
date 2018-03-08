@@ -188,6 +188,7 @@ public class OrderUtils {
         QueryBuilder<OrderBean> qb = mOrderDao.queryBuilder();
         qb.where(OrderBeanDao.Properties.ProduceStatus.eq(produceStatus),OrderBeanDao.Properties.Status.lt(6000)
         ,qb.and(OrderBeanDao.Properties.ExpectedTime.lt(getTomorrowStartTime()),OrderBeanDao.Properties.ExpectedTime.gt(getTodayStartTime())));
+        qb.orderAsc(OrderBeanDao.Properties.ExpectedTime);
         return qb.list();
     }
 

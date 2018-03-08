@@ -1,9 +1,11 @@
 package com.lyancafe.coffeeshop.service;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.lyancafe.coffeeshop.CSApplication;
@@ -32,11 +34,10 @@ import java.util.TimerTask;
 public class TaskService extends Service {
 
     private static final String TAG ="TaskService";
+    private static final int NOTIFICATION_ID = 111;
     private Timer timer;
     private static final long PERIOD_TIME = 2*60*1000;
-    private static final long PERIOD_CHECK = 3*60*1000;
-    private static final long PERIOD_AUTOPRODUCE = 30*1000;
-    private long count = 0;
+    private static final long PERIOD_AUTOPRODUCE = 20*1000;
 
     //Test
     private Timer remindTimer;
@@ -60,6 +61,13 @@ public class TaskService extends Service {
         }else {
             closeAutoProduceTimer();
         }
+        NotificationCompat.Builder  builder = new NotificationCompat.Builder(this.getApplicationContext());
+        builder.setAutoCancel(false);
+        builder.setShowWhen(false);
+        builder.setSmallIcon(R.mipmap.app_icon);
+        builder.setContentTitle("咖啡屋App正在运行");
+        builder.setContentText("应用服务");
+        startForeground(NOTIFICATION_ID,builder.build());
         return START_STICKY;
     }
 
@@ -120,49 +128,51 @@ public class TaskService extends Service {
         }
 
         closeAutoProduceTimer();
+        stopForeground(true);
     }
 
 
-    class AutoProduceTask extends TimerTask{
+    class AutoProduceTask extends TimerTask {
 
         @Override
         public void run() {
-            List<OrderBean> producingOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.PRODUCING);
-            int cupsAmount = OrderHelper.getTotalQutity(producingOrders);
-            boolean isAutoProduce = producingOrders.size()<3 || cupsAmount<10 ;
-            LogUtil.d(TAG,"当前生产中订单为："+producingOrders.size()+"单 ，杯量为:"+cupsAmount);
-            Logger.getLogger().log("当前生产中订单为:"+producingOrders.size()+"单,杯量为:"+cupsAmount+"}");
-            if(isAutoProduce){
-                List<OrderBean> toProducedOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.UNPRODUCED);
-                LogUtil.d(TAG,"当前待生产订单为："+toProducedOrders.size());
-                int n = 0;
-                for(OrderBean orderBean:toProducedOrders){
-                    if(orderBean.getPriority()==0){
+            List<OrderBean> toProducedOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.UNPRODUCED);
+            LogUtil.d(TAG, "当前待生产订单为：" + toProducedOrders.size());
+            for (OrderBean orderBean : toProducedOrders) {
+                List<OrderBean> producingOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.PRODUCING);
+                int cupsAmount = OrderHelper.getTotalQutity(producingOrders);
+                boolean isAutoProduce = producingOrders.size() < 3 || cupsAmount < 10;
+
+                LogUtil.d(TAG, "当前生产中订单为：" + producingOrders.size() + "单 ，杯量为:" + cupsAmount);
+                Logger.getLogger().log("当前生产中订单为:" + producingOrders.size() + "单,杯量为:" + cupsAmount + "}");
+                if (isAutoProduce) {
+                    if (orderBean.getPriority() == 0) {
                         long nowTime = System.currentTimeMillis();
-                        if(nowTime>=orderBean.getStartProduceTime()){
+                        if (nowTime >= orderBean.getStartProduceTime()) {
                             //开始自动生产
-                            LogUtil.d(TAG,"满足条件，开始自动生产:"+orderBean.getId());
-                            Logger.getLogger().log("自动生产订单:{"+orderBean.getId()+"priority = "+orderBean.getPriority()+"}");
-                            EventBus.getDefault().postSticky(new StartProduceEvent(orderBean));
-                            n++;
+                            LogUtil.d(TAG, "满足条件，开始自动生产:" + orderBean.getId());
+                            EventBus.getDefault().postSticky(new StartProduceEvent(orderBean,true));
+                        }else {
+                            Logger.getLogger().log("订单生产时间未到:"+orderBean.getId());
                         }
-                    }else {
-                        LogUtil.d(TAG,"特殊订单，开始自动生产:"+orderBean.getId());
-                        Logger.getLogger().log("自动生产订单:{"+orderBean.getId()+"priority = "+orderBean.getPriority()+"}");
-                        EventBus.getDefault().postSticky(new StartProduceEvent(orderBean));
-                        n++;
+                    } else {
+                        LogUtil.d(TAG, "特殊订单，开始自动生产:" + orderBean.getId());
+                        EventBus.getDefault().postSticky(new StartProduceEvent(orderBean,true));
                     }
 
+                } else {
+                    LogUtil.d(TAG, "任务堆积，暂缓生产");
+                    Logger.getLogger().log("任务堆积，暂缓生产");
+                    break;
                 }
-                if(n>0){
-                    //开始生产订单语音播放
-                    SoundPoolUtil.create(CSApplication.getInstance(), R.raw.start_produce);
-                }else {
-                    LogUtil.d(TAG,"时间未到，没有满足条件的订单");
+                try {
+                    Thread.sleep(1000);
+                } catch (Exception e) {
+                    Logger.getLogger().log("sleep 抛出异常");
                 }
-            }else {
-                LogUtil.d(TAG,"任务堆积，暂缓生产");
+
             }
+
         }
     }
 

@@ -179,41 +179,18 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
                                 ToastUtil.show(context.getApplicationContext(),"时间未到，不能提前生产");
                                 return;
                             }
-                            EventBus.getDefault().post(new StartProduceEvent(order));
+                            EventBus.getDefault().post(new StartProduceEvent(order,false));
                             Logger.getLogger().log("列表-生产单个订单:{"+order.getId()+"}");
                         }else {
-                            EventBus.getDefault().post(new StartProduceEvent(order));
+                            EventBus.getDefault().post(new StartProduceEvent(order,false));
                             Logger.getLogger().log("列表-生产单个订单:{"+order.getId()+"}");
                         }
 
                     }else{
-                        EventBus.getDefault().post(new StartProduceEvent(order));
+                        EventBus.getDefault().post(new StartProduceEvent(order,false));
                         Logger.getLogger().log("列表-生产单个订单:{"+order.getId()+"}");
                     }
 
-                   /* if (order.getRelationOrderId() == 0) {
-                        EventBus.getDefault().post(new StartProduceEvent(order));
-                        Logger.getLogger().log("列表-生产单个订单:{"+order.getId()+"}");
-                    } else {
-                        //补单
-                        ReplenishWindow replenishWindow = new ReplenishWindow(context, order);
-                        replenishWindow.setCallback(new ReplenishWindow.ReplenishCallBack() {
-                            @Override
-                            public void onProduce(OrderBean orderBean) {
-                                //正常生产
-                                EventBus.getDefault().post(new StartProduceEvent(order));
-                                Logger.getLogger().log("补单生产:{"+order.getId()+"}");
-                            }
-
-                            @Override
-                            public void onNoProduce(OrderBean orderBean) {
-                                //无需生产
-                                EventBus.getDefault().post(new NotNeedProduceEvent(order));
-                                Logger.getLogger().log("补单无需生产:{"+order.getId()+"}");
-                            }
-                        });
-                        replenishWindow.showPopUpWindow(v);
-                    }*/
 
                 }
             });

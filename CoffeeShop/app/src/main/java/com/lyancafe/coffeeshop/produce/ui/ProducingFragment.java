@@ -25,7 +25,10 @@ import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.OrderAction;
+import com.lyancafe.coffeeshop.constant.OrderStatus;
+import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
+import com.lyancafe.coffeeshop.event.DBChangeEvent;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.RevokeEvent;
 import com.lyancafe.coffeeshop.logger.Logger;
@@ -41,6 +44,7 @@ import com.lyancafe.coffeeshop.widget.ReportIssueDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -246,6 +250,15 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
     public void onFinishProduceEvent(FinishProduceEvent event) {
 //        showFinishProduceConfirmDialog(event.order);
         mProducingPresenter.doFinishProduced(event.order.getId());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDBChangeEvent(DBChangeEvent event){
+        List<OrderBean> dbProducingOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.PRODUCING);
+        if(dbProducingOrders!=null && dbProducingOrders.size()>0){
+            bindDataToView(dbProducingOrders);
+        }
+
     }
 
 
