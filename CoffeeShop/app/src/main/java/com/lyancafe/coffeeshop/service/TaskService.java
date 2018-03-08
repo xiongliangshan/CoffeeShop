@@ -152,6 +152,8 @@ public class TaskService extends Service {
                             //开始自动生产
                             LogUtil.d(TAG, "满足条件，开始自动生产:" + orderBean.getId());
                             EventBus.getDefault().postSticky(new StartProduceEvent(orderBean,true));
+                        }else {
+                            Logger.getLogger().log("订单生产时间未到:"+orderBean.getId());
                         }
                     } else {
                         LogUtil.d(TAG, "特殊订单，开始自动生产:" + orderBean.getId());
