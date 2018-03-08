@@ -21,6 +21,8 @@ import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
@@ -149,7 +151,12 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         holder.tvBoxCup.setText(OrderHelper.getBoxCupByOrder(order));
 
 
-        holder.expectedTimeText.setText(OrderHelper.getFormatTimeToStr(order.getExpectedTime()));
+        UserBean user = LoginHelper.getUser(CSApplication.getInstance());
+        if(user.isOpenFulfill()){
+            holder.expectedTimeText.setText(OrderHelper.getFormatTimeToStr(order.getInstanceTime()));
+        } else {
+            holder.expectedTimeText.setText(OrderHelper.getFormatTimeToStr(order.getExpectedTime()));
+        }
 
         holder.deliverStatusText.setText(OrderHelper.getStatusName(order.getStatus(),order.getWxScan()));
 

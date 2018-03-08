@@ -20,6 +20,8 @@ import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
@@ -41,6 +43,8 @@ public class DetailView extends CardView implements View.OnClickListener{
     private LinearLayout rootLayout;
     private TextView tvShopNo;
     private TextView tvReachTime;
+    private TextView startTime;
+    private TextView tvStartProduceTime;
     private ConstraintLayout clReplenish;
     private TextView tvRelationOrderId;
     private TextView tvReason;
@@ -93,6 +97,8 @@ public class DetailView extends CardView implements View.OnClickListener{
         rootLayout = (LinearLayout) findViewById(R.id.root_layout);
         tvShopNo = (TextView) findViewById(R.id.tv_shop_no);
         tvReachTime = (TextView) findViewById(R.id.tv_reach_time);
+        startTime = (TextView) findViewById(R.id.start_time);
+        tvStartProduceTime = (TextView) findViewById(R.id.tv_start_produce_time);
         clReplenish = (ConstraintLayout) findViewById(R.id.cl_replenish);
         tvRelationOrderId = (TextView) findViewById(R.id.tv_relationOrderId);
         tvReason = (TextView) findViewById(R.id.tv_reason);
@@ -117,8 +123,16 @@ public class DetailView extends CardView implements View.OnClickListener{
         btnPrint = (TextView) findViewById(R.id.btn_print);
         llOneButton = (LinearLayout) findViewById(R.id.ll_one_button);
         btnProducePrint = (TextView) findViewById(R.id.btn_produce_print);
-
+        UserBean user = LoginHelper.getUser(CSApplication.getInstance());
+        if(user.isOpenFulfill()){
+            startTime.setVisibility(VISIBLE);
+            tvStartProduceTime.setVisibility(VISIBLE);
+        } else {
+            startTime.setVisibility(INVISIBLE);
+            tvStartProduceTime.setVisibility(INVISIBLE);
+        }
         setListener();
+
     }
 
     private void setListener(){
@@ -141,6 +155,7 @@ public class DetailView extends CardView implements View.OnClickListener{
         if(order==null){
             tvShopNo.setText("");
             tvReachTime.setText("");
+            tvStartProduceTime.setText("");
             clReplenish.setVisibility(View.GONE);
             tvReceiverName.setText("");
             tvReceiverPhone.setText("");
@@ -156,11 +171,15 @@ public class DetailView extends CardView implements View.OnClickListener{
             tvCsadRemark.setText("");
             llButtonContainer.setVisibility(View.INVISIBLE);
         }else{
-
             tvShopNo.setText(OrderHelper.getShopOrderSn(order));
+            UserBean user = LoginHelper.getUser(CSApplication.getInstance());
+            if(user.isOpenFulfill()){
+                tvReachTime.setText(OrderHelper.getFormatTimeToStr(order.getInstanceTime()));
+                tvStartProduceTime.setText(OrderHelper.getFormatTimeToStr(order.getStartProduceTime()));
+            } else {
+                tvReachTime.setText(OrderHelper.getFormatTimeToStr(order.getExpectedTime()));
+            }
 
-            tvReachTime.setText(OrderHelper.getFormatTimeToStr(order.getExpectedTime()));
-            
             long relationOrderId = order.getRelationOrderId();
             if(relationOrderId!=0){
                 clReplenish.setVisibility(View.VISIBLE);

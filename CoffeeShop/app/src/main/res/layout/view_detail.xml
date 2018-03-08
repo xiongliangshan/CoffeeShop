@@ -22,11 +22,10 @@
             android:textSize="24sp"
             tools:text="001"/>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="right"
-            android:orientation="vertical">
+            android:paddingBottom="8dp">
 
             <TextView
                 android:id="@+id/tv_reach_time"
@@ -34,14 +33,37 @@
                 android:layout_height="wrap_content"
                 tools:text="尽快送达"
                 android:textColor="@color/font_black"
-                android:textSize="@dimen/effect_time_text_size" />
+                android:textSize="@dimen/effect_time_text_size"
+                android:layout_alignParentRight="true"/>
 
             <TextView
+                android:id="@+id/des_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="期望时间" />
+                android:text="预计送达"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/tv_reach_time"/>
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/start_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="开始生产时间 "
+                android:layout_toLeftOf="@id/des_time"
+                android:layout_alignBaseline="@id/des_time"
+                android:layout_marginRight="32dp"/>
+
+            <TextView
+                android:id="@+id/tv_start_produce_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="已经生产"
+                android:textColor="@color/font_black"
+                android:textSize="@dimen/effect_time_text_size"
+                android:layout_alignRight="@id/start_time"
+                android:layout_alignBaseline="@id/tv_reach_time"/>
+
+        </RelativeLayout>
     </LinearLayout>
 
     <View

@@ -157,8 +157,12 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
 
         holder.tvBoxCup.setText(OrderHelper.getBoxCupByOrder(order));
 
-
-        holder.expectedTimeText.setText(OrderHelper.getFormatTimeToStr(order.getExpectedTime()));
+        UserBean user = LoginHelper.getUser(CSApplication.getInstance());
+        if(user.isOpenFulfill()){
+            holder.expectedTimeText.setText(OrderHelper.getFormatTimeToStr(order.getInstanceTime()));
+        } else {
+            holder.expectedTimeText.setText(OrderHelper.getFormatTimeToStr(order.getExpectedTime()));
+        }
 
 
         holder.deliverStatusText.setText(OrderHelper.getStatusName(order.getStatus(), order.getWxScan()));

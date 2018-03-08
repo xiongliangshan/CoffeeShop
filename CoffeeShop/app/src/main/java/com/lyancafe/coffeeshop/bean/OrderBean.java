@@ -34,6 +34,8 @@ public class OrderBean implements Serializable{
 
     private long expectedTime;           //期望送达时间
 
+    private long instanceTime;          //系统预计送达时间
+
     private long orderTime;              //下单时间
 
     private long distributeTime;         //推送给海葵的时间
@@ -103,9 +105,9 @@ public class OrderBean implements Serializable{
 
 
 
-    @Generated(hash = 1483098883)
+    @Generated(hash = 1080671222)
     public OrderBean(long id, String orderHashId, String reminder, String orderSn, int shopOrderNo, boolean wxScan,
-            boolean isRecipeFittings, long expectedTime, long orderTime, long distributeTime, long produceEffect,
+            boolean isRecipeFittings, long expectedTime, long instanceTime, long orderTime, long distributeTime, long produceEffect,
             long startProduceTime, String recipient, String address, String phone, long acceptTime, String courierName,
             String courierPhone, int status, int produceStatus, boolean issueOrder, int instant, String notes, String csrNotes,
             long handoverTime, int feedbackType, int deliveryTeam, int thirdShopOrderNo, String thirdOrderNo, double orderDistance,
@@ -118,6 +120,7 @@ public class OrderBean implements Serializable{
         this.wxScan = wxScan;
         this.isRecipeFittings = isRecipeFittings;
         this.expectedTime = expectedTime;
+        this.instanceTime = instanceTime;
         this.orderTime = orderTime;
         this.distributeTime = distributeTime;
         this.produceEffect = produceEffect;
@@ -538,6 +541,14 @@ public class OrderBean implements Serializable{
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public long getInstanceTime() {
+        return this.instanceTime;
+    }
+
+    public void setInstanceTime(long instanceTime) {
+        this.instanceTime = instanceTime;
     }
 
     /** called by internal mechanisms, do not call yourself. */
