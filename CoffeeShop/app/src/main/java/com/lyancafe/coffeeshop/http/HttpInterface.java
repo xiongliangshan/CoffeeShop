@@ -10,6 +10,7 @@ import com.lyancafe.coffeeshop.bean.EvaluationBean;
 import com.lyancafe.coffeeshop.bean.ExceptionalOrder;
 import com.lyancafe.coffeeshop.bean.Material;
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.bean.SalesStatusOneDay;
 import com.lyancafe.coffeeshop.bean.ShopInfo;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.bean.VideoBean;
@@ -293,4 +294,11 @@ public interface HttpInterface {
     @POST("log/upload")
     Observable<BaseEntity<JsonObject>> uploadFile(@Part("shopId") RequestBody shopId,@Part MultipartBody.Part file);
 
+
+    /**
+     * 门店日销售状况
+     */
+    @Headers("Cache-Control:public,max-age=60,max-stale=300")
+    @GET("sale/daily")
+    Observable<BaseEntity<SalesStatusOneDay>> loadDailySales(@Query("shopId") int shopId, @Query("currentDate") long time);
 }

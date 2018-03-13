@@ -26,18 +26,24 @@ public class PrintFace {
 
     private static PrintFace mInst;
 
+//    public static String BIGLABELIP = "192.19.1.232";
+//    public static String SMALLLABELIP = "192.19.1.231";
+    private static final int PORT = 9100;
     public static String BIGLABELIP = "192.19.1.231";
     public static String SMALLLABELIP = "192.19.1.232";
-    private static final int PORT = 9100;
 
     private ThreadPoolExecutor mPoolExecutor;
 
     private PrintFace() {
         mPoolExecutor = new ThreadPoolExecutor(1, 5, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
         if(Api.BASE_URL.contains("cn")||Api.BASE_URL.contains("192.168")||"测试-滴水湖".equals(LoginHelper.getUser(CSApplication.getInstance()).getShopName())){
+//            BIGLABELIP = "192.168.1.229";
+//            SMALLLABELIP = "192.168.1.228";
             BIGLABELIP = "192.168.1.228";
             SMALLLABELIP = "192.168.1.229";
         }else{
+//            BIGLABELIP = "192.19.1.232";
+//            SMALLLABELIP = "192.19.1.231";
             BIGLABELIP = "192.19.1.231";
             SMALLLABELIP = "192.19.1.232";
         }
@@ -228,6 +234,17 @@ public class PrintFace {
             @Override
             public void run() {
                 getSmallLabelPrinter().printBlankPaster();
+            }
+        });
+    }
+    /**
+     * 启动打印作废控贴任务
+     */
+    public void startPrintCancellationTask(){
+        mPoolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                getBigLabelPrinter().printCancellationPaster();
             }
         });
     }

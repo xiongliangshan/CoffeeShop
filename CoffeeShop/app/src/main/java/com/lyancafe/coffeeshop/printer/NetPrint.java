@@ -36,6 +36,9 @@ public interface NetPrint {
     //打印空白时控贴
     void printBlankPaster();
 
+    //打印作废控贴
+    void printCancellationPaster();
+
     //打印物料大标签
     void printMaterialBigLabel(MaterialItem materialItem);
 

@@ -1,6 +1,8 @@
 package com.lyancafe.coffeeshop.shop.model;
 
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.bean.SalesStatusOneDay;
+import com.lyancafe.coffeeshop.http.CustomObserver;
 
 import java.util.List;
 
@@ -23,4 +25,9 @@ public interface StatementModel {
      * @return
      */
     List<OrderBean> loadFinishedOrders();
+
+    /**
+     * 加载门店日销售单子
+     */
+    void loadDailySales(int shopId, long time, CustomObserver<SalesStatusOneDay> observer);
 }

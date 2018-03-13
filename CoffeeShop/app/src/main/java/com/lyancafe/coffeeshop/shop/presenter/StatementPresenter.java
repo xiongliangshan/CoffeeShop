@@ -16,4 +16,6 @@ public interface StatementPresenter {
     Map<String,Integer> calculateCount();
 
     List<PiePercentView.PieData> calculateEffect(List<OrderBean> finishedOrders);
+
+    void getDailySales(String time);
 }

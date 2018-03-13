@@ -202,6 +202,18 @@ public class FujitsuPrinter implements NetPrint {
         writeCommand(smallLabelIP,port,pasterContent);
     }
 
+    @Override
+    public void printCancellationPaster(){
+        String printTestContent =
+                    "SIZE 80 mm, 49 mm\n" +
+                            "GAP 2 mm, 0 mm\n" +
+                            "SET RIBBON OFF\n" +
+                            "DIRECTION 1,0\n" +
+                            "CLS\n" +
+                            "TEXT 130,150,\"TSS32.BF2\",0,3,3,\""+ "退货勿用" +"\"\n" +
+                            "PRINT 1,1\n";
+        writeCommand(bigLabelIP, port, printTestContent);
+    }
 
     @Override
     public void printBigLabelTest(List<String> contents) {

@@ -3,13 +3,23 @@ package com.lyancafe.coffeeshop.shop.presenter;
 import android.content.Context;
 
 import com.lyancafe.coffeeshop.bean.OrderBean;
+import com.lyancafe.coffeeshop.bean.SalesStatusOneDay;
+import com.lyancafe.coffeeshop.bean.UserBean;
+import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.http.Api;
+import com.lyancafe.coffeeshop.http.CustomObserver;
+import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.shop.model.StatementModel;
 import com.lyancafe.coffeeshop.shop.model.StatementModelImpl;
 import com.lyancafe.coffeeshop.shop.view.StatementView;
 import com.lyancafe.coffeeshop.widget.PiePercentView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +87,46 @@ public class StatementPresenterImpl implements StatementPresenter {
         if(bad>0){
             pieDatas.add(new PiePercentView.PieData("不及格",bad,0xFFE32636));
         }
-
         return pieDatas;
+    }
+
+    @Override
+    public void getDailySales(String time) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = null;
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
+        Date timeS = cal.getTime();
+        try {
+            if( null == time ){
+                time = new SimpleDateFormat("yyyy-MM-dd").format(timeS);
+            }else if("".equals(time)){
+                time = new SimpleDateFormat("yyyy-MM-dd").format(timeS);
+            }
+            date = simpleDateFormat.parse(time);
+        } catch (ParseException e) {
+            Logger.getLogger().log("daily sales status error ,from time exchange,time=" + time);
+        }
+        UserBean user = LoginHelper.getUser(context.getApplicationContext());
+        Api.changeBaseUrl();
+        statementModel.loadDailySales(user.getShopId(), date.getTime(), new CustomObserver<SalesStatusOneDay>(context) {
+            @Override
+            protected void onHandleSuccess(SalesStatusOneDay salesStatusOneDay) {
+                statementView.bindDailySales(salesStatusOneDay);
+            }
+
+            @Override
+
+            public void onError(Throwable e) {
+                super.onError(e);
+                Api.initBaseUrl();
+            }
+
+            @Override
+            public void onComplete() {
+                super.onComplete();
+                Api.initBaseUrl();
+            }
+        });
     }
 }

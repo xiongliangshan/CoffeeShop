@@ -237,6 +237,20 @@ public class WinposPrinter implements NetPrint {
     }
 
     @Override
+    public void printCancellationPaster(){
+        String printTestContent =
+                                "N"+"\n"+
+                                "OD"+"\n"+
+                                "q640"+"\n"+
+                                "Q400,16"+"\n"+
+                                "S3"+"\n"+
+                                "D8"+"\n"+
+                                "A160,150,0,230,3,4,N,\""+"退货勿用"+"\""+"\n"+
+                                "P1"+"\n";
+        writeCommand(bigLabelIP, port, printTestContent);
+    }
+
+    @Override
     public void printMaterialBigLabel(MaterialItem materialItem) {
         String printMaterialContent =  "N"+"\n"+
                 "OD"+"\n"+

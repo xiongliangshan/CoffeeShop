@@ -223,7 +223,7 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView<Ma
     }
 
 
-    @OnClick({R.id.tv_print_paster, R.id.tv_print_material, R.id.btn_print_blank, R.id.btn_print_test})
+    @OnClick({R.id.tv_print_paster, R.id.tv_print_material, R.id.btn_print_blank, R.id.btn_print_test, R.id.btn_print_cancellation})
     void onClickPrint(View v) {
         switch (v.getId()) {
             case R.id.tv_print_paster:
@@ -250,6 +250,11 @@ public class MaterialsFragment extends BaseFragment implements MaiterialsView<Ma
                 //打印空白时控贴
                 PrintFace.getInst().startPrintBlankPasterTask();
                 Logger.getLogger().log("打印空白时控贴");
+                break;
+            case R.id.btn_print_cancellation:
+                //打印退货控贴
+                PrintFace.getInst().startPrintCancellationTask();
+                Logger.getLogger().log("打印退货控贴");
                 break;
             case R.id.btn_print_test:
                 //测试打印机

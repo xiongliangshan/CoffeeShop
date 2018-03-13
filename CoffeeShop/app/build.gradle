@@ -45,6 +45,7 @@ android {
     buildTypes {
         release {
             buildConfigField("String", "BASE_URL", '"https://api.lyancafe.com/shop/"')
+            buildConfigField("String", "Y_BASE_URL", '"http://report.lyancafe.com/report/shop"')
             buildConfigField("boolean", "LOG_DEBUG", "false")
             minifyEnabled true
             shrinkResources true
@@ -53,6 +54,7 @@ android {
         }
         debug {
             buildConfigField("String", "BASE_URL", '"https://apiqa.lyancafe.cn/shop/"')
+            buildConfigField("String", "Y_BASE_URL", '"http://optest.lyancafe.com/report/shop/"')
             buildConfigField("boolean", "LOG_DEBUG", "true")
             debuggable true
             minifyEnabled false
