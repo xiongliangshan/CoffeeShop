@@ -91,6 +91,7 @@ public class Calculator {
             bean.setReceiverPhone(OrderHelper.getHidePhone(orderBean));
             bean.setAddress(orderBean.getAddress());
             bean.setExpectedTime(orderBean.getExpectedTime());
+            bean.setInstanceTime(orderBean.getInstanceTime());
             bean.setDeliverName(orderBean.getCourierName()==null?"":orderBean.getCourierName());
             boxList.add(bean);
         }
@@ -115,6 +116,7 @@ public class Calculator {
             bean.setReceiverPhone(OrderHelper.getHidePhone(orderBean));
             bean.setAddress(orderBean.getAddress());
             bean.setExpectedTime(orderBean.getExpectedTime());
+            bean.setInstanceTime(orderBean.getInstanceTime());
             bean.setDeliverName(orderBean.getCourierName()==null?"":orderBean.getCourierName());
             boxList.add(bean);
         }
@@ -140,6 +142,7 @@ public class Calculator {
             bean.setReceiverPhone(OrderHelper.getHidePhone(orderBean));
             bean.setAddress(orderBean.getAddress());
             bean.setExpectedTime(orderBean.getExpectedTime());
+            bean.setInstanceTime(orderBean.getInstanceTime());
             bean.setDeliverName(orderBean.getCourierName()==null?"":orderBean.getCourierName());
             boxList.add(bean);
         }
@@ -164,6 +167,7 @@ public class Calculator {
             bean.setReceiverPhone(OrderHelper.getHidePhone(orderBean));
             bean.setAddress(orderBean.getAddress());
             bean.setExpectedTime(orderBean.getExpectedTime());
+            bean.setInstanceTime(orderBean.getInstanceTime());
             bean.setDeliverName(orderBean.getCourierName()==null?"":orderBean.getCourierName());
             boxList.add(bean);
         }
@@ -207,6 +211,7 @@ public class Calculator {
             bean.setReceiverPhone(OrderHelper.getHidePhone(order));
             bean.setAddress(order.getAddress());
             bean.setExpectedTime(order.getExpectedTime());
+            bean.setInstanceTime(order.getInstanceTime());
             bean.setDeliverName(order.getCourierName()==null?"":order.getCourierName());
             boxList.add(bean);
         }
@@ -231,6 +236,7 @@ public class Calculator {
             bean.setReceiverPhone(OrderHelper.getHidePhone(order));
             bean.setAddress(order.getAddress());
             bean.setExpectedTime(order.getExpectedTime());
+            bean.setInstanceTime(order.getInstanceTime());
             bean.setDeliverName(order.getCourierName()==null?"":order.getCourierName());
             boxList.add(bean);
         }
@@ -256,6 +262,7 @@ public class Calculator {
             bean.setReceiverPhone(OrderHelper.getHidePhone(order));
             bean.setAddress(order.getAddress());
             bean.setExpectedTime(order.getExpectedTime());
+            bean.setInstanceTime(order.getInstanceTime());
             bean.setDeliverName(order.getCourierName()==null?"":order.getCourierName());
             boxList.add(bean);
         }
@@ -280,6 +287,7 @@ public class Calculator {
             bean.setReceiverPhone(OrderHelper.getHidePhone(order));
             bean.setAddress(order.getAddress());
             bean.setExpectedTime(order.getExpectedTime());
+            bean.setInstanceTime(order.getInstanceTime());
             bean.setDeliverName(order.getCourierName()==null?"":order.getCourierName());
             boxList.add(bean);
         }

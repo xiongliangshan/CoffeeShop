@@ -23,6 +23,7 @@ public class PrintOrderBean {
     private String receiverPhone;  //收货人的电话号码
     private String address;      //收货人的地址
     private long expectedTime;   //期望送达时间
+    private long instanceTime;   //预计送达时间
     private String deliverName;  //配送员姓名
     private boolean checkAddress; //是否是重点地址
     private List<PrintCupBean> coffeeList;
@@ -162,6 +163,14 @@ public class PrintOrderBean {
         this.expectedTime = expectedTime;
     }
 
+    public long getInstanceTime() {
+        return instanceTime;
+    }
+
+    public void setInstanceTime(long instanceTime) {
+        this.instanceTime = instanceTime;
+    }
+
     public String getDeliverName() {
         return deliverName;
     }
@@ -184,7 +193,11 @@ public class PrintOrderBean {
     }
 
     public String getLocalStr(){
-        return boxAmount+"盒-第"+boxNumber+"盒 "+cupAmount+"杯";
+        return "("+boxAmount+"盒-第"+boxNumber+"盒"+")";
+    }
+
+    public String getCupStr(){
+        return cupAmount+"杯";
     }
 
     @Override

@@ -262,6 +262,13 @@ public class FujitsuPrinter implements NetPrint {
     public String OTCForBigLabel(PrintOrderBean bean) {
         String[] cupList = new String[]{"","","",""};
         List<PrintCupBean> coffeeList = bean.getCoffeeList();
+        UserBean user = LoginHelper.getUser(CSApplication.getInstance());
+        String arriveTime = "";
+        if (user.isOpenFulfill()) {
+            arriveTime = OrderHelper.getFormatTimeToStr(bean.getInstanceTime());
+        } else {
+            arriveTime = OrderHelper.getFormatTimeToStr(bean.getExpectedTime());
+        }
 
         for(int i =0;i<coffeeList.size();i++){
             if(i>3){
@@ -292,13 +299,13 @@ public class FujitsuPrinter implements NetPrint {
                     "SET RIBBON OFF\n" +
                     "DIRECTION 1,0\n" +
                     "CLS\n" +
-                    "TEXT 10,10,\"TSS24.BF2\",0,2,2,\""+Calculator.getCheckShopNo(bean)+"\""+"\n"+
-                    "TEXT 280,10,\"TSS24.BF2\",0,2,2,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
+                    "TEXT 10,10,\"TSS24.BF2\",0,2,2,\""+Calculator.getCheckShopNo(bean)+"   "+bean.getLocalStr()+"\""+"\n"+
+                    "TEXT 540,10,\"TSS24.BF2\",0,2,2,\""+bean.getCupStr()+"\""+"\n"+           //杯数盒子信息
                     "TEXT 10,60,\"TSS24.BF2\",0,1,1,\"单号:\""+"\n"+ //订单编号
                     "TEXT 70,60,\"TSS24.BF2\",0,1,1,\""+bean.getOrderHashId()+","+"\""+"\n"+
                     "TEXT 180,60,\"TSS24.BF2\",0,1,1,\""+bean.getReceiverName()+","+"\""+"\n"+
                     "TEXT 320,60,\"TSS24.BF2\",0,1,1,\"送达时间\""+"\n"+
-                    "TEXT 420,60,\"TSS24.BF2\",0,1,1,\""+OrderHelper.getFormatTimeToStr(bean.getExpectedTime())+"\""+"\n"+
+                    "TEXT 420,60,\"TSS24.BF2\",0,1,1,\""+arriveTime+"\""+"\n"+
                     "TEXT 570,60,\"TSS24.BF2\",0,1,1,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
                     "TEXT 10,90,\"TSS24.BF2\",0,1,1,\""+bestAddress+"\""+"\n"+
                     "TEXT 10,120,\"TSS24.BF2\",0,1,1,\""+cupList[0]+"\""+"\n"+
@@ -327,8 +334,8 @@ public class FujitsuPrinter implements NetPrint {
                     "SET RIBBON OFF\n" +
                     "DIRECTION 1,0\n" +
                     "CLS\n" +
-                    "TEXT 10,10,\"TSS24.BF2\",0,2,2,\""+ Calculator.getCheckShopNo(bean) +"\"\n" +
-                    "TEXT 280,10,\"TSS24.BF2\",0,2,2,\""+ bean.getLocalStr() +"\"\n" +
+                    "TEXT 10,10,\"TSS24.BF2\",0,2,2,\""+Calculator.getCheckShopNo(bean)+"   "+bean.getLocalStr()+"\""+"\n"+
+                    "TEXT 540,10,\"TSS24.BF2\",0,2,2,\""+bean.getCupStr()+"\""+"\n"+           //杯数盒子信息
                     "TEXT 10,80,\"TSS24.BF2\",0,1,1,\"订单编号:\"\n" +
                     "TEXT 130,80,\"TSS24.BF2\",0,1,1,\""+bean.getOrderHashId()+"\"\n" +
                     "TEXT 440,80,\"TSS24.BF2\",0,1,1,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\"\n" +
@@ -342,7 +349,7 @@ public class FujitsuPrinter implements NetPrint {
                     "TEXT 10,240,\"TSS24.BF2\",0,1,1,\"收货人:\"\n" +
                     "TEXT 110,240,\"TSS24.BF2\",0,1,1,\""+bean.getReceiverName()+"\"\n" +
                     "TEXT 290,240,\"TSS24.BF2\",0,1,1,\"送达时间:\"\n" +
-                    "TEXT 410,240,\"TSS24.BF2\",0,1,1,\""+OrderHelper.getFormatTimeToStr(bean.getExpectedTime())+"\"\n" +
+                    "TEXT 410,240,\"TSS24.BF2\",0,1,1,\""+arriveTime+"\"\n" +
                     "TEXT 10,280,\"TSS24.BF2\",0,1,1,\"地址:\"\n" +
                     addressCMD +
                     "PRINT 1,1\n";

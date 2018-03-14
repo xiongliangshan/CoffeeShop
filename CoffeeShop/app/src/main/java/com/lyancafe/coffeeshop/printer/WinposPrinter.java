@@ -267,6 +267,14 @@ public class WinposPrinter implements NetPrint {
     public String OTCForBigLabel(PrintOrderBean bean) {
         String[] cupList = new String[]{"","","",""};
         List<PrintCupBean> coffeeList = bean.getCoffeeList();
+        UserBean user = LoginHelper.getUser(CSApplication.getInstance());
+        String arriveTime = "";
+        if (user.isOpenFulfill()) {
+            arriveTime = OrderHelper.getFormatTimeToStr(bean.getInstanceTime());
+        } else {
+            arriveTime = OrderHelper.getFormatTimeToStr(bean.getExpectedTime());
+        }
+
         for(int i =0;i<coffeeList.size();i++){
             if(i>3){
                 LogUtil.e(TAG,"OTCForBigLabel ，数据异常");
@@ -296,13 +304,13 @@ public class WinposPrinter implements NetPrint {
                     "Q400,16"+"\n"+
                     "S3"+"\n"+
                     "D8"+"\n"+
-                    "A20,20,0,230,2,2,N,\""+Calculator.getCheckShopNo(bean)+"\""+"\n"+
-                    "A280,20,0,230,2,2,N,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
+                    "A20,30,0,230,2,2,N,\""+Calculator.getCheckShopNo(bean)+"   "+bean.getLocalStr()+"\""+"\n"+
+                    "A540,30,0,230,2,2,N,\""+ bean.getCupStr()+"\""+"\n"+           //杯数盒子信息
                     "A20,70,0,230,1,1,N,\"单号:\""+"\n"+ //订单编号
                     "A70,70,0,230,1,1,N,\""+bean.getOrderHashId()+","+"\""+"\n"+
                     "A180,70,0,230,1,1,N,\""+bean.getReceiverName()+","+"\""+"\n"+
                     "A320,70,0,230,1,1,N,\"送达时间\""+"\n"+
-                    "A420,70,0,230,1,1,N,\""+OrderHelper.getFormatTimeToStr(bean.getExpectedTime())+"\""+"\n"+
+                    "A420,70,0,230,1,1,N,\""+arriveTime+"\""+"\n"+
                     "A570,70,0,230,1,1,N,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
                     "A20,100,0,230,1,1,N,\""+bestAddress+"\""+"\n"+
                     "A20,130,0,230,1,1,N,\""+cupList[0]+"\""+"\n"+
@@ -331,8 +339,8 @@ public class WinposPrinter implements NetPrint {
                     "Q400,16"+"\n"+
                     "S3"+"\n"+
                     "D8"+"\n"+
-                    "A20,30,0,230,2,2,N,\""+Calculator.getCheckShopNo(bean)+"\""+"\n"+
-                    "A280,30,0,230,2,2,N,\""+bean.getLocalStr()+"\""+"\n"+           //杯数盒子信息
+                    "A20,30,0,230,2,2,N,\""+Calculator.getCheckShopNo(bean)+"   "+bean.getLocalStr()+"\""+"\n"+
+                    "A540,30,0,230,2,2,N,\""+ bean.getCupStr()+"\""+"\n"+           //杯数盒子信息
                     "A20,100,0,230,1,1,N,\"订单编号:\""+"\n"+ //订单编号
                     "A140,100,0,230,1,1,N,\""+bean.getOrderHashId()+"\""+"\n"+
                     "A450,100,0,230,1,1,N,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
@@ -345,7 +353,7 @@ public class WinposPrinter implements NetPrint {
                     "A20,260,0,230,1,1,N,\"收货人 \""+"\n"+
                     "A120,260,0,230,1,1,N,\""+bean.getReceiverName()+"\""+"\n"+
                     "A300,260,0,230,1,1,N,\"送达时间 \""+"\n"+
-                    "A420,260,0,230,1,1,N,\""+OrderHelper.getFormatTimeToStr(bean.getExpectedTime())+"\""+"\n"+
+                    "A420,260,0,230,1,1,N,\""+arriveTime+"\""+"\n"+
                     "A20,300,0,230,1,1,N,\"地址 \""+"\n"+
                     addressCMD +                             //配送地址
                     "P1"+"\n";
