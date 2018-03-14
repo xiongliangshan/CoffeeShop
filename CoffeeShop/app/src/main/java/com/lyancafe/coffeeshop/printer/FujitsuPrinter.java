@@ -299,7 +299,7 @@ public class FujitsuPrinter implements NetPrint {
                     "SET RIBBON OFF\n" +
                     "DIRECTION 1,0\n" +
                     "CLS\n" +
-                    "TEXT 10,10,\"TSS24.BF2\",0,2,2,\""+Calculator.getCheckShopNo(bean)+"   "+bean.getLocalStr()+"\""+"\n"+
+                    "TEXT 10,10,\"TSS24.BF2\",0,2,2,\""+Calculator.getCheckShopNo(bean)+bean.getLocalStr()+"\""+"\n"+
                     "TEXT 540,10,\"TSS24.BF2\",0,2,2,\""+bean.getCupStr()+"\""+"\n"+           //杯数盒子信息
                     "TEXT 10,60,\"TSS24.BF2\",0,1,1,\"单号:\""+"\n"+ //订单编号
                     "TEXT 70,60,\"TSS24.BF2\",0,1,1,\""+bean.getOrderHashId()+","+"\""+"\n"+
@@ -334,7 +334,7 @@ public class FujitsuPrinter implements NetPrint {
                     "SET RIBBON OFF\n" +
                     "DIRECTION 1,0\n" +
                     "CLS\n" +
-                    "TEXT 10,10,\"TSS24.BF2\",0,2,2,\""+Calculator.getCheckShopNo(bean)+"   "+bean.getLocalStr()+"\""+"\n"+
+                    "TEXT 10,10,\"TSS24.BF2\",0,2,2,\""+Calculator.getCheckShopNo(bean)+bean.getLocalStr()+"\""+"\n"+
                     "TEXT 540,10,\"TSS24.BF2\",0,2,2,\""+bean.getCupStr()+"\""+"\n"+           //杯数盒子信息
                     "TEXT 10,80,\"TSS24.BF2\",0,1,1,\"订单编号:\"\n" +
                     "TEXT 130,80,\"TSS24.BF2\",0,1,1,\""+bean.getOrderHashId()+"\"\n" +
