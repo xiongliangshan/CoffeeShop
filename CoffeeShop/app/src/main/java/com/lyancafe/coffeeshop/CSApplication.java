@@ -74,7 +74,7 @@ public class CSApplication extends Application {
         application = this;
         getDeviceScreenSize();
 
-        CrashReport.initCrashReport(getApplicationContext(), "900027459", false);
+        CrashReport.initCrashReport(getApplicationContext(), "9a3b559c71", false);
 
         //初始化Jpush
         JPushInterface.setDebugMode(BuildConfig.DEBUG); 	// 设置开启日志,发布时请关闭日志

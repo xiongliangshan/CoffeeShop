@@ -5,8 +5,8 @@ apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'com.jakewharton.butterknife'
 apply from: 'tinkerpatch.gradle'
 bugly {
-    appId = '900027459' // 注册时分配的App ID
-    appKey = 'iC2nS0ucy2zebgkA' // 注册时分配的App Key
+    appId = '9a3b559c71' // 注册时分配的App ID
+    appKey = '7fd60c26-4888-43da-a9a0-bf9b88d23afb' // 注册时分配的App Key
 }
 
 android {
