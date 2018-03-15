@@ -298,7 +298,6 @@ public interface HttpInterface {
     /**
      * 门店日销售状况
      */
-    @Headers("Cache-Control:public,max-age=60,max-stale=300")
     @GET("sale/daily")
     Observable<BaseEntity<SalesStatusOneDay>> loadDailySales(@Query("shopId") int shopId, @Query("currentDate") long time);
 }

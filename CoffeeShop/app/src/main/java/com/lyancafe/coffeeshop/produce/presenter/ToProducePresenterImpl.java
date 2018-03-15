@@ -4,6 +4,7 @@ package com.lyancafe.coffeeshop.produce.presenter;
 import android.content.Context;
 
 import com.google.gson.JsonObject;
+import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.BatchOrder;
 import com.lyancafe.coffeeshop.bean.OrderBean;
@@ -78,7 +79,12 @@ public class ToProducePresenterImpl implements ToProducePresenter{
                 OrderUtils.with().updateOrder(order.getId(),4005);
                 int id  = jsonObject.get("id").getAsInt();
                 mToProduceView.removeItemFromList(id);
-                EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,1,order.getWxScan()));
+                UserBean user = LoginHelper.getUser(CSApplication.getInstance());
+                if (user.isOpenFulfill()) {
+                    EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,1,false));
+                } else {
+                    EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.STARTPRODUCE,1,order.getWxScan()));
+                }
                 if(isAuto){
                     PrintFace.getInst().startPrintWholeOrderTask(order);
                 }
