@@ -227,20 +227,20 @@ public class OrderHelper {
             return "美团"+orderBean.getThirdShopOrderNo();
         }
         if(orderBean.getDeliveryTeam()== DeliveryTeam.ELE){
-            //饿了么单子要加取货码后四位
-//            String thirdOrderNo = orderBean.getThirdOrderNo();
-//            String fetchCode = null;
-//            if(!TextUtils.isEmpty(thirdOrderNo)){
-//                if(thirdOrderNo.length()>4){
-//                    fetchCode = "("+thirdOrderNo.substring(thirdOrderNo.length()-4)+")";
-//                }else {
-//                    fetchCode = "("+thirdOrderNo+")";
-//                }
-//            }else {
-//                fetchCode = "";
-//            }
-//            return "饿"+orderBean.getThirdShopOrderNo()+fetchCode;
-            return "饿"+orderBean.getThirdShopOrderNo();
+//            饿了么单子要加取货码后四位
+            String thirdOrderNo = orderBean.getThirdOrderNo();
+            String fetchCode = null;
+            if(!TextUtils.isEmpty(thirdOrderNo)){
+                if(thirdOrderNo.length()>4){
+                    fetchCode = "("+thirdOrderNo.substring(thirdOrderNo.length()-4)+")";
+                }else {
+                    fetchCode = "("+thirdOrderNo+")";
+                }
+            }else {
+                fetchCode = "";
+            }
+            return "饿"+orderBean.getThirdShopOrderNo()+fetchCode;
+//            return "饿"+orderBean.getThirdShopOrderNo();
         }
         if(orderBean.getWxScan()){
             return "到店"+String.valueOf(orderBean.getShopOrderNo());
