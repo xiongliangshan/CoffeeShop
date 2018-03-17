@@ -309,9 +309,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         /**
          * 开始生产&&打印
          */
-        SoundPoolUtil.create(CSApplication.getInstance(), R.raw.start_produce);
         mToProducePresenter.doStartProduce(event.order,event.isAuto);
-
     }
 
     /**

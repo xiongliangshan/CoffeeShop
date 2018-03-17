@@ -24,6 +24,7 @@ import com.lyancafe.coffeeshop.produce.model.ToProduceModelImpl;
 import com.lyancafe.coffeeshop.produce.ui.ListMode;
 import com.lyancafe.coffeeshop.produce.view.ToProduceView;
 import com.lyancafe.coffeeshop.utils.LogUtil;
+import com.lyancafe.coffeeshop.utils.SoundPoolUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -65,10 +66,15 @@ public class ToProducePresenterImpl implements ToProducePresenter{
 
     @Override
     public void doStartProduce(final OrderBean order, final boolean isAuto) {
+        /*
+            isAuto true 先请求服务器接口，返回成功后，报声音与打印
+            isAuto false 先报声音和打印后，请求服务器接口
+        */
         if(isAuto){
             Logger.getLogger().log("自动生产订单:{" + order.getId() + "，priority = " +order.getPriority() + "}");
         }else {
             Logger.getLogger().log("手动生产订单:{" + order.getId() +  "}");
+            SoundPoolUtil.create(CSApplication.getInstance(), R.raw.start_produce);
             PrintFace.getInst().startPrintWholeOrderTask(order);
         }
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
@@ -87,9 +93,8 @@ public class ToProducePresenterImpl implements ToProducePresenter{
                 }
                 if(isAuto){
                     PrintFace.getInst().startPrintWholeOrderTask(order);
+                    SoundPoolUtil.create(CSApplication.getInstance(), R.raw.start_produce);
                 }
-
-
             }
 
             @Override
