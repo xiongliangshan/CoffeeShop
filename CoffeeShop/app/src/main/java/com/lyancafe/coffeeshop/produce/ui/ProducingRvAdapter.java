@@ -24,7 +24,6 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
-import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
@@ -154,6 +153,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         UserBean user = LoginHelper.getUser(CSApplication.getInstance());
         if(user.isOpenFulfill()){
             holder.expectedTimeText.setText(OrderHelper.getFormatTimeToStr(order.getInstanceTime()));
+            holder.llProducingContainer.setVisibility(View.GONE);
         } else {
             holder.expectedTimeText.setText(OrderHelper.getFormatTimeToStr(order.getExpectedTime()));
         }
@@ -163,7 +163,9 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
 
         fillItemListData(holder.itemContainerll, order.getItems());
         if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
-            holder.llProducingContainer.setVisibility(View.GONE);
+            if(!user.isOpenFulfill()) {
+                holder.llProducingContainer.setVisibility(View.GONE);
+            }
             holder.llToproduceContainer.setVisibility(View.VISIBLE);
             holder.produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -173,7 +175,9 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
                 }
             });
         }else if(order.getProduceStatus() == OrderStatus.PRODUCING){
-            holder.llProducingContainer.setVisibility(View.VISIBLE);
+            if(!user.isOpenFulfill()) {
+                holder.llProducingContainer.setVisibility(View.VISIBLE);
+            }
             holder.llToproduceContainer.setVisibility(View.GONE);
             holder.produceBtn.setVisibility(View.VISIBLE);
             holder.produceBtn.setOnClickListener(new View.OnClickListener() {
@@ -186,7 +190,9 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
             });
 
         }else{
-            holder.llProducingContainer.setVisibility(View.VISIBLE);
+            if(!user.isOpenFulfill()){
+                holder.llProducingContainer.setVisibility(View.VISIBLE);
+            }
             holder.llToproduceContainer.setVisibility(View.GONE);
             holder.produceBtn.setVisibility(View.GONE);
         }

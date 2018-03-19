@@ -228,7 +228,11 @@ public class DetailView extends CardView implements View.OnClickListener{
                     //生产中
                     llOneButton.setVisibility(GONE);
                     llTwoButton.setVisibility(VISIBLE);
-                    btnFinishProduce.setVisibility(View.VISIBLE);
+                    if (user.isOpenFulfill()) {
+                        btnFinishProduce.setVisibility(View.GONE);
+                    } else {
+                        btnFinishProduce.setVisibility(View.VISIBLE);
+                    }
                     if (OrderHelper.isPrinted(getContext(), order.getOrderSn())) {
                         btnPrint.setText(R.string.print_again);
                         btnPrint.setTextColor(getResources().getColor(R.color.red1));

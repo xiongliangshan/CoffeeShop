@@ -14,6 +14,9 @@ public interface ProducingPresenter {
     //点击生产完成发送请求
     void doFinishProduced(long orderId);
 
+    //生产动线点击完成
+    void doFinishProducedFulfill();
+
     //点击批量完成生产
     void doCompleteBatchProduce(List<Long> orderIds);
 

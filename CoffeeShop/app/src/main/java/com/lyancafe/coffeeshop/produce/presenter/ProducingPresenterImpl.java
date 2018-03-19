@@ -103,6 +103,38 @@ public class ProducingPresenterImpl implements ProducingPresenter{
     }
 
     @Override
+    public void doFinishProducedFulfill(){
+        UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
+        List<OrderBean> producingOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.PRODUCING);
+        System.out.println("生产中---"+producingOrders);
+        if(null != producingOrders && producingOrders.size() > 0){
+            int orderSize = producingOrders.size();
+            long instanceMin = producingOrders.get(0).getInstanceTime();
+            long orderId = producingOrders.get(0).getId();
+            if(orderSize > 1){
+                for (int i = 1; i < orderSize ; i++) {
+                    if(producingOrders.get(i).getInstanceTime() < instanceMin){
+                        instanceMin = producingOrders.get(i).getInstanceTime();
+                        orderId = producingOrders.get(i).getId();
+                    }
+                }
+            }
+            final long orderIdMin = orderId;
+            mProducingModel.dodoFinishProduced(user.getShopId(), orderIdMin, new CustomObserver<JsonObject>(mContext,true) {
+                @Override
+                protected void onHandleSuccess(JsonObject jsonObject) {
+                    mProducingView.showToast(mContext.getString(R.string.do_success));
+                    Logger.getLogger().log("完成生产订单 "+orderIdMin+" 成功");
+                    int id  = jsonObject.get("id").getAsInt();
+                    mProducingView.removeItemFromList(id);
+                    EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.FINISHPRODUCE,1));
+                    OrderUtils.with().updateOrder(orderIdMin,4010);
+                }
+            });
+        }
+    }
+
+    @Override
     public void doCompleteBatchProduce(final List<Long> orderIds) {
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
         mProducingModel.doCompleteBatchProduce(user.getShopId(), orderIds, new CustomObserver<JsonObject>(mContext,true) {

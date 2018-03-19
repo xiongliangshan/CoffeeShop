@@ -2,7 +2,9 @@ package com.lyancafe.coffeeshop.produce.ui;
 
 
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -66,6 +68,8 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
     Button btnSearch;
     @BindView(R.id.btn_finish_all)
     Button btnFinishAll;
+    @BindView(R.id.btn_finish_one)
+    Button btnFinishOne;
     @BindView(R.id.detail_view)
     DetailView detailView;
     private ProducingPresenter mProducingPresenter;
@@ -76,6 +80,7 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
     private ProducingRvAdapter mAdapter;
     private Context mContext;
 
+    private GradientDrawable mGroupDrawable;
     public List<OrderBean> allOrderList = new ArrayList<>();
 
     private Handler mHandler;
@@ -131,9 +136,12 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
         UserBean user = LoginHelper.getUser(CSApplication.getInstance());
         if(user.isOpenFulfill()){
             btnFinishAll.setVisibility(View.GONE);
+            btnFinishOne.setVisibility(View.VISIBLE);
         }else{
             btnFinishAll.setVisibility(View.VISIBLE);
+            btnFinishOne.setVisibility(View.GONE);
         }
+        mGroupDrawable= (GradientDrawable) btnFinishOne.getBackground();
     }
 
 
@@ -293,7 +301,7 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
         }
     }
 
-    @OnClick({R.id.btn_search, R.id.btn_finish_all})
+    @OnClick({R.id.btn_search, R.id.btn_finish_all, R.id.btn_finish_one})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_search:
@@ -307,6 +315,32 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
                 }
                 mProducingPresenter.doCompleteBatchProduce(orderIs);
                 Logger.getLogger().log("一键全部完成 ，总数为: "+orderIs.size()+", 订单集合为:"+orderIs);
+                break;
+            case R.id.btn_finish_one:
+                //生产完成
+                mProducingPresenter.doFinishProducedFulfill();
+                /** 倒计时5秒，一次1秒 */
+                new CountDownTimer(5*1000, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        // TODO Auto-generated method stub
+                        btnFinishOne.setEnabled(false);
+                        btnFinishOne.setText(millisUntilFinished/1000+"");
+                        btnFinishOne.setTextSize(32);
+                        if(millisUntilFinished/1000 > 3){
+                            mGroupDrawable.setColor(CSApplication.getInstance().getResources().getColor(R.color.red2));
+                        } else {
+                            mGroupDrawable.setColor(CSApplication.getInstance().getResources().getColor(R.color.yellow));
+                        }
+                    }
+                    @Override
+                    public void onFinish() {
+                        mGroupDrawable.setColor(CSApplication.getInstance().getResources().getColor(R.color.green2));
+                        btnFinishOne.setTextSize(16);
+                        btnFinishOne.setText("生产完成");
+                        btnFinishOne.setEnabled(true);
+                    }
+                }.start();
                 break;
         }
 
