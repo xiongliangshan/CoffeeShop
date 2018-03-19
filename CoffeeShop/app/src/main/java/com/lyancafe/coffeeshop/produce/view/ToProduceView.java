@@ -16,7 +16,7 @@ public interface ToProduceView<T> extends BaseView{
     void bindDataToView(List<T> list);
 
     //从列表中删除某个item
-    void removeItemFromList(int id);
+    boolean removeItemFromList(int id);
 
     //从列表中删除一个N个item
     void removeItemsFromList(List<Long> ids);

@@ -117,7 +117,7 @@
         <item name="tabTextAppearance">@style/MyCustomTabTextAppearance</item>
     </style>
     <style name="MyCustomTabTextAppearance" parent="TextAppearance.Design.Tab">
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">@dimen/title_text_size</item>
         <item name="android:textColor">@color/white1</item>
         <item name="textAllCaps">true</item>
     </style>

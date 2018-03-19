@@ -2,6 +2,7 @@ package com.lyancafe.coffeeshop.produce.presenter;
 
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.JsonObject;
 import com.lyancafe.coffeeshop.CSApplication;
@@ -12,6 +13,7 @@ import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.OrderAction;
+import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.constant.TabList;
 import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
@@ -28,7 +30,9 @@ import com.lyancafe.coffeeshop.utils.LogUtil;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -36,7 +40,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 */
 
 public class ToProducePresenterImpl implements ToProducePresenter{
-
+    public static final String TAG = "ToProducePresenterImpl";
     private Context mContext;
     private ToProduceModel mToProduceModel;
     private ToProduceView mToProduceView;
@@ -58,10 +62,33 @@ public class ToProducePresenterImpl implements ToProducePresenter{
                 EventBus.getDefault().post(new UpdateTabCount(TabList.TAB_TOPRODUCE, orderBeanList.size()));
                 mToProduceView.bindDataToView(orderBeanList);
                 OrderUtils.with().insertOrderList(new CopyOnWriteArrayList<>(orderBeanList));
+                //同步安卓本地和服务器的数据
+                List<OrderBean> toProducedOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.UNPRODUCED);
+                List<Long> idList = getRedundant(toProducedOrders,orderBeanList);
+                if (idList.size() > 0) {
+                    Log.v(TAG, "生产中的数据同步,orderId:" + idList);
+                    Logger.getLogger().log("生产中的数据同步,orderId:" + idList);
+                }
+                for(Long id : idList){
+                    OrderUtils.with().updateRevokedOrder(id);
+                }
             }
         });
     }
 
+    private List<Long> getRedundant(List<OrderBean> fromSQLite, List<OrderBean> fromInterface){
+        List<Long> idList = new ArrayList<>();
+        Map<Long, Long> idMap = new HashMap<>();
+        for (OrderBean orderBean : fromInterface) {
+            idMap.put(orderBean.getId(), orderBean.getId());
+        }
+        for(OrderBean orderBean : fromSQLite){
+            if(!idMap.containsKey(orderBean.getId())){
+                idList.add(orderBean.getId());
+            }
+        }
+        return idList;
+    }
 
     @Override
     public void doStartProduce(final OrderBean order, final boolean isAuto) {

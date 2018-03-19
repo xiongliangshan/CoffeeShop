@@ -382,10 +382,12 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
      * 点击开始生产，生产完成，扫码交付时从当前列表移除该订单
      * @param orderId
      */
-    public void removeOrderFromList(long orderId){
+    public boolean removeOrderFromList(long orderId){
+        boolean result = false;
         for(int i=list.size()-1;i>=0;i--){
             if(list.get(i).getId()==orderId){
                 list.remove(i);
+                result = true;
                 break;
             }
         }
@@ -398,8 +400,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
             notifyDataSetChanged();
             callback.updateDetail(null);
         }
-
-
+        return result;
     }
 
     /**

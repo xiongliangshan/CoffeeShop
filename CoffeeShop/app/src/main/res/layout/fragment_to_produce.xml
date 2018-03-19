@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,53 +8,72 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="4dp"
-        >
+        android:padding="4dp">
+
         <android.support.constraint.ConstraintLayout
             android:id="@+id/cl_batch_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            >
+            app:layout_constraintTop_toTopOf="parent">
 
             <Button
                 android:id="@+id/btn_batch_select"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
                 android:background="@drawable/bg_native_button"
-                android:text="批量选择"/>
+                android:text="批量选择"
+                android:textSize="16sp" />
+
 
             <Button
                 android:id="@+id/btn_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintLeft_toRightOf="@id/btn_batch_select"
                 android:layout_marginLeft="6dp"
-                android:visibility="gone"
-                android:textSize="16sp"
                 android:background="@drawable/bg_native_button"
-                android:text="取消"/>
+                android:text="取消"
+                android:textSize="16sp"
+                android:visibility="gone"
+                app:layout_constraintLeft_toRightOf="@id/btn_batch_select" />
 
         </android.support.constraint.ConstraintLayout>
 
-       <android.support.constraint.ConstraintLayout
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           app:layout_constraintLeft_toLeftOf="parent">
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_show_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent" >
 
-           <Button
-               android:id="@+id/btn_summarize"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:textSize="16sp"
-               android:background="@drawable/bg_native_button"
-               android:text="汇总模式" />
+        <EditText
+            android:id="@+id/et_show_info"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:background="@drawable/bg_search_edit"
+            android:text="未完成订单过多，无法自动打印，请及时完成！"
+            android:textColor="@color/red1"
+            android:textColorHint="@color/gray6"
+            android:textSize="22sp"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-       </android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent">
+            <Button
+                android:id="@+id/btn_summarize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_native_button"
+                android:text="汇总模式"
+                android:textSize="16sp" />
+
+        </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/cl_search"
@@ -65,9 +85,9 @@
 
             <EditText
                 android:id="@+id/et_search_key"
+                style="@style/SearchEdit"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                style="@style/SearchEdit"
                 app:layout_constraintEnd_toStartOf="@+id/btn_search"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
@@ -75,9 +95,9 @@
 
             <Button
                 android:id="@+id/btn_search"
+                style="@style/SearchButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                style="@style/SearchButton"
                 app:layout_constraintBaseline_toBaselineOf="@+id/et_search_key"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/et_search_key" />

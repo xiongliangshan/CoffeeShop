@@ -431,10 +431,12 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
      *
      * @param orderId
      */
-    public void removeOrderFromList(long orderId) {
+    public boolean removeOrderFromList(long orderId) {
+        boolean result = false;
         for (int i = list.size() - 1; i >= 0; i--) {
             if (list.get(i).getId() == orderId) {
                 list.remove(i);
+                result = true;
                 break;
             }
         }
@@ -447,8 +449,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
             notifyDataSetChanged();
             callback.updateDetail(null);
         }
-
-
+        return result;
     }
 
     /**

@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -32,6 +33,7 @@ import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
 import com.lyancafe.coffeeshop.event.NotNeedProduceEvent;
 import com.lyancafe.coffeeshop.event.RevokeEvent;
+import com.lyancafe.coffeeshop.event.ShowUnfinishedEvent;
 import com.lyancafe.coffeeshop.event.StartProduceBatchEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.logger.Logger;
@@ -83,6 +85,9 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     private EditText etSearchKey;
     private Button btnSearch;
     private DetailView detailView;
+
+    private ConstraintLayout clShowInfo;
+    private EditText etShowInfo;
 
     private ToProduceRvAdapter mAdapter;
     private SummarizeAdapter summarizeAdapter;
@@ -144,6 +149,8 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         btnSearch = (Button) view.findViewById(R.id.btn_search);
 
         detailView = (DetailView) view.findViewById(R.id.detail_view);
+        clShowInfo = (ConstraintLayout) view.findViewById(R.id.cl_show_info);
+        etShowInfo = (EditText) view.findViewById(R.id.et_show_info);
         detailView.setCallback(this);
 
         setListener();
@@ -165,7 +172,8 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
             }
         });
 
-
+        clShowInfo.setVisibility(View.GONE);
+        etShowInfo.setInputType(InputType.TYPE_NULL);
         UserBean user = LoginHelper.getUser(CSApplication.getInstance());
         if(user.isOpenFulfill()){
             summarizeBtn.setVisibility(View.GONE);
@@ -190,8 +198,6 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     }
 
 
-
-
     @Override
     public void bindDataToView(List<OrderBean> list) {
         allOrderList.clear();
@@ -203,7 +209,6 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         }
 
     }
-
 
 
     @Override
@@ -291,8 +296,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
             LogUtil.e("xls", "onRevokeEvent orderBean = null");
             return;
         }
-        if (event.orderBean.getProduceStatus() == 4000) {
-            removeItemFromList((int) event.orderBean.getId());
+        if (removeItemFromList((int) event.orderBean.getId())) {
             EventBus.getDefault().postSticky(new ChangeTabCountByActionEvent(OrderAction.REVOKEORDER, 0, 1));
         }
 
@@ -311,6 +315,16 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
          */
         SoundPoolUtil.create(CSApplication.getInstance(), R.raw.start_produce);
         mToProducePresenter.doStartProduce(event.order,event.isAuto);
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShowUnfinishedEvent(ShowUnfinishedEvent event) {
+        if(event.isShow){
+            clShowInfo.setVisibility(View.VISIBLE);
+        } else {
+            clShowInfo.setVisibility(View.GONE);
+        }
 
     }
 
@@ -338,10 +352,11 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
 
 
     @Override
-    public void removeItemFromList(int id) {
-        mAdapter.removeOrderFromList(id);
+    public boolean removeItemFromList(int id) {
+        boolean result = mAdapter.removeOrderFromList(id);
         allOrderList.clear();
         allOrderList.addAll(mAdapter.getList());
+        return result;
     }
 
     /**

@@ -185,23 +185,23 @@ public class ProducedFragment extends BaseFragment implements ProducedView<Order
             LogUtil.e("xls", "onRevokeEvent orderBean = null");
             return;
         }
-        if (event.orderBean.getProduceStatus() == 4010) {
-            removeItemFromList((int) event.orderBean.getId());
+        if (removeItemFromList((int) event.orderBean.getId())) {
             EventBus.getDefault().postSticky(new ChangeTabCountByActionEvent(OrderAction.REVOKEORDER, 2, 1));
         }
     }
 
     @Override
-    public void removeItemFromList(int id) {
+    public boolean removeItemFromList(int id) {
         List<OrderBean> list = new ArrayList<>();
         list.addAll(allOrderList);
         for(int i=list.size()-1;i>=0;i--){
             if(list.get(i).getId()==id){
                 list.remove(i);
-                break;
+                bindDataToView(list);
+                return true;
             }
         }
-        bindDataToView(list);
+        return false;
     }
 
 

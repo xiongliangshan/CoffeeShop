@@ -19,4 +19,9 @@ public class OrderStatus {
     public static final int UNPRODUCED = 4000;    //待生产
     public static final int PRODUCING = 4005;     //生产中
     public static final int PRODUCED = 4010;      //已生产
+
+    /**
+     * 订单异常，针对订单
+     */
+    public static final int CANCELLED = 6010;  //订单取消
 }

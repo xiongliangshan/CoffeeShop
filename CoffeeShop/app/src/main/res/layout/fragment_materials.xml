@@ -62,41 +62,54 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <TextView
+            <!--<TextView-->
+                <!--android:id="@+id/tv_print_paster"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="@drawable/bg_black_circle"-->
+                <!--android:ems="2"-->
+                <!--android:gravity="center"-->
+                <!--android:lineSpacingMultiplier="1.1"-->
+                <!--android:lines="2"-->
+                <!--android:text="@string/print_small"-->
+                <!--android:textColor="@color/white_font"-->
+                <!--android:textSize="16sp" />-->
+
+            <Button
                 android:id="@+id/tv_print_paster"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_black_circle"
-                android:ems="2"
-                android:gravity="center"
-                android:lineSpacingMultiplier="1.1"
-                android:lines="2"
-                android:text="@string/print_small"
-                android:textColor="@color/white_font"
-                android:textSize="16sp" />
+                android:layout_marginTop="8dp"
+                android:text="打印小纸" />
 
 
-            <TextView
+            <!--<TextView-->
+                <!--android:id="@+id/tv_print_material"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:layout_marginTop="16dp"-->
+                <!--android:background="@drawable/bg_white_circle"-->
+                <!--android:ems="2"-->
+                <!--android:gravity="center"-->
+                <!--android:lineSpacingMultiplier="1.1"-->
+                <!--android:lines="2"-->
+                <!--android:text="@string/print_big"-->
+                <!--android:textColor="@color/text_black"-->
+                <!--android:textSize="16sp" />-->
+
+            <Button
                 android:id="@+id/tv_print_material"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/bg_white_circle"
-                android:ems="2"
-                android:gravity="center"
-                android:lineSpacingMultiplier="1.1"
-                android:lines="2"
-                android:text="@string/print_big"
-                android:textColor="@color/text_black"
-                android:textSize="16sp" />
-
+                android:layout_marginTop="8dp"
+                android:text="打印大纸" />
 
             <Button
                 android:id="@+id/btn_print_blank"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="64dp"
+                android:layout_marginTop="8dp"
                 android:text="空白贴纸" />
 
 
@@ -104,14 +117,14 @@
                 android:id="@+id/btn_print_test"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="64dp"
+                android:layout_marginTop="8dp"
                 android:text="打印测试" />
 
             <Button
                 android:id="@+id/btn_print_cancellation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="64dp"
+                android:layout_marginTop="8dp"
                 android:text="退货勿用贴" />
 
         </LinearLayout>

@@ -5,6 +5,8 @@ import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.ItemContentBeanDao;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.OrderBeanDao;
+import com.lyancafe.coffeeshop.constant.OrderAction;
+import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -108,6 +110,7 @@ public class OrderUtils {
             return;
         }
         orderBean.setRevoked(true);
+        orderBean.setProduceStatus(OrderStatus.CANCELLED);
         mOrderDao.update(orderBean);
         LogUtil.i(TAG,"更新订单 "+orderId+" 标记为 被撤回 ");
     }

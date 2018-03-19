@@ -15,7 +15,7 @@ public interface ProducingView<T> extends BaseView{
     void bindDataToView(List<T> list);
 
     //从列表中删除某个item
-    void removeItemFromList(int id);
+    boolean removeItemFromList(int id);
 
     //显示生产完成确认对话框
     void showFinishProduceConfirmDialog(final OrderBean orderBean);

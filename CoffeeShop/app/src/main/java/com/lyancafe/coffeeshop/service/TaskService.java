@@ -1,6 +1,5 @@
 package com.lyancafe.coffeeshop.service;
 
-import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -17,10 +16,11 @@ import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
+import com.lyancafe.coffeeshop.event.ShowUnfinishedEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.utils.LogUtil;
-import com.lyancafe.coffeeshop.utils.SoundPoolUtil;
+import com.lyancafe.coffeeshop.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -136,16 +136,18 @@ public class TaskService extends Service {
 
         @Override
         public void run() {
+            final int cupTotal = 10;
             List<OrderBean> toProducedOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.UNPRODUCED);
-            LogUtil.d(TAG, "当前待生产订单为：" + toProducedOrders.size());
+//            LogUtil.d(TAG, "当前待生产订单为：" + toProducedOrders);
             for (OrderBean orderBean : toProducedOrders) {
                 List<OrderBean> producingOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.PRODUCING);
+//                LogUtil.d(TAG, "当前生产中订单为：" + producingOrders);
                 int cupsAmount = OrderHelper.getTotalQutity(producingOrders);
-                boolean isAutoProduce = producingOrders.size() < 3 || cupsAmount < 10;
-
+                boolean isAutoProduce = producingOrders.size() < 3 || cupsAmount <= cupTotal;
                 LogUtil.d(TAG, "当前生产中订单为：" + producingOrders.size() + "单 ，杯量为:" + cupsAmount);
                 Logger.getLogger().log("当前生产中订单为:" + producingOrders.size() + "单,杯量为:" + cupsAmount + "}");
                 if (isAutoProduce) {
+                    EventBus.getDefault().postSticky(new ShowUnfinishedEvent("未完成订单过多，无法自动打印，请及时完成！",false));
                     if (orderBean.getPriority() == 0) {
                         long nowTime = System.currentTimeMillis();
                         if (nowTime >= orderBean.getStartProduceTime()) {
@@ -159,8 +161,8 @@ public class TaskService extends Service {
                         LogUtil.d(TAG, "特殊订单，开始自动生产:" + orderBean.getId());
                         EventBus.getDefault().postSticky(new StartProduceEvent(orderBean,true));
                     }
-
                 } else {
+                    EventBus.getDefault().postSticky(new ShowUnfinishedEvent("未完成订单过多，无法自动打印，请及时完成！",true));
                     LogUtil.d(TAG, "任务堆积，暂缓生产");
                     Logger.getLogger().log("任务堆积，暂缓生产");
                     break;
