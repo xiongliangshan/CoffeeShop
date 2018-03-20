@@ -177,25 +177,29 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
                     //点击开始生产（打印）按钮
                     UserBean user = LoginHelper.getUser(CSApplication.getInstance());
                     if(user.isOpenFulfill()){
-                        if(order.getPriority()==0){
+                        /*
+                            生产动线门店，执行一下逻辑
+                            如果订单是优先的或到了开始生产时间，则先报声音，打印，后请求服务器接口
+                            否则先请求服务器接口，服务器成功后打印
+                            不能生产的逻辑由服务器决定
+                         */
+                        if(order.getPriority()==0) {
                             long nowTime = System.currentTimeMillis();
-                            if(nowTime<order.getStartProduceTime()){
-                                ToastUtil.show(context.getApplicationContext(),"时间未到，不能提前生产");
-                                return;
+                            if(nowTime < order.getStartProduceTime()){
+                                EventBus.getDefault().post(new StartProduceEvent(order,true));
+                                Logger.getLogger().log("列表-生产单个订单:{"+order.getId()+"}");
+                            }else {
+                                EventBus.getDefault().post(new StartProduceEvent(order,false));
+                                Logger.getLogger().log("列表-生产单个订单:{"+order.getId()+"}");
                             }
-                            EventBus.getDefault().post(new StartProduceEvent(order,false));
-                            Logger.getLogger().log("列表-生产单个订单:{"+order.getId()+"}");
-                        }else {
+                        }else{
                             EventBus.getDefault().post(new StartProduceEvent(order,false));
                             Logger.getLogger().log("列表-生产单个订单:{"+order.getId()+"}");
                         }
-
                     }else{
                         EventBus.getDefault().post(new StartProduceEvent(order,false));
                         Logger.getLogger().log("列表-生产单个订单:{"+order.getId()+"}");
                     }
-
-
                 }
             });
         } else if (order.getProduceStatus() == OrderStatus.PRODUCING) {
