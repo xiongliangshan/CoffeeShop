@@ -26,8 +26,8 @@ android {
         applicationId "com.lyancafe.coffeeshop"
         minSdkVersion 19
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 79
-        versionName "3.5.9"
+        versionCode 80
+        versionName "3.6.0"
         multiDexEnabled true
         ndk {
             // 设置支持的SO库架构
