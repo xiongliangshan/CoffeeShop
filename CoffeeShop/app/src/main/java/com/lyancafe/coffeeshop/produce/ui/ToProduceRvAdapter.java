@@ -408,6 +408,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
     public void setData(List<OrderBean> list) {
         this.list = list;
         Collections.sort(this.list, new OrderSortComparator());
+        this.
         notifyDataSetChanged();
 
 

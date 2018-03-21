@@ -300,4 +300,12 @@ public interface HttpInterface {
      */
     @GET("sale/daily")
     Observable<BaseEntity<SalesStatusOneDay>> loadDailySales(@Query("shopId") int shopId, @Query("currentDate") long time);
+
+    /**
+     * 获取最近门店单量和杯量
+     * @param shopId
+     * @return
+     */
+    @GET("v3/{shopId}/lately/count")
+    Observable<BaseEntity<JsonObject>> loadLatelyCount(@Path("shopId") int shopId);
 }
