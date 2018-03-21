@@ -65,7 +65,7 @@ public class ProducingPresenterImpl implements ProducingPresenter{
                     Logger.getLogger().log("生产中的数据同步,orderId:" + idList);
                 }
                 for(Long id : idList){
-                    OrderUtils.with().updateRevokedOrder(id);
+                    OrderUtils.with().updateUnFindOrder(id);
                 }
             }
         });
