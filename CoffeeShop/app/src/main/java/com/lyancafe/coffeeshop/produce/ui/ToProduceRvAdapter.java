@@ -401,6 +401,11 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
     }
 
     @Override
+    public void loadLatelyCount(int shopId, CustomObserver<JsonObject> observer) {
+
+    }
+
+    @Override
     public void loadCourierDistance(int shopId, long orderId, CustomObserver<JsonObject> observer) {
 
     }
