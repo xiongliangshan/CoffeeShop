@@ -140,6 +140,6 @@
         android:background="#906d95e5"
         android:layout_alignParentBottom="true"
         android:visibility="gone"
-        android:text="" />
+        android:text="近期单量提示" />
 
 </RelativeLayout>
