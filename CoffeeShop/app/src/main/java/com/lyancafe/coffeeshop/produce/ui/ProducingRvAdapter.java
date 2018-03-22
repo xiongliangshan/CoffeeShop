@@ -32,6 +32,7 @@ import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
+import com.lyancafe.coffeeshop.utils.OrderSortInstanceComparator;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ProgressPercent;
 
@@ -179,6 +180,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
                 }
             });
         }else if(order.getProduceStatus() == OrderStatus.PRODUCING){
+            holder.llToproduceContainer.setVisibility(View.GONE);
             if(!user.isOpenFulfill()) {
                 holder.llProducingContainer.setVisibility(View.VISIBLE);
                 holder.llToproducingContainerFulfil.setVisibility(View.GONE);
@@ -192,17 +194,20 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
                     }
                 });
             } else {
-                holder.llToproduceContainer.setVisibility(View.GONE);
                 holder.llToproducingContainerFulfil.setVisibility(View.VISIBLE);
                 Map<String,Object> productCapacity = ProductHelper.getProduct(CSApplication.getInstance());
                 List<ItemContentBean> icbcList = order.getItems();
                 int productTime = 0;
-                for (ItemContentBean itemContentBean : icbcList) {
-                    if (productCapacity.containsKey(itemContentBean.getProduct())) {
-                        productTime = itemContentBean.getQuantity() * Integer.getInteger(productCapacity.get(itemContentBean.getProduct()).toString(), 1) * 30 * 1000;
-                    } else {
-                        productTime = itemContentBean.getQuantity() * 1 * 30 * 1000;
+                try {
+                    for (ItemContentBean itemContentBean : icbcList) {
+                        if (productCapacity.containsKey(itemContentBean.getProduct())) {
+                            productTime += itemContentBean.getQuantity() * Integer.getInteger(productCapacity.get(itemContentBean.getProduct()).toString(), 1) * 30 * 1000;
+                        } else {
+                            productTime += itemContentBean.getQuantity() * 1 * 30 * 1000;
+                        }
                     }
+                } catch (Exception e){
+                    Logger.getLogger().log("get productTime has problem, e:{}" + e.getMessage());
                 }
                 OrderBean orderBean =  OrderUtils.with().getOrderById(order.getId());
                 long currentTimeMillis = System.currentTimeMillis();
@@ -354,7 +359,12 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
 
     public void setData(List<OrderBean> list){
         this.list = list;
-        Collections.sort(this.list,new OrderSortComparator());
+        UserBean user = LoginHelper.getUser(context.getApplicationContext());
+        if(user.isOpenFulfill()){
+            Collections.sort(this.list,new OrderSortInstanceComparator());
+        } else {
+            Collections.sort(this.list,new OrderSortComparator());
+        }
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
             callback.updateDetail(this.list.get(selected));

@@ -470,6 +470,7 @@ public class OrderBean implements Serializable{
                 ", isRecipeFittings=" + isRecipeFittings +
                 ", expectedTime=" + expectedTime +
                 ", startProduceTime=" + startProduceTime +
+                ", instanceTime=" + instanceTime +
                 ", orderTime=" + orderTime +
                 ", distributeTime=" + distributeTime +
                 ", produceEffect=" + produceEffect +

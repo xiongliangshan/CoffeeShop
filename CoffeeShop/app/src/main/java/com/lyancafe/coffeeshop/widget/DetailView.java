@@ -276,12 +276,16 @@ public class DetailView extends CardView implements View.OnClickListener{
                         Map<String,Object> productCapacity = ProductHelper.getProduct(CSApplication.getInstance());
                         List<ItemContentBean> icbcList = order.getItems();
                         int productTime = 0;
-                        for(ItemContentBean itemContentBean : icbcList){
-                            if(productCapacity.containsKey(itemContentBean.getProduct())){
-                                productTime = itemContentBean.getQuantity() *  Integer.getInteger(productCapacity.get(itemContentBean.getProduct()).toString(),1) * 30 * 1000;
-                            } else {
-                                productTime = itemContentBean.getQuantity() * 1 * 30 * 1000;
+                        try {
+                            for(ItemContentBean itemContentBean : icbcList){
+                                if(productCapacity.containsKey(itemContentBean.getProduct())){
+                                    productTime += itemContentBean.getQuantity() *  Integer.getInteger(productCapacity.get(itemContentBean.getProduct()).toString(),1) * 30 * 1000;
+                                } else {
+                                    productTime += itemContentBean.getQuantity() * 1 * 30 * 1000;
+                                }
                             }
+                        } catch (Exception e){
+                            Logger.getLogger().log("get productTime has problem, e:{}" + e.getMessage());
                         }
                         OrderBean orderBean = OrderUtils.with().getOrderById(order.getId());
                         long currentTimeMillis = System.currentTimeMillis();
