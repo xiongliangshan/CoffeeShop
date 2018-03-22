@@ -2,7 +2,6 @@ package com.lyancafe.coffeeshop.produce.presenter;
 
 
 import android.content.Context;
-import android.nfc.Tag;
 import android.util.Log;
 
 import com.google.gson.JsonArray;
@@ -22,7 +21,7 @@ import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.produce.model.ProducingModel;
 import com.lyancafe.coffeeshop.produce.model.ProducingModelImpl;
 import com.lyancafe.coffeeshop.produce.view.ProducingView;
-import com.lyancafe.coffeeshop.utils.OrderSortProComparator;
+import com.lyancafe.coffeeshop.utils.OrderSortInstanceComparator;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -31,7 +30,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
 * Created by Administrator on 2017/03/15
@@ -58,7 +56,7 @@ public class ProducingPresenterImpl implements ProducingPresenter{
             protected void onHandleSuccess(List<OrderBean> orderBeanList) {
                 EventBus.getDefault().post(new UpdateTabCount(TabList.TAB_PRODUCING, orderBeanList.size()));
                 if(user.isOpenFulfill()){
-                    Collections.sort(orderBeanList,new OrderSortProComparator());
+                    Collections.sort(orderBeanList,new OrderSortInstanceComparator());
                 }
                 mProducingView.bindDataToView(orderBeanList);
 //                OrderUtils.with().insertOrderList(new CopyOnWriteArrayList<>(orderBeanList));

@@ -199,9 +199,9 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
                 int productTime = 0;
                 for (ItemContentBean itemContentBean : icbcList) {
                     if (productCapacity.containsKey(itemContentBean.getProduct())) {
-                        productTime = itemContentBean.getQuantity() * 1 * 30 * 1000;
-                    } else {
                         productTime = itemContentBean.getQuantity() * Integer.getInteger(productCapacity.get(itemContentBean.getProduct()).toString(), 1) * 30 * 1000;
+                    } else {
+                        productTime = itemContentBean.getQuantity() * 1 * 30 * 1000;
                     }
                 }
                 OrderBean orderBean =  OrderUtils.with().getOrderById(order.getId());

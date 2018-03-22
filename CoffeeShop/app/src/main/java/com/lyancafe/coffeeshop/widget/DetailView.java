@@ -278,15 +278,15 @@ public class DetailView extends CardView implements View.OnClickListener{
                         int productTime = 0;
                         for(ItemContentBean itemContentBean : icbcList){
                             if(productCapacity.containsKey(itemContentBean.getProduct())){
-                                productTime = itemContentBean.getQuantity() * 1 * 30 * 1000;
-                            } else {
                                 productTime = itemContentBean.getQuantity() *  Integer.getInteger(productCapacity.get(itemContentBean.getProduct()).toString(),1) * 30 * 1000;
+                            } else {
+                                productTime = itemContentBean.getQuantity() * 1 * 30 * 1000;
                             }
                         }
                         OrderBean orderBean = OrderUtils.with().getOrderById(order.getId());
                         long currentTimeMillis = System.currentTimeMillis();
                         long timeMinus = orderBean.getStartProduceTime() + productTime - currentTimeMillis;
-                        long timeOverTime = order.getInstanceTime() - currentTimeMillis;
+                        long timeOverTime = order.getInstanceTime()  - currentTimeMillis;
                         if (timeMinus > 0) {
                             long time = timeMinus / 1000;
                             btnFinishProduce.setText("距离生产完成时间" + time / 60 + "分" + time % 60 + "秒");
