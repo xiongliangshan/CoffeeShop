@@ -50,7 +50,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Administrator on 2015/9/21.
  */
-public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.ViewHolder> implements ToProduceModel{
+public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.ViewHolder>{
 
     private static final String TAG = "OrderGridViewAdapter";
 
@@ -376,40 +376,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         if(defaultSelectedList.size()>0){
             notifyDataSetChanged();
         }
-
-
     }
-
-    @Override
-    public void loadToProduceOrders(int shopId, CustomObserver<List<OrderBean>> observer) {
-
-    }
-
-    @Override
-    public void doStartProduce(int shopId, long orderId, CustomObserver<JsonObject> observer) {
-
-    }
-
-    @Override
-    public void doStartBatchProduce(int shopId, BatchOrder batchOrder, CustomObserver<JsonObject> observer) {
-
-    }
-
-    @Override
-    public void doNoProduce(int shopId, long orderId, CustomObserver<JsonObject> observer) {
-
-    }
-
-    @Override
-    public void loadLatelyCount(int shopId, CustomObserver<JsonObject> observer) {
-
-    }
-
-    @Override
-    public void loadCourierDistance(int shopId, long orderId, CustomObserver<JsonObject> observer) {
-
-    }
-
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
