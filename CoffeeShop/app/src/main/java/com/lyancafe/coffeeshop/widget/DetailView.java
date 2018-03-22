@@ -1,6 +1,7 @@
 package com.lyancafe.coffeeshop.widget;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
@@ -23,16 +24,22 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.common.ProductHelper;
 import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
+import com.lyancafe.coffeeshop.db.OrderUtils;
+import com.lyancafe.coffeeshop.event.CourierDistanceEvent;
+import com.lyancafe.coffeeshop.event.CourierDistanceViewEvent;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.PrintOrderEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.logger.Logger;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2017/12/25.
@@ -69,7 +76,8 @@ public class DetailView extends CardView implements View.OnClickListener{
     private TextView btnPrint;
     private LinearLayout llOneButton;
     private TextView btnProducePrint;
-
+    private TextView ultDistanceRefresh;
+    private TextView tvDistanceRefresh;
 
     private OrderBean mOrder;
 
@@ -92,8 +100,8 @@ public class DetailView extends CardView implements View.OnClickListener{
 
 
     private void initView(Context context){
-        LayoutInflater.from(context).inflate(R.layout.view_detail,this,true);
-        setBackground(ContextCompat.getDrawable(context,R.drawable.bg_order));
+        LayoutInflater.from(context).inflate(R.layout.view_detail, this, true);
+        setBackground(ContextCompat.getDrawable(context, R.drawable.bg_order));
         rootLayout = (LinearLayout) findViewById(R.id.root_layout);
         tvShopNo = (TextView) findViewById(R.id.tv_shop_no);
         tvReachTime = (TextView) findViewById(R.id.tv_reach_time);
@@ -123,14 +131,19 @@ public class DetailView extends CardView implements View.OnClickListener{
         btnPrint = (TextView) findViewById(R.id.btn_print);
         llOneButton = (LinearLayout) findViewById(R.id.ll_one_button);
         btnProducePrint = (TextView) findViewById(R.id.btn_produce_print);
+
+        ultDistanceRefresh = (TextView) findViewById(R.id.ult_distance_refresh);
+        tvDistanceRefresh = (TextView) findViewById(R.id.tv_detail_distance);
         UserBean user = LoginHelper.getUser(CSApplication.getInstance());
-        if(user.isOpenFulfill()){
+        if (user.isOpenFulfill()) {
             startTime.setVisibility(VISIBLE);
             tvStartProduceTime.setVisibility(VISIBLE);
         } else {
             startTime.setVisibility(INVISIBLE);
             tvStartProduceTime.setVisibility(INVISIBLE);
         }
+        ultDistanceRefresh.setVisibility(GONE);
+        tvDistanceRefresh.setVisibility(GONE);
         setListener();
 
     }
@@ -140,6 +153,7 @@ public class DetailView extends CardView implements View.OnClickListener{
         btnFinishProduce.setOnClickListener(this);
         btnPrint.setOnClickListener(this);
         btnProducePrint.setOnClickListener(this);
+        ultDistanceRefresh.setOnClickListener(this);
     }
 
     public void setCallback(ActionCallback callback) {
@@ -160,6 +174,7 @@ public class DetailView extends CardView implements View.OnClickListener{
             tvReceiverName.setText("");
             tvReceiverPhone.setText("");
             ultIssueFeedback.setEnabled(true);
+            ultDistanceRefresh.setEnabled(true);
             tvOrderTime.setText("");
             tvOrderId.setText("");
             tvReceiverAddress.setText("");
@@ -192,6 +207,7 @@ public class DetailView extends CardView implements View.OnClickListener{
             tvReceiverName.setText(order.getRecipient());
             tvReceiverPhone.setText(order.getPhone());
             ultIssueFeedback.setEnabled(true);
+            ultDistanceRefresh.setEnabled(true);
             tvOrderTime.setText(OrderHelper.getDateToString(order.getOrderTime()));
             tvOrderId.setText(order.getOrderHashId());
             tvReceiverAddress.setText(order.getAddress());
@@ -213,6 +229,8 @@ public class DetailView extends CardView implements View.OnClickListener{
 
             if(order.getRevoked() || order.getStatus()>=OrderStatus.FINISHED){
                 llButtonContainer.setVisibility(View.INVISIBLE);
+                ultDistanceRefresh.setVisibility(View.GONE);
+                tvDistanceRefresh.setVisibility(View.GONE);
             }else {
                 llButtonContainer.setVisibility(View.VISIBLE);
                 if (order.getProduceStatus() == OrderStatus.UNPRODUCED){
@@ -224,11 +242,71 @@ public class DetailView extends CardView implements View.OnClickListener{
                     } else {
                         btnProducePrint.setVisibility(View.VISIBLE);
                     }
+
+                    if (user.isOpenFulfill()) {
+                        ultDistanceRefresh.setVisibility(View.VISIBLE);
+                        tvDistanceRefresh.setVisibility(View.VISIBLE);
+                        long currentTimeMillis = System.currentTimeMillis();
+                        long timeMinus = order.getStartProduceTime() - currentTimeMillis;
+                        long timeOverTime = order.getInstanceTime() - currentTimeMillis;
+                        if (timeMinus > 0) {
+                            long time = timeMinus / 1000;
+                            btnProducePrint.setText("距离开始生产时间" + time / 60 + "分" + time % 60 + "秒");
+                            btnProducePrint.setBackgroundColor(this.getResources().getColor(R.color.green1));
+                        } else if (timeOverTime > 0) {
+                            long time = Math.abs(timeMinus) / 1000;
+                            btnProducePrint.setText("超时" + time / 60 + "分" + time % 60 + "秒未生产");
+                            btnProducePrint.setBackgroundColor(this.getResources().getColor(R.color.tab_orange));
+                        } else {
+                            long time = Math.abs(timeOverTime) / 1000;
+                            btnProducePrint.setText("超送达时间" + time / 60 + "分" + time % 60 + "秒未生产");
+                            btnProducePrint.setBackgroundColor(this.getResources().getColor(R.color.red1));
+                        }
+                    } else {
+                        ultDistanceRefresh.setVisibility(View.GONE);
+                        tvDistanceRefresh.setVisibility(View.GONE);
+                    }
                 }else if(order.getProduceStatus() == OrderStatus.PRODUCING){
                     //生产中
                     llOneButton.setVisibility(GONE);
                     llTwoButton.setVisibility(VISIBLE);
-                    btnFinishProduce.setVisibility(View.VISIBLE);
+                    if (user.isOpenFulfill()) {
+                        btnFinishProduce.setEnabled(false);
+                        btnFinishProduce.setBackgroundColor(Color.TRANSPARENT);
+                        Map<String,Object> productCapacity = ProductHelper.getProduct(CSApplication.getInstance());
+                        List<ItemContentBean> icbcList = order.getItems();
+                        int productTime = 0;
+                        try {
+                            for(ItemContentBean itemContentBean : icbcList){
+                                if(productCapacity.containsKey(itemContentBean.getProduct())){
+                                    productTime += itemContentBean.getQuantity() *  Integer.getInteger(productCapacity.get(itemContentBean.getProduct()).toString(),1) * 30 * 1000;
+                                } else {
+                                    productTime += itemContentBean.getQuantity() * 1 * 30 * 1000;
+                                }
+                            }
+                        } catch (Exception e){
+                            Logger.getLogger().log("get productTime has problem, e:{}" + e.getMessage());
+                        }
+                        OrderBean orderBean = OrderUtils.with().getOrderById(order.getId());
+                        long currentTimeMillis = System.currentTimeMillis();
+                        long timeMinus = orderBean.getStartProduceTime() + productTime - currentTimeMillis;
+                        long timeOverTime = order.getInstanceTime()  - currentTimeMillis;
+                        if (timeMinus > 0) {
+                            long time = timeMinus / 1000;
+                            btnFinishProduce.setText("距离生产完成时间" + time / 60 + "分" + time % 60 + "秒");
+                            btnFinishProduce.setTextColor(this.getResources().getColor(R.color.green1));
+                        } else if (timeOverTime > 0) {
+                            long time = Math.abs(timeMinus) / 1000;
+                            btnFinishProduce.setText("超时" + time / 60 + "分" + time % 60 + "秒未生产");
+                            btnFinishProduce.setTextColor(this.getResources().getColor(R.color.tab_orange));
+                        } else {
+                            long time = Math.abs(timeOverTime) / 1000;
+                            btnFinishProduce.setText("超送达时间" + time / 60 + "分" + time % 60 + "秒未生产");
+                            btnFinishProduce.setTextColor(this.getResources().getColor(R.color.red1));
+                        }
+                    } else {
+                        btnFinishProduce.setVisibility(View.VISIBLE);
+                    }
                     if (OrderHelper.isPrinted(getContext(), order.getOrderSn())) {
                         btnPrint.setText(R.string.print_again);
                         btnPrint.setTextColor(getResources().getColor(R.color.red1));
@@ -236,7 +314,8 @@ public class DetailView extends CardView implements View.OnClickListener{
                         btnPrint.setText(R.string.print);
                         btnPrint.setTextColor(getResources().getColor(R.color.white1));
                     }
-
+                    ultDistanceRefresh.setVisibility(View.GONE);
+                    tvDistanceRefresh.setVisibility(View.GONE);
                 }else if(order.getProduceStatus() == OrderStatus.PRODUCED){
                     //已生产
                     llOneButton.setVisibility(GONE);
@@ -249,9 +328,23 @@ public class DetailView extends CardView implements View.OnClickListener{
                         btnPrint.setText(R.string.print);
                         btnPrint.setTextColor(getResources().getColor(R.color.text_black));
                     }
+                    ultDistanceRefresh.setVisibility(View.GONE);
+                    tvDistanceRefresh.setVisibility(View.GONE);
                 }
             }
 
+        }
+    }
+
+    /**
+     * 更新小哥距离数据
+     */
+    @Subscribe
+    public void loadCourierDistance(CourierDistanceEvent courierDistanceEvent){
+        if (courierDistanceEvent.distance == -1) {
+            tvDistanceRefresh.setText("骑手距门店未知");
+        } else {
+            tvDistanceRefresh.setText("骑手距门店" + courierDistanceEvent.distance + "米");
         }
     }
 
@@ -375,9 +468,12 @@ public class DetailView extends CardView implements View.OnClickListener{
                 EventBus.getDefault().post(new StartProduceEvent(mOrder,true));
                 Logger.getLogger().log("详情-开始生产:{"+mOrder.getId()+"}");
                 break;
+            case R.id.ult_distance_refresh:
+                //刷新骑手距离
+                EventBus.getDefault().post(new CourierDistanceViewEvent(mOrder.getId()));
+                break;
         }
     }
-
 
 
 

@@ -21,6 +21,15 @@
             app:layout_constraintRight_toRightOf="parent"
             android:text="一键全部完成"/>
 
+        <Button
+            android:id="@+id/btn_finish_one"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="16sp"
+            android:background="@drawable/bg_white_circle"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="生产完成"/>
+
         <EditText
             android:id="@+id/et_search_key"
             android:layout_width="wrap_content"

@@ -17,6 +17,7 @@ import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.constant.TabList;
 import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
+import com.lyancafe.coffeeshop.event.CourierDistanceEvent;
 import com.lyancafe.coffeeshop.event.LatelyCountEvent;
 import com.lyancafe.coffeeshop.event.UpdateTabCount;
 import com.lyancafe.coffeeshop.http.CustomObserver;
@@ -104,6 +105,7 @@ public class ToProducePresenterImpl implements ToProducePresenter{
         });
     }
 
+    //这个里面有储存开始生产时间的数据
     private List<Long> getRedundant(List<OrderBean> fromSQLite, List<OrderBean> fromInterface){
         List<Long> idList = new ArrayList<>();
         Map<Long, Long> idMap = new HashMap<>();
@@ -220,6 +222,18 @@ public class ToProducePresenterImpl implements ToProducePresenter{
                 mToProduceView.removeItemFromList(id);
                 EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.NONEEDPRODUCE,1,false));
                 OrderUtils.with().updateOrder(orderId,4010);
+            }
+        });
+    }
+
+    @Override
+    public void loadCourierDistance(long orderId) {
+        UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
+        mToProduceModel.loadCourierDistance(user.getShopId(), orderId, new CustomObserver<JsonObject>(mContext,true) {
+            @Override
+            protected void onHandleSuccess(JsonObject jsonObject) {
+                int distance  = jsonObject.get("distance").getAsInt();
+                EventBus.getDefault().post(new CourierDistanceEvent(distance));
             }
         });
     }

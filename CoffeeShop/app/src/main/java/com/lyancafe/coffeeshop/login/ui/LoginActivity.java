@@ -111,6 +111,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
     @OnClick(R.id.login_btn)
     void login() {
         mLoginPresenter.login();
+        mLoginPresenter.loadProductCapacity();
     }
 
 

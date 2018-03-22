@@ -33,6 +33,7 @@ import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.LatelyCountEvent;
+import com.lyancafe.coffeeshop.event.CourierDistanceViewEvent;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
 import com.lyancafe.coffeeshop.event.NotNeedProduceEvent;
 import com.lyancafe.coffeeshop.event.RevokeEvent;
@@ -50,7 +51,6 @@ import com.lyancafe.coffeeshop.utils.SoundPoolUtil;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.utils.VSpaceItemDecoration;
-import com.lyancafe.coffeeshop.widget.ConfirmDialog;
 import com.lyancafe.coffeeshop.widget.DetailView;
 import com.lyancafe.coffeeshop.widget.ReportIssueDialog;
 
@@ -152,7 +152,6 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         searchLayout = (ConstraintLayout) view.findViewById(R.id.cl_search);
         etSearchKey = (EditText) view.findViewById(R.id.et_search_key);
         btnSearch = (Button) view.findViewById(R.id.btn_search);
-
         detailView = (DetailView) view.findViewById(R.id.detail_view);
         clShowInfo = (ConstraintLayout) view.findViewById(R.id.cl_show_info);
         etShowInfo = (EditText) view.findViewById(R.id.et_show_info);
@@ -221,8 +220,17 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         if(detailView!=null){
             detailView.updateData(order);
         }
-
+        if(null == order){
+        } else {
+            mToProducePresenter.loadCourierDistance(order.getId());
+        }
     }
+
+    @Subscribe
+    public void loadCoueriDistanceToRefresh(CourierDistanceViewEvent courierDistanceViewEvent){
+        mToProducePresenter.loadCourierDistance(courierDistanceViewEvent.orderId);
+    }
+
 
 
     @Override

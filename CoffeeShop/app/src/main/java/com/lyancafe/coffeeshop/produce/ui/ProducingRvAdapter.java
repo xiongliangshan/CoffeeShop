@@ -24,13 +24,15 @@ import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
-import com.lyancafe.coffeeshop.constant.DeliveryTeam;
+import com.lyancafe.coffeeshop.common.ProductHelper;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
+import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
+import com.lyancafe.coffeeshop.utils.OrderSortInstanceComparator;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ProgressPercent;
 
@@ -39,6 +41,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -154,6 +157,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         UserBean user = LoginHelper.getUser(CSApplication.getInstance());
         if(user.isOpenFulfill()){
             holder.expectedTimeText.setText(OrderHelper.getFormatTimeToStr(order.getInstanceTime()));
+            holder.llProducingContainer.setVisibility(View.GONE);
         } else {
             holder.expectedTimeText.setText(OrderHelper.getFormatTimeToStr(order.getExpectedTime()));
         }
@@ -163,8 +167,11 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
 
         fillItemListData(holder.itemContainerll, order.getItems());
         if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
-            holder.llProducingContainer.setVisibility(View.GONE);
+            if(!user.isOpenFulfill()) {
+                holder.llProducingContainer.setVisibility(View.GONE);
+            }
             holder.llToproduceContainer.setVisibility(View.VISIBLE);
+            holder.llToproducingContainerFulfil.setVisibility(View.GONE);
             holder.produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -173,20 +180,57 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
                 }
             });
         }else if(order.getProduceStatus() == OrderStatus.PRODUCING){
-            holder.llProducingContainer.setVisibility(View.VISIBLE);
             holder.llToproduceContainer.setVisibility(View.GONE);
-            holder.produceBtn.setVisibility(View.VISIBLE);
-            holder.produceBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //生产完成
-                    EventBus.getDefault().post(new FinishProduceEvent(order));
-                    Logger.getLogger().log("列表-完成生产单个订单 {"+order.getId()+"}");
+            if(!user.isOpenFulfill()) {
+                holder.llProducingContainer.setVisibility(View.VISIBLE);
+                holder.llToproducingContainerFulfil.setVisibility(View.GONE);
+                holder.produceBtn.setVisibility(View.VISIBLE);
+                holder.produceBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //生产完成
+                        EventBus.getDefault().post(new FinishProduceEvent(order));
+                        Logger.getLogger().log("列表-完成生产单个订单 {"+order.getId()+"}");
+                    }
+                });
+            } else {
+                holder.llToproducingContainerFulfil.setVisibility(View.VISIBLE);
+                Map<String,Object> productCapacity = ProductHelper.getProduct(CSApplication.getInstance());
+                List<ItemContentBean> icbcList = order.getItems();
+                int productTime = 0;
+                try {
+                    for (ItemContentBean itemContentBean : icbcList) {
+                        if (productCapacity.containsKey(itemContentBean.getProduct())) {
+                            productTime += itemContentBean.getQuantity() * Integer.getInteger(productCapacity.get(itemContentBean.getProduct()).toString(), 1) * 30 * 1000;
+                        } else {
+                            productTime += itemContentBean.getQuantity() * 1 * 30 * 1000;
+                        }
+                    }
+                } catch (Exception e){
+                    Logger.getLogger().log("get productTime has problem, e:{}" + e.getMessage());
                 }
-            });
-
+                OrderBean orderBean =  OrderUtils.with().getOrderById(order.getId());
+                long currentTimeMillis = System.currentTimeMillis();
+                long timeMinus = orderBean.getStartProduceTime() + productTime - currentTimeMillis;
+                long timeOverTime = order.getInstanceTime() - currentTimeMillis;
+                if (timeMinus > 0) {
+                    long time = timeMinus / 1000;
+                    holder.tvProducingFulfil.setText("距离生产完成时间" + time / 60 + "分" + time % 60 + "秒");
+                    holder.tvProducingFulfil.setTextColor(context.getResources().getColor(R.color.green1));
+                } else if (timeOverTime > 0) {
+                    long time = Math.abs(timeMinus) / 1000;
+                    holder.tvProducingFulfil.setText("超时" + time / 60 + "分" + time % 60 + "秒未生产");
+                    holder.tvProducingFulfil.setTextColor(context.getResources().getColor(R.color.tab_orange));
+                } else {
+                    long time = Math.abs(timeOverTime) / 1000;
+                    holder.tvProducingFulfil.setText("超送达时间" + time / 60 + "分" + time % 60 + "秒未生产");
+                    holder.tvProducingFulfil.setTextColor(context.getResources().getColor(R.color.red1));
+                }
+            }
         }else{
-            holder.llProducingContainer.setVisibility(View.VISIBLE);
+            if(!user.isOpenFulfill()){
+                holder.llProducingContainer.setVisibility(View.VISIBLE);
+            }
             holder.llToproduceContainer.setVisibility(View.GONE);
             holder.produceBtn.setVisibility(View.GONE);
         }
@@ -298,8 +342,10 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         @BindView(R.id.item_container) LinearLayout itemContainerll;
         @BindView(R.id.ll_producing_container) LinearLayout llProducingContainer;
         @BindView(R.id.ll_toproduce_container) LinearLayout llToproduceContainer;
+        @BindView(R.id.ll_producing_container_fulfil) LinearLayout llToproducingContainerFulfil;
         @BindView(R.id.item_produce_and_print) TextView produceAndPrintBtn;
         @BindView(R.id.item_produce) TextView produceBtn;
+        @BindView(R.id.tv_item_producing) TextView tvProducingFulfil;
         @BindView(R.id.deliver_progress)
         ProgressPercent deliverProgress;
 
@@ -313,7 +359,12 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
 
     public void setData(List<OrderBean> list){
         this.list = list;
-        Collections.sort(this.list,new OrderSortComparator());
+        UserBean user = LoginHelper.getUser(context.getApplicationContext());
+        if(user.isOpenFulfill()){
+            Collections.sort(this.list,new OrderSortInstanceComparator());
+        } else {
+            Collections.sort(this.list,new OrderSortComparator());
+        }
         notifyDataSetChanged();
         if(selected>=0 && selected<this.list.size()){
             callback.updateDetail(this.list.get(selected));

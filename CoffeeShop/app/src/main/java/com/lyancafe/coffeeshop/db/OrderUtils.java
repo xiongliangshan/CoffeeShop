@@ -87,6 +87,17 @@ public class OrderUtils {
         LogUtil.i(TAG,"更新订单 "+orderId+" 生产状态到 "+produceStatus);
     }
 
+    public void updateOrderToProducing(OrderBean orderBeanOld, int produceStatus){
+        OrderBean orderBean = getOrderById(orderBeanOld.getId());
+        if (orderBean == null) {
+            insertOrder(orderBeanOld);
+            return;
+        }
+        orderBean.setProduceStatus(produceStatus);
+        mOrderDao.update(orderBean);
+        LogUtil.i(TAG,"更新订单 "+orderBeanOld.getId()+" 生产状态到 "+produceStatus);
+    }
+
     //批量更新订单的生产状态
     public void updateBatchOrder(final List<Long> orderIds, final int produceStatus) {
 

@@ -2,7 +2,6 @@ package com.lyancafe.coffeeshop.produce.presenter;
 
 
 import android.content.Context;
-import android.nfc.Tag;
 import android.util.Log;
 
 import com.google.gson.JsonArray;
@@ -22,14 +21,15 @@ import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.produce.model.ProducingModel;
 import com.lyancafe.coffeeshop.produce.model.ProducingModelImpl;
 import com.lyancafe.coffeeshop.produce.view.ProducingView;
+import com.lyancafe.coffeeshop.utils.OrderSortInstanceComparator;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
 * Created by Administrator on 2017/03/15
@@ -56,7 +56,10 @@ public class ProducingPresenterImpl implements ProducingPresenter{
             protected void onHandleSuccess(List<OrderBean> orderBeanList) {
                 EventBus.getDefault().post(new UpdateTabCount(TabList.TAB_PRODUCING, orderBeanList.size()));
                 mProducingView.bindDataToView(orderBeanList);
-                OrderUtils.with().insertOrderList(new CopyOnWriteArrayList<>(orderBeanList));
+//                OrderUtils.with().insertOrderList(new CopyOnWriteArrayList<>(orderBeanList));
+                for (OrderBean orderBean : orderBeanList) {
+                    OrderUtils.with().updateOrderToProducing(orderBean, OrderStatus.PRODUCING);
+                }
                 //同步安卓本地和服务器的数据
                 List<OrderBean> toProducedOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.PRODUCING);
                 List<Long> idList = getRedundant(toProducedOrders,orderBeanList);
@@ -100,6 +103,37 @@ public class ProducingPresenterImpl implements ProducingPresenter{
                 OrderUtils.with().updateOrder(orderId,4010);
             }
         });
+    }
+
+    @Override
+    public void doFinishProducedFulfill(){
+        UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
+        List<OrderBean> producingOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.PRODUCING);
+        if(null != producingOrders && producingOrders.size() > 0){
+            int orderSize = producingOrders.size();
+            long instanceMin = producingOrders.get(0).getInstanceTime();
+            long orderId = producingOrders.get(0).getId();
+            if(orderSize > 1){
+                for (int i = 1; i < orderSize ; i++) {
+                    if(producingOrders.get(i).getInstanceTime() < instanceMin){
+                        instanceMin = producingOrders.get(i).getInstanceTime();
+                        orderId = producingOrders.get(i).getId();
+                    }
+                }
+            }
+            final long orderIdMin = orderId;
+            mProducingModel.dodoFinishProduced(user.getShopId(), orderIdMin, new CustomObserver<JsonObject>(mContext,true) {
+                @Override
+                protected void onHandleSuccess(JsonObject jsonObject) {
+                    mProducingView.showToast(mContext.getString(R.string.do_success));
+                    Logger.getLogger().log("完成生产订单 "+orderIdMin+" 成功");
+                    int id  = jsonObject.get("id").getAsInt();
+                    mProducingView.removeItemFromList(id);
+                    EventBus.getDefault().post(new ChangeTabCountByActionEvent(OrderAction.FINISHPRODUCE,1));
+                    OrderUtils.with().updateOrder(orderIdMin,4010);
+                }
+            });
+        }
     }
 
     @Override

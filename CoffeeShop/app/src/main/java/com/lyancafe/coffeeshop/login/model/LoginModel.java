@@ -2,6 +2,7 @@ package com.lyancafe.coffeeshop.login.model;
 
 import android.content.Context;
 
+import com.google.gson.JsonObject;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.UserBean;
 
@@ -25,6 +26,11 @@ public interface LoginModel{
      */
     void login(Map<String,Object> params,Observer<BaseEntity<UserBean>> Observer);
 
+
+    /**
+     * 获得产能
+     */
+    void loadProductCapacity(Observer<BaseEntity<JsonObject>> observer);
 
 
 }

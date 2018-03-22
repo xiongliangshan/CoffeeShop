@@ -302,6 +302,19 @@ public interface HttpInterface {
     Observable<BaseEntity<SalesStatusOneDay>> loadDailySales(@Query("shopId") int shopId, @Query("currentDate") long time);
 
     /**
+     * 获取订单小哥位置
+     */
+    @Headers("Cache-Control:public,max-age=60,max-stale=30")
+    @GET("v3/{shopId}/courier/distance")
+    Observable<BaseEntity<JsonObject>> loadCourierDistance(@Path("shopId") int shopId, @Query("orderId") long orderId);
+
+    /**
+     * 获取产能
+     */
+    @GET("v3/product/capacity")
+    Observable<BaseEntity<JsonObject>> loadProductCapacity();
+
+    /**
      * 获取最近门店单量和杯量
      * @param shopId
      * @return

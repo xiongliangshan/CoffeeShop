@@ -63,6 +63,23 @@
                 android:layout_alignRight="@id/start_time"
                 android:layout_alignBaseline="@id/tv_reach_time"/>
 
+            <com.lyancafe.coffeeshop.widget.UnderLineTextView
+                android:id="@+id/ult_distance_refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/des_time"
+                android:text="刷新"
+                android:textColor="@color/bg_blue" />
+
+            <TextView
+                android:id="@+id/tv_detail_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="骑手距门店未知"
+                android:layout_toLeftOf="@id/ult_distance_refresh"
+                android:layout_alignBaseline="@id/ult_distance_refresh"
+                android:layout_marginRight="32dp"/>
         </RelativeLayout>
     </LinearLayout>
 

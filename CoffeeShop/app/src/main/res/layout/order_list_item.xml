@@ -184,6 +184,24 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_producing_container_fulfil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tv_item_producing"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="未超时"
+                    android:textColor="@color/white_font"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/ll_toproduce_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -30,4 +30,9 @@ public interface LoginPresenter {
      * 更新访问的IP地址
      */
     void updateUrl(String ip);
+
+    /**
+     * 获取产能
+     */
+    void loadProductCapacity();
 }

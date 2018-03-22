@@ -4,10 +4,13 @@ package com.lyancafe.coffeeshop.login.model;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.gson.JsonObject;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.http.RetrofitHttp;
 import com.lyancafe.coffeeshop.http.RxHelper;
+
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -30,6 +33,13 @@ public class LoginModelImpl implements LoginModel{
     public void login(Map<String,Object> params,Observer<BaseEntity<UserBean>> observer) {
         RetrofitHttp.getRetrofit().login(params)
                 .compose(RxHelper.<BaseEntity<UserBean>>io_main())
+                .subscribe(observer);
+    }
+
+    @Override
+    public void loadProductCapacity(Observer<BaseEntity<JsonObject>> observer) {
+        RetrofitHttp.getRetrofit().loadProductCapacity()
+                .compose(RxHelper.<BaseEntity<JsonObject>>io_main())
                 .subscribe(observer);
     }
 

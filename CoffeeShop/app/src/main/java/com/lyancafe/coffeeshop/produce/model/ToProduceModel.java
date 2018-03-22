@@ -31,4 +31,7 @@ public interface ToProduceModel{
     //加载最近单量与杯量
     void loadLatelyCount(int shopId, CustomObserver<JsonObject> observer);
 
+    //获取小哥位置
+    void loadCourierDistance(int shopId, long orderId, CustomObserver<JsonObject> observer);
+
 }
