@@ -48,4 +48,11 @@ public class ToProduceModelImpl implements ToProduceModel{
                 .compose(RxHelper.<BaseEntity<JsonObject>>io_main())
                 .subscribe(observer);
     }
+
+    @Override
+    public void loadCourierDistance(int shopId, long orderId, CustomObserver<JsonObject> observer) {
+        RetrofitHttp.getRetrofit().loadCourierDistance(shopId, orderId)
+                .compose(RxHelper.<BaseEntity<JsonObject>>io_main())
+                .subscribe(observer);
+    }
 }

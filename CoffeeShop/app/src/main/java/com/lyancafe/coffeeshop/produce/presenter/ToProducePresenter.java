@@ -22,4 +22,6 @@ public interface ToProducePresenter {
     //无需生产
     void doNoPruduce(long orderId);
 
+    //小哥距离
+    void loadCourierDistance(long orderId);
 }

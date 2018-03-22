@@ -318,9 +318,8 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
                 break;
             case R.id.btn_finish_one:
                 //生产完成
-                mProducingPresenter.doFinishProducedFulfill();
                 /** 倒计时5秒，一次1秒 */
-                new CountDownTimer(5*1000, 1000) {
+                new CountDownTimer(5 * 1000, 1000) {
                     @Override
                     public void onTick(long millisUntilFinished) {
                         // TODO Auto-generated method stub
@@ -328,19 +327,20 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
                         btnFinishOne.setText(millisUntilFinished/1000+"");
                         btnFinishOne.setTextSize(32);
                         if(millisUntilFinished/1000 > 3){
-                            mGroupDrawable.setColor(CSApplication.getInstance().getResources().getColor(R.color.red2));
+                            mGroupDrawable.setColor(CSApplication.getInstance().getResources().getColor(R.color.red1));
                         } else {
                             mGroupDrawable.setColor(CSApplication.getInstance().getResources().getColor(R.color.yellow));
                         }
                     }
                     @Override
                     public void onFinish() {
-                        mGroupDrawable.setColor(CSApplication.getInstance().getResources().getColor(R.color.green2));
+                        mGroupDrawable.setColor(CSApplication.getInstance().getResources().getColor(R.color.green1));
                         btnFinishOne.setTextSize(16);
                         btnFinishOne.setText("生产完成");
                         btnFinishOne.setEnabled(true);
                     }
                 }.start();
+                mProducingPresenter.doFinishProducedFulfill();
                 break;
         }
 

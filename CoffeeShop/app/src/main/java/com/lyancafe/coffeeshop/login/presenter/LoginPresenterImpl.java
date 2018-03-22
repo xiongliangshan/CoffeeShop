@@ -8,14 +8,17 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.JsonObject;
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.bean.ApkInfoBean;
 import com.lyancafe.coffeeshop.bean.BaseEntity;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.common.ProductHelper;
 import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.http.Api;
+import com.lyancafe.coffeeshop.http.CustomObserver;
 import com.lyancafe.coffeeshop.http.RetrofitHttp;
 import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.login.model.LoginModel;
@@ -196,5 +199,32 @@ public class LoginPresenterImpl implements LoginPresenter{
             Api.BASE_URL = "http://" + ip + "/shop/";
         }
         RetrofitHttp.reset();
+    }
+
+    @Override
+    public void loadProductCapacity() {
+        mLoginModel.loadProductCapacity(new Observer<BaseEntity<JsonObject>>() {
+            @Override
+            public void onSubscribe(Disposable disposable) {
+            }
+
+            @Override
+            public void onNext(BaseEntity<JsonObject> jsonObjectBaseEntity) {
+                ProductHelper.saveProduct(mContext, jsonObjectBaseEntity.getData());
+            }
+
+
+            @Override
+            public void onError(Throwable throwable) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+
+        });
+
     }
 }

@@ -22,10 +22,12 @@ import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.produce.model.ProducingModel;
 import com.lyancafe.coffeeshop.produce.model.ProducingModelImpl;
 import com.lyancafe.coffeeshop.produce.view.ProducingView;
+import com.lyancafe.coffeeshop.utils.OrderSortProComparator;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,13 +52,19 @@ public class ProducingPresenterImpl implements ProducingPresenter{
 
     @Override
     public void loadProducingOrders() {
-        UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
+        final UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
         mProducingModel.loadProducingOrders(user.getShopId(), new CustomObserver<List<OrderBean>>(mContext) {
             @Override
             protected void onHandleSuccess(List<OrderBean> orderBeanList) {
                 EventBus.getDefault().post(new UpdateTabCount(TabList.TAB_PRODUCING, orderBeanList.size()));
+                if(user.isOpenFulfill()){
+                    Collections.sort(orderBeanList,new OrderSortProComparator());
+                }
                 mProducingView.bindDataToView(orderBeanList);
-                OrderUtils.with().insertOrderList(new CopyOnWriteArrayList<>(orderBeanList));
+//                OrderUtils.with().insertOrderList(new CopyOnWriteArrayList<>(orderBeanList));
+                for (OrderBean orderBean : orderBeanList) {
+                    OrderUtils.with().updateOrderToProducing(orderBean, OrderStatus.PRODUCING);
+                }
                 //同步安卓本地和服务器的数据
                 List<OrderBean> toProducedOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.PRODUCING);
                 List<Long> idList = getRedundant(toProducedOrders,orderBeanList);
@@ -106,7 +114,6 @@ public class ProducingPresenterImpl implements ProducingPresenter{
     public void doFinishProducedFulfill(){
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
         List<OrderBean> producingOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.PRODUCING);
-        System.out.println("生产中---"+producingOrders);
         if(null != producingOrders && producingOrders.size() > 0){
             int orderSize = producingOrders.size();
             long instanceMin = producingOrders.get(0).getInstanceTime();

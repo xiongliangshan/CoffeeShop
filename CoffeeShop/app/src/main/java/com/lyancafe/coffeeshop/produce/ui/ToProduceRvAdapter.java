@@ -17,23 +17,24 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.JsonObject;
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
+import com.lyancafe.coffeeshop.bean.BatchOrder;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
-import com.lyancafe.coffeeshop.constant.DeliveryTeam;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
-import com.lyancafe.coffeeshop.event.NotNeedProduceEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
+import com.lyancafe.coffeeshop.http.CustomObserver;
 import com.lyancafe.coffeeshop.logger.Logger;
+import com.lyancafe.coffeeshop.produce.model.ToProduceModel;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ProgressPercent;
-import com.lyancafe.coffeeshop.widget.ReplenishWindow;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -49,7 +50,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Administrator on 2015/9/21.
  */
-public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.ViewHolder> {
+public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.ViewHolder> implements ToProduceModel{
 
     private static final String TAG = "OrderGridViewAdapter";
 
@@ -160,8 +161,11 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         UserBean user = LoginHelper.getUser(CSApplication.getInstance());
         if(user.isOpenFulfill()){
             holder.expectedTimeText.setText(OrderHelper.getFormatTimeToStr(order.getInstanceTime()));
+            //1.隐藏骑手进度条
+            holder.deliverProgress.setVisibility(View.GONE);
         } else {
             holder.expectedTimeText.setText(OrderHelper.getFormatTimeToStr(order.getExpectedTime()));
+            holder.deliverProgress.setVisibility(View.VISIBLE);
         }
 
 
@@ -170,7 +174,26 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         fillItemListData(holder.itemContainerll, order.getItems());
         if (order.getProduceStatus() == OrderStatus.UNPRODUCED) {
             holder.llProducingContainer.setVisibility(View.GONE);
+            holder.llToproducingContainerFulfil.setVisibility(View.GONE);
             holder.llToproduceContainer.setVisibility(View.VISIBLE);
+            if(user.isOpenFulfill()){
+                long currentTimeMillis = System.currentTimeMillis();
+                long timeMinus = order.getStartProduceTime() - currentTimeMillis;
+                long timeOverTime = order.getInstanceTime() - currentTimeMillis;
+                if(timeMinus > 0){
+                    long time = timeMinus/1000;
+                    holder.produceAndPrintBtn.setText("距离开始生产时间" + time / 60 + "分" + time % 60 + "秒");
+                    holder.produceAndPrintBtn.setBackgroundColor(context.getResources().getColor(R.color.green1));
+                } else if(timeOverTime > 0){
+                    long time = Math.abs(timeMinus) / 1000;
+                    holder.produceAndPrintBtn.setText("超时" + time / 60 + "分" + time % 60 + "秒未生产");
+                    holder.produceAndPrintBtn.setBackgroundColor(context.getResources().getColor(R.color.tab_orange));
+                } else {
+                    long time = Math.abs(timeOverTime) / 1000;
+                    holder.produceAndPrintBtn.setText("超送达时间" + time / 60 + "分" + time % 60 + "秒未生产");
+                    holder.produceAndPrintBtn.setBackgroundColor(context.getResources().getColor(R.color.red1));
+                }
+            }
             holder.produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -201,6 +224,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         } else if (order.getProduceStatus() == OrderStatus.PRODUCING) {
             holder.llProducingContainer.setVisibility(View.VISIBLE);
             holder.llToproduceContainer.setVisibility(View.GONE);
+            holder.llToproducingContainerFulfil.setVisibility(View.GONE);
             holder.produceBtn.setVisibility(View.VISIBLE);
             holder.produceBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -213,8 +237,8 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         } else {
             holder.llProducingContainer.setVisibility(View.VISIBLE);
             holder.llToproduceContainer.setVisibility(View.GONE);
+            holder.llToproducingContainerFulfil.setVisibility(View.GONE);
             holder.produceBtn.setVisibility(View.GONE);
-
         }
 
     }
@@ -352,6 +376,31 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
 
     }
 
+    @Override
+    public void loadToProduceOrders(int shopId, CustomObserver<List<OrderBean>> observer) {
+
+    }
+
+    @Override
+    public void doStartProduce(int shopId, long orderId, CustomObserver<JsonObject> observer) {
+
+    }
+
+    @Override
+    public void doStartBatchProduce(int shopId, BatchOrder batchOrder, CustomObserver<JsonObject> observer) {
+
+    }
+
+    @Override
+    public void doNoProduce(int shopId, long orderId, CustomObserver<JsonObject> observer) {
+
+    }
+
+    @Override
+    public void loadCourierDistance(int shopId, long orderId, CustomObserver<JsonObject> observer) {
+
+    }
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -387,13 +436,14 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         LinearLayout llProducingContainer;
         @BindView(R.id.ll_toproduce_container)
         LinearLayout llToproduceContainer;
+        @BindView(R.id.ll_producing_container_fulfil)
+        LinearLayout llToproducingContainerFulfil;
         @BindView(R.id.item_produce_and_print)
         TextView produceAndPrintBtn;
         @BindView(R.id.item_produce)
         TextView produceBtn;
         @BindView(R.id.deliver_progress)
         ProgressPercent deliverProgress;
-
 
         public ViewHolder(View itemView) {
             super(itemView);
