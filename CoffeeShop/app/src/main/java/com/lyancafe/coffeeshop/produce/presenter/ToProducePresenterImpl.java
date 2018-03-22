@@ -78,6 +78,8 @@ public class ToProducePresenterImpl implements ToProducePresenter{
                 //如果待生产列表为空，则向服务器查询最近的单量和杯量
                 if (orderBeanList.size() <= 0){
                     loadLatelyCount();
+                }else {
+                    EventBus.getDefault().post(new LatelyCountEvent("0", "0", "0"));
                 }
             }
         });
