@@ -248,19 +248,14 @@ public class DetailView extends CardView implements View.OnClickListener{
                         tvDistanceRefresh.setVisibility(View.VISIBLE);
                         long currentTimeMillis = System.currentTimeMillis();
                         long timeMinus = order.getStartProduceTime() - currentTimeMillis;
-                        long timeOverTime = order.getInstanceTime() - currentTimeMillis;
                         if (timeMinus > 0) {
                             long time = timeMinus / 1000;
-                            btnProducePrint.setText("距离开始生产时间" + time / 60 + "分" + time % 60 + "秒");
+                            btnProducePrint.setText(time / 60 + "分" + time % 60 + "秒" + "后可生产");
                             btnProducePrint.setBackgroundColor(this.getResources().getColor(R.color.green1));
-                        } else if (timeOverTime > 0) {
-                            long time = Math.abs(timeMinus) / 1000;
-                            btnProducePrint.setText("超时" + time / 60 + "分" + time % 60 + "秒未生产");
-                            btnProducePrint.setBackgroundColor(this.getResources().getColor(R.color.tab_orange));
                         } else {
-                            long time = Math.abs(timeOverTime) / 1000;
-                            btnProducePrint.setText("超送达时间" + time / 60 + "分" + time % 60 + "秒未生产");
-                            btnProducePrint.setBackgroundColor(this.getResources().getColor(R.color.red1));
+                            long time = Math.abs(timeMinus) / 1000;
+                            btnProducePrint.setText("已超生产时间" + time / 60 + "分" + time % 60 + "秒");
+                            btnProducePrint.setBackgroundColor(this.getResources().getColor(R.color.tab_orange));
                         }
                     } else {
                         ultDistanceRefresh.setVisibility(View.GONE);
@@ -293,15 +288,15 @@ public class DetailView extends CardView implements View.OnClickListener{
                         long timeOverTime = order.getInstanceTime()  - currentTimeMillis;
                         if (timeMinus > 0) {
                             long time = timeMinus / 1000;
-                            btnFinishProduce.setText("距离生产完成时间" + time / 60 + "分" + time % 60 + "秒");
+                            btnFinishProduce.setText(time / 60 + "分" + time % 60 + "秒" + "内生产完成");
                             btnFinishProduce.setTextColor(this.getResources().getColor(R.color.green1));
                         } else if (timeOverTime > 0) {
                             long time = Math.abs(timeMinus) / 1000;
-                            btnFinishProduce.setText("超时" + time / 60 + "分" + time % 60 + "秒未生产");
+                            btnFinishProduce.setText("已超生产完成时间" + time / 60 + "分" + time % 60 + "秒");
                             btnFinishProduce.setTextColor(this.getResources().getColor(R.color.tab_orange));
                         } else {
                             long time = Math.abs(timeOverTime) / 1000;
-                            btnFinishProduce.setText("超送达时间" + time / 60 + "分" + time % 60 + "秒未生产");
+                            btnFinishProduce.setText("已超送达时间" + time / 60 + "分" + time % 60 + "秒");
                             btnFinishProduce.setTextColor(this.getResources().getColor(R.color.red1));
                         }
                     } else {

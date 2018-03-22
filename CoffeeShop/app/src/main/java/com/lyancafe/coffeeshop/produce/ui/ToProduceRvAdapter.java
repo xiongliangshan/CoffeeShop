@@ -116,7 +116,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
 
         holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
 
-        holder.deliverProgress.updateProgress(order.getAcceptTime(),order.getExpectedTime()+45*60*1000);
+        holder.deliverProgress.updateProgress(order.getAcceptTime(), order.getExpectedTime() + 45 * 60 * 1000);
 
 
         //加急
@@ -159,7 +159,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         holder.tvBoxCup.setText(OrderHelper.getBoxCupByOrder(order));
 
         UserBean user = LoginHelper.getUser(CSApplication.getInstance());
-        if(user.isOpenFulfill()){
+        if (user.isOpenFulfill()) {
             holder.expectedTimeText.setText(OrderHelper.getFormatTimeToStr(order.getInstanceTime()));
             //1.隐藏骑手进度条
             holder.deliverProgress.setVisibility(View.GONE);
@@ -176,77 +176,70 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
             holder.llProducingContainer.setVisibility(View.GONE);
             holder.llToproducingContainerFulfil.setVisibility(View.GONE);
             holder.llToproduceContainer.setVisibility(View.VISIBLE);
-            if(user.isOpenFulfill()){
+            if (user.isOpenFulfill()) {
                 long currentTimeMillis = System.currentTimeMillis();
                 long timeMinus = order.getStartProduceTime() - currentTimeMillis;
-                long timeOverTime = order.getInstanceTime() - currentTimeMillis;
-                if(timeMinus > 0){
-                    long time = timeMinus/1000;
-                    holder.produceAndPrintBtn.setText("距离开始生产时间" + time / 60 + "分" + time % 60 + "秒");
+                if (timeMinus > 0) {
+                    long time = timeMinus / 1000;
+                    holder.produceAndPrintBtn.setText(time / 60 + "分" + time % 60 + "秒" + "后可生产");
                     holder.produceAndPrintBtn.setBackgroundColor(context.getResources().getColor(R.color.green1));
-                } else if(timeOverTime > 0){
-                    long time = Math.abs(timeMinus) / 1000;
-                    holder.produceAndPrintBtn.setText("超时" + time / 60 + "分" + time % 60 + "秒未生产");
-                    holder.produceAndPrintBtn.setBackgroundColor(context.getResources().getColor(R.color.tab_orange));
                 } else {
-                    long time = Math.abs(timeOverTime) / 1000;
-                    holder.produceAndPrintBtn.setText("超送达时间" + time / 60 + "分" + time % 60 + "秒未生产");
-                    holder.produceAndPrintBtn.setBackgroundColor(context.getResources().getColor(R.color.red1));
+                    long time = Math.abs(timeMinus) / 1000;
+                    holder.produceAndPrintBtn.setText("已超生产时间" + time / 60 + "分" + time % 60 + "秒");
+                    holder.produceAndPrintBtn.setBackgroundColor(context.getResources().getColor(R.color.tab_orange));
                 }
             }
-            holder.produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //点击开始生产（打印）按钮
-                    UserBean user = LoginHelper.getUser(CSApplication.getInstance());
-                    if(user.isOpenFulfill()){
+                holder.produceAndPrintBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //点击开始生产（打印）按钮
+                        UserBean user = LoginHelper.getUser(CSApplication.getInstance());
+                        if (user.isOpenFulfill()) {
                         /*
                             生产动线门店，执行一下逻辑
                             如果订单是优先的或到了开始生产时间，则先报声音，打印，后请求服务器接口
                             否则先请求服务器接口，服务器成功后打印
                             不能生产的逻辑由服务器决定
                          */
-                        if(order.getPriority()==0) {
-                            long nowTime = System.currentTimeMillis();
-                            if(nowTime < order.getStartProduceTime()){
-                                EventBus.getDefault().post(new StartProduceEvent(order,true));
-                                Logger.getLogger().log("列表-生产单个订单:{"+order.getId()+"}");
-                            }else {
-                                EventBus.getDefault().post(new StartProduceEvent(order,false));
-                                Logger.getLogger().log("列表-生产单个订单:{"+order.getId()+"}");
+                            if (order.getPriority() == 0) {
+                                long nowTime = System.currentTimeMillis();
+                                if (nowTime < order.getStartProduceTime()) {
+                                    EventBus.getDefault().post(new StartProduceEvent(order, true));
+                                    Logger.getLogger().log("列表-生产单个订单:{" + order.getId() + "}");
+                                } else {
+                                    EventBus.getDefault().post(new StartProduceEvent(order, false));
+                                    Logger.getLogger().log("列表-生产单个订单:{" + order.getId() + "}");
+                                }
+                            } else {
+                                EventBus.getDefault().post(new StartProduceEvent(order, false));
+                                Logger.getLogger().log("列表-生产单个订单:{" + order.getId() + "}");
                             }
-                        }else{
-                            EventBus.getDefault().post(new StartProduceEvent(order,false));
-                            Logger.getLogger().log("列表-生产单个订单:{"+order.getId()+"}");
+                        } else {
+                            EventBus.getDefault().post(new StartProduceEvent(order, false));
+                            Logger.getLogger().log("列表-生产单个订单:{" + order.getId() + "}");
                         }
-                    }else{
-                        EventBus.getDefault().post(new StartProduceEvent(order,false));
-                        Logger.getLogger().log("列表-生产单个订单:{"+order.getId()+"}");
                     }
-                }
-            });
-        } else if (order.getProduceStatus() == OrderStatus.PRODUCING) {
-            holder.llProducingContainer.setVisibility(View.VISIBLE);
-            holder.llToproduceContainer.setVisibility(View.GONE);
-            holder.llToproducingContainerFulfil.setVisibility(View.GONE);
-            holder.produceBtn.setVisibility(View.VISIBLE);
-            holder.produceBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //生产完成
-                    EventBus.getDefault().post(new FinishProduceEvent(order));
-                }
-            });
+                });
+            } else if (order.getProduceStatus() == OrderStatus.PRODUCING) {
+                holder.llProducingContainer.setVisibility(View.VISIBLE);
+                holder.llToproduceContainer.setVisibility(View.GONE);
+                holder.llToproducingContainerFulfil.setVisibility(View.GONE);
+                holder.produceBtn.setVisibility(View.VISIBLE);
+                holder.produceBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //生产完成
+                        EventBus.getDefault().post(new FinishProduceEvent(order));
+                    }
+                });
 
-        } else {
-            holder.llProducingContainer.setVisibility(View.VISIBLE);
-            holder.llToproduceContainer.setVisibility(View.GONE);
-            holder.llToproducingContainerFulfil.setVisibility(View.GONE);
-            holder.produceBtn.setVisibility(View.GONE);
-        }
-
+            } else {
+                holder.llProducingContainer.setVisibility(View.VISIBLE);
+                holder.llToproduceContainer.setVisibility(View.GONE);
+                holder.llToproducingContainerFulfil.setVisibility(View.GONE);
+                holder.produceBtn.setVisibility(View.GONE);
+            }
     }
-
 
     @Override
     public int getItemCount() {
@@ -257,10 +250,6 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
     @Override
     public long getItemId(int position) {
         return position;
-    }
-
-    public List<OrderBean> getList() {
-        return list;
     }
 
 
@@ -425,6 +414,10 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    public List<OrderBean> getList(){
+        return list;
     }
 
     public void setData(List<OrderBean> list) {

@@ -112,7 +112,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
 
         holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
 
-        holder.deliverProgress.updateProgress(order.getAcceptTime(),order.getExpectedTime()+45*60*1000);
+
 
         //加急
         if("Y".equalsIgnoreCase(order.getReminder())){
@@ -158,8 +158,10 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
         if(user.isOpenFulfill()){
             holder.expectedTimeText.setText(OrderHelper.getFormatTimeToStr(order.getInstanceTime()));
             holder.llProducingContainer.setVisibility(View.GONE);
+            holder.deliverProgress.setVisibility(View.GONE);
         } else {
             holder.expectedTimeText.setText(OrderHelper.getFormatTimeToStr(order.getExpectedTime()));
+            holder.deliverProgress.updateProgress(order.getAcceptTime(),order.getExpectedTime()+45*60*1000);
         }
 
         holder.deliverStatusText.setText(OrderHelper.getStatusName(order.getStatus(),order.getWxScan()));
@@ -215,15 +217,15 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
                 long timeOverTime = order.getInstanceTime() - currentTimeMillis;
                 if (timeMinus > 0) {
                     long time = timeMinus / 1000;
-                    holder.tvProducingFulfil.setText("距离生产完成时间" + time / 60 + "分" + time % 60 + "秒");
+                    holder.tvProducingFulfil.setText(time / 60 + "分" + time % 60 + "秒" + "内生产完成");
                     holder.tvProducingFulfil.setTextColor(context.getResources().getColor(R.color.green1));
                 } else if (timeOverTime > 0) {
                     long time = Math.abs(timeMinus) / 1000;
-                    holder.tvProducingFulfil.setText("超时" + time / 60 + "分" + time % 60 + "秒未生产");
+                    holder.tvProducingFulfil.setText("生产超时" + time / 60 + "分" + time % 60 + "秒");
                     holder.tvProducingFulfil.setTextColor(context.getResources().getColor(R.color.tab_orange));
                 } else {
                     long time = Math.abs(timeOverTime) / 1000;
-                    holder.tvProducingFulfil.setText("超送达时间" + time / 60 + "分" + time % 60 + "秒未生产");
+                    holder.tvProducingFulfil.setText("送达超时" + time / 60 + "分" + time % 60 + "秒");
                     holder.tvProducingFulfil.setTextColor(context.getResources().getColor(R.color.red1));
                 }
             }

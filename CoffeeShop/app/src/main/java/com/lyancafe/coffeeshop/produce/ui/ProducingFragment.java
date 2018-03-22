@@ -335,7 +335,7 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
                     @Override
                     public void onFinish() {
                         mGroupDrawable.setColor(CSApplication.getInstance().getResources().getColor(R.color.green1));
-                        btnFinishOne.setTextSize(16);
+                        btnFinishOne.setTextSize(32);
                         btnFinishOne.setText("生产完成");
                         btnFinishOne.setEnabled(true);
                     }
