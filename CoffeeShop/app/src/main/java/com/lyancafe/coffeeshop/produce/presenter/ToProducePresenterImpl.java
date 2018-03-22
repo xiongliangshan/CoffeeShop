@@ -18,6 +18,7 @@ import com.lyancafe.coffeeshop.constant.TabList;
 import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
 import com.lyancafe.coffeeshop.event.CourierDistanceEvent;
+import com.lyancafe.coffeeshop.event.LatelyCountEvent;
 import com.lyancafe.coffeeshop.event.UpdateTabCount;
 import com.lyancafe.coffeeshop.http.CustomObserver;
 import com.lyancafe.coffeeshop.logger.Logger;
@@ -27,6 +28,8 @@ import com.lyancafe.coffeeshop.produce.model.ToProduceModelImpl;
 import com.lyancafe.coffeeshop.produce.ui.ListMode;
 import com.lyancafe.coffeeshop.produce.view.ToProduceView;
 import com.lyancafe.coffeeshop.utils.LogUtil;
+import com.lyancafe.coffeeshop.utils.SoundPoolUtil;
+import com.tencent.tinker.loader.shareutil.ShareOatUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -71,8 +74,31 @@ public class ToProducePresenterImpl implements ToProducePresenter{
                     Logger.getLogger().log("生产中的数据同步,orderId:" + idList);
                 }
                 for(Long id : idList){
-                    OrderUtils.with().updateRevokedOrder(id);
+                    OrderUtils.with().updateUnFindOrder(id);
                 }
+                //如果待生产列表为空，则向服务器查询最近的单量和杯量
+                if (orderBeanList.size() <= 0){
+                    loadLatelyCount();
+                }
+            }
+        });
+    }
+
+    private void loadLatelyCount(){
+        UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
+        mToProduceModel.loadLatelyCount(user.getShopId(), new CustomObserver<JsonObject>(mContext) {
+
+            @Override
+            protected void onHandleSuccess(JsonObject jsonObject) {
+                String latelyMin = "0";
+                String orderNum = "0";
+                String orderCups = "0";
+                if (jsonObject != null){
+                    latelyMin = jsonObject.get("latelyMin")==null?"0":jsonObject.get("latelyMin").toString();
+                    orderNum = jsonObject.get("orderNum")==null?"0":jsonObject.get("orderNum").toString();
+                    orderCups = jsonObject.get("orderCups")==null?"0":jsonObject.get("orderCups").toString();
+                }
+                EventBus.getDefault().post(new LatelyCountEvent(latelyMin, orderNum, orderCups));
             }
         });
     }
@@ -94,10 +120,15 @@ public class ToProducePresenterImpl implements ToProducePresenter{
 
     @Override
     public void doStartProduce(final OrderBean order, final boolean isAuto) {
+        /*
+            isAuto true 先请求服务器接口，返回成功后，报声音与打印
+            isAuto false 先报声音和打印后，请求服务器接口
+        */
         if(isAuto){
             Logger.getLogger().log("自动生产订单:{" + order.getId() + "，priority = " +order.getPriority() + "}");
         }else {
             Logger.getLogger().log("手动生产订单:{" + order.getId() +  "}");
+            SoundPoolUtil.create(CSApplication.getInstance(), R.raw.start_produce);
             PrintFace.getInst().startPrintWholeOrderTask(order);
         }
         UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
@@ -116,9 +147,8 @@ public class ToProducePresenterImpl implements ToProducePresenter{
                 }
                 if(isAuto){
                     PrintFace.getInst().startPrintWholeOrderTask(order);
+                    SoundPoolUtil.create(CSApplication.getInstance(), R.raw.start_produce);
                 }
-
-
             }
 
             @Override

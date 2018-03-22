@@ -126,6 +126,15 @@ public class OrderUtils {
         LogUtil.i(TAG,"更新订单 "+orderId+" 标记为 被撤回 ");
     }
 
+    public void updateUnFindOrder(long orderId){
+        OrderBean orderBean = queryOrder(orderId);
+        if(orderBean==null){
+            return;
+        }
+        orderBean.setProduceStatus(OrderStatus.CANCELLED);
+        mOrderDao.update(orderBean);
+        LogUtil.i(TAG,"更新订单 "+orderId+" 标记为 被撤回 ");
+    }
 
     //查询所有被撤回的订单
     public List<OrderBean> queryRevokedOrders(){

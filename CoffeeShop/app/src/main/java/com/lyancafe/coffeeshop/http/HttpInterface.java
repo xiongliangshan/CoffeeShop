@@ -313,4 +313,12 @@ public interface HttpInterface {
      */
     @GET("v3/product/capacity")
     Observable<BaseEntity<JsonObject>> loadProductCapacity();
+
+    /**
+     * 获取最近门店单量和杯量
+     * @param shopId
+     * @return
+     */
+    @GET("v3/{shopId}/lately/count")
+    Observable<BaseEntity<JsonObject>> loadLatelyCount(@Path("shopId") int shopId);
 }
