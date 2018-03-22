@@ -36,6 +36,13 @@ public class ToProduceModelImpl implements ToProduceModel{
     }
 
     @Override
+    public void loadLatelyCount(int shopId, CustomObserver<JsonObject> observer) {
+        RetrofitHttp.getRetrofit().loadLatelyCount(shopId)
+                .compose(RxHelper.<BaseEntity<JsonObject>>io_main())
+                .subscribe(observer);
+    }
+
+    @Override
     public void doStartBatchProduce(int shopId, BatchOrder batchOrder, CustomObserver<JsonObject> observer) {
         RetrofitHttp.getRetrofit().doStartBatchProduce(shopId,batchOrder)
                 .compose(RxHelper.<BaseEntity<JsonObject>>io_main())

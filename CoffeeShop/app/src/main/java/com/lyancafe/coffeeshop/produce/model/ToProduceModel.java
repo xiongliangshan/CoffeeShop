@@ -28,4 +28,7 @@ public interface ToProduceModel{
     //无需生产
     void doNoProduce(int shopId,long orderId,CustomObserver<JsonObject> observer);
 
+    //加载最近单量与杯量
+    void loadLatelyCount(int shopId, CustomObserver<JsonObject> observer);
+
 }

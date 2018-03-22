@@ -19,10 +19,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
+import com.lyancafe.coffeeshop.base.ScrollTextView;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.SummarizeGroup;
 import com.lyancafe.coffeeshop.bean.UserBean;
@@ -30,6 +32,7 @@ import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
+import com.lyancafe.coffeeshop.event.LatelyCountEvent;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
 import com.lyancafe.coffeeshop.event.NotNeedProduceEvent;
 import com.lyancafe.coffeeshop.event.RevokeEvent;
@@ -88,6 +91,8 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
 
     private ConstraintLayout clShowInfo;
     private EditText etShowInfo;
+
+    private ScrollTextView latelyCount;
 
     private ToProduceRvAdapter mAdapter;
     private SummarizeAdapter summarizeAdapter;
@@ -151,6 +156,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         detailView = (DetailView) view.findViewById(R.id.detail_view);
         clShowInfo = (ConstraintLayout) view.findViewById(R.id.cl_show_info);
         etShowInfo = (EditText) view.findViewById(R.id.et_show_info);
+        latelyCount = (ScrollTextView) view.findViewById(R.id.latelyCount);
         detailView.setCallback(this);
 
         setListener();
@@ -160,7 +166,6 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4, GridLayoutManager.VERTICAL, false));
         mRecyclerView.addItemDecoration(spaceItemDecoration);
         mRecyclerView.setAdapter(mAdapter);
-
         etSearchKey.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -301,6 +306,19 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         }
 
 
+    }
+
+    //新订单消息触发事件
+    @Subscribe
+    public void onLoadLatelyCount(LatelyCountEvent event) {
+        if (event.getLatelyMin().equals("0")){
+            latelyCount.setText("");
+            latelyCount.stopScroll();
+            latelyCount.setVisibility(View.GONE);
+        }else {
+            latelyCount.setText(event.getLatelyMin() + "分钟内将有" + event.getOrderNum() + "单" + event.getOrderCups() + "杯");
+            latelyCount.startScroll();
+        }
     }
 
     /**

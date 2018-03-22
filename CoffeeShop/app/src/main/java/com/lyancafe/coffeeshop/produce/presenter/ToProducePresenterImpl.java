@@ -17,6 +17,7 @@ import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.constant.TabList;
 import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
+import com.lyancafe.coffeeshop.event.LatelyCountEvent;
 import com.lyancafe.coffeeshop.event.UpdateTabCount;
 import com.lyancafe.coffeeshop.http.CustomObserver;
 import com.lyancafe.coffeeshop.logger.Logger;
@@ -27,6 +28,7 @@ import com.lyancafe.coffeeshop.produce.ui.ListMode;
 import com.lyancafe.coffeeshop.produce.view.ToProduceView;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.SoundPoolUtil;
+import com.tencent.tinker.loader.shareutil.ShareOatUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -73,6 +75,29 @@ public class ToProducePresenterImpl implements ToProducePresenter{
                 for(Long id : idList){
                     OrderUtils.with().updateUnFindOrder(id);
                 }
+                //如果待生产列表为空，则向服务器查询最近的单量和杯量
+                if (orderBeanList.size() <= 0){
+                    loadLatelyCount();
+                }
+            }
+        });
+    }
+
+    private void loadLatelyCount(){
+        UserBean user = LoginHelper.getUser(mContext.getApplicationContext());
+        mToProduceModel.loadLatelyCount(user.getShopId(), new CustomObserver<JsonObject>(mContext) {
+
+            @Override
+            protected void onHandleSuccess(JsonObject jsonObject) {
+                String latelyMin = "0";
+                String orderNum = "0";
+                String orderCups = "0";
+                if (jsonObject != null){
+                    latelyMin = jsonObject.get("latelyMin")==null?"0":jsonObject.get("latelyMin").toString();
+                    orderNum = jsonObject.get("orderNum")==null?"0":jsonObject.get("orderNum").toString();
+                    orderCups = jsonObject.get("orderCups")==null?"0":jsonObject.get("orderCups").toString();
+                }
+                EventBus.getDefault().post(new LatelyCountEvent(latelyMin, orderNum, orderCups));
             }
         });
     }
