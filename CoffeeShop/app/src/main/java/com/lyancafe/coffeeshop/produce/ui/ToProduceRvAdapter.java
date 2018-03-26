@@ -425,14 +425,18 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
         Collections.sort(this.list, new OrderSortComparator());
         this.
         notifyDataSetChanged();
-
-
         if (selected >= 0 && selected < this.list.size()) {
             callback.updateDetail(this.list.get(selected));
         } else {
             callback.updateDetail(null);
         }
 
+    }
+
+    public void setDateForTime(List<OrderBean> list){
+        this.list = list;
+        Collections.sort(this.list, new OrderSortComparator());
+        this.notifyDataSetChanged();
     }
 
     public void setSearchData(List<OrderBean> list) {

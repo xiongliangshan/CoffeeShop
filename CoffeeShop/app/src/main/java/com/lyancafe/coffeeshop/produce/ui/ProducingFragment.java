@@ -6,6 +6,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -50,6 +51,9 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,6 +65,9 @@ import butterknife.Unbinder;
  */
 public class ProducingFragment extends BaseFragment implements ProducingView<OrderBean>,
         ProducingRvAdapter.ProducingCallback,DetailView.ActionCallback {
+
+
+    private final String TAG = "ProducingFragment";
 
     @BindView(R.id.et_search_key)
     EditText etSearchKey;
@@ -80,14 +87,18 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
     private ProducingRvAdapter mAdapter;
     private Context mContext;
 
-    private GradientDrawable mGroupDrawable;
+    private GradientDrawable mGroupDrawable; //生产完成按钮倒计时
     public List<OrderBean> allOrderList = new ArrayList<>();
 
     private Handler mHandler;
     private ProducingTaskRunnable mRunnable;
 
+    private Timer timer = new Timer();
+    private long currentOrderId = 0;
+    private TimerTask timerTask;
+    //延迟时间
+    private final int reHandlerTime = 1 * 1000;
     public ProducingFragment() {
-
     }
 
     @Override
@@ -99,7 +110,30 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mHandler = new Handler();
+        mHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                switch (msg.what){
+                    case 1 :
+                        try{
+                            mAdapter.setDateForTime(allOrderList);
+                        } catch (Exception e){
+                            LogUtil.v(TAG, "refresh time has problem ecp:"+e.getMessage());
+                            Logger.getLogger().log("refresh time has problem ecp:"+e.getMessage());
+                        }
+                        break;
+                    case 2:
+                        try{
+                            detailView.updateTime((OrderBean) msg.obj);
+                        } catch (Exception e){
+                            LogUtil.v(TAG, "refresh time has problem ecp:"+e.getMessage());
+                            Logger.getLogger().log("refresh time has problem ecp:"+e.getMessage());
+                        }
+                        break;
+                }
+            }
+        };
         mProducingPresenter = new ProducingPresenterImpl(this, this.getContext());
     }
 
@@ -163,6 +197,10 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
         if(detailView!=null){
             detailView.updateData(order);
         }
+        if (order == null) {
+        } else {
+            currentOrderId = order.getId();
+        }
     }
 
 
@@ -208,6 +246,12 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
         if (mHandler != null) {
             mHandler = null;
         }
+        if(timer!=null){
+            timer.cancel();
+        }
+        if(timerTask != null){
+            timerTask.cancel();
+        }
     }
 
     // 执行搜索
@@ -238,6 +282,25 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
         mRunnable = new ProducingTaskRunnable();
         mHandler.postDelayed(mRunnable, OrderHelper.DELAY_LOAD_TIME);
 
+        UserBean user = LoginHelper.getUser(CSApplication.getInstance());
+        if(user.isOpenFulfill()){
+            timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    mHandler.sendEmptyMessage(1);
+                    for (OrderBean orderBean : allOrderList) {
+                        if (orderBean.getId() == currentOrderId) {
+                            Message msg = new Message();
+                            msg.obj = orderBean;
+                            msg.what = 2;
+                            mHandler.sendMessage(msg);
+                            break;
+                        }
+                    }
+                }
+            };
+            timer.schedule(timerTask, reHandlerTime, reHandlerTime);
+        }
     }
 
     @Override
@@ -246,6 +309,12 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
         Log.d("xls", "producingFragment is InVisible");
         if (mHandler != null) {
             mHandler.removeCallbacks(mRunnable);
+        }
+        if (timerTask != null) {
+            timerTask.cancel();
+            if (timer != null) {
+                timer.purge();
+            }
         }
     }
 
@@ -317,30 +386,26 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
                 Logger.getLogger().log("一键全部完成 ，总数为: "+orderIs.size()+", 订单集合为:"+orderIs);
                 break;
             case R.id.btn_finish_one:
-                //生产完成
+//                生产完成
                 /** 倒计时5秒，一次1秒 */
-                new CountDownTimer(5 * 1000, 1000) {
+                new CountDownTimer(1 * 1000, 1000) {
                     @Override
                     public void onTick(long millisUntilFinished) {
                         // TODO Auto-generated method stub
                         btnFinishOne.setEnabled(false);
-                        btnFinishOne.setText(millisUntilFinished/1000+"");
-                        btnFinishOne.setTextSize(32);
-                        if(millisUntilFinished/1000 > 3){
-                            mGroupDrawable.setColor(CSApplication.getInstance().getResources().getColor(R.color.red1));
-                        } else {
-                            mGroupDrawable.setColor(CSApplication.getInstance().getResources().getColor(R.color.yellow));
-                        }
+//                        btnFinishOne.setText(millisUntilFinished/1000+"");
+//                        btnFinishOne.setTextSize(32);
+                        mGroupDrawable.setColor(CSApplication.getInstance().getResources().getColor(R.color.gray3));
+                        mProducingPresenter.doFinishProducedFulfill();
                     }
                     @Override
                     public void onFinish() {
                         mGroupDrawable.setColor(CSApplication.getInstance().getResources().getColor(R.color.green1));
-                        btnFinishOne.setTextSize(32);
-                        btnFinishOne.setText("生产完成");
+//                        btnFinishOne.setTextSize(32);
+//                        btnFinishOne.setText("生产完成");
                         btnFinishOne.setEnabled(true);
                     }
                 }.start();
-                mProducingPresenter.doFinishProducedFulfill();
                 break;
         }
 

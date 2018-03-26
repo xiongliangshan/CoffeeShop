@@ -270,9 +270,16 @@ public class DetailView extends CardView implements View.OnClickListener{
                         btnFinishProduce.setBackgroundColor(Color.TRANSPARENT);
                         Map<String,Object> productCapacity = ProductHelper.getProduct(CSApplication.getInstance());
                         List<ItemContentBean> icbcList = order.getItems();
-                        int productTime = 0;
+                        int coldCups = 0; //冷热数量
+                        int hotCups = 0;
+                        int productTime = 0;//计算产能时间
                         try {
                             for(ItemContentBean itemContentBean : icbcList){
+                                if (itemContentBean.getColdHotProperty() == 1) {
+                                    coldCups++;
+                                } else if (itemContentBean.getColdHotProperty() == 2) {
+                                    hotCups++;
+                                }
                                 if(productCapacity.containsKey(itemContentBean.getProduct())){
                                     productTime += itemContentBean.getQuantity() *  Integer.getInteger(productCapacity.get(itemContentBean.getProduct()).toString(),1) * 30 * 1000;
                                 } else {
@@ -282,10 +289,12 @@ public class DetailView extends CardView implements View.OnClickListener{
                         } catch (Exception e){
                             Logger.getLogger().log("get productTime has problem, e:{}" + e.getMessage());
                         }
+                        int coldBox = coldCups / 4 + (coldCups % 4) > 0 ? 1 : 0;
+                        int hotBox = hotCups / 4 + (hotCups % 4) > 0 ? 1 : 0;
                         OrderBean orderBean = OrderUtils.with().getOrderById(order.getId());
                         long currentTimeMillis = System.currentTimeMillis();
-                        long timeMinus = orderBean.getStartProduceTime() + productTime - currentTimeMillis;
-                        long timeOverTime = order.getInstanceTime()  - currentTimeMillis;
+                        long timeMinus = orderBean.getStartProduceTime() + productTime + (hotBox + coldBox) * 1 * 60 * 1000 - currentTimeMillis;
+                        long timeOverTime = order.getInstanceTime() - currentTimeMillis;
                         if (timeMinus > 0) {
                             long time = timeMinus / 1000;
                             btnFinishProduce.setText(time / 60 + "分" + time % 60 + "秒" + "内生产完成");
@@ -328,6 +337,66 @@ public class DetailView extends CardView implements View.OnClickListener{
                 }
             }
 
+        }
+    }
+
+    public void updateTime(OrderBean order){
+        UserBean user = LoginHelper.getUser(CSApplication.getInstance());
+        if(user.isOpenFulfill()){
+            if(order.getProduceStatus() == OrderStatus.UNPRODUCED){
+                long currentTimeMillis = System.currentTimeMillis();
+                long timeMinus = order.getStartProduceTime() - currentTimeMillis;
+                if (timeMinus > 0) {
+                    long time = timeMinus / 1000;
+                    btnProducePrint.setText(time / 60 + "分" + time % 60 + "秒" + "后可生产");
+                    btnProducePrint.setBackgroundColor(this.getResources().getColor(R.color.green1));
+                } else {
+                    long time = Math.abs(timeMinus) / 1000;
+                    btnProducePrint.setText("已超生产时间" + time / 60 + "分" + time % 60 + "秒");
+                    btnProducePrint.setBackgroundColor(this.getResources().getColor(R.color.tab_orange));
+                }
+            } else if(order.getProduceStatus() == OrderStatus.PRODUCING){
+                Map<String, Object> productCapacity = ProductHelper.getProduct(CSApplication.getInstance());
+                List<ItemContentBean> icbcList = order.getItems();
+                int coldCups = 0; //冷热数量
+                int hotCups = 0;
+                int productTime = 0;
+                try {
+                    for (ItemContentBean itemContentBean : icbcList) {
+                        if (itemContentBean.getColdHotProperty() == 1) {
+                            coldCups++;
+                        } else if (itemContentBean.getColdHotProperty() == 2) {
+                            hotCups++;
+                        }
+                        if (productCapacity.containsKey(itemContentBean.getProduct())) {
+                            productTime += itemContentBean.getQuantity() * Integer.getInteger(productCapacity.get(itemContentBean.getProduct()).toString(), 1) * 30 * 1000;
+                        } else {
+                            productTime += itemContentBean.getQuantity() * 1 * 30 * 1000;
+                        }
+                    }
+                } catch (Exception e) {
+                    Logger.getLogger().log("get productTime has problem, e:{}" + e.getMessage());
+                }
+                int coldBox = coldCups / 4 + (coldCups % 4) > 0 ? 1 : 0;
+                int hotBox = hotCups / 4 + (hotCups % 4) > 0 ? 1 : 0;
+                OrderBean orderBean = OrderUtils.with().getOrderById(order.getId());
+                long currentTimeMillis = System.currentTimeMillis();
+                long timeMinus = orderBean.getStartProduceTime() + productTime + (coldBox + hotBox) * 1 * 60 * 1000 - currentTimeMillis;
+                long timeOverTime = order.getInstanceTime() - currentTimeMillis;
+                if (timeMinus > 0) {
+                    long time = timeMinus / 1000;
+                    btnFinishProduce.setText(time / 60 + "分" + time % 60 + "秒" + "内生产完成");
+                    btnFinishProduce.setTextColor(this.getResources().getColor(R.color.green1));
+                } else if (timeOverTime > 0) {
+                    long time = Math.abs(timeMinus) / 1000;
+                    btnFinishProduce.setText("已超生产完成时间" + time / 60 + "分" + time % 60 + "秒");
+                    btnFinishProduce.setTextColor(this.getResources().getColor(R.color.tab_orange));
+                } else {
+                    long time = Math.abs(timeOverTime) / 1000;
+                    btnFinishProduce.setText("已超送达时间" + time / 60 + "分" + time % 60 + "秒");
+                    btnFinishProduce.setTextColor(this.getResources().getColor(R.color.red1));
+                }
+            }
         }
     }
 

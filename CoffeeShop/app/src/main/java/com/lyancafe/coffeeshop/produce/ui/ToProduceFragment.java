@@ -4,6 +4,7 @@ package com.lyancafe.coffeeshop.produce.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
@@ -19,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
@@ -31,9 +31,11 @@ import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.OrderAction;
+import com.lyancafe.coffeeshop.constant.OrderStatus;
+import com.lyancafe.coffeeshop.db.OrderUtils;
 import com.lyancafe.coffeeshop.event.ChangeTabCountByActionEvent;
-import com.lyancafe.coffeeshop.event.LatelyCountEvent;
 import com.lyancafe.coffeeshop.event.CourierDistanceViewEvent;
+import com.lyancafe.coffeeshop.event.LatelyCountEvent;
 import com.lyancafe.coffeeshop.event.NewOderComingEvent;
 import com.lyancafe.coffeeshop.event.NotNeedProduceEvent;
 import com.lyancafe.coffeeshop.event.RevokeEvent;
@@ -47,7 +49,6 @@ import com.lyancafe.coffeeshop.produce.presenter.ToProducePresenterImpl;
 import com.lyancafe.coffeeshop.produce.view.ToProduceView;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.MyUtil;
-import com.lyancafe.coffeeshop.utils.SoundPoolUtil;
 import com.lyancafe.coffeeshop.utils.SpaceItemDecoration;
 import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.utils.VSpaceItemDecoration;
@@ -60,6 +61,9 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -78,6 +82,7 @@ import static com.lyancafe.coffeeshop.produce.ui.ListMode.SELECT;
 public class ToProduceFragment extends BaseFragment implements ToProduceView<OrderBean>,
         ToProduceRvAdapter.ToProduceCallback,DetailView.ActionCallback {
 
+    private final String TAG = "ToProduceFragment";
 
     private RecyclerView mRecyclerView;
     private ConstraintLayout batchLayout;
@@ -111,6 +116,13 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     private SpaceItemDecoration spaceItemDecoration;
     private VSpaceItemDecoration vSpaceItemDecoration;
 
+    private Timer timer = new Timer();
+
+    private long currentOrderId = 0;
+
+    private TimerTask timerTask;
+    //延迟时间
+    private final int reHandlerTime = 1 * 1000;
 
     public ToProduceFragment() {
 
@@ -125,7 +137,30 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mHandler = new Handler();
+        mHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                switch (msg.what){
+                    case 1 :
+                        try{
+                            mAdapter.setDateForTime(allOrderList);
+                        } catch (Exception e){
+                            LogUtil.v(TAG, "refresh time has problem ecp:"+e.getMessage());
+                            Logger.getLogger().log("refresh time has problem ecp:"+e.getMessage());
+                        }
+                        break;
+                    case 2:
+                        try{
+                            detailView.updateTime((OrderBean) msg.obj);
+                        } catch (Exception e){
+                            LogUtil.v(TAG, "refresh time has problem ecp:"+e.getMessage());
+                            Logger.getLogger().log("refresh time has problem ecp:"+e.getMessage());
+                        }
+                        break;
+                }
+            }
+        };
         mToProducePresenter = new ToProducePresenterImpl(this.getContext(), this);
         myClickListener = new MyClickListener();
 
@@ -211,7 +246,6 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
             List<SummarizeGroup> groups = OrderHelper.splitOrdersToGroup(allOrderList);
             summarizeAdapter.setData(OrderHelper.caculateGroupList(groups));
         }
-
     }
 
 
@@ -222,6 +256,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         }
         if(null == order){
         } else {
+            currentOrderId = order.getId();
             mToProducePresenter.loadCourierDistance(order.getId());
         }
     }
@@ -268,6 +303,12 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         if (mHandler != null) {
             mHandler = null;
         }
+        if(timer!=null){
+            timer.cancel();
+        }
+        if(timerTask != null){
+            timerTask.cancel();
+        }
     }
 
 
@@ -281,6 +322,25 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         mRunnable = new ToProduceTaskRunnable();
         mHandler.postDelayed(mRunnable, OrderHelper.DELAY_LOAD_TIME);
 
+        UserBean user = LoginHelper.getUser(CSApplication.getInstance());
+        if(user.isOpenFulfill()){
+            timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    mHandler.sendEmptyMessage(1);
+                    for (OrderBean orderBean : allOrderList) {
+                        if (orderBean.getId() == currentOrderId) {
+                            Message msg = new Message();
+                            msg.obj = orderBean;
+                            msg.what = 2;
+                            mHandler.sendMessage(msg);
+                            break;
+                        }
+                    }
+                }
+            };
+            timer.schedule(timerTask, reHandlerTime, reHandlerTime);
+        }
     }
 
     @Override
@@ -289,6 +349,12 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         Log.d("xls", "ToproduceFragment is InVisible");
         if (mHandler != null) {
             mHandler.removeCallbacks(mRunnable);
+        }
+        if (timerTask != null) {
+            timerTask.cancel();
+            if (timer != null) {
+                timer.purge();
+            }
         }
     }
 
@@ -379,7 +445,7 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     public boolean removeItemFromList(int id) {
         boolean result = mAdapter.removeOrderFromList(id);
         allOrderList.clear();
-        allOrderList.addAll(mAdapter.getList());
+        allOrderList.addAll(OrderUtils.with().queryByProduceStatus(OrderStatus.UNPRODUCED));
         return result;
     }
 

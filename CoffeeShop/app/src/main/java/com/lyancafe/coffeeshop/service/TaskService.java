@@ -136,14 +136,14 @@ public class TaskService extends Service {
 
         @Override
         public void run() {
-            final int cupTotal = 10;
+            final int cupTotal = 6;
             List<OrderBean> toProducedOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.UNPRODUCED);
 //            LogUtil.d(TAG, "当前待生产订单为：" + toProducedOrders);
             for (OrderBean orderBean : toProducedOrders) {
                 List<OrderBean> producingOrders = OrderUtils.with().queryByProduceStatus(OrderStatus.PRODUCING);
 //                LogUtil.d(TAG, "当前生产中订单为：" + producingOrders);
                 int cupsAmount = OrderHelper.getTotalQutity(producingOrders);
-                boolean isAutoProduce = producingOrders.size() < 3 || cupsAmount <= cupTotal;
+                boolean isAutoProduce = producingOrders.size() < 3 || cupsAmount < cupTotal;
                 LogUtil.d(TAG, "当前生产中订单为：" + producingOrders.size() + "单 ，杯量为:" + cupsAmount);
                 Logger.getLogger().log("当前生产中订单为:" + producingOrders.size() + "单,杯量为:" + cupsAmount + "}");
                 if (isAutoProduce) {
