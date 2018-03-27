@@ -80,6 +80,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
+
         if(curMode==ListMode.SELECT){
             holder.selectView.setVisibility(View.VISIBLE);
             holder.selectView.setOnClickListener(new View.OnClickListener() {
@@ -112,6 +113,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
 
         holder.orderIdTxt.setText(OrderHelper.getShopOrderSn(order));
 
+        holder.tvProducingFulfil.setTag("huanghe" + order.getId());
 
 
         //加急

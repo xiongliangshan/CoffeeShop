@@ -17,10 +17,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.gson.JsonObject;
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
-import com.lyancafe.coffeeshop.bean.BatchOrder;
 import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.UserBean;
@@ -29,11 +27,8 @@ import com.lyancafe.coffeeshop.common.OrderHelper;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
-import com.lyancafe.coffeeshop.http.CustomObserver;
 import com.lyancafe.coffeeshop.logger.Logger;
-import com.lyancafe.coffeeshop.produce.model.ToProduceModel;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
-import com.lyancafe.coffeeshop.utils.ToastUtil;
 import com.lyancafe.coffeeshop.widget.ProgressPercent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -79,7 +74,7 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final OrderBean order = list.get(position);
-
+        holder.produceAndPrintBtn.setTag("caodaye" + order.getId());
         if (curMode == ListMode.SELECT) {
             holder.selectView.setVisibility(View.VISIBLE);
             holder.selectView.setOnClickListener(new View.OnClickListener() {

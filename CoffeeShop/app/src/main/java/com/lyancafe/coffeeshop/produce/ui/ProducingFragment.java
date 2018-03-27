@@ -19,14 +19,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
 import com.lyancafe.coffeeshop.base.BaseFragment;
+import com.lyancafe.coffeeshop.bean.ItemContentBean;
 import com.lyancafe.coffeeshop.bean.OrderBean;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.common.LoginHelper;
 import com.lyancafe.coffeeshop.common.OrderHelper;
+import com.lyancafe.coffeeshop.common.ProductHelper;
 import com.lyancafe.coffeeshop.constant.OrderAction;
 import com.lyancafe.coffeeshop.constant.OrderStatus;
 import com.lyancafe.coffeeshop.db.OrderUtils;
@@ -51,9 +54,9 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -116,21 +119,7 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
                 super.handleMessage(msg);
                 switch (msg.what){
                     case 1 :
-                        try{
-                            mAdapter.setDateForTime(allOrderList);
-                        } catch (Exception e){
-                            LogUtil.v(TAG, "refresh time has problem ecp:"+e.getMessage());
-                            Logger.getLogger().log("refresh time has problem ecp:"+e.getMessage());
-                        }
-                        break;
-                    case 2:
-                        try{
-                            detailView.updateTime((OrderBean) msg.obj);
-                        } catch (Exception e){
-                            LogUtil.v(TAG, "refresh time has problem ecp:"+e.getMessage());
-                            Logger.getLogger().log("refresh time has problem ecp:"+e.getMessage());
-                        }
-                        break;
+                        dynamicChangeTime();
                 }
             }
         };
@@ -288,18 +277,61 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
                 @Override
                 public void run() {
                     mHandler.sendEmptyMessage(1);
-                    for (OrderBean orderBean : allOrderList) {
-                        if (orderBean.getId() == currentOrderId) {
-                            Message msg = new Message();
-                            msg.obj = orderBean;
-                            msg.what = 2;
-                            mHandler.sendMessage(msg);
-                            break;
-                        }
-                    }
                 }
             };
             timer.schedule(timerTask, reHandlerTime, reHandlerTime);
+        }
+    }
+
+    private void dynamicChangeTime(){
+        for(OrderBean orderBean : allOrderList){
+            try {
+                TextView huanghe = (TextView) mRecyclerView.findViewWithTag("huanghe" + orderBean.getId());
+                if(huanghe != null){
+                    if(orderBean.getId() == currentOrderId){
+                        detailView.updateTime(orderBean);
+                    }
+                    Map<String,Object> productCapacity = ProductHelper.getProduct(CSApplication.getInstance());
+                    List<ItemContentBean> icbcList = orderBean.getItems();
+                    int coldCups = 0; //冷热数量
+                    int hotCups = 0;
+                    int productTime = 0;//计算产能时间
+                    for (ItemContentBean itemContentBean : icbcList) {
+                        if (itemContentBean.getColdHotProperty() == 1) {
+                            coldCups++;
+                        } else if (itemContentBean.getColdHotProperty() == 2) {
+                            hotCups++;
+                        }
+                        if (productCapacity.containsKey(itemContentBean.getProduct())) {
+                            productTime += itemContentBean.getQuantity() * Integer.getInteger(productCapacity.get(itemContentBean.getProduct()).toString(), 1) * 30 * 1000;
+                        } else {
+                            productTime += itemContentBean.getQuantity() * 1 * 30 * 1000;
+                        }
+                    }
+                    int coldBox = coldCups / 4 + (coldCups % 4) > 0 ? 1 : 0;
+                    int hotBox = hotCups / 4 + (hotCups % 4) > 0 ? 1 : 0;
+                    OrderBean orderBeanLoca =  OrderUtils.with().getOrderById(orderBean.getId());
+                    long currentTimeMillis = System.currentTimeMillis();
+                    long timeMinus = orderBeanLoca.getStartProduceTime() + productTime + (hotBox + coldBox) * 1 * 60 * 1000 - currentTimeMillis;
+                    long timeOverTime = orderBeanLoca.getInstanceTime() - currentTimeMillis;
+                    if (timeMinus > 0) {
+                        long time = timeMinus / 1000;
+                        huanghe.setText(time / 60 + "分" + time % 60 + "秒" + "内生产完成");
+                        huanghe.setTextColor(mContext.getResources().getColor(R.color.green1));
+                    } else if (timeOverTime > 0) {
+                        long time = Math.abs(timeMinus) / 1000;
+                        huanghe.setText("生产超时" + time / 60 + "分" + time % 60 + "秒");
+                        huanghe.setTextColor(mContext.getResources().getColor(R.color.tab_orange));
+                    } else {
+                        long time = Math.abs(timeOverTime) / 1000;
+                        huanghe.setText("送达超时" + time / 60 + "分" + time % 60 + "秒");
+                        huanghe.setTextColor(mContext.getResources().getColor(R.color.red1));
+                    }
+                }
+            } catch (Exception e) {
+                LogUtil.v(TAG, "refresh time has problem ecp:" + e.getMessage());
+                Logger.getLogger().log("refresh time has problem ecp:" + e.getMessage());
+            }
         }
     }
 

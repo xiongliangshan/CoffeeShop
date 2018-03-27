@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.lyancafe.coffeeshop.CSApplication;
 import com.lyancafe.coffeeshop.R;
@@ -63,7 +64,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -137,27 +137,14 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //使用handler方法
         mHandler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 switch (msg.what){
                     case 1 :
-                        try{
-                            mAdapter.setDateForTime(allOrderList);
-                        } catch (Exception e){
-                            LogUtil.v(TAG, "refresh time has problem ecp:"+e.getMessage());
-                            Logger.getLogger().log("refresh time has problem ecp:"+e.getMessage());
-                        }
-                        break;
-                    case 2:
-                        try{
-                            detailView.updateTime((OrderBean) msg.obj);
-                        } catch (Exception e){
-                            LogUtil.v(TAG, "refresh time has problem ecp:"+e.getMessage());
-                            Logger.getLogger().log("refresh time has problem ecp:"+e.getMessage());
-                        }
-                        break;
+                        dynamicChangeTime();
                 }
             }
         };
@@ -328,18 +315,42 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
                 @Override
                 public void run() {
                     mHandler.sendEmptyMessage(1);
-                    for (OrderBean orderBean : allOrderList) {
-                        if (orderBean.getId() == currentOrderId) {
-                            Message msg = new Message();
-                            msg.obj = orderBean;
-                            msg.what = 2;
-                            mHandler.sendMessage(msg);
-                            break;
-                        }
-                    }
+                    //发送handler
+//                            Message msg = new Message();
+//                            msg.obj = orderBean;
+//                            msg.what = 2;
+//                            mHandler.sendMessage(msg);
+//                            break;
                 }
             };
             timer.schedule(timerTask, reHandlerTime, reHandlerTime);
+        }
+    }
+
+    private void dynamicChangeTime(){
+        for (OrderBean orderBean : allOrderList) {
+            try {
+                TextView caodaye = (TextView) mRecyclerView.findViewWithTag("caodaye" + orderBean.getId());
+                if(caodaye != null){
+                    long currentTimeMillis = System.currentTimeMillis();
+                    long timeMinus = orderBean.getStartProduceTime() - currentTimeMillis;
+                    if (timeMinus > 0) {
+                        long time = timeMinus / 1000;
+                        caodaye.setText(time / 60 + "分" + time % 60 + "秒" + "后可生产");
+                        caodaye.setBackgroundColor(mContext.getResources().getColor(R.color.green1));
+                    } else {
+                        long time = Math.abs(timeMinus) / 1000;
+                        caodaye.setText("已超生产时间" + time / 60 + "分" + time % 60 + "秒");
+                        caodaye.setBackgroundColor(mContext.getResources().getColor(R.color.tab_orange));
+                    }
+                    if (orderBean.getId() == currentOrderId) {
+                        detailView.updateTime(orderBean);
+                    }
+                }
+            } catch (Exception e) {
+                LogUtil.v(TAG, "refresh time has problem ecp:" + e.getMessage());
+                Logger.getLogger().log("refresh time has problem ecp:" + e.getMessage());
+            }
         }
     }
 
