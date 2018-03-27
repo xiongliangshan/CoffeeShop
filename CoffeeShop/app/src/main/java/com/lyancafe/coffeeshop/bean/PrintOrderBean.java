@@ -193,7 +193,11 @@ public class PrintOrderBean {
     }
 
     public String getLocalStr(){
-        return "("+boxAmount+"盒-第"+boxNumber+"盒"+")";
+        if (boxAmount == 1) {
+            return "(共1盒)";
+        } else {
+            return "(" + boxAmount + "盒-第" + boxNumber + "盒" + ")";
+        }
     }
 
     public String getCupStr(){
