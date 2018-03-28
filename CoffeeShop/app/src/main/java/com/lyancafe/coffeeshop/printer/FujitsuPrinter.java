@@ -154,33 +154,118 @@ public class FujitsuPrinter implements NetPrint {
 
     @Override
     public void printTimeControlPaster(MaterialItem materialItem) {
+        boolean isPrintSecond = PrintSetting.isPrintSecond(CSApplication.getInstance());
+        boolean isPrintTime = PrintSetting.isPrintTime(CSApplication.getInstance());
         String pasterContent = null;
-        if ("冻品类".equals(materialItem.getCategoryName())) {
-            pasterContent =
-                    "SIZE 30 mm, 20 mm\n" +
-                            "GAP 3 mm, 0 mm\n" +
-                            "SET RIBBON OFF\n" +
-                            "DIRECTION 1,0\n" +
-                            "CLS\n" +
-                            "TEXT 3,20,\"TSS24.BF2\",0,1,1,\"品名:" + materialItem.getName() + " \"\n" +
-                            "TEXT 3,55,\"TSS24.BF2\",0,1,1,\"解冻日期:____-__-___\"\n" +
-                            "TEXT 3,90,\"TSS24.BF2\",0,1,1,\"使用期限:____-__-___\"\n" +
-                            "TEXT 3,125,\"TSS24.BF2\",0,1,1,\"原始到期:____-__-___\"\n" +
-                            "PRINT 1,1\n";
+        if(isPrintTime){
+            if ("冻品类".equals(materialItem.getCategoryName())) {
+                if (isPrintSecond) {
+                    pasterContent =
+                            "SIZE 30 mm, 20 mm\n" +
+                                    "GAP 3 mm, 0 mm\n" +
+                                    "SET RIBBON OFF\n" +
+                                    "DIRECTION 1,0\n" +
+                                    "CLS\n" +
+                                    "TEXT 3,20,\"TSS24.BF2\",0,1,1,\"品名:" + materialItem.getName() + " \"\n" +
+                                    "TEXT 3,55,\"TSS24.BF2\",0,1,1,\"解冻:" + Calculator.getCurrentDate(isPrintSecond) + "\"\n" +
+                                    "TEXT 3,90,\"TSS24.BF2\",0,1,1,\"期限:" + Calculator.getOverDueDate(materialItem.getOverdueTime(), isPrintSecond) + "\"\n" +
+                                    "TEXT 3,125,\"TSS24.BF2\",0,1,1,\"原始到期:____-__-___\"\n" +
+                                    "PRINT 1,1\n";
+                } else {
+                    pasterContent =
+                            "SIZE 30 mm, 20 mm\n" +
+                                    "GAP 3 mm, 0 mm\n" +
+                                    "SET RIBBON OFF\n" +
+                                    "DIRECTION 1,0\n" +
+                                    "CLS\n" +
+                                    "TEXT 3,20,\"TSS24.BF2\",0,1,1,\"品名:" + materialItem.getName() + " \"\n" +
+                                    "TEXT 3,55,\"TSS24.BF2\",0,1,1,\"解冻日期:" + Calculator.getCurrentDate(isPrintSecond) + "\"\n" +
+                                    "TEXT 3,90,\"TSS24.BF2\",0,1,1,\"使用期限:" + Calculator.getOverDueDate(materialItem.getOverdueTime(), isPrintSecond) + "\"\n" +
+                                    "TEXT 3,125,\"TSS24.BF2\",0,1,1,\"原始到期:____-__-___\"\n" +
+                                    "PRINT 1,1\n";
+                }
+            } else {
+                if (isPrintSecond) {
+                    pasterContent =
+                            "SIZE 30 mm, 20 mm\n" +
+                                    "GAP 3 mm, 0 mm\n" +
+                                    "SET RIBBON OFF\n" +
+                                    "DIRECTION 1,0\n" +
+                                    "CLS\n" +
+                                    "TEXT 3,20,\"TSS24.BF2\",0,1,1,\"品名:" + materialItem.getName() + "\"\n" +
+                                    "TEXT 3,55,\"TSS24.BF2\",0,1,1,\"开封:" + Calculator.getCurrentDate(isPrintSecond) + "\"\n" +
+                                    "TEXT 3,90,\"TSS24.BF2\",0,1,1,\"期限:" + Calculator.getOverDueDate(materialItem.getOverdueTime(), isPrintSecond) + "\"\n" +
+                                    "TEXT 3,125,\"TSS24.BF2\",0,1,1,\"原始到期:____-__-___\"\n" +
+                                    "PRINT 1,1\n";
+                } else {
+                    pasterContent =
+                            "SIZE 30 mm, 20 mm\n" +
+                                    "GAP 3 mm, 0 mm\n" +
+                                    "SET RIBBON OFF\n" +
+                                    "DIRECTION 1,0\n" +
+                                    "CLS\n" +
+                                    "TEXT 3,20,\"TSS24.BF2\",0,1,1,\"品名:" + materialItem.getName() + "\"\n" +
+                                    "TEXT 3,55,\"TSS24.BF2\",0,1,1,\"开封日期:" + Calculator.getCurrentDate(isPrintSecond) + "\"\n" +
+                                    "TEXT 3,90,\"TSS24.BF2\",0,1,1,\"使用期限:" + Calculator.getOverDueDate(materialItem.getOverdueTime(), isPrintSecond) + "\"\n" +
+                                    "TEXT 3,125,\"TSS24.BF2\",0,1,1,\"原始到期:____-__-___\"\n" +
+                                    "PRINT 1,1\n";
+                }
+            }
         } else {
-            pasterContent =
-                    "SIZE 30 mm, 20 mm\n" +
-                            "GAP 3 mm, 0 mm\n" +
-                            "SET RIBBON OFF\n" +
-                            "DIRECTION 1,0\n" +
-                            "CLS\n" +
-                            "TEXT 3,20,\"TSS24.BF2\",0,1,1,\"品名:" + materialItem.getName() + "\"\n" +
-                            "TEXT 3,55,\"TSS24.BF2\",0,1,1,\"开封日期:____-__-___\"\n" +
-                            "TEXT 3,90,\"TSS24.BF2\",0,1,1,\"使用期限:____-__-___\"\n" +
-                            "TEXT 3,125,\"TSS24.BF2\",0,1,1,\"原始到期:____-__-___\"\n" +
-                            "PRINT 1,1\n";
+            if ("冻品类".equals(materialItem.getCategoryName())) {
+                if (isPrintSecond) {
+                    pasterContent =
+                            "SIZE 30 mm, 20 mm\n" +
+                                    "GAP 3 mm, 0 mm\n" +
+                                    "SET RIBBON OFF\n" +
+                                    "DIRECTION 1,0\n" +
+                                    "CLS\n" +
+                                    "TEXT 3,20,\"TSS24.BF2\",0,1,1,\"品名:" + materialItem.getName() + " \"\n" +
+                                    "TEXT 3,55,\"TSS24.BF2\",0,1,1,\"解冻:___-__-__|__:__\"\n" +
+                                    "TEXT 3,90,\"TSS24.BF2\",0,1,1,\"期限:___-__-__|__:__\"\n" +
+                                    "TEXT 3,125,\"TSS24.BF2\",0,1,1,\"原始到期:____-__-___\"\n" +
+                                    "PRINT 1,1\n";
+                } else {
+                    pasterContent =
+                            "SIZE 30 mm, 20 mm\n" +
+                                    "GAP 3 mm, 0 mm\n" +
+                                    "SET RIBBON OFF\n" +
+                                    "DIRECTION 1,0\n" +
+                                    "CLS\n" +
+                                    "TEXT 3,20,\"TSS24.BF2\",0,1,1,\"品名:" + materialItem.getName() + " \"\n" +
+                                    "TEXT 3,55,\"TSS24.BF2\",0,1,1,\"解冻日期:____-__-___\"\n" +
+                                    "TEXT 3,90,\"TSS24.BF2\",0,1,1,\"使用期限:____-__-___\"\n" +
+                                    "TEXT 3,125,\"TSS24.BF2\",0,1,1,\"原始到期:____-__-___\"\n" +
+                                    "PRINT 1,1\n";
+                }
+            } else {
+                if (isPrintSecond) {
+                    pasterContent =
+                            "SIZE 30 mm, 20 mm\n" +
+                                    "GAP 3 mm, 0 mm\n" +
+                                    "SET RIBBON OFF\n" +
+                                    "DIRECTION 1,0\n" +
+                                    "CLS\n" +
+                                    "TEXT 3,20,\"TSS24.BF2\",0,1,1,\"品名:" + materialItem.getName() + "\"\n" +
+                                    "TEXT 3,55,\"TSS24.BF2\",0,1,1,\"开封:___-__-__|__:__\"\n" +
+                                    "TEXT 3,90,\"TSS24.BF2\",0,1,1,\"期限:___-__-__|__:__\"\n" +
+                                    "TEXT 3,125,\"TSS24.BF2\",0,1,1,\"原始到期:____-__-___\"\n" +
+                                    "PRINT 1,1\n";
+                } else {
+                    pasterContent =
+                            "SIZE 30 mm, 20 mm\n" +
+                                    "GAP 3 mm, 0 mm\n" +
+                                    "SET RIBBON OFF\n" +
+                                    "DIRECTION 1,0\n" +
+                                    "CLS\n" +
+                                    "TEXT 3,20,\"TSS24.BF2\",0,1,1,\"品名:" + materialItem.getName() + "\"\n" +
+                                    "TEXT 3,55,\"TSS24.BF2\",0,1,1,\"开封日期:____-__-___\"\n" +
+                                    "TEXT 3,90,\"TSS24.BF2\",0,1,1,\"使用期限:____-__-___\"\n" +
+                                    "TEXT 3,125,\"TSS24.BF2\",0,1,1,\"原始到期:____-__-___\"\n" +
+                                    "PRINT 1,1\n";
+                }
+            }
         }
-
         writeCommand(smallLabelIP, port, pasterContent);
     }
 

@@ -353,6 +353,11 @@ public class FinishedOrderFragment extends BaseFragment implements PullLoadMoreR
             return;
         }
         try {
+            if ("2333".equals(searchKey)) {
+                LogUtil.v("FinishedOrderFragment", "has clear db Orders");
+                Logger.getLogger().log("has clear db Orders");
+                OrderUtils.with().clearTable();
+            }
             mAdapter.searchOrder(Integer.parseInt(searchKey));
         } catch (NumberFormatException e) {
             showToast("数据太大或者类型不对");

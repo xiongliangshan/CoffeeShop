@@ -26,6 +26,7 @@ import com.lyancafe.coffeeshop.login.model.LoginModelImpl;
 import com.lyancafe.coffeeshop.bean.UserBean;
 import com.lyancafe.coffeeshop.login.view.LoginView;
 import com.lyancafe.coffeeshop.main.ui.HomeActivity;
+import com.lyancafe.coffeeshop.printer.PrintSetting;
 import com.lyancafe.coffeeshop.utils.LogUtil;
 import com.lyancafe.coffeeshop.utils.MyUtil;
 import com.lyancafe.coffeeshop.utils.PreferencesUtil;
@@ -97,24 +98,22 @@ public class LoginPresenterImpl implements LoginPresenter{
             @Override
             public void onNext(@NonNull BaseEntity<UserBean> userBeanBaseEntity) {
                 LogUtil.d(LogUtil.TAG_LOGIN,"onNext thread  ="+Thread.currentThread().getName());
-                if(userBeanBaseEntity.getStatus()==LoginHelper.LOGIN_SUCCESS){
+                if (userBeanBaseEntity.getStatus() == LoginHelper.LOGIN_SUCCESS) {
                     UserBean userBean = userBeanBaseEntity.getData();
-                    Logger.getLogger().log(loginName+ " 登陆成功,"+userBean.toString()+" , 设备信息: "+redId+" | "+mType+" | "+appVer);
+                    Logger.getLogger().log(loginName + " 登陆成功," + userBean.toString() + " , 设备信息: " + redId + " | " + mType + " | " + appVer);
                     LoginHelper.saveUser(mContext.getApplicationContext(), userBean);
+                    PrintSetting.savePrintSecond(mContext.getApplicationContext(), userBean.isPrintSecond());
+                    PrintSetting.savePrintTime(mContext.getApplicationContext(), userBean.isPrintTime());
                     //如果是当天第一次登陆，就清空本地缓存的订单打印记录
-                    if(mLoginModel.isCurrentDayFirstLogin(mContext)){
+                    if (mLoginModel.isCurrentDayFirstLogin(mContext)) {
                         Logger.getLogger().clearAllLogs();
                         OrderHelper.clearPrintedSet(mContext);
                         OrderUtils.with().clearTable();
-                        Logger.getLogger().log(loginName+ " 这是今天第一次登陆");
-
+                        Logger.getLogger().log(loginName + " 这是今天第一次登陆");
                     }
-
-
                     mLoginView.stepToMain();
-
-                }else{
-                    ToastUtil.show(mContext.getApplicationContext(),userBeanBaseEntity.getMessage());
+                } else {
+                    ToastUtil.show(mContext.getApplicationContext(), userBeanBaseEntity.getMessage());
                 }
             }
 

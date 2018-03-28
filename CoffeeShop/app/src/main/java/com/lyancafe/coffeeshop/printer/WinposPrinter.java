@@ -188,35 +188,61 @@ public class WinposPrinter implements NetPrint {
 
     @Override
     public void printTimeControlPaster(MaterialItem materialItem) {
-        String pasterContent = null;
-        if ("冻品类".equals(materialItem.getCategoryName())) {
-            pasterContent = "N" + "\n" +
-                    "OD" + "\n" +
-                    "q240" + "\n" +
-                    "Q160,16" + "\n" +
-                    "S3" + "\n" +
-                    "D8" + "\n" +
-                    "A10,20,0,230,1,1,N,\"" + "品名:" + materialItem.getName() + "\"" + "\n" +
-                    "A10,55,0,230,1,1,N,\"解冻日期:____-__-___\"" + "\n" +
-                    "A10,90,0,230,1,1,N,\"使用期限:____-__-___\"" + "\n" +
-                    "A10,125,0,230,1,1,N,\"原始到期:____-__-___\"" + "\n" +
-                    "P1" + "\n";
+        boolean isPrintSecond = PrintSetting.isPrintSecond(CSApplication.getInstance());
+        boolean isPrintTime = PrintSetting.isPrintTime(CSApplication.getInstance());
+        StringBuffer pasterContent = new StringBuffer();
+        pasterContent.append("N" + "\n")
+                .append("OD" + "\n")
+                .append("q240" + "\n")
+                .append("Q160,16" + "\n")
+                .append("S3" + "\n")
+                .append("D8" + "\n")
+                .append("A10,20,0,230,1,1,N,\"").append("品名:").append(materialItem.getName()).append("\"\n");
+        if(isPrintTime){
+            if ("冻品类".equals(materialItem.getCategoryName())) {
+                if (isPrintSecond) {
+                    pasterContent.append("A10,55,0,230,1,1,N,\"解冻:").append(Calculator.getCurrentDate(isPrintSecond)).append("\"\n");
+                } else {
+                    pasterContent.append("A10,55,0,230,1,1,N,\"解冻日期:").append(Calculator.getCurrentDate(isPrintSecond)).append("\"\n");
+                }
+            } else {
+                if (isPrintSecond) {
+                    pasterContent.append("A10,55,0,230,1,1,N,\"开封:").append(Calculator.getCurrentDate(isPrintSecond)).append("\"\n");
+                } else {
+                    pasterContent.append("A10,55,0,230,1,1,N,\"开封日期:").append(Calculator.getCurrentDate(isPrintSecond)).append("\"\n");
+                }
+            }
+            if (isPrintSecond) {
+                pasterContent.append("A10,90,0,230,1,1,N,\"期限:").append(Calculator.getOverDueDate(materialItem.getOverdueTime(), isPrintSecond)).append("\"\n");
+            } else {
+                pasterContent.append("A10,90,0,230,1,1,N,\"使用期限:").append(Calculator.getOverDueDate(materialItem.getOverdueTime(), isPrintSecond)).append("\"\n");
+            }
         } else {
-            pasterContent = "N" + "\n" +
-                    "OD" + "\n" +
-                    "q240" + "\n" +
-                    "Q160,16" + "\n" +
-                    "S3" + "\n" +
-                    "D8" + "\n" +
-                    "A10,20,0,230,1,1,N,\"" + "品名:" + materialItem.getName() + "\"" + "\n" +
-                    "A10,55,0,230,1,1,N,\"开封日期:____-__-___\"" + "\n" +
-                    "A10,90,0,230,1,1,N,\"使用期限:____-__-___\"" + "\n" +
-                    "A10,125,0,230,1,1,N,\"原始到期:____-__-___\"" + "\n" +
-                    "P1" + "\n";
+            if ("冻品类".equals(materialItem.getCategoryName())) {
+                if(isPrintSecond){
+                    pasterContent.append("A10,55,0,230,1,1,N,\"解冻:___-__-__|__:__\"\n");
+                } else {
+                    pasterContent.append("A10,55,0,230,1,1,N,\"解冻日期:____-__-___\"\n");
+                }
+            } else {
+                if(isPrintSecond){
+                    pasterContent.append("A10,55,0,230,1,1,N,\"开封:___-__-__|__:__\"\n");
+                } else {
+                    pasterContent.append("A10,55,0,230,1,1,N,\"开封日期:____-__-___\"\n");
+                }
+            }
+            if (isPrintSecond) {
+                pasterContent.append("A10,90,0,230,1,1,N,\"期限:___-__-__|__:__\"\n");
+            } else {
+                pasterContent.append("A10,90,0,230,1,1,N,\"使用期限:____-__-___\"\n");
+            }
         }
-
-        writeCommand(smallLabelIP, port, pasterContent);
+        pasterContent.append( "A5,125,0,230,1,1,N,\"原始到期:____-__-___\"\n") ;
+        pasterContent.append( "P1").append("\n");
+        writeCommand(smallLabelIP, port, pasterContent.toString());
     }
+
+
 
     @Override
     public void printBlankPaster() {

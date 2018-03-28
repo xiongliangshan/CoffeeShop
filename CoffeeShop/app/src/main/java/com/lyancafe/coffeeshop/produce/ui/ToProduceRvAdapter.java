@@ -29,6 +29,7 @@ import com.lyancafe.coffeeshop.event.FinishProduceEvent;
 import com.lyancafe.coffeeshop.event.StartProduceEvent;
 import com.lyancafe.coffeeshop.logger.Logger;
 import com.lyancafe.coffeeshop.utils.OrderSortComparator;
+import com.lyancafe.coffeeshop.utils.OrderSortInstanceComparator;
 import com.lyancafe.coffeeshop.widget.ProgressPercent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -417,15 +418,18 @@ public class ToProduceRvAdapter extends RecyclerView.Adapter<ToProduceRvAdapter.
 
     public void setData(List<OrderBean> list) {
         this.list = list;
-        Collections.sort(this.list, new OrderSortComparator());
-        this.
-        notifyDataSetChanged();
+        UserBean user = LoginHelper.getUser(CSApplication.getInstance());
+        if (user.isOpenFulfill()) {
+            Collections.sort(this.list, new OrderSortInstanceComparator());
+        } else {
+            Collections.sort(this.list, new OrderSortComparator());
+        }
+        this.notifyDataSetChanged();
         if (selected >= 0 && selected < this.list.size()) {
             callback.updateDetail(this.list.get(selected));
         } else {
             callback.updateDetail(null);
         }
-
     }
 
     public void setDateForTime(List<OrderBean> list){

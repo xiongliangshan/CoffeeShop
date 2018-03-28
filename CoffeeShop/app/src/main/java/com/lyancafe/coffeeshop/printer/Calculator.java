@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -544,20 +545,35 @@ public class Calculator {
     /**
      * 根据保质期计算过期时间
      * @param overdueDays
+     * @param preciseMinSec true的时候精确到分钟
      * @return
      */
-    public static String getOverDueDate(int overdueDays) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINESE);
+    public static String getOverDueDate(int overdueDays,boolean preciseMinSec) {
+        SimpleDateFormat sdf;
+        if (preciseMinSec) {
+            sdf = new SimpleDateFormat("yy-MM-dd HH:mm", Locale.CHINESE);
+        } else {
+            sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINESE);
+        }
         Calendar nowDate = Calendar.getInstance();
-        if(overdueDays<=0){
-            nowDate.add(Calendar.DAY_OF_MONTH,1);
-            nowDate.set(Calendar.HOUR_OF_DAY,0);
-            nowDate.set(Calendar.MINUTE,0);
-
-        }else{
-            nowDate.add(Calendar.DAY_OF_MONTH,overdueDays);
+        if (overdueDays <= 0) {
+            nowDate.add(Calendar.DAY_OF_MONTH, 1);
+            nowDate.set(Calendar.HOUR_OF_DAY, 0);
+            nowDate.set(Calendar.MINUTE, 0);
+        } else {
+            nowDate.add(Calendar.DAY_OF_MONTH, overdueDays);
         }
         return sdf.format(nowDate.getTime());
+    }
+
+    public static String getCurrentDate(boolean preciseMinSec){
+        SimpleDateFormat sdf;
+        if (preciseMinSec) {
+            sdf = new SimpleDateFormat("yy-MM-dd HH:mm", Locale.CHINESE);
+        } else {
+            sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINESE);
+        }
+        return sdf.format(new Date());
     }
 
     public static String formatLabel(String label){

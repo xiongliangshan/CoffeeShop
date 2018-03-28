@@ -46,6 +46,16 @@ public class OrderUtils {
         mOrderDao.insertOrReplace(orderBean);
     }
 
+    public void insertOrderForProducing(OrderBean orderBean){
+        List<ItemContentBean> items = orderBean.getItems();
+        long orderId = orderBean.getId();
+        for (int j = 0; j < items.size(); j++) {
+            items.get(j).setOrderId(orderId);
+        }
+        mItemOrderDao.insertOrReplaceInTx(items);
+        mOrderDao.insertOrReplaceInTx(orderBean);
+    }
+
 
 
     //批量插入新的订单记录
@@ -90,7 +100,8 @@ public class OrderUtils {
     public void updateOrderToProducing(OrderBean orderBeanOld, int produceStatus){
         OrderBean orderBean = getOrderById(orderBeanOld.getId());
         if (orderBean == null) {
-            insertOrder(orderBeanOld);
+            System.out.println("11111"+orderBeanOld);
+            insertOrderForProducing(orderBeanOld);
             return;
         }
         orderBean.setProduceStatus(produceStatus);

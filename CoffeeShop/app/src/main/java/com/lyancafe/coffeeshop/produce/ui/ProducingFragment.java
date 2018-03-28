@@ -312,7 +312,7 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
                     int hotBox = hotCups / 4 + (hotCups % 4) > 0 ? 1 : 0;
                     OrderBean orderBeanLoca =  OrderUtils.with().getOrderById(orderBean.getId());
                     long currentTimeMillis = System.currentTimeMillis();
-                    long timeMinus = orderBeanLoca.getStartProduceTime() + productTime + (hotBox + coldBox) * 1 * 60 * 1000 - currentTimeMillis;
+                    long timeMinus = orderBeanLoca.getStartProduceTime() + productTime + (hotBox + coldBox) * 2 * 60 * 1000 - currentTimeMillis;
                     long timeOverTime = orderBeanLoca.getInstanceTime() - currentTimeMillis;
                     if (timeMinus > 0) {
                         long time = timeMinus / 1000;

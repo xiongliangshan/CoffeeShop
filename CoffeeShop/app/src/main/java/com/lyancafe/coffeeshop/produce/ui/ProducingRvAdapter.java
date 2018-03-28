@@ -224,7 +224,7 @@ public class ProducingRvAdapter extends RecyclerView.Adapter<ProducingRvAdapter.
                 int hotBox = hotCups / 4 + (hotCups % 4) > 0 ? 1 : 0;
                 OrderBean orderBean =  OrderUtils.with().getOrderById(order.getId());
                 long currentTimeMillis = System.currentTimeMillis();
-                long timeMinus = orderBean.getStartProduceTime() + productTime + (hotBox + coldBox) * 1 * 60 * 1000 - currentTimeMillis;
+                long timeMinus = orderBean.getStartProduceTime() + productTime + (hotBox + coldBox) * 2 * 60 * 1000 - currentTimeMillis;
                 long timeOverTime = order.getInstanceTime() - currentTimeMillis;
                 if (timeMinus > 0) {
                     long time = timeMinus / 1000;

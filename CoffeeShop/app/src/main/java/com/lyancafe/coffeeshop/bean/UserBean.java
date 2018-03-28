@@ -14,6 +14,8 @@ public class UserBean implements Serializable{
     private boolean needPrintTime;
     private String drinkGuide;
     private boolean isOpenFulfill = false;
+    private boolean isPrintTime = false;
+    private boolean isPrintSecond = false;
 
     public UserBean() {
     }
@@ -75,6 +77,22 @@ public class UserBean implements Serializable{
         this.isOpenFulfill = openFulfill;
     }
 
+    public boolean isPrintTime() {
+        return isPrintTime;
+    }
+
+    public void setPrintTime(boolean printTime) {
+        isPrintTime = printTime;
+    }
+
+    public boolean isPrintSecond() {
+        return isPrintSecond;
+    }
+
+    public void setPrintSecond(boolean printSecond) {
+        isPrintSecond = printSecond;
+    }
+
     @Override
     public String toString() {
         return "UserBean{" +
@@ -85,6 +103,8 @@ public class UserBean implements Serializable{
                 ", needPrintTime=" + needPrintTime +
                 ", drinkGuide='" + drinkGuide + '\'' +
                 ", isOpenFulfill=" + isOpenFulfill +
+                ", isPrintSecond=" + isPrintSecond +
+                ", isPrintTime=" + isPrintTime +
                 '}';
     }
 }
