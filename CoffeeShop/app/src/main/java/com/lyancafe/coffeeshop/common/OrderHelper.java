@@ -713,7 +713,7 @@ public class OrderHelper {
                 dpMap.get("daodiansao").setOrderCount(dpMap.get("daodiansao").getOrderCount()+1);
                 dpMap.get("daodiansao").setCupCount(dpMap.get("daodiansao").getCupCount()+getTotalQutity(order));
             }else {
-                if(DeliveryTeam.LYAN==order.getDeliveryTeam() || DeliveryTeam.HAIKUI==order.getDeliveryTeam()){
+                if(DeliveryTeam.LYAN==order.getDeliveryTeam() || DeliveryTeam.HAIKUI==order.getDeliveryTeam() || DeliveryTeam.DADA == order.getDeliveryTeam()){
                     //微服务
                     dpMap.get("weifuwu").setOrderCount(dpMap.get("weifuwu").getOrderCount()+1);
                     dpMap.get("weifuwu").setCupCount(dpMap.get("weifuwu").getCupCount()+getTotalQutity(order));

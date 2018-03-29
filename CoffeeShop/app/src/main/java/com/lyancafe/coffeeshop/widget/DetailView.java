@@ -203,7 +203,6 @@ public class DetailView extends CardView implements View.OnClickListener{
             }else {
                 clReplenish.setVisibility(View.GONE);
             }
-
             tvReceiverName.setText(order.getRecipient());
             tvReceiverPhone.setText(order.getPhone());
             ultIssueFeedback.setEnabled(true);
@@ -215,8 +214,10 @@ public class DetailView extends CardView implements View.OnClickListener{
                 tvDeliverTeam.setText("(海葵)");
             } else if (order.getDeliveryTeam() == DeliveryTeam.MEITUAN) {
                 tvDeliverTeam.setText("(美团)");
-            } else if(order.getDeliveryTeam() == DeliveryTeam.ELE){
+            } else if (order.getDeliveryTeam() == DeliveryTeam.ELE) {
                 tvDeliverTeam.setText("(饿了么)");
+            } else if (order.getDeliveryTeam() == DeliveryTeam.DADA) {
+                tvDeliverTeam.setText("(达达)");
             } else {
                 tvDeliverTeam.setText("(自有)");
             }

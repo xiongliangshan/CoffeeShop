@@ -10,4 +10,5 @@ public class DeliveryTeam {
     public static final int MEITUAN = 8;  //美团配送
     public static final int HAIKUI = 9;  //海葵配送
     public static final int ELE = 10; //饿了么
+    public static final int DADA = 11; // 达达
 }
