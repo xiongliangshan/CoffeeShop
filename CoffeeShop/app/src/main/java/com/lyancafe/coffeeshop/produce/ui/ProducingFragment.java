@@ -288,9 +288,11 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
             try {
                 TextView huanghe = (TextView) mRecyclerView.findViewWithTag("huanghe" + orderBean.getId());
                 if(huanghe != null){
+                    //修改订单详情的时间倒计时
                     if(orderBean.getId() == currentOrderId){
                         detailView.updateTime(orderBean);
                     }
+                    //订单列表的倒计时
                     Map<String,Object> productCapacity = ProductHelper.getProduct(CSApplication.getInstance());
                     List<ItemContentBean> icbcList = orderBean.getItems();
                     int coldCups = 0; //冷热数量
@@ -299,19 +301,24 @@ public class ProducingFragment extends BaseFragment implements ProducingView<Ord
                     for (ItemContentBean itemContentBean : icbcList) {
                         if (itemContentBean.getColdHotProperty() == 1) {
                             coldCups++;
-                        } else if (itemContentBean.getColdHotProperty() == 2) {
+                        } else {
                             hotCups++;
                         }
                         if (productCapacity.containsKey(itemContentBean.getProduct())) {
                             productTime += itemContentBean.getQuantity() * Integer.getInteger(productCapacity.get(itemContentBean.getProduct()).toString(), 1) * 30 * 1000;
+                            System.out.println("商品=" + itemContentBean.getProduct() + "productTime=" + productTime);
                         } else {
                             productTime += itemContentBean.getQuantity() * 1 * 30 * 1000;
                         }
                     }
+//                    System.out.println("icbcList.size()=" + icbcList.size());
+//                    System.out.println("冷杯子=" + coldCups + "热杯子=" + hotCups);
                     int coldBox = coldCups / 4 + (coldCups % 4) > 0 ? 1 : 0;
                     int hotBox = hotCups / 4 + (hotCups % 4) > 0 ? 1 : 0;
+//                    System.out.println("冷盒子=" + coldBox + "热盒子=" + hotBox);
                     OrderBean orderBeanLoca =  OrderUtils.with().getOrderById(orderBean.getId());
                     long currentTimeMillis = System.currentTimeMillis();
+//                    System.out.println("startProductTime=" + orderBeanLoca.getStartProduceTime() + "productTime=" + productTime + "盒子=" + (hotBox + coldBox));
                     long timeMinus = orderBeanLoca.getStartProduceTime() + productTime + (hotBox + coldBox) * 2 * 60 * 1000 - currentTimeMillis;
                     long timeOverTime = orderBeanLoca.getInstanceTime() - currentTimeMillis;
                     if (timeMinus > 0) {

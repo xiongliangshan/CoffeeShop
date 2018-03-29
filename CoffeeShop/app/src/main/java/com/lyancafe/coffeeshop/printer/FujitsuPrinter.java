@@ -354,16 +354,172 @@ public class FujitsuPrinter implements NetPrint {
         } else {
             arriveTime = OrderHelper.getFormatTimeToStr(bean.getExpectedTime());
         }
-
-        for(int i =0;i<coffeeList.size();i++){
-            if(i>3){
-                LogUtil.e(TAG,"OTCForBigLabel ，数据异常");
+//start 老版本
+//        for(int i =0;i<coffeeList.size();i++){
+//            if(i>5){
+//                LogUtil.e(TAG,"OTCForBigLabel ，数据异常");
+//                break;
+//            }
+//            PrintCupBean pc = coffeeList.get(i);
+//            cupList[i] = pc.getCoffee()+Calculator.formatLabel(pc.getLabel());
+//        }
+        //end 老版本
+        //start 新版本
+        String labels = ""; // 产品
+        String coffee = "";//咖啡
+        int i = 0;
+        System.out.println("coffeeList="+coffeeList);
+        for (; i < coffeeList.size(); i++) {
+            if (i > 4) {
+                LogUtil.e(TAG, "OTCForBigLabel ，数据异常");
                 break;
             }
             PrintCupBean pc = coffeeList.get(i);
-            cupList[i] = pc.getCoffee()+Calculator.formatLabel(pc.getLabel());
+            System.out.println("coffee="+coffee);
+            if (i < 2 ){
+                coffee += pc.getCoffee();
+                coffee += "  ";
+            } else if (i == 2){
+                cupList[0] = coffee;
+                coffee = "";
+                coffee += pc.getCoffee();
+                coffee += "  ";
+            } else {
+                coffee += pc.getCoffee();
+                coffee += "  ";
+            }
+            labels += pc.getLabel() + ",";
         }
-
+        System.out.println("coffee="+coffee);
+        if(i < 2){
+            cupList[0] = coffee;
+        } else {
+            cupList[1] = coffee;
+        }
+        System.out.println("1111"+labels);
+        //判断是不是补单
+        if(labels.contains("*")){
+            String[] labelSplit = labels.split(",");
+            String labelAndCup = "";
+            int j = 0;
+            for (String label : labelSplit){
+                if (i < 2) {
+                    if (j == 0) {
+                        labelAndCup = "(" + label + ",";
+                    } else if (j == 2) {
+                        labelAndCup = labelAndCup.substring(0,labelAndCup.length()-1);
+                        labelAndCup += ")";
+                        cupList[1] = labelAndCup;
+                        labelAndCup = "(" + label + ",";
+                    } else {
+                        labelAndCup += label + ",";
+                    }
+                } else {
+                    if (j == 0) {
+                        labelAndCup = "(" + label + ",";
+                    } else if (j == 2) {
+                        labelAndCup = labelAndCup.substring(0,labelAndCup.length()-1);
+                        labelAndCup += ")";
+                        cupList[2] = labelAndCup;
+                        labelAndCup = "(" + label + ",";
+                    } else {
+                        labelAndCup += label + ",";
+                    }
+                }
+                j++;
+            }
+            if(labelAndCup.length() > 0) {
+                if (i < 2) {
+                    if (j > 2) {
+                        labelAndCup = labelAndCup.substring(0,labelAndCup.length()-1);
+                        labelAndCup += ")";
+                        cupList[2] = labelAndCup;
+                    } else {
+                        labelAndCup = labelAndCup.substring(0,labelAndCup.length()-1);
+                        labelAndCup += ")";
+                        cupList[1] = labelAndCup;
+                    }
+                } else {
+                    if (j > 2) {
+                        labelAndCup = labelAndCup.substring(0,labelAndCup.length()-1);
+                        labelAndCup += ")";
+                        cupList[3] = labelAndCup;
+                    } else {
+                        labelAndCup = labelAndCup.substring(0,labelAndCup.length()-1);
+                        labelAndCup += ")";
+                        cupList[2] = labelAndCup;
+                    }
+                }
+            }
+        } else {
+            String[] labelSplit = labels.split(",");
+            Map<String, Integer> labelAndCup = new HashMap<>();
+            for (String label : labelSplit) {
+                System.out.println("1111"+label);
+                if (labelAndCup.containsKey(label)) {
+                    int cup = labelAndCup.get(label) +1 ;
+                    labelAndCup.put(label , cup);
+                } else {
+                    if (!"".equals(label)) {
+                        labelAndCup.put(label, 1);
+                    }
+                }
+            }
+            int j =0;
+            String labelStr = "";
+            if(i >= 2){
+                for(String s : labelAndCup.keySet()){
+                    if (j == 0) {
+                        labelStr = "(" + s + "*"+ labelAndCup.get(s) + ",";
+                    } else if (j == 2){
+                        labelStr = labelStr.substring(0,labelStr.length()-1);
+                        labelStr += ")";
+                        cupList[2] = labelStr;
+                        labelStr = "(" + s + "*"+ labelAndCup.get(s)+",";
+                    } else {
+                        labelStr += s + "*"+ labelAndCup.get(s)+",";
+                    }
+                    j ++ ;
+                }
+                if(labelStr.length() > 0) {
+                    if(j < 2){
+                        labelStr = labelStr.substring(0,labelStr.length()-1);
+                        labelStr += ")";
+                        cupList[2] = labelStr;
+                    } else {
+                        labelStr = labelStr.substring(0,labelStr.length()-1);
+                        labelStr += ")";
+                        cupList[3] = labelStr;
+                    }
+                }
+            } else {
+                for(String s : labelAndCup.keySet()){
+                    if (j == 0) {
+                        labelStr = "(" + s + "*"+ labelAndCup.get(s) +",";
+                    } else if (j == 2){
+                        labelStr = labelStr.substring(0,labelStr.length()-1);
+                        labelStr += ")";
+                        cupList[1] = labelStr;
+                        labelStr = "(" + s + "*" + labelAndCup.get(s) + ",";
+                    } else {
+                        labelStr += s + "*" + labelAndCup.get(s) + ",";
+                    }
+                    j++;
+                }
+                if(labelStr.length() > 0) {
+                    if (j < 2) {
+                        labelStr = labelStr.substring(0, labelStr.length() - 1);
+                        labelStr += ")";
+                        cupList[1] = labelStr;
+                    } else {
+                        labelStr = labelStr.substring(0, labelStr.length() - 1);
+                        labelStr += ")";
+                        cupList[2] = labelStr;
+                    }
+                }
+            }
+        }
+        //end 新版本
         boolean isSimplify = PrintSetting.isSimplifyEnable(CSApplication.getInstance());
         if(bean.getCupAmount()==1 && isSimplify){
             String address = bean.getAddress();
@@ -399,19 +555,19 @@ public class FujitsuPrinter implements NetPrint {
             String addressCMD, addr1,addr2,addr3;
             int length = bean.getAddress().length();
             if (length <= 22) {
-                addressCMD = "TEXT 90,280,\"TSS24.BF2\",0,1,1,\""+bean.getAddress()+"\""+"\n";
+                addressCMD = "TEXT 90,295,\"TSS24.BF2\",0,1,1,\""+bean.getAddress()+"\""+"\n";
             } else if(length>22 && length<43){
                 addr1 = bean.getAddress().substring(0, 22);
                 addr2 = bean.getAddress().substring(22);
-                addressCMD = "TEXT 90,280,\"TSS24.BF2\",0,1,1,\""+addr1+"\""+"\n" +
-                        "TEXT 90,310,\"TSS24.BF2\",0,1,1,\""+addr2+"\""+"\n";
+                addressCMD = "TEXT 90,295,\"TSS24.BF2\",0,1,1,\""+addr1+"\""+"\n" +
+                        "TEXT 90,325,\"TSS24.BF2\",0,1,1,\""+addr2+"\""+"\n";
             }else{
                 addr1 = bean.getAddress().substring(0, 22);
                 addr2 = bean.getAddress().substring(22,43);
                 addr3 = bean.getAddress().substring(43);
-                addressCMD = "TEXT 90,280,\"TSS24.BF2\",0,1,1,\""+addr1+"\""+"\n" +
-                        "TEXT 90,310,\"TSS24.BF2\",0,1,1,\""+addr2+"\""+"\n"+
-                        "TEXT 90,340,\"TSS24.BF2\",0,1,1,\""+addr3+"\""+"\n";
+                addressCMD = "TEXT 90,295,\"TSS24.BF2\",0,1,1,\""+addr1+"\""+"\n" +
+                        "TEXT 90,325,\"TSS24.BF2\",0,1,1,\""+addr2+"\""+"\n"+
+                        "TEXT 90,355,\"TSS24.BF2\",0,1,1,\""+addr3+"\""+"\n";
             }
 
             return  "SIZE 80 mm, 49 mm\n" +
@@ -424,20 +580,62 @@ public class FujitsuPrinter implements NetPrint {
                     "TEXT 10,80,\"TSS24.BF2\",0,1,1,\"订单编号:\"\n" +
                     "TEXT 130,80,\"TSS24.BF2\",0,1,1,\""+bean.getOrderHashId()+"\"\n" +
                     "TEXT 440,80,\"TSS24.BF2\",0,1,1,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\"\n" +
-                    "BOX 8,110,616,220,1,10\n"+
+                    "BOX 8,110,616,250,1,10\n"+
 
-                    "TEXT 14,130,\"TSS24.BF2\",0,1,1,\""+cupList[0]+"\""+"\n"+
-                    "TEXT 314,130,\"TSS24.BF2\",0,1,1,\""+cupList[1]+"\""+"\n"+
+                    "TEXT 14,120,\"TSS24.BF2\",0,1,1,\""+cupList[0]+"\""+"\n"+
+                    "TEXT 14,150,\"TSS24.BF2\",0,1,1,\""+cupList[1]+"\""+"\n"+
                     "TEXT 14,180,\"TSS24.BF2\",0,1,1,\""+cupList[2]+"\""+"\n"+
-                    "TEXT 314,180,\"TSS24.BF2\",0,1,1,\""+cupList[3]+"\""+"\n"+
+                    "TEXT 14,210,\"TSS24.BF2\",0,1,1,\""+cupList[3]+"\""+"\n"+
 
-                    "TEXT 10,240,\"TSS24.BF2\",0,1,1,\"收货人:\"\n" +
-                    "TEXT 110,240,\"TSS24.BF2\",0,1,1,\""+bean.getReceiverName()+"\"\n" +
-                    "TEXT 290,240,\"TSS24.BF2\",0,1,1,\"送达时间:\"\n" +
-                    "TEXT 410,240,\"TSS24.BF2\",0,1,1,\""+arriveTime+"\"\n" +
-                    "TEXT 10,280,\"TSS24.BF2\",0,1,1,\"地址:\"\n" +
-                    addressCMD +
+                    "TEXT 10,260,\"TSS24.BF2\",0,1,1,\"收货人:\"\n" +
+                    "TEXT 110,260,\"TSS24.BF2\",0,1,1,\""+bean.getReceiverName()+"\"\n" +
+                    "TEXT 290,260,\"TSS24.BF2\",0,1,1,\"送达时间:\"\n" +
+                    "TEXT 410,260,\"TSS24.BF2\",0,1,1,\""+arriveTime+"\"\n" +
+                    "TEXT 10,295,\"TSS24.BF2\",0,1,1,\"地址:\"\n" +
+                     addressCMD +
                     "PRINT 1,1\n";
+            //老版本备份
+//            String addressCMD, addr1,addr2,addr3;
+//            int length = bean.getAddress().length();
+//            if (length <= 22) {
+//                addressCMD = "TEXT 90,280,\"TSS24.BF2\",0,1,1,\""+bean.getAddress()+"\""+"\n";
+//            } else if(length>22 && length<43){
+//                addr1 = bean.getAddress().substring(0, 22);
+//                addr2 = bean.getAddress().substring(22);
+//                addressCMD = "TEXT 90,280,\"TSS24.BF2\",0,1,1,\""+addr1+"\""+"\n" +
+//                        "TEXT 90,310,\"TSS24.BF2\",0,1,1,\""+addr2+"\""+"\n";
+//            }else{
+//                addr1 = bean.getAddress().substring(0, 22);
+//                addr2 = bean.getAddress().substring(22,43);
+//                addr3 = bean.getAddress().substring(43);
+//                addressCMD = "TEXT 90,280,\"TSS24.BF2\",0,1,1,\""+addr1+"\""+"\n" +
+//                        "TEXT 90,310,\"TSS24.BF2\",0,1,1,\""+addr2+"\""+"\n"+
+//                        "TEXT 90,340,\"TSS24.BF2\",0,1,1,\""+addr3+"\""+"\n";
+//            }
+//            return  "SIZE 80 mm, 49 mm\n" +
+//                    "GAP 2 mm, 0 mm\n" +
+//                    "SET RIBBON OFF\n" +
+//                    "DIRECTION 1,0\n" +
+//                    "CLS\n" +
+//                    "TEXT 10,10,\"TSS24.BF2\",0,2,2,\""+Calculator.getCheckShopNo(bean)+bean.getLocalStr()+"\""+"\n"+
+//                    "TEXT 540,10,\"TSS24.BF2\",0,2,2,\""+bean.getCupStr()+"\""+"\n"+           //杯数盒子信息
+//                    "TEXT 10,80,\"TSS24.BF2\",0,1,1,\"订单编号:\"\n" +
+//                    "TEXT 130,80,\"TSS24.BF2\",0,1,1,\""+bean.getOrderHashId()+"\"\n" +
+//                    "TEXT 440,80,\"TSS24.BF2\",0,1,1,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\"\n" +
+//                    "BOX 8,110,616,220,1,10\n"+
+//
+//                    "TEXT 14,130,\"TSS24.BF2\",0,1,1,\""+cupList[0]+"\""+"\n"+
+//                    "TEXT 314,130,\"TSS24.BF2\",0,1,1,\""+cupList[1]+"\""+"\n"+
+//                    "TEXT 14,180,\"TSS24.BF2\",0,1,1,\""+cupList[2]+"\""+"\n"+
+//                    "TEXT 314,180,\"TSS24.BF2\",0,1,1,\""+cupList[3]+"\""+"\n"+
+//
+//                    "TEXT 10,240,\"TSS24.BF2\",0,1,1,\"收货人:\"\n" +
+//                    "TEXT 110,240,\"TSS24.BF2\",0,1,1,\""+bean.getReceiverName()+"\"\n" +
+//                    "TEXT 290,240,\"TSS24.BF2\",0,1,1,\"送达时间:\"\n" +
+//                    "TEXT 410,240,\"TSS24.BF2\",0,1,1,\""+arriveTime+"\"\n" +
+//                    "TEXT 10,280,\"TSS24.BF2\",0,1,1,\"地址:\"\n" +
+//                    addressCMD +
+//                    "PRINT 1,1\n";
 
         }
 
@@ -470,7 +668,6 @@ public class FujitsuPrinter implements NetPrint {
                     "CLS\n" +
                     "TEXT 12,16,\"TSS24.BF2\",0,1,1,\""+ bean.getShopOrderNo() +"\"\n" +
                     "TEXT 12,43,\"TSS24.BF2\",0,1,1,\""+bean.getCoffee()+"\"\n" +
-                    "TEXT 12,68,\"TSS24.BF2\",0,1,1,\""+bean.getLabel()+"\"\n" +
                     "TEXT 12,101,\"TSS24.BF2\",0,1,1,\""+time+"\""+"\n"+
                     "TEXT 12,126,\"TSS24.BF2\",0,1,1,\""+drinkGuide+"\""+"\n"+
                     "PRINT 1,1\n";
@@ -483,9 +680,32 @@ public class FujitsuPrinter implements NetPrint {
                     "CLS\n" +
                     "TEXT 20,40,\"TSS24.BF2\",0,1,1,\""+ bean.getShopOrderNo() +"\"\n" +
                     "TEXT 20,70,\"TSS24.BF2\",0,1,1,\""+bean.getCoffee()+"\"\n" +
-                    "TEXT 20,100,\"TSS24.BF2\",0,1,1,\""+bean.getLabel()+"\"\n" +
                     "PRINT 1,1\n";
         }
+//        if(needPrintTime){
+//            return  "SIZE 30 mm, 20 mm\n" +
+//                    "GAP 3 mm, 0 mm\n" +
+//                    "SET RIBBON OFF\n" +
+//                    "DIRECTION 1,0\n" +
+//                    "CLS\n" +
+//                    "TEXT 12,16,\"TSS24.BF2\",0,1,1,\""+ bean.getShopOrderNo() +"\"\n" +
+//                    "TEXT 12,43,\"TSS24.BF2\",0,1,1,\""+bean.getCoffee()+"\"\n" +
+//                    "TEXT 12,68,\"TSS24.BF2\",0,1,1,\""+bean.getLabel()+"\"\n" +
+//                    "TEXT 12,101,\"TSS24.BF2\",0,1,1,\""+time+"\""+"\n"+
+//                    "TEXT 12,126,\"TSS24.BF2\",0,1,1,\""+drinkGuide+"\""+"\n"+
+//                    "PRINT 1,1\n";
+//
+//        }else {
+//            return  "SIZE 30 mm, 20 mm\n" +
+//                    "GAP 3 mm, 0 mm\n" +
+//                    "SET RIBBON OFF\n" +
+//                    "DIRECTION 1,0\n" +
+//                    "CLS\n" +
+//                    "TEXT 20,40,\"TSS24.BF2\",0,1,1,\""+ bean.getShopOrderNo() +"\"\n" +
+//                    "TEXT 20,70,\"TSS24.BF2\",0,1,1,\""+bean.getCoffee()+"\"\n" +
+//                    "TEXT 20,100,\"TSS24.BF2\",0,1,1,\""+bean.getLabel()+"\"\n" +
+//                    "PRINT 1,1\n";
+//        }
 
     }
 

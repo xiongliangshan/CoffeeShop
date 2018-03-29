@@ -301,14 +301,172 @@ public class WinposPrinter implements NetPrint {
             arriveTime = OrderHelper.getFormatTimeToStr(bean.getExpectedTime());
         }
 
-        for(int i =0;i<coffeeList.size();i++){
-            if(i>3){
-                LogUtil.e(TAG,"OTCForBigLabel ，数据异常");
+//        for(int i =0;i<coffeeList.size();i++){
+//            if(i>3){
+//                LogUtil.e(TAG,"OTCForBigLabel ，数据异常");
+//                break;
+//            }
+//            PrintCupBean pc = coffeeList.get(i);
+//            cupList[i] = pc.getCoffee()+Calculator.formatLabel(pc.getLabel());
+//        }
+
+
+        //start 新版本
+        String labels = ""; // 产品
+        String coffee = "";//咖啡
+        int i = 0;
+        System.out.println("coffeeList="+coffeeList);
+        for (; i < coffeeList.size(); i++) {
+            if (i > 4) {
+                LogUtil.e(TAG, "OTCForBigLabel ，数据异常");
                 break;
             }
             PrintCupBean pc = coffeeList.get(i);
-            cupList[i] = pc.getCoffee()+Calculator.formatLabel(pc.getLabel());
+            System.out.println("coffee="+coffee);
+            if (i < 2 ){
+                coffee += pc.getCoffee();
+                coffee += "  ";
+            } else if (i == 2){
+                cupList[0] = coffee;
+                coffee = "";
+                coffee += pc.getCoffee();
+                coffee += "  ";
+            } else {
+                coffee += pc.getCoffee();
+                coffee += "  ";
+            }
+            labels += pc.getLabel() + ",";
         }
+        System.out.println("coffee="+coffee);
+        if(i < 2){
+            cupList[0] = coffee;
+        } else {
+            cupList[1] = coffee;
+        }
+        System.out.println("1111"+labels);
+        //判断是不是补单
+        if(labels.contains("*")){
+            String[] labelSplit = labels.split(",");
+            String labelAndCup = "";
+            int j = 0;
+            for (String label : labelSplit){
+                if (i < 2) {
+                    if (j == 0) {
+                        labelAndCup = "(" + label + ",";
+                    } else if (j == 2) {
+                        labelAndCup = labelAndCup.substring(0,labelAndCup.length()-1);
+                        labelAndCup += ")";
+                        cupList[1] = labelAndCup;
+                        labelAndCup = "(" + label + ",";
+                    } else {
+                        labelAndCup += label + ",";
+                    }
+                } else {
+                    if (j == 0) {
+                        labelAndCup = "(" + label + ",";
+                    } else if (j == 2) {
+                        labelAndCup = labelAndCup.substring(0,labelAndCup.length()-1);
+                        labelAndCup += ")";
+                        cupList[2] = labelAndCup;
+                        labelAndCup = "(" + label + ",";
+                    } else {
+                        labelAndCup += label + ",";
+                    }
+                }
+                j++;
+            }
+            if(labelAndCup.length() > 0) {
+                if (i < 2) {
+                    if (j > 2) {
+                        labelAndCup = labelAndCup.substring(0,labelAndCup.length()-1);
+                        labelAndCup += ")";
+                        cupList[2] = labelAndCup;
+                    } else {
+                        labelAndCup = labelAndCup.substring(0,labelAndCup.length()-1);
+                        labelAndCup += ")";
+                        cupList[1] = labelAndCup;
+                    }
+                } else {
+                    if (j > 2) {
+                        labelAndCup = labelAndCup.substring(0,labelAndCup.length()-1);
+                        labelAndCup += ")";
+                        cupList[3] = labelAndCup;
+                    } else {
+                        labelAndCup = labelAndCup.substring(0,labelAndCup.length()-1);
+                        labelAndCup += ")";
+                        cupList[2] = labelAndCup;
+                    }
+                }
+            }
+        } else {
+            String[] labelSplit = labels.split(",");
+            Map<String, Integer> labelAndCup = new HashMap<>();
+            for (String label : labelSplit) {
+                System.out.println("1111"+label);
+                if (labelAndCup.containsKey(label)) {
+                    int cup = labelAndCup.get(label) +1 ;
+                    labelAndCup.put(label , cup);
+                } else {
+                    if (!"".equals(label)) {
+                        labelAndCup.put(label, 1);
+                    }
+                }
+            }
+            int j =0;
+            String labelStr = "";
+            if(i >= 2){
+                for(String s : labelAndCup.keySet()){
+                    if (j == 0) {
+                        labelStr = "(" + s + "*"+ labelAndCup.get(s) + ",";
+                    } else if (j == 2){
+                        labelStr = labelStr.substring(0,labelStr.length()-1);
+                        labelStr += ")";
+                        cupList[2] = labelStr;
+                        labelStr = "(" + s + "*"+ labelAndCup.get(s)+",";
+                    } else {
+                        labelStr += s + "*"+ labelAndCup.get(s)+",";
+                    }
+                    j ++ ;
+                }
+                if(labelStr.length() > 0) {
+                    if(j < 2){
+                        labelStr = labelStr.substring(0,labelStr.length()-1);
+                        labelStr += ")";
+                        cupList[2] = labelStr;
+                    } else {
+                        labelStr = labelStr.substring(0,labelStr.length()-1);
+                        labelStr += ")";
+                        cupList[3] = labelStr;
+                    }
+                }
+            } else {
+                for(String s : labelAndCup.keySet()){
+                    if (j == 0) {
+                        labelStr = "(" + s + "*"+ labelAndCup.get(s) +",";
+                    } else if (j == 2){
+                        labelStr = labelStr.substring(0,labelStr.length()-1);
+                        labelStr += ")";
+                        cupList[1] = labelStr;
+                        labelStr = "(" + s + "*" + labelAndCup.get(s) + ",";
+                    } else {
+                        labelStr += s + "*" + labelAndCup.get(s) + ",";
+                    }
+                    j++;
+                }
+                if(labelStr.length() > 0) {
+                    if (j < 2) {
+                        labelStr = labelStr.substring(0, labelStr.length() - 1);
+                        labelStr += ")";
+                        cupList[1] = labelStr;
+                    } else {
+                        labelStr = labelStr.substring(0, labelStr.length() - 1);
+                        labelStr += ")";
+                        cupList[2] = labelStr;
+                    }
+                }
+            }
+        }
+        //end 新版本
 
         boolean isSimplify = PrintSetting.isSimplifyEnable(CSApplication.getInstance());
         if(bean.getCupAmount()==1 && isSimplify){
@@ -345,19 +503,19 @@ public class WinposPrinter implements NetPrint {
             String addressCMD, addr1,addr2,addr3;
             int length = bean.getAddress().length();
             if (length <= 22) {
-                addressCMD = "A100,300,0,230,1,1,N,\""+bean.getAddress()+"\""+"\n";
+                addressCMD = "A100,305,0,230,1,1,N,\""+bean.getAddress()+"\""+"\n";
             } else if(length>22 && length<43){
                 addr1 = bean.getAddress().substring(0, 22);
                 addr2 = bean.getAddress().substring(22);
-                addressCMD = "A100,300,0,230,1,1,N,\""+addr1+"\""+"\n" +
-                        "A100,330,0,230,1,1,N,\""+addr2+"\""+"\n";
+                addressCMD = "A100,305,0,230,1,1,N,\""+addr1+"\""+"\n" +
+                        "A100,335,0,230,1,1,N,\""+addr2+"\""+"\n";
             }else{
                 addr1 = bean.getAddress().substring(0, 22);
                 addr2 = bean.getAddress().substring(22,43);
                 addr3 = bean.getAddress().substring(43);
-                addressCMD = "A100,300,0,230,1,1,N,\""+addr1+"\""+"\n" +
-                        "A100,330,0,230,1,1,N,\""+addr2+"\""+"\n"+
-                        "A100,360,0,230,1,1,N,\""+addr3+"\""+"\n";
+                addressCMD = "A100,305,0,230,1,1,N,\""+addr1+"\""+"\n" +
+                        "A100,335,0,230,1,1,N,\""+addr2+"\""+"\n"+
+                        "A100,365,0,230,1,1,N,\""+addr3+"\""+"\n";
             }
 
             return  "N"+"\n"+
@@ -371,18 +529,60 @@ public class WinposPrinter implements NetPrint {
                     "A140,100,0,230,1,1,N,\""+bean.getOrderHashId()+"\""+"\n"+
                     "A450,100,0,230,1,1,N,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
                     "A20,120,0,230,1,1,N,\"-------------------------------------------------- \""+"\n"+
-                    "A20,150,0,230,1,1,N,\""+cupList[0]+"\""+"\n"+
-                    "A320,150,0,230,1,1,N,\""+cupList[1]+"\""+"\n"+
+                    "A20,140,0,230,1,1,N,\""+cupList[0]+"\""+"\n"+
+                    "A20,170,0,230,1,1,N,\""+cupList[1]+"\""+"\n"+
                     "A20,200,0,230,1,1,N,\""+cupList[2]+"\""+"\n"+
-                    "A320,200,0,230,1,1,N,\""+cupList[3]+"\""+"\n"+
-                    "A20,230,0,230,1,1,N,\"-------------------------------------------------- \""+"\n"+
-                    "A20,260,0,230,1,1,N,\"收货人 \""+"\n"+
-                    "A120,260,0,230,1,1,N,\""+bean.getReceiverName()+"\""+"\n"+
-                    "A300,260,0,230,1,1,N,\"送达时间 \""+"\n"+
-                    "A420,260,0,230,1,1,N,\""+arriveTime+"\""+"\n"+
-                    "A20,300,0,230,1,1,N,\"地址 \""+"\n"+
+                    "A20,230,0,230,1,1,N,\""+cupList[3]+"\""+"\n"+
+                    "A20,255,0,230,1,1,N,\"-------------------------------------------------- \""+"\n"+
+                    "A20,270,0,230,1,1,N,\"收货人 \""+"\n"+
+                    "A120,270,0,230,1,1,N,\""+bean.getReceiverName()+"\""+"\n"+
+                    "A300,270,0,230,1,1,N,\"送达时间 \""+"\n"+
+                    "A420,270,0,230,1,1,N,\""+arriveTime+"\""+"\n"+
+                    "A20,305,0,230,1,1,N,\"地址 \""+"\n"+
                     addressCMD +                             //配送地址
                     "P1"+"\n";
+
+//            String addressCMD, addr1,addr2,addr3;
+//            int length = bean.getAddress().length();
+//            if (length <= 22) {
+//                addressCMD = "A100,300,0,230,1,1,N,\""+bean.getAddress()+"\""+"\n";
+//            } else if(length>22 && length<43){
+//                addr1 = bean.getAddress().substring(0, 22);
+//                addr2 = bean.getAddress().substring(22);
+//                addressCMD = "A100,300,0,230,1,1,N,\""+addr1+"\""+"\n" +
+//                        "A100,330,0,230,1,1,N,\""+addr2+"\""+"\n";
+//            }else{
+//                addr1 = bean.getAddress().substring(0, 22);
+//                addr2 = bean.getAddress().substring(22,43);
+//                addr3 = bean.getAddress().substring(43);
+//                addressCMD = "A100,300,0,230,1,1,N,\""+addr1+"\""+"\n" +
+//                        "A100,330,0,230,1,1,N,\""+addr2+"\""+"\n"+
+//                        "A100,360,0,230,1,1,N,\""+addr3+"\""+"\n";
+//            }
+//
+//            return  "N"+"\n"+
+//                    "q640"+"\n"+
+//                    "Q400,16"+"\n"+
+//                    "S3"+"\n"+
+//                    "D8"+"\n"+
+//                    "A20,30,0,230,2,2,N,\""+Calculator.getCheckShopNo(bean)+bean.getLocalStr()+"\""+"\n"+
+//                    "A540,30,0,230,2,2,N,\""+ bean.getCupStr()+"\""+"\n"+           //杯数盒子信息
+//                    "A20,100,0,230,1,1,N,\"订单编号:\""+"\n"+ //订单编号
+//                    "A140,100,0,230,1,1,N,\""+bean.getOrderHashId()+"\""+"\n"+
+//                    "A450,100,0,230,1,1,N,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
+//                    "A20,120,0,230,1,1,N,\"-------------------------------------------------- \""+"\n"+
+//                    "A20,150,0,230,1,1,N,\""+cupList[0]+"\""+"\n"+
+//                    "A320,150,0,230,1,1,N,\""+cupList[1]+"\""+"\n"+
+//                    "A20,200,0,230,1,1,N,\""+cupList[2]+"\""+"\n"+
+//                    "A320,200,0,230,1,1,N,\""+cupList[3]+"\""+"\n"+
+//                    "A20,230,0,230,1,1,N,\"-------------------------------------------------- \""+"\n"+
+//                    "A20,260,0,230,1,1,N,\"收货人 \""+"\n"+
+//                    "A120,260,0,230,1,1,N,\""+bean.getReceiverName()+"\""+"\n"+
+//                    "A300,260,0,230,1,1,N,\"送达时间 \""+"\n"+
+//                    "A420,260,0,230,1,1,N,\""+arriveTime+"\""+"\n"+
+//                    "A20,300,0,230,1,1,N,\"地址 \""+"\n"+
+//                    addressCMD +                             //配送地址
+//                    "P1"+"\n";
 
         }
 
@@ -405,7 +605,6 @@ public class WinposPrinter implements NetPrint {
                     "D8"+"\n"+
                     "A18,16,0,230,1,1,N,\""+orderBean.getShopOrderNo()+"\""+"\n"+
                     "A18,43,0,230,1,1,N,\""+orderBean.getCoffee()+"\""+"\n"+
-                    "A18,68,0,230,1,1,N,\""+orderBean.getLabel()+"\""+"\n"+
                     "A18,101,0,230,1,1,N,\""+time+"\""+"\n"+
                     "A18,126,0,230,1,1,N,\""+drinkGuide+"\""+"\n"+
                     "P1"+"\n";
@@ -418,9 +617,33 @@ public class WinposPrinter implements NetPrint {
                     "D8"+"\n"+
                     "A20,40,0,230,1,1,N,\""+orderBean.getShopOrderNo()+"\""+"\n"+
                     "A20,70,0,230,1,1,N,\""+orderBean.getCoffee()+"\""+"\n"+
-                    "A20,100,0,230,1,1,N,\""+orderBean.getLabel()+"\""+"\n"+
                     "P1"+"\n";
         }
+//        if(needPrintTime){
+//            return  "N"+"\n"+
+//                    "OD"+"\n"+
+//                    "q240"+"\n"+
+//                    "Q160,16"+"\n"+
+//                    "S3"+"\n"+
+//                    "D8"+"\n"+
+//                    "A18,16,0,230,1,1,N,\""+orderBean.getShopOrderNo()+"\""+"\n"+
+//                    "A18,43,0,230,1,1,N,\""+orderBean.getCoffee()+"\""+"\n"+
+//                    "A18,68,0,230,1,1,N,\""+orderBean.getLabel()+"\""+"\n"+
+//                    "A18,101,0,230,1,1,N,\""+time+"\""+"\n"+
+//                    "A18,126,0,230,1,1,N,\""+drinkGuide+"\""+"\n"+
+//                    "P1"+"\n";
+//        }else {
+//            return  "N"+"\n"+
+//                    "OD"+"\n"+
+//                    "q240"+"\n"+
+//                    "Q160,16"+"\n"+
+//                    "S3"+"\n"+
+//                    "D8"+"\n"+
+//                    "A20,40,0,230,1,1,N,\""+orderBean.getShopOrderNo()+"\""+"\n"+
+//                    "A20,70,0,230,1,1,N,\""+orderBean.getCoffee()+"\""+"\n"+
+//                    "A20,100,0,230,1,1,N,\""+orderBean.getLabel()+"\""+"\n"+
+//                    "P1"+"\n";
+//        }
     }
 
     @Override
