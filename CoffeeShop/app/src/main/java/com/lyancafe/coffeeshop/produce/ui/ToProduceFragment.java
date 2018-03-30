@@ -6,6 +6,7 @@ import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -333,6 +334,8 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         getBTMACAddress();
         getMAC();
         getGSON();
+        getSrialNum();
+        getWLAN();
     }
 
     private void getMAC() {
@@ -391,6 +394,34 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         } catch (Exception e){
             Log.d(TAG, "经度纬度获取出现异常");
             Logger.getLogger().log("经度纬度获取出现异常");
+        }
+    }
+
+    private void getWLAN(){
+        try{
+            WifiManager wm = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+            if(wm != null){
+                Log.d(TAG, "wifi:"+wm.getConnectionInfo().getMacAddress());
+                Logger.getLogger().log("wifi:"+wm.getConnectionInfo().getMacAddress());
+                System.out.println("wifi:"+ wm.getConnectionInfo().getMacAddress());
+            } else {
+                Log.d(TAG, "wifi获取有问题");
+                Logger.getLogger().log("wifi获取有问题");
+            }
+        }catch (Exception e){
+            Log.d(TAG, "wifi有问题");
+            Logger.getLogger().log("wifi有问题");
+        }
+    }
+
+    private void getSrialNum(){
+        try{
+            String SerialNumber = android.os.Build.SERIAL;
+            System.out.println("SerialNumber:"+SerialNumber);
+            Log.d(TAG, "SerialNumber:"+SerialNumber);
+            Logger.getLogger().log("SerialNumber:"+SerialNumber);
+        }catch (Exception e){
+
         }
     }
 
