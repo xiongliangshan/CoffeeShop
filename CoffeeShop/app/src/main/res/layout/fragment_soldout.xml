@@ -1,0 +1,278 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="32dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            android:textColor="@color/white1"
+            android:text="基础管理" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_height="1dp"
+            android:textColor="@color/white1"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white1"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:text="门店名称"/>
+
+            <TextView
+                android:id="@+id/tv_shopName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:textColor="@color/white1"
+                android:textSize="20sp"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white1"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:text="门店地址"/>
+
+            <TextView
+                android:id="@+id/tv_shop_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:textColor="@color/white1"
+                android:textSize="20sp"/>
+
+
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/tv_constant_shopPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white1"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:text="门店电话"/>
+
+            <TextView
+                android:id="@+id/tv_shopPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="150dp"
+                android:layout_toRightOf="@id/tv_constant_shopPhone"
+                android:layout_marginLeft="16dp"
+                android:textColor="@color/white1"
+                android:textSize="20sp"/>
+
+            <ImageView
+                android:id="@+id/iv_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_toRightOf="@id/tv_shopPhone"
+                android:layout_alignTop="@id/tv_shopPhone"
+                android:src="@mipmap/edit"
+                android:contentDescription="编辑" />
+
+            <LinearLayout
+                android:id="@+id/ll_modify_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                android:layout_toRightOf="@id/tv_constant_shopPhone"
+                android:layout_alignLeft="@+id/tv_shopPhone"
+                android:layout_below="@id/tv_shopPhone">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/et_phone"
+                    android:layout_width="wrap_content"
+                    android:minWidth="150dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:inputType="number"
+                    android:background="@drawable/bg_editor"
+                   />
+
+                <ImageView
+                    android:id="@+id/iv_save"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@mipmap/save"
+                    android:contentDescription="保存" />
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:padding="24dp"
+            android:background="@drawable/bg_order">
+
+            <TextView
+                android:id="@+id/tv_select_printer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="选择当前使用的打印机:"
+                android:textSize="18sp"/>
+
+
+            <TextView
+                android:id="@+id/tv_small_printer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:padding="4dp"
+                app:layout_constraintTop_toBottomOf="@id/tv_select_printer"
+                android:text="小标签打印:"
+                android:textSize="18sp"/>
+
+            <RadioGroup
+                android:id="@+id/radio_group_small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/tv_small_printer"
+                app:layout_constraintTop_toTopOf="@id/tv_small_printer"
+                android:orientation="horizontal"
+                >
+                <RadioButton
+                    android:id="@+id/rb_winpos_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="旧版WinPos"
+                    android:textSize="18sp"/>
+
+                <RadioButton
+                    android:id="@+id/rb_fujitsu_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:text="新版富士通"
+                    android:textSize="18sp"/>
+
+
+            </RadioGroup>
+
+
+            <TextView
+                android:id="@+id/tv_big_printer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:padding="4dp"
+                app:layout_constraintTop_toBottomOf="@id/tv_small_printer"
+                app:layout_constraintLeft_toLeftOf="@id/tv_small_printer"
+                android:text="大标签打印:"
+                android:textSize="18sp"/>
+
+            <RadioGroup
+                android:id="@+id/radio_group_big"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/tv_big_printer"
+                app:layout_constraintTop_toTopOf="@id/tv_big_printer"
+                android:orientation="horizontal"
+                >
+                <RadioButton
+                    android:id="@+id/rb_winpos_big"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="旧版WinPos"
+                    android:textSize="18sp"/>
+
+                <RadioButton
+                    android:id="@+id/rb_fujitsu_big"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:text="新版富士通"
+                    android:textSize="18sp"/>
+
+
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/tv_simplify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:padding="4dp"
+                app:layout_constraintTop_toBottomOf="@id/tv_big_printer"
+                app:layout_constraintLeft_toLeftOf="@id/tv_big_printer"
+                android:text="新版盒子方案:"
+                android:textSize="18sp"/>
+
+            <RadioGroup
+                android:id="@+id/radio_simplify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/tv_simplify"
+                app:layout_constraintTop_toTopOf="@id/tv_simplify"
+                android:orientation="horizontal"
+                >
+                <RadioButton
+                    android:id="@+id/rb_off"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="关闭"
+                    android:textSize="18sp"/>
+
+                <RadioButton
+                    android:id="@+id/rb_on"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:text="开启"
+                    android:textSize="18sp"/>
+
+
+            </RadioGroup>
+
+        </android.support.constraint.ConstraintLayout>
+
+
+    </LinearLayout>
+
+</ScrollView>

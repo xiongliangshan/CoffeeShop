@@ -1,7 +1,11 @@
 package com.lyancafe.coffeeshop.produce.ui;
 
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.TelephonyManager;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -324,6 +329,68 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
                 }
             };
             timer.schedule(timerTask, reHandlerTime, reHandlerTime);
+        }
+        getBTMACAddress();
+        getMAC();
+        getGSON();
+    }
+
+    private void getMAC() {
+        try{
+            TelephonyManager telephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+            if (telephonyManager != null) {
+                LogUtil.d(TAG, "设备唯一id:" + telephonyManager.getDeviceId());
+                Logger.getLogger().log("设备唯一id:" + telephonyManager.getDeviceId());
+            } else {
+                LogUtil.d(TAG, "设备唯一id未获得");
+                Logger.getLogger().log("设备唯一id未获得");
+            }
+        }catch (Exception e){
+            LogUtil.d(TAG, "设备唯一id获取异常");
+            Logger.getLogger().log("设备唯一id获取异常");
+        }
+    }
+
+    private void getBTMACAddress() {
+        try{
+            BluetoothAdapter m_BluetoothAdapter = null; // Local Bluetooth adapter
+            m_BluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (m_BluetoothAdapter != null) {
+                LogUtil.d(TAG, "蓝牙:" + m_BluetoothAdapter.getAddress());
+                Logger.getLogger().log("蓝牙:" + m_BluetoothAdapter.getAddress());
+            } else {
+                Log.d(TAG, "蓝牙未获得");
+                Logger.getLogger().log("蓝牙未获得");
+            }
+        } catch (Exception e){
+            Log.d(TAG, "蓝牙获取出现异常");
+            Logger.getLogger().log("蓝牙获取出现异常");
+        }
+    }
+
+    private void getGSON() {
+        try{
+            Criteria criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_COARSE);//低精度，如果设置为高精度，依然获取不了location。
+            criteria.setAltitudeRequired(false);//不要求海拔
+            criteria.setBearingRequired(false);//不要求方位
+            criteria.setCostAllowed(true);//允许有花费
+            criteria.setPowerRequirement(Criteria.POWER_LOW);//低功耗
+            LocationManager locationManager = (LocationManager) mContext.getSystemService(mContext.getApplicationContext().LOCATION_SERVICE);
+            //从可用的位置提供器中，匹配以上标准的最佳提供器
+            String locationProvider = locationManager.getBestProvider(criteria, true);
+            Location location = locationManager.getLastKnownLocation(locationProvider);
+            if (location != null) {
+                //不为空,显示地理位置经纬度
+                Log.d(TAG, "经度为:" + location.getLatitude() + "纬度为:" + location.getLongitude());
+                Logger.getLogger().log("经度为:" + location.getLatitude() + "纬度为:" + location.getLongitude());
+            } else {
+                Log.d(TAG, "经度纬度未获得");
+                Logger.getLogger().log("经度纬度未获得");
+            }
+        } catch (Exception e){
+            Log.d(TAG, "经度纬度获取出现异常");
+            Logger.getLogger().log("经度纬度获取出现异常");
         }
     }
 
