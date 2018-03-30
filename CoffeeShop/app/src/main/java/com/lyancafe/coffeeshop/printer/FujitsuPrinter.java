@@ -550,6 +550,9 @@ public class FujitsuPrinter implements NetPrint {
                     "TEXT 570,60,\"TSS24.BF2\",0,1,1,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
                     "TEXT 10,90,\"TSS24.BF2\",0,1,1,\""+bestAddress+"\""+"\n"+
                     "TEXT 10,120,\"TSS24.BF2\",0,1,1,\""+cupList[0]+"\""+"\n"+
+                    "TEXT 10,150,\"TSS24.BF2\",0,1,1,\""+cupList[1]+"\""+"\n"+
+                    "TEXT 10,180,\"TSS24.BF2\",0,1,1,\""+cupList[2]+"\""+"\n"+
+                    "TEXT 10,210,\"TSS24.BF2\",0,1,1,\""+cupList[3]+"\""+"\n"+
                     "PRINT 1,1\n";
         }else {
             String addressCMD, addr1,addr2,addr3;

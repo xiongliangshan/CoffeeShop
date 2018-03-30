@@ -498,6 +498,9 @@ public class WinposPrinter implements NetPrint {
                     "A570,70,0,230,1,1,N,\""+OrderHelper.getPrintFlag(bean.getOrderSn())+"\""+"\n"+
                     "A20,100,0,230,1,1,N,\""+bestAddress+"\""+"\n"+
                     "A20,130,0,230,1,1,N,\""+cupList[0]+"\""+"\n"+
+                    "A20,160,0,230,1,1,N,\""+cupList[1]+"\""+"\n"+
+                    "A20,190,0,230,1,1,N,\""+cupList[2]+"\""+"\n"+
+                    "A20,220,0,230,1,1,N,\""+cupList[3]+"\""+"\n"+
                     "P1"+"\n";
         }else {
             String addressCMD, addr1,addr2,addr3;
