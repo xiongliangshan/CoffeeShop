@@ -331,27 +331,6 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
             };
             timer.schedule(timerTask, reHandlerTime, reHandlerTime);
         }
-        getBTMACAddress();
-        getMAC();
-        getGSON();
-        getSrialNum();
-        getWLAN();
-    }
-
-    private void getMAC() {
-        try{
-            TelephonyManager telephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
-            if (telephonyManager != null) {
-                LogUtil.d(TAG, "设备唯一id:" + telephonyManager.getDeviceId());
-                Logger.getLogger().log("设备唯一id:" + telephonyManager.getDeviceId());
-            } else {
-                LogUtil.d(TAG, "设备唯一id未获得");
-                Logger.getLogger().log("设备唯一id未获得");
-            }
-        }catch (Exception e){
-            LogUtil.d(TAG, "设备唯一id获取异常");
-            Logger.getLogger().log("设备唯一id获取异常");
-        }
     }
 
     private void getBTMACAddress() {
@@ -371,32 +350,6 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         }
     }
 
-    private void getGSON() {
-        try{
-            Criteria criteria = new Criteria();
-            criteria.setAccuracy(Criteria.ACCURACY_COARSE);//低精度，如果设置为高精度，依然获取不了location。
-            criteria.setAltitudeRequired(false);//不要求海拔
-            criteria.setBearingRequired(false);//不要求方位
-            criteria.setCostAllowed(true);//允许有花费
-            criteria.setPowerRequirement(Criteria.POWER_LOW);//低功耗
-            LocationManager locationManager = (LocationManager) mContext.getSystemService(mContext.getApplicationContext().LOCATION_SERVICE);
-            //从可用的位置提供器中，匹配以上标准的最佳提供器
-            String locationProvider = locationManager.getBestProvider(criteria, true);
-            Location location = locationManager.getLastKnownLocation(locationProvider);
-            if (location != null) {
-                //不为空,显示地理位置经纬度
-                Log.d(TAG, "经度为:" + location.getLatitude() + "纬度为:" + location.getLongitude());
-                Logger.getLogger().log("经度为:" + location.getLatitude() + "纬度为:" + location.getLongitude());
-            } else {
-                Log.d(TAG, "经度纬度未获得");
-                Logger.getLogger().log("经度纬度未获得");
-            }
-        } catch (Exception e){
-            Log.d(TAG, "经度纬度获取出现异常");
-            Logger.getLogger().log("经度纬度获取出现异常");
-        }
-    }
-
     private void getWLAN(){
         try{
             WifiManager wm = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
@@ -411,17 +364,6 @@ public class ToProduceFragment extends BaseFragment implements ToProduceView<Ord
         }catch (Exception e){
             Log.d(TAG, "wifi有问题");
             Logger.getLogger().log("wifi有问题");
-        }
-    }
-
-    private void getSrialNum(){
-        try{
-            String SerialNumber = android.os.Build.SERIAL;
-            System.out.println("SerialNumber:"+SerialNumber);
-            Log.d(TAG, "SerialNumber:"+SerialNumber);
-            Logger.getLogger().log("SerialNumber:"+SerialNumber);
-        }catch (Exception e){
-
         }
     }
 

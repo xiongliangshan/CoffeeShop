@@ -5,6 +5,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -82,12 +85,20 @@ public class LoginPresenterImpl implements LoginPresenter{
         final String redId = JPushInterface.getRegistrationID(CSApplication.getInstance());
         final String mType = android.os.Build.MODEL; // 手机型号
         final String appVer = MyUtil.getVersion(CSApplication.getInstance());
+        String SerialNumber;
+        try{
+            SerialNumber = android.os.Build.SERIAL; //  手机SN
+        } catch (Exception e){
+            Log.e("login has problem", e.getMessage());
+            SerialNumber = "";
+        }
         Map<String,Object> params = new HashMap<>();
         params.put("loginName",loginName);
         params.put("password",password);
         params.put("regId",redId);
         params.put("mType",mType);
         params.put("appVer",appVer);
+        params.put("SN",SerialNumber);
         mLoginModel.login(params,new Observer<BaseEntity<UserBean>>() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
@@ -112,6 +123,7 @@ public class LoginPresenterImpl implements LoginPresenter{
                         Logger.getLogger().log(loginName + " 这是今天第一次登陆");
                     }
                     mLoginView.stepToMain();
+                    getGSON();
                 } else {
                     ToastUtil.show(mContext.getApplicationContext(), userBeanBaseEntity.getMessage());
                 }
@@ -132,6 +144,32 @@ public class LoginPresenterImpl implements LoginPresenter{
                 PreferencesUtil.putLastLoginAccount(mContext,loginName);
             }
         });
+    }
+
+    private void getGSON() {
+        try{
+            Criteria criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_COARSE);//低精度，如果设置为高精度，依然获取不了location。
+            criteria.setAltitudeRequired(false);//不要求海拔
+            criteria.setBearingRequired(false);//不要求方位
+            criteria.setCostAllowed(true);//允许有花费
+            criteria.setPowerRequirement(Criteria.POWER_LOW);//低功耗
+            LocationManager locationManager = (LocationManager) mContext.getSystemService(mContext.getApplicationContext().LOCATION_SERVICE);
+            //从可用的位置提供器中，匹配以上标准的最佳提供器
+            String locationProvider = locationManager.getBestProvider(criteria, true);
+            Location location = locationManager.getLastKnownLocation(locationProvider);
+            if (location != null) {
+                //不为空,显示地理位置经纬度
+                Log.d(TAG, "经度为:" + location.getLatitude() + "纬度为:" + location.getLongitude());
+                Logger.getLogger().log("经度为:" + location.getLatitude() + "纬度为:" + location.getLongitude());
+            } else {
+                Log.d(TAG, "经度纬度未获得");
+                Logger.getLogger().log("经度纬度未获得");
+            }
+        } catch (Exception e){
+            Log.d(TAG, "经度纬度获取出现异常");
+            Logger.getLogger().log("经度纬度获取出现异常");
+        }
     }
 
     @Override
